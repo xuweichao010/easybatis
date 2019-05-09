@@ -1,5 +1,7 @@
 package com.xwc.esbatis.meta;
 
+import com.xwc.esbatis.anno.enums.KeyEnum;
+
 /**
  * 创建人：徐卫超
  * 创建时间：2019/4/13  17:16
@@ -9,7 +11,32 @@ package com.xwc.esbatis.meta;
 public class ColumMate {
     private String field;
     private String colunm;
+    private KeyEnum keyEnum;
+    private boolean isIgnore = false;
 
+    public ColumMate(String field, String colunm) {
+        this.field = field;
+        this.colunm = colunm;
+    }
+
+    public ColumMate() {
+    }
+
+    public void setKeyEnum(KeyEnum keyEnum) {
+        this.keyEnum = keyEnum;
+    }
+
+    public KeyEnum getKeyEnum() {
+        return keyEnum;
+    }
+
+    public boolean isIgnore() {
+        return isIgnore;
+    }
+
+    public void setIgnore(boolean ignore) {
+        isIgnore = ignore;
+    }
 
     public String getField() {
         return field;
@@ -34,10 +61,10 @@ public class ColumMate {
 
     public StringBuilder getBatisField(String item) {
         StringBuilder sb = new StringBuilder();
-        return sb.append("#{").append(item+"."+field).append("}");
+        return sb.append("#{").append(item + "." + field).append("}");
     }
 
-    public StringBuilder getBatisColum() {
+    public StringBuilder getFieldValue() {
         StringBuilder sb = new StringBuilder();
         return sb.append("${").append(field).append("}");
     }

@@ -12,6 +12,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface BaseMapper<E, K> {
+
     @GenerateSelectOne
     E byId(K id);
 

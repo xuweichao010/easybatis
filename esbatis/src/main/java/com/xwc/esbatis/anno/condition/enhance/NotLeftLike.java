@@ -1,4 +1,4 @@
-package com.xwc.esbatis.anno.condition;
+package com.xwc.esbatis.anno.condition.enhance;
 
 import com.xwc.esbatis.anno.enums.ConditionEnum;
 import org.springframework.core.annotation.AliasFor;
@@ -14,9 +14,10 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Condition(conditionType = ConditionEnum.IN)
-public @interface In {
+public @interface NotLeftLike {
     int index() default 99;
 
     String colum() default "";
+
+    ConditionEnum type() default ConditionEnum.NOT_LEFT_LIKE;
 }

@@ -13,4 +13,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @GeneratSql
 public @interface Distinct {
+    String colums() default "*";
 }

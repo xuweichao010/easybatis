@@ -1,7 +1,6 @@
-package com.xwc.esbatis.anno.condition;
+package com.xwc.esbatis.anno.condition.enhance;
 
 import com.xwc.esbatis.anno.enums.ConditionEnum;
-import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
@@ -12,11 +11,12 @@ import java.lang.annotation.*;
  * 功能：
  */
 @Documented
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Condition(conditionType = ConditionEnum.NOT_NULL)
-public @interface NotNull {
-    int index() default -1;
+public @interface LeftLike {
+    int index() default 99;
 
     String colum() default "";
+
+    ConditionEnum type() default ConditionEnum.LEFT_LIKE;
 }

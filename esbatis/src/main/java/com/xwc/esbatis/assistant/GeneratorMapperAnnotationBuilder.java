@@ -3,6 +3,7 @@ package com.xwc.esbatis.assistant;
 import com.xwc.esbatis.anno.*;
 import com.xwc.esbatis.anno.enums.KeyEnum;
 import com.xwc.esbatis.anno.enums.SqlOperationType;
+import com.xwc.esbatis.interfaces.SqlAssistant;
 import com.xwc.esbatis.meta.EntityMate;
 import com.xwc.esbatis.meta.QueryMate;
 import org.apache.ibatis.annotations.*;
@@ -57,7 +58,8 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
     private final MapperBuilderAssistant assistant;
     private final Class<?> type;
     private final EntityMate entityMate;
-    private final AnalysisAssistant analysisAssistant;
+    private final AnnotationAssistan annotationAssistan;
+    private final SqlAnnotationBuilder sqlAnnotationBuilder;
     private static Set<Class<? extends Annotation>> GENDERATE_ANNOTATION_TYPES = new HashSet<>();
 
     static {
@@ -77,7 +79,8 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
         this.configuration = configuration;
         this.type = type;
         this.entityMate = null;
-        this.analysisAssistant = null;
+        this.annotationAssistan = null;
+        this.sqlAnnotationBuilder = null;
         configuration.setUseActualParamName(true);
     }
 
@@ -87,8 +90,9 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
         this.assistant = new MapperBuilderAssistant(configuration, resource);
         this.configuration = configuration;
         this.type = type;
-        this.analysisAssistant = new AnalysisAssistant(configuration);
-        this.entityMate = analysisAssistant.parseEntityMate(entityClass);
+        this.annotationAssistan = new AnnotationAssistan(configuration);
+        this.entityMate = annotationAssistan.parseEntityMate(entityClass);
+        this.sqlAnnotationBuilder = new SqlAnnotationBuilder(new MySQLAssistant());
     }
 
     public void parse() {
@@ -434,40 +438,43 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
             if (!(value instanceof SqlOperationType)) {
                 throw new BuilderException("Could not find value method on SQL annotation Type");
             }
-            Object colums = annotation.getClass().getMethod("colums").invoke(annotation);
+            String colums = (String) annotation.getClass().getMethod("colums").invoke(annotation);
             String[] sql;
+            Count count;
+            Distinct distinct;
+            QueryMate queryMate;
             switch ((SqlOperationType) value) {
                 case BASE_SELECT_ONE:
-                    sql = new String[]{analysisAssistant.parseSelectById(entityMate)};
+                    sql = new String[]{sqlAnnotationBuilder.selectOne(entityMate, colums)};
                     break;
                 case BASE_INSERT:
-                    if(Collection.class.isAssignableFrom(parameterType)){
-                        sql = new String[]{analysisAssistant.parseBatchInsert(entityMate)};
-                    }else{
-                        sql = new String[]{analysisAssistant.parseInsert(entityMate)};
+                    if (Collection.class.isAssignableFrom(parameterType)) {
+                        sql = new String[]{sqlAnnotationBuilder.insertBatch(entityMate)};
+                    } else {
+                        sql = new String[]{sqlAnnotationBuilder.insert(entityMate)};
                     }
                     break;
                 case BASE_UPDATE:
-                    sql = new String[]{analysisAssistant.parseUpdate(entityMate)};
+                    sql = new String[]{sqlAnnotationBuilder.update(entityMate)};
                     break;
                 case BASE_PARAM_UPDATE:
-                    QueryMate udateMate = analysisAssistant.parseQueryMethod(method);
-                    sql = new String[]{analysisAssistant.parseUpdate(udateMate, entityMate)};
+                    queryMate = annotationAssistan.parseQueryMethod(method);
+                    sql = new String[]{sqlAnnotationBuilder.update(queryMate, entityMate.getTableName())};
                     break;
                 case BASE_DELETE:
-                    sql = new String[]{analysisAssistant.parseDelete(entityMate)};
+                    sql = new String[]{sqlAnnotationBuilder.delete(entityMate)};
                     break;
                 case BASE_QUERY_SELECT:
-                    QueryMate listMate = analysisAssistant.parseQueryEntity(method);
-                    Count count = AnnotationUtils.findAnnotation(method, Count.class);
-                    Distinct distinct = AnnotationUtils.findAnnotation(method, Distinct.class);
-                    sql = new String[]{analysisAssistant.parseSelectSql(entityMate, listMate, colums, count, distinct, false)};
+                    queryMate = annotationAssistan.parseQueryEntity(method);
+                    count = AnnotationUtils.findAnnotation(method, Count.class);
+                    distinct = AnnotationUtils.findAnnotation(method, Distinct.class);
+                    sql = new String[]{sqlAnnotationBuilder.selectQuery(entityMate, queryMate, colums, true, count, distinct)};
                     break;
                 case BASE_PARAM_SELECT:
-                    QueryMate paramMate = analysisAssistant.parseQueryMethod(method);
-                    Count paramcount = AnnotationUtils.findAnnotation(method, Count.class);
-                    Distinct paramdistinct = AnnotationUtils.findAnnotation(method, Distinct.class);
-                    sql = new String[]{analysisAssistant.parseSelectSql(entityMate, paramMate, colums, paramcount, paramdistinct, true)};
+                    queryMate = annotationAssistan.parseQueryMethod(method);
+                    count = AnnotationUtils.findAnnotation(method, Count.class);
+                    distinct = AnnotationUtils.findAnnotation(method, Distinct.class);
+                    sql = new String[]{sqlAnnotationBuilder.selectQuery(entityMate, queryMate, colums, true, count, distinct)};
                     break;
                 default:
                     return null;

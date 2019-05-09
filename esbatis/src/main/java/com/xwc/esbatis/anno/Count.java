@@ -1,8 +1,5 @@
 package com.xwc.esbatis.anno;
 
-import com.xwc.esbatis.anno.enums.SqlOperationType;
-import org.springframework.core.annotation.AliasFor;
-
 import java.lang.annotation.*;
 
 /**
@@ -16,5 +13,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @GeneratSql
 public @interface Count {
-    String colums() default " * ";
+    String colums() default "*";
 }

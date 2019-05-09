@@ -1,4 +1,4 @@
-package com.xwc.esbatis.anno.condition;
+package com.xwc.esbatis.anno.condition.enhance;
 
 import com.xwc.esbatis.anno.enums.ConditionEnum;
 import org.springframework.core.annotation.AliasFor;
@@ -12,11 +12,14 @@ import java.lang.annotation.*;
  * 功能：
  */
 @Documented
-@Target({ElementType.FIELD,ElementType.PARAMETER})
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Condition(conditionType = ConditionEnum.NOT_EQUEL)
 public @interface NotEqual {
-    int index() default -1;
+
+
+    int index() default 99;
 
     String colum() default "";
+
+    ConditionEnum type() default ConditionEnum.NOT_EQUEL;
 }

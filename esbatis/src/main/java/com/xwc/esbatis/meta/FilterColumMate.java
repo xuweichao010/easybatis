@@ -12,6 +12,14 @@ public class FilterColumMate extends ColumMate {
     private ConditionEnum conditionEnum;
     private int index = 0;
 
+    public FilterColumMate(String fieldName, String colunmName, ConditionEnum conditionEnum, int index) {
+        super(fieldName, colunmName);
+        this.conditionEnum = conditionEnum;
+    }
+
+    public FilterColumMate() {
+    }
+
     public ConditionEnum getConditionEnum() {
         return conditionEnum;
     }
@@ -27,5 +35,6 @@ public class FilterColumMate extends ColumMate {
     public void setIndex(int index) {
         this.index = index;
     }
+
 
 }
