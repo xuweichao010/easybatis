@@ -1,0 +1,64 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.2.RELEASE'
+    }
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath('org.flywaydb:flyway-gradle-plugin:5.+')
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'checkstyle'
+    apply plugin: 'io.spring.dependency-management'
+
+    //定义项目版本
+    group 'com.xwc.esbatis.dev'
+    version '2.0'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    checkstyle {
+        ignoreFailures = false
+        configFile = rootProject.file('checkstyle-google.xml')
+        toolVersion = '7.+'
+    }
+
+    compileJava.options*.compilerArgs = [
+            "-Xlint:varargs", "-Xlint:classfile", "-Xlint:dep-ann",
+            "-Xlint:divzero", "-Xlint:empty", "-Xlint:finally", "-Xlint:overrides",
+            "-Xlint:path", "-Xlint:static", "-Xlint:try", "-Xlint:fallthrough",
+            "-Xlint:deprecation", "-Xlint:unchecked", "-Xlint:-options"
+    ]
+
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        mavenCentral()
+    }
+
+
+    //定义编译时候使用的字符集
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+    //创建目录
+    def createDir = {
+        path ->
+            File dir = new File(path)
+            if (!dir.exists()) {
+                dir.mkdirs()
+            }
+    }
+    task mkdirJava() {
+        def paths = ['src/main/java', 'src/main/resources', 'src/test/java', 'src/test/resource'];
+        doFirst {
+            paths.forEach(createDir)
+        }
+    }
+}
+

@@ -1,0 +1,13 @@
+apply plugin: 'org.flywaydb.flyway'
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    compile project(":esbatis")
+    testCompile('org.springframework.boot:spring-boot-starter-test') //springboot快速启动组件
+    compile("org.springframework.boot:spring-boot-starter-web")     //web
+    compile("org.springframework.boot:spring-boot-starter-data-redis")
+    compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.2.2')  //SpringBoot 整合MyBatis
+    compile("com.alibaba:druid:1.1.2")  //数据库连接池
+    runtime('mysql:mysql-connector-java:5.+') //数据库驱动
+    compile('com.alibaba:fastjson:1.2.47')
+}

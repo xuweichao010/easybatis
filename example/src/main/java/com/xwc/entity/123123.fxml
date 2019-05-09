@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<script>SELECT id, account, password, name, org_name, org_code FROM t_user
+    <where>
+        <if test='name != null'>name = #{name}</if>
+    </where>
+</script>
