@@ -1,19 +1,18 @@
 package com.xwc.dao;
 
 import com.xwc.entity.User;
+import com.xwc.esbatis.interfaces.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 /**
  * 创建人：徐卫超
- * 创建时间：2018/8/15  15:23
- * 功能：
+ * 创建时间：2019/4/24  13:39
  * 业务：
+ * 功能：
  */
 @Mapper
-public interface UserMapper{
-    @Select("SELECT * FROM t_user WHERE id = #{id}")
-    User get(@Param("id") String id);
+public interface UserMapper extends BaseMapper<User, Long> {
+
+
 
 }

@@ -1,6 +1,5 @@
 package com.xwc.esbatis.assistant;
 
-import com.sun.org.apache.regexp.internal.RE;
 import com.xwc.esbatis.anno.Count;
 import com.xwc.esbatis.anno.Distinct;
 import com.xwc.esbatis.anno.enums.ConditionEnum;
@@ -61,7 +60,7 @@ public class SqlAnnotationBuilder {
         StringBuilder field = new StringBuilder();
         mate.getInsertColum().forEach(item -> {
             colunm.append(", ").append(item.getColunm());
-            field.append(", ").append(item.getBatisField("item"));
+            field.append(", ").append(item.getBatisField());
         });
         StringBuilder sb = new StringBuilder(" <script> INSERT INTO ").append(mate.getTableName());
         sb.append(" ( ").append(colunm.substring(1)).append(") VALUES (").append(field.delete(0, 1).append(")")).append("</script>");
@@ -106,7 +105,8 @@ public class SqlAnnotationBuilder {
                 .map(columMate -> new FilterColumMate(columMate.getField(), columMate.getColunm(), ConditionEnum.EQUEL, 0))
                 .collect(Collectors.toList());
         StringBuilder sb = new StringBuilder();
-        sb.append("<script> DELTE FROM ").append(mate.getTableName()).append(filterList).append(" </script>");
+        sb.append("<script> DELETE FROM ").append(mate.getTableName()).append(sqlAssistant.builderQuery(filterList))
+                .append(" </script>");
         return sb.toString();
     }
 

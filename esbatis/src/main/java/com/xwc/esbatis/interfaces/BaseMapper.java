@@ -14,7 +14,7 @@ import java.util.List;
 public interface BaseMapper<E, K> {
 
     @GenerateSelectOne
-    E byId(K id);
+    E selectKey(K id);
 
     @GenerateInsert
     void insert(E entity);

@@ -3,6 +3,7 @@ apply plugin: 'org.springframework.boot'
 
 dependencies {
     compile project(":esbatis")
+    implementation("org.flywaydb:flyway-core:4.2.0")
     testCompile('org.springframework.boot:spring-boot-starter-test') //springboot快速启动组件
     compile("org.springframework.boot:spring-boot-starter-web")     //web
     compile("org.springframework.boot:spring-boot-starter-data-redis")

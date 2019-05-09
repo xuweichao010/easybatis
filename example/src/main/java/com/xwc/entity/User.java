@@ -1,26 +1,24 @@
 package com.xwc.entity;
 
-
-import com.xwc.esbatis.anno.enums.KeyEnum;
 import com.xwc.esbatis.anno.table.PrimaryKey;
 import com.xwc.esbatis.anno.table.Table;
-import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 
 /**
  * 创建人：徐卫超
- * 创建时间：2018/8/15  14:51
- * 功能：
+ * 创建时间：2019/4/27  10:17
  * 业务：
+ * 功能：
  */
 @Table("t_user")
-public class User implements Serializable{
-
+@SuppressWarnings("unused")
+public class User implements Serializable {
+    private static final long serialVersionUID = -4279599274719815691L;
     /**
      * 用户ID
      */
-    @PrimaryKey(type = KeyEnum.AUTO)
+    @PrimaryKey
     private Long id;
     /**
      * 账号
@@ -42,6 +40,7 @@ public class User implements Serializable{
      * 机构代码
      */
     private String orgCode;
+
 
     /**
      * 用户ID
@@ -126,4 +125,6 @@ public class User implements Serializable{
     public void setOrgCode(String orgCode) {
         this.orgCode = orgCode;
     }
+
+
 }
