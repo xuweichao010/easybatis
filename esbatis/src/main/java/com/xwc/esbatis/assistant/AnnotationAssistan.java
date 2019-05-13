@@ -168,9 +168,12 @@ public class AnnotationAssistan {
         if (annotation == null) {
             filter.setConditionEnum(ConditionEnum.EQUEL);
             filter.setIndex(DEFAULT_ORDER + index);
+            filter.setField(paramName);
+            filter.setColunm(underscoreName(paramName));
         } else {
             try {
                 String colum = (String) annotation.getClass().getMethod("colum").invoke(annotation);
+                filter.setField(paramName);
                 filter.setColunm(colum.isEmpty() ? underscoreName(paramName) : colum);
                 int annoIndex = (int) annotation.getClass().getMethod("index").invoke(annotation);
                 filter.setIndex(annoIndex == DEFAULT_ORDER ? annoIndex + DEFAULT_ORDER : annoIndex);
@@ -192,7 +195,7 @@ public class AnnotationAssistan {
 
     public Annotation chooseAnnotationType(Annotation[] annotations) {
         for (Annotation annotation : annotations) {
-            if (queryAnnoSet.contains(annotation)) {
+            if (queryAnnoSet.contains(annotation.annotationType())) {
                 return annotation;
             }
         }
@@ -200,7 +203,7 @@ public class AnnotationAssistan {
     }
 
     private String underscoreName(String camelCaseName) {
-        if(configuration.isMapUnderscoreToCamelCase()){
+        if (configuration.isMapUnderscoreToCamelCase()) {
             StringBuilder result = new StringBuilder();
             if (camelCaseName != null && camelCaseName.length() > 0) {
                 result.append(camelCaseName.substring(0, 1).toLowerCase());

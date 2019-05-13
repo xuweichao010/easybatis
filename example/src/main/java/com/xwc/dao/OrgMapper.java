@@ -5,9 +5,15 @@ import com.xwc.entity.Org;
 import com.xwc.entity.User;
 import com.xwc.esbatis.anno.Count;
 import com.xwc.esbatis.anno.GenerateSelectQuery;
+import com.xwc.esbatis.anno.GenerateSelectSql;
+import com.xwc.esbatis.anno.condition.enhance.In;
+import com.xwc.esbatis.anno.condition.enhance.RightLike;
 import com.xwc.esbatis.interfaces.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.context.annotation.Primary;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,4 +34,9 @@ public interface OrgMapper extends BaseMapper<Org, String> {
     Long count(OrgQuery query);
 
 
+    @GenerateSelectSql
+    List<Org> listByOrg(String name, @RightLike String code, @Param("sons") @In ArrayList<Integer> sons);
+
+    @GenerateSelectSql(colums = "name")
+    List<Org> listNameByOrg(String name, @RightLike String code, @Param("sons") @In ArrayList<Integer> sons);
 }

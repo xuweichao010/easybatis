@@ -474,7 +474,7 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
                     queryMate = annotationAssistan.parseQueryMethod(method);
                     count = AnnotationUtils.findAnnotation(method, Count.class);
                     distinct = AnnotationUtils.findAnnotation(method, Distinct.class);
-                    sql = new String[]{sqlAnnotationBuilder.selectQuery(entityMate, queryMate, colums, true, count, distinct)};
+                    sql = new String[]{sqlAnnotationBuilder.selectQuery(entityMate, queryMate, colums, false, count, distinct)};
                     break;
                 default:
                     return null;

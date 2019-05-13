@@ -17,9 +17,32 @@ public class OrgQuery {
     @RightLike
     private String code;
 
-    @Equal
     private String name;
 
     @In
     private List<Integer> sons;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Integer> getSons() {
+        return sons;
+    }
+
+    public void setSons(List<Integer> sons) {
+        this.sons = sons;
+    }
 }

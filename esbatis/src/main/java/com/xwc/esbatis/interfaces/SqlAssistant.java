@@ -19,7 +19,6 @@ public interface SqlAssistant {
     String ALL_COLUMS = "*";
 
 
-
     /**
      * 构建汇总片段
      */
@@ -40,6 +39,11 @@ public interface SqlAssistant {
      * 构建插入数据片段
      */
     StringBuilder builderInsert(List<ColumMate> list);
+
+    /**
+     * 构建批量插入数据片段
+     */
+    StringBuilder builderInsertBatch(List<ColumMate> list);
 
     /**
      * 构建一个动态查询条件片段

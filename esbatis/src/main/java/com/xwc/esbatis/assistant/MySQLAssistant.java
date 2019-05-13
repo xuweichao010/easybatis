@@ -72,8 +72,24 @@ public class MySQLAssistant implements SqlAssistant {
         });
         StringBuilder sb = new StringBuilder();
         sb.append(" ( ").append(colunm.delete(0, 1))
+                .append(" ) VALUES ( ")
+                .append(field.delete(0, 1).append(" )"));
+        return sb;
+    }
+
+    @Override
+    public StringBuilder builderInsertBatch(List<ColumMate> list) {
+        StringBuilder colunm = new StringBuilder();
+        StringBuilder field = new StringBuilder();
+        list.forEach(item -> {
+            colunm.append(", ").append(item.getColunm());
+            field.append(", ").append(item.getBatisField("item"));
+        });
+        StringBuilder sb = new StringBuilder();
+        sb.append(" ( ").append(colunm.substring(1))
                 .append(") VALUES <foreach collection='list' item='item' index='index' separator=',' >")
-                .append(field.delete(0, 1).insert(0, "(").append(")")).append("</foreach>");
+                .append(field.delete(0, 1).insert(0, "(").append(")"))
+                .append("</foreach>").append("</script>");
         return sb;
     }
 
@@ -83,7 +99,7 @@ public class MySQLAssistant implements SqlAssistant {
     @Override
     public StringBuilder builderDynamicQuery(List<FilterColumMate> list) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<WHERE> ");
+        sb.append(" <where> ");
         list.forEach(item -> {
             switch (item.getConditionEnum()) {
                 case IN:
@@ -113,7 +129,7 @@ public class MySQLAssistant implements SqlAssistant {
                     throw new BindingException("生成sql语句约束错误");
             }
         });
-        sb.append(" </WHERE>");
+        sb.append(" </where>");
         return sb;
     }
 
@@ -168,6 +184,7 @@ public class MySQLAssistant implements SqlAssistant {
     @Override
     public StringBuilder builderPage(FilterColumMate start, FilterColumMate offset) {
         StringBuilder sb = new StringBuilder();
+        if (start == null || offset == null) return sb;
         sb.append(" LIMIT ").append(start.getBatisField()).append(",").append(offset.getBatisField());
         return sb;
     }

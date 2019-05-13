@@ -41,29 +41,15 @@ public class SqlAnnotationBuilder {
 
 
     public String insertBatch(EntityMate mate) {
-        StringBuilder colunm = new StringBuilder();
-        StringBuilder field = new StringBuilder();
-        mate.getInsertColum().forEach(item -> {
-            colunm.append(", ").append(item.getColunm());
-            field.append(", ").append(item.getBatisField("item"));
-        });
-        StringBuilder sb = new StringBuilder(" <script> INSERT INTO ").append(mate.getTableName());
-        sb.append(" ( ").append(colunm.substring(1))
-                .append(") VALUES <foreach collection='list' item='item' index='index' separator=',' >")
-                .append(field.delete(0, 1).insert(0, "(").append(")"))
-                .append("</foreach>").append("</script>");
+        StringBuilder sb = new StringBuilder(" <script> INSERT INTO ")
+                .append(mate.getTableName())
+                .append(sqlAssistant.builderInsertBatch(mate.getInsertColum()))
+                .append("</script>");
         return sb.toString();
     }
 
     public String insert(EntityMate mate) {
-        StringBuilder colunm = new StringBuilder();
-        StringBuilder field = new StringBuilder();
-        mate.getInsertColum().forEach(item -> {
-            colunm.append(", ").append(item.getColunm());
-            field.append(", ").append(item.getBatisField());
-        });
-        StringBuilder sb = new StringBuilder(" <script> INSERT INTO ").append(mate.getTableName());
-        sb.append(" ( ").append(colunm.substring(1)).append(") VALUES (").append(field.delete(0, 1).append(")")).append("</script>");
+        StringBuilder sb = new StringBuilder(" <script> INSERT INTO ").append(sqlAssistant.builderInsert(mate.getInsertColum()));
         return sb.toString();
     }
 
@@ -109,10 +95,4 @@ public class SqlAnnotationBuilder {
                 .append(" </script>");
         return sb.toString();
     }
-
-
-//    public StringBuilder update(EntityMate mate) {
-//        StringBuilder sb = new StringBuilder(ma)
-//    }
-
 }
