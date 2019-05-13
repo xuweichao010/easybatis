@@ -96,7 +96,7 @@ public class EntityMate {
     }
 
     public String getTableName() {
-        return tableName;
+        return ColumMate.GA + tableName + ColumMate.GA;
     }
 
     public void setTableName(String tableName) {

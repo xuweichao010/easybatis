@@ -44,12 +44,15 @@ public class SqlAnnotationBuilder {
         StringBuilder sb = new StringBuilder(" <script> INSERT INTO ")
                 .append(mate.getTableName())
                 .append(sqlAssistant.builderInsertBatch(mate.getInsertColum()))
-                .append("</script>");
+                .append(" </script>");
         return sb.toString();
     }
 
     public String insert(EntityMate mate) {
-        StringBuilder sb = new StringBuilder(" <script> INSERT INTO ").append(sqlAssistant.builderInsert(mate.getInsertColum()));
+        StringBuilder sb = new StringBuilder(" <script> INSERT INTO ")
+                .append(mate.getTableName())
+                .append(sqlAssistant.builderInsert(mate.getInsertColum()))
+                .append(" </script>");
         return sb.toString();
     }
 

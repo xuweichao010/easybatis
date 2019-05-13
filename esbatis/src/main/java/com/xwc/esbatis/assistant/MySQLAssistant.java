@@ -68,7 +68,7 @@ public class MySQLAssistant implements SqlAssistant {
         StringBuilder field = new StringBuilder();
         list.forEach(item -> {
             colunm.append(", ").append(item.getColunm());
-            field.append(", ").append(item.getBatisField("item"));
+            field.append(", ").append(item.getBatisField());
         });
         StringBuilder sb = new StringBuilder();
         sb.append(" ( ").append(colunm.delete(0, 1))
@@ -89,7 +89,7 @@ public class MySQLAssistant implements SqlAssistant {
         sb.append(" ( ").append(colunm.substring(1))
                 .append(") VALUES <foreach collection='list' item='item' index='index' separator=',' >")
                 .append(field.delete(0, 1).insert(0, "(").append(")"))
-                .append("</foreach>").append("</script>");
+                .append("</foreach>");
         return sb;
     }
 

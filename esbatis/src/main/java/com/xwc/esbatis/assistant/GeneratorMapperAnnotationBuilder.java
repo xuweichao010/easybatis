@@ -3,7 +3,6 @@ package com.xwc.esbatis.assistant;
 import com.xwc.esbatis.anno.*;
 import com.xwc.esbatis.anno.enums.KeyEnum;
 import com.xwc.esbatis.anno.enums.SqlOperationType;
-import com.xwc.esbatis.interfaces.SqlAssistant;
 import com.xwc.esbatis.meta.EntityMate;
 import com.xwc.esbatis.meta.QueryMate;
 import org.apache.ibatis.annotations.*;

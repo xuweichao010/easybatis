@@ -9,6 +9,7 @@ import com.xwc.esbatis.anno.enums.KeyEnum;
  * 功能：属性
  */
 public class ColumMate {
+    public static final String GA = "`";
     private String field;
     private String colunm;
     private KeyEnum keyEnum;
@@ -47,7 +48,11 @@ public class ColumMate {
     }
 
     public String getColunm() {
-        return colunm;
+        if(colunm.startsWith(GA)){
+            return colunm;
+        }else {
+            return GA + colunm + GA;
+        }
     }
 
     public void setColunm(String colunm) {
