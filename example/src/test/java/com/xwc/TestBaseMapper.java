@@ -49,7 +49,7 @@ public class TestBaseMapper {
     @Test
     //我们把插入的ID拿过来查询一下看是否是正常查询的
     public void testSelectKey() {
-        User user = userMapper.selectKey(16L);
+        User user = userMapper.selectKey(17L);
         System.out.println(JSONObject.toJSONString(user));
     }
 

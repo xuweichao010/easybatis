@@ -2,6 +2,8 @@ package com.xwc.esbatis;
 
 import com.xwc.esbatis.assistant.GeneratorMapperAnnotationBuilder;
 import com.xwc.esbatis.assistant.Reflection;
+import com.xwc.esbatis.intercepts.TestIntercepts;
+import org.apache.ibatis.plugin.Interceptor;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,16 +42,20 @@ public class MybatisGenerator implements ApplicationContextAware, ApplicationLis
     //spring容器刷新完成
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        factoryBeans.forEach(bean -> {
+        org.apache.ibatis.session.Configuration configuration = null;
+        for (MapperFactoryBean bean : factoryBeans) {
             Class<?> ec = Reflection.getEntityClass(bean.getMapperInterface());
             GeneratorMapperAnnotationBuilder parser;
-            if (ec == null) {
-                parser = new GeneratorMapperAnnotationBuilder(bean.getSqlSession().getConfiguration(), bean.getMapperInterface());
-            } else {
-                parser = new GeneratorMapperAnnotationBuilder(bean.getSqlSession().getConfiguration(), bean.getMapperInterface(),ec);
+            if (configuration == null) {
+                configuration = bean.getSqlSession().getConfiguration();
+                configuration.setMapUnderscoreToCamelCase(true);
+                configuration.addInterceptor(new TestIntercepts());
             }
-            parser.parse();
+            if (ec != null) {
+                parser = new GeneratorMapperAnnotationBuilder(configuration, bean.getMapperInterface(), ec);
+                parser.parse();
+            }
+        }
 
-        });
     }
 }
