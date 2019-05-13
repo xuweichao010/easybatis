@@ -136,7 +136,6 @@ public class AnnotationAssistan {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         int paramCount = parameterAnnotations.length;
         List<String> paramNames = ParamNameUtil.getParamNames(method);
-        if (paramCount == 0) throw new BindingException("parameters filed null Unable to build Sql");
         for (int i = 0; i < paramCount; ++i) {
             FilterColumMate paramFilter = queryMate(parameterAnnotations[i], i, paramNames.get(i));
             query.addFilter(paramFilter);

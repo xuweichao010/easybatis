@@ -49,6 +49,7 @@ public class MybatisGenerator implements ApplicationContextAware, ApplicationLis
             if (configuration == null) {
                 configuration = bean.getSqlSession().getConfiguration();
                 configuration.setMapUnderscoreToCamelCase(true);
+                configuration.setUseActualParamName(true);
                 configuration.addInterceptor(new TestIntercepts());
             }
             if (ec != null) {

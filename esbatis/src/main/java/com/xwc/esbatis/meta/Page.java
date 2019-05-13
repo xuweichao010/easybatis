@@ -1,5 +1,8 @@
 package com.xwc.esbatis.meta;
 
+import com.xwc.esbatis.anno.condition.enhance.LimitOffset;
+import com.xwc.esbatis.anno.condition.enhance.LimitStart;
+
 /**
  * 创建人：徐卫超
  * 创建时间：2019/4/25  9:31
@@ -7,22 +10,33 @@ package com.xwc.esbatis.meta;
  * 功能：分页功能
  */
 public class Page {
-    private Integer size;
-    private Integer num;
+    @LimitStart
+    private Integer start = 1;
+    @LimitOffset
+    private Integer offset = 10;
 
-    public Integer getSize() {
-        return size;
+
+    public Integer getPageNum() {
+        return start;
     }
 
-    public void setSize(Integer size) {
-        this.size = size;
+    public void setPageNum(Integer pageNum) {
+        this.start = pageNum;
     }
 
-    public Integer getNum() {
-        return num;
+    public Integer getPageSize() {
+        return offset;
     }
 
-    public void setNum(Integer num) {
-        this.num = num;
+    public void setPageSize(Integer pageSize) {
+        this.offset = pageSize;
+    }
+
+    public Integer getStart() {
+        return (start - 1) * offset;
+    }
+
+    public Integer getOffset() {
+        return offset;
     }
 }

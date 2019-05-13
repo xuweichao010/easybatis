@@ -1,6 +1,7 @@
 package com.xwc.esbatis.intercepts;
 
 import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
 
@@ -13,13 +14,14 @@ import java.util.Properties;
  * 功能：
  */
 @Intercepts({@Signature(
-        type = Executor.class,
+        type = ParameterHandler.class,
         method = "*",
         args = {MappedStatement.class, Object.class})})
 public class TestIntercepts implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+        System.out.println("intercept.............");
         return invocation.proceed();
     }
 

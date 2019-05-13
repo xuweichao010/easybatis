@@ -4,6 +4,7 @@ import com.xwc.dto.OrgQuery;
 import com.xwc.entity.Org;
 import com.xwc.entity.User;
 import com.xwc.esbatis.anno.Count;
+import com.xwc.esbatis.anno.Distinct;
 import com.xwc.esbatis.anno.GenerateSelectQuery;
 import com.xwc.esbatis.anno.GenerateSelectSql;
 import com.xwc.esbatis.anno.condition.enhance.In;
@@ -38,5 +39,5 @@ public interface OrgMapper extends BaseMapper<Org, String> {
     List<Org> listByOrg(String name, @RightLike String code, @Param("sons") @In ArrayList<Integer> sons);
 
     @GenerateSelectSql(colums = "name")
-    List<Org> listNameByOrg(String name, @RightLike String code, @Param("sons") @In ArrayList<Integer> sons);
+    List<Org> listNameByOrg(String name, @RightLike String code, @In ArrayList<Integer> sons);
 }
