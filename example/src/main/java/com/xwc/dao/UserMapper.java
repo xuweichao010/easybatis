@@ -1,8 +1,8 @@
 package com.xwc.dao;
 
 import com.xwc.entity.User;
-import com.xwc.esbatis.interfaces.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+        import com.xwc.esbatis.interfaces.BaseMapper;
+        import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 创建人：徐卫超
@@ -12,7 +12,4 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface UserMapper extends BaseMapper<User, Long> {
-
-
-
 }
