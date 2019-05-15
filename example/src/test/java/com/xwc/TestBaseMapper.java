@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+
 /**
  * 创建人：徐卫超
  * 创建时间：2018/8/31  16:51
@@ -52,9 +54,9 @@ public class TestBaseMapper {
     public void testUpdate() {
         //我们来更新一下用户的属性，为了简单我们把用户的属性全部设置为null
         User user = new User();
-        user.setId(16L);
+        user.setId(22L);
         userMapper.update(user);
-        User user1 = userMapper.selectKey(16L);
+        User user1 = userMapper.selectKey(22L);
         System.out.println(JSONObject.toJSONString(user1));
     }
 
@@ -69,6 +71,15 @@ public class TestBaseMapper {
     /**
      * 后面参考自定查询吧 TestCustomSelect.class
      */
+    @Test
+    public void testInsertBatch() {
+        User user = new User();
+        ArrayList<User> list = new ArrayList<>();
+        list.add(user);
+        list.add(user);
+        list.add(user);
+        userMapper.insertBatch(list);
+    }
 
 
 }
