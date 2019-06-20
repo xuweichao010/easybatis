@@ -1,0 +1,1 @@
+package com.xwc.esbatis.anno;import org.springframework.core.annotation.AliasFor;/** * 创建人：徐卫超 * 时间：2019/6/20 9:31 * 功能： * 备注： */public @interface Logic {    String  value();}

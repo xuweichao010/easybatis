@@ -20,6 +20,8 @@ public class EntityMate {
     private List<ColumMate> ignoreColum = new ArrayList<>(3);
     private String tableName;
     private KeyEnum keyEnum;
+    private boolean logic = false;
+    private String logicColum;
 
     public KeyEnum getKeyEnum() {
         return keyEnum;
@@ -34,6 +36,21 @@ public class EntityMate {
         return this;
     }
 
+    public boolean isLogic() {
+        return logic;
+    }
+
+    public void setLogic(boolean logic) {
+        this.logic = logic;
+    }
+
+    public String getLogicColum() {
+        return logicColum;
+    }
+
+    public void setLogicColum(String logicColum) {
+        this.logicColum = logicColum;
+    }
 
     public List<ColumMate> getDefaultColum() {
         return defaultColum;
