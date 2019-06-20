@@ -1,6 +1,9 @@
 package com.xwc.esbatis.interfaces;
 
-import com.xwc.esbatis.anno.*;
+import com.xwc.esbatis.anno.GenerateDelete;
+import com.xwc.esbatis.anno.GenerateInsert;
+import com.xwc.esbatis.anno.GenerateSelectOne;
+import com.xwc.esbatis.anno.GenerateUpdate;
 
 import java.util.List;
 

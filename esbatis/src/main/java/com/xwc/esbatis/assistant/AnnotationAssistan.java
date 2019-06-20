@@ -56,10 +56,6 @@ public class AnnotationAssistan {
         queryAnnoSet.add(RightLike.class);
         queryAnnoSet.add(LeftLike.class);
         queryAnnoSet.add(com.xwc.esbatis.anno.condition.enhance.Set.class);
-        queryAnnoSet.add(LessThan.class);
-        queryAnnoSet.add(LessEqual.class);
-        queryAnnoSet.add(GreaterThan.class);
-        queryAnnoSet.add(GreaterEqual.class);
     }
 
     /**

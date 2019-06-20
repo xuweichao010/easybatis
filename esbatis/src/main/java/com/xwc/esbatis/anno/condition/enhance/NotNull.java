@@ -1,7 +1,6 @@
 package com.xwc.esbatis.anno.condition.enhance;
 
 import com.xwc.esbatis.anno.enums.ConditionEnum;
-import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 

@@ -3,7 +3,6 @@ package com.xwc.esbatis;
 import com.xwc.esbatis.assistant.GeneratorMapperAnnotationBuilder;
 import com.xwc.esbatis.assistant.Reflection;
 import com.xwc.esbatis.intercepts.TestIntercepts;
-import org.apache.ibatis.plugin.Interceptor;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +48,6 @@ public class MybatisGenerator implements ApplicationContextAware, ApplicationLis
             if (configuration == null) {
                 configuration = bean.getSqlSession().getConfiguration();
                 configuration.setMapUnderscoreToCamelCase(true);
-                configuration.setUseActualParamName(true);
                 configuration.addInterceptor(new TestIntercepts());
             }
             if (ec != null) {

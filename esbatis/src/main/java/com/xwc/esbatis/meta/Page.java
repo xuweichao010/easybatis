@@ -11,32 +11,32 @@ import com.xwc.esbatis.anno.condition.enhance.LimitStart;
  */
 public class Page {
     @LimitStart
-    private Integer start = 1;
+    private Long start = 1L;
     @LimitOffset
-    private Integer offset = 10;
+    private Long offset = 10L;
 
 
-    public Integer getPageNum() {
+    public Long getPageNum() {
         return start;
     }
 
-    public void setPageNum(Integer pageNum) {
+    public void setPageNum(Long pageNum) {
         this.start = pageNum;
     }
 
-    public Integer getPageSize() {
+    public Long getPageSize() {
         return offset;
     }
 
-    public void setPageSize(Integer pageSize) {
+    public void setPageSize(Long pageSize) {
         this.offset = pageSize;
     }
 
-    public Integer getStart() {
+    public Long getStart() {
         return (start - 1) * offset;
     }
 
-    public Integer getOffset() {
+    public Long getOffset() {
         return offset;
     }
 }
