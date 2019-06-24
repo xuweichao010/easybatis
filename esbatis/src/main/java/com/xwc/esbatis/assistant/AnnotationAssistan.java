@@ -7,6 +7,7 @@ import com.xwc.esbatis.meta.*;
 import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.reflection.ParamNameUtil;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
@@ -66,25 +67,25 @@ public class AnnotationAssistan {
         for (Field field : fieldArr) {
 
             Operation annotation = AnnotationUtils.findAnnotation(field, Operation.class);
-            if(annotation == null || annotation.type() == FieldType.GENREAL){
+            if (annotation == null || annotation.type() == FieldType.GENREAL) {
                 table.addDefault(analysisColum(field, entityType));
-            }else if(annotation.type() == FieldType.KEY) {
+            } else if (annotation.type() == FieldType.KEY) {
                 columMate = analysisColum(field, entityType);
                 table.addPrimaryKey(columMate);
                 table.setKeyEnum(columMate.getKeyEnum());
-            }else if(annotation.type() == FieldType.CREATE_ID){
+            } else if (annotation.type() == FieldType.CREATE_ID) {
                 //TODO
-            }else if(annotation.type() == FieldType.CREATE_NAME){
+            } else if (annotation.type() == FieldType.CREATE_NAME) {
                 //TODO
-            }else if(annotation.type() == FieldType.CREATE_NAME){
+            } else if (annotation.type() == FieldType.CREATE_NAME) {
                 //TODO
-            }else if(annotation.type() == FieldType.UPDATE_ID){
+            } else if (annotation.type() == FieldType.UPDATE_ID) {
                 //TODO
-            }else if(annotation.type() == FieldType.UPDATE_NAME){
+            } else if (annotation.type() == FieldType.UPDATE_NAME) {
                 //TODO
-            }else if(annotation.type() == FieldType.UPDATE_TIME){
+            } else if (annotation.type() == FieldType.UPDATE_TIME) {
                 //TODO
-            }else if(annotation.type() == FieldType.LOGLIC){
+            } else if (annotation.type() == FieldType.LOGLIC) {
                 //TODO
                 table.setLogic(analysisColum(field, entityType));
             }
@@ -130,6 +131,10 @@ public class AnnotationAssistan {
                 if (isIgnore(f)) continue;
                 query.addFilter(queryMate(f, index));
                 ++index;
+            }
+            if (RowBounds.class.isAssignableFrom(par)) {
+                query.setStart(new FilterColumMate("limitStart", "limit_start", ConditionEnum.LIMIT_START, 99));
+                query.setOffset(new FilterColumMate("limitOffset", "limit_offset", ConditionEnum.LIMIT_OFFSET, 99));
             }
         }
         return query;

@@ -11,7 +11,7 @@ import java.lang.annotation.*;
  * 功能：
  */
 @Documented
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LimitOffset {
     int index() default 99;
