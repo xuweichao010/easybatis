@@ -51,8 +51,6 @@ import java.util.*;
 public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(GeneratorMapperAnnotationBuilder.class);
-
-
     private final Configuration configuration;
     private final MapperBuilderAssistant assistant;
     private final Class<?> type;
@@ -68,19 +66,6 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
         GENDERATE_ANNOTATION_TYPES.add(GenerateSelectOne.class);
         GENDERATE_ANNOTATION_TYPES.add(GenerateSelectQuery.class);
         GENDERATE_ANNOTATION_TYPES.add(GenerateSelectSql.class);
-    }
-
-
-    public GeneratorMapperAnnotationBuilder(Configuration configuration, Class<?> type) {
-        super(configuration, type);
-        String resource = type.getName().replace('.', '/') + ".java (best guess)";
-        this.assistant = new MapperBuilderAssistant(configuration, resource);
-        this.configuration = configuration;
-        this.type = type;
-        this.entityMate = null;
-        this.annotationAssistan = null;
-        this.sqlAnnotationBuilder = null;
-        configuration.setUseActualParamName(true);
     }
 
     public GeneratorMapperAnnotationBuilder(Configuration configuration, Class<?> type, Class<?> entityClass) {
