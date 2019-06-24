@@ -1,6 +1,7 @@
 package com.xwc.esbatis.anno.table;
 
 import com.xwc.esbatis.anno.enums.KeyEnum;
+import com.xwc.esbatis.meta.FieldType;
 
 import java.lang.annotation.*;
 
@@ -14,6 +15,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Operation(type = FieldType.KEY)
 public @interface PrimaryKey {
     KeyEnum type() default KeyEnum.AUTO;
 

@@ -2,14 +2,8 @@ package com.xwc.esbatis.assistant;
 
 import com.xwc.esbatis.anno.condition.enhance.*;
 import com.xwc.esbatis.anno.enums.ConditionEnum;
-import com.xwc.esbatis.anno.table.Colum;
-import com.xwc.esbatis.anno.table.Ignore;
-import com.xwc.esbatis.anno.table.PrimaryKey;
-import com.xwc.esbatis.anno.table.Table;
-import com.xwc.esbatis.meta.ColumMate;
-import com.xwc.esbatis.meta.EntityMate;
-import com.xwc.esbatis.meta.FilterColumMate;
-import com.xwc.esbatis.meta.QueryMate;
+import com.xwc.esbatis.anno.table.*;
+import com.xwc.esbatis.meta.*;
 import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.reflection.ParamNameUtil;
 import org.apache.ibatis.session.Configuration;
@@ -19,6 +13,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.OpenOption;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,16 +64,29 @@ public class AnnotationAssistan {
         ColumMate columMate;
         Field[] fieldArr = entityType.getDeclaredFields();
         for (Field field : fieldArr) {
-            columMate = analysisColum(field, entityType);
-            if (columMate == null || columMate.isIgnore()) {
-                continue;
-            } else if (columMate.getKeyEnum() != null) {
+            Operation annotation = AnnotationUtils.findAnnotation(field.getType(), Operation.class);
+            if(annotation == null || annotation.type() == FieldType.GENREAL){
+                table.addDefault(analysisColum(field, entityType));
+            }else if(annotation.type() == FieldType.KEY) {
+                columMate = analysisColum(field, entityType);
                 table.addPrimaryKey(columMate);
                 table.setKeyEnum(columMate.getKeyEnum());
-            } else {
-                table.addDefault(columMate);
+            }else if(annotation.type() == FieldType.CREATE_ID){
+                //TODO
+            }else if(annotation.type() == FieldType.CREATE_NAME){
+                //TODO
+            }else if(annotation.type() == FieldType.CREATE_NAME){
+                //TODO
+            }else if(annotation.type() == FieldType.UPDATE_ID){
+                //TODO
+            }else if(annotation.type() == FieldType.UPDATE_NAME){
+                //TODO
+            }else if(annotation.type() == FieldType.UPDATE_TIME){
+                //TODO
+            }else if(annotation.type() == FieldType.LOGLIC){
+                //TODO
+                table.setLogic(analysisColum(field, entityType));
             }
-
         }
         return table.validate();
     }
@@ -100,6 +108,7 @@ public class AnnotationAssistan {
         if (colum != null) mapper.setColunm(colum.colum());
         return mapper;
     }
+//
 
 
     /**

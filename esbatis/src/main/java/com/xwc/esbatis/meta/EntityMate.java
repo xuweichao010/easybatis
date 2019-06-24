@@ -20,6 +20,20 @@ public class EntityMate {
     private List<ColumMate> ignoreColum = new ArrayList<>(3);
     private String tableName;
     private KeyEnum keyEnum;
+    private ColumMate logic;
+
+
+    public ColumMate getLogic() {
+        return logic;
+    }
+
+    public boolean isLogic() {
+        return logic != null;
+    }
+
+    public void setLogic(ColumMate logic) {
+        this.logic = logic;
+    }
 
     public KeyEnum getKeyEnum() {
         return keyEnum;

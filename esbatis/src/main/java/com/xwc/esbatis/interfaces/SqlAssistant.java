@@ -31,6 +31,16 @@ public interface SqlAssistant {
     StringBuilder builderColum(List<ColumMate> list, String cloums);
 
     /**
+     * 构建逻辑设置
+     */
+    StringBuilder builderSetLogic(ColumMate columMate,boolean isJoin);
+
+    /**
+     * 构建逻辑过滤
+     */
+    StringBuilder builderQueryLogic(ColumMate columMate,boolean isJoin);
+
+    /**
      * 构建一个修改属性片段
      */
     StringBuilder builderSet(List<ColumMate> set);

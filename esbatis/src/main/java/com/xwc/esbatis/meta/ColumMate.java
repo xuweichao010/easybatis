@@ -14,10 +14,30 @@ public class ColumMate {
     private String colunm;
     private KeyEnum keyEnum;
     private boolean isIgnore = false;
+    private int valid;
+    private int invalid;
+
+
 
     public ColumMate(String field, String colunm) {
         this.field = field;
         this.colunm = colunm;
+    }
+
+    public int getValid() {
+        return valid;
+    }
+
+    public int getInvalid() {
+        return invalid;
+    }
+
+    public void setValid(int valid) {
+        this.valid = valid;
+    }
+
+    public void setInvalid(int invalid) {
+        this.invalid = invalid;
     }
 
     public ColumMate() {

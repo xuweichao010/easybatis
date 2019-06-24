@@ -50,6 +50,28 @@ public class MySQLAssistant implements SqlAssistant {
         return sb;
     }
 
+    @Override
+    public StringBuilder builderSetLogic(ColumMate columMate,boolean isJoin) {
+        StringBuilder sb = new StringBuilder();
+        if (columMate != null) {
+            if(isJoin){
+               sb.append(" , ");
+            }
+            sb.append(columMate.getColunm()).append(" = ").append(columMate.getInvalid());
+        }
+        return sb;
+    }
+
+    @Override
+    public StringBuilder builderQueryLogic(ColumMate columMate,boolean isJoin) {
+        StringBuilder sb = new StringBuilder();
+        if (columMate != null) {
+            if(isJoin) sb.append(" AND ");
+            sb.append(columMate.getColunm()).append(" = ").append(columMate.getValid());
+        }
+        return sb;
+    }
+
     /**
      * 构建一个修改属性片段
      */
