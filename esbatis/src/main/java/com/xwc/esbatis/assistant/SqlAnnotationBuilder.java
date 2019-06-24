@@ -35,6 +35,7 @@ public class SqlAnnotationBuilder {
         sb.append(sqlAssistant.builderColum(mate.getSelectColum(), annoColums))
                 .append(" FROM ").append(mate.getTableName())
                 .append(sqlAssistant.builderQuery(filterList))
+                .append(sqlAssistant.builderQueryLogic(mate.getLogic(), true))
                 .append(" </script>");
         return sb.toString();
     }
@@ -43,7 +44,7 @@ public class SqlAnnotationBuilder {
     public String insertBatch(EntityMate mate) {
         StringBuilder sb = new StringBuilder(" <script> INSERT INTO ")
                 .append(mate.getTableName())
-                .append(sqlAssistant.builderInsertBatch(mate.getInsertColum()))
+                .append(sqlAssistant.builderInsertBatch(mate.getInsertColum(), mate.getLogic()))
                 .append(" </script>");
         return sb.toString();
     }
@@ -51,7 +52,7 @@ public class SqlAnnotationBuilder {
     public String insert(EntityMate mate) {
         StringBuilder sb = new StringBuilder(" <script> INSERT INTO ")
                 .append(mate.getTableName())
-                .append(sqlAssistant.builderInsert(mate.getInsertColum()))
+                .append(sqlAssistant.builderInsert(mate.getInsertColum(), mate.getLogic()))
                 .append(" </script>");
         return sb.toString();
     }
@@ -64,7 +65,7 @@ public class SqlAnnotationBuilder {
         sb.append(" <script> UPDATE ").append(mate.getTableName()).append(" SET ")
                 .append(sqlAssistant.builderSet(mate.getUpdateColum()))
                 .append(sqlAssistant.builderQuery(filterList))
-                .append(sqlAssistant.builderQueryLogic(mate.getLogic(),true))
+                .append(sqlAssistant.builderQueryLogic(mate.getLogic(), true))
                 .append(" </script>");
         return sb.toString();
     }
@@ -99,15 +100,14 @@ public class SqlAnnotationBuilder {
         StringBuilder sb = new StringBuilder();
         if (mate.isLogic()) {
             sb.append("<script> UPDATE ").append(mate.getTableName()).append(" SET ")
-                    .append(mate.getLogic().getColunm()).append(" = ")
-                    .append(mate.getLogic().getInvalid())
+                    .append(sqlAssistant.builderSetLogic(mate.getLogic(), false))
                     .append(sqlAssistant.builderQuery(filterList))
                     .append(" </script>");
         } else {
-            sb.append("<script> DELETE FROM ").append(mate.getTableName()).append(sqlAssistant.builderQuery(filterList))
+            sb.append("<script> DELETE FROM ").append(mate.getTableName())
+                    .append(sqlAssistant.builderQuery(filterList))
                     .append(" </script>");
         }
-
         return sb.toString();
     }
 }

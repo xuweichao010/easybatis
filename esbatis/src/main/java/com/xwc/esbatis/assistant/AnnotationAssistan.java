@@ -64,7 +64,8 @@ public class AnnotationAssistan {
         ColumMate columMate;
         Field[] fieldArr = entityType.getDeclaredFields();
         for (Field field : fieldArr) {
-            Operation annotation = AnnotationUtils.findAnnotation(field.getType(), Operation.class);
+
+            Operation annotation = AnnotationUtils.findAnnotation(field, Operation.class);
             if(annotation == null || annotation.type() == FieldType.GENREAL){
                 table.addDefault(analysisColum(field, entityType));
             }else if(annotation.type() == FieldType.KEY) {

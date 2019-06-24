@@ -526,8 +526,12 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
             case BASE_UPDATE:
                 type = Update.class;
                 break;
-            case BASE_DELETE:
-                type = Delete.class;
+            case BASE_DELETE:  //当为逻辑删除时改变自定义注解delete操作为update操作
+                if (entityMate.isLogic()) {
+                    type = Update.class;
+                } else {
+                    type = Delete.class;
+                }
                 break;
             default:
                 throw new BindingException("Not Find SQL command");

@@ -1,5 +1,6 @@
 package com.xwc.entity;
 
+import com.xwc.esbatis.anno.table.Loglic;
 import com.xwc.esbatis.anno.table.PrimaryKey;
 import com.xwc.esbatis.anno.table.Table;
 
@@ -41,6 +42,17 @@ public class User implements Serializable {
      */
     private String orgCode;
 
+    @Loglic(valid = 0, invalid = 1)
+    private Integer logic;
+
+
+    public Integer getLogic() {
+        return logic;
+    }
+
+    public void setLogic(Integer logic) {
+        this.logic = logic;
+    }
 
     /**
      * 用户ID

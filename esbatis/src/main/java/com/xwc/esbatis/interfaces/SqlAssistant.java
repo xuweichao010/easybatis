@@ -33,12 +33,12 @@ public interface SqlAssistant {
     /**
      * 构建逻辑设置
      */
-    StringBuilder builderSetLogic(ColumMate columMate,boolean isJoin);
+    StringBuilder builderSetLogic(ColumMate columMate, boolean isJoin);
 
     /**
      * 构建逻辑过滤
      */
-    StringBuilder builderQueryLogic(ColumMate columMate,boolean isJoin);
+    StringBuilder builderQueryLogic(ColumMate columMate, boolean isJoin);
 
     /**
      * 构建一个修改属性片段
@@ -48,12 +48,12 @@ public interface SqlAssistant {
     /**
      * 构建插入数据片段
      */
-    StringBuilder builderInsert(List<ColumMate> list);
+    StringBuilder builderInsert(List<ColumMate> list, ColumMate logic);
 
     /**
      * 构建批量插入数据片段
      */
-    StringBuilder builderInsertBatch(List<ColumMate> list);
+    StringBuilder builderInsertBatch(List<ColumMate> list, ColumMate logic);
 
     /**
      * 构建一个动态查询条件片段

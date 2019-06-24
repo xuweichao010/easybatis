@@ -87,6 +87,7 @@ public class EntityMate {
      * @param colum
      */
     public void addDefault(ColumMate colum) {
+        if (colum == null) return;
         defaultColum.add(colum);
     }
 

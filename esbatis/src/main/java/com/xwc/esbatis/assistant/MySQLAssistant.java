@@ -85,13 +85,17 @@ public class MySQLAssistant implements SqlAssistant {
      * 构建插入数据片段
      */
     @Override
-    public StringBuilder builderInsert(List<ColumMate> list) {
+    public StringBuilder builderInsert(List<ColumMate> list,ColumMate logic) {
         StringBuilder colunm = new StringBuilder();
         StringBuilder field = new StringBuilder();
         list.forEach(item -> {
             colunm.append(", ").append(item.getColunm());
             field.append(", ").append(item.getBatisField());
         });
+        if(logic != null){
+            colunm.append(", ").append(logic.getColunm());
+            field.append(", ").append(logic.getValid());
+        }
         StringBuilder sb = new StringBuilder();
         sb.append(" ( ").append(colunm.delete(0, 1))
                 .append(" ) VALUES ( ")
@@ -100,13 +104,17 @@ public class MySQLAssistant implements SqlAssistant {
     }
 
     @Override
-    public StringBuilder builderInsertBatch(List<ColumMate> list) {
+    public StringBuilder builderInsertBatch(List<ColumMate> list,ColumMate logic) {
         StringBuilder colunm = new StringBuilder();
         StringBuilder field = new StringBuilder();
         list.forEach(item -> {
             colunm.append(", ").append(item.getColunm());
             field.append(", ").append(item.getBatisField("item"));
         });
+        if(logic != null){
+            colunm.append(", ").append(logic.getColunm());
+            field.append(", ").append(logic.getValid());
+        }
         StringBuilder sb = new StringBuilder();
         sb.append(" ( ").append(colunm.substring(1))
                 .append(") VALUES <foreach collection='list' item='item' index='index' separator=',' >")
