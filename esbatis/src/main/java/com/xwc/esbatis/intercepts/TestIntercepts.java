@@ -1,12 +1,13 @@
 package com.xwc.esbatis.intercepts;
 
 import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
-import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
 
+import java.sql.Statement;
 import java.util.Properties;
 
 /**
@@ -16,19 +17,26 @@ import java.util.Properties;
  * 功能：
  */
 @Intercepts({@Signature(
-        type = Executor.class,
-        method = "*",
-        args = {MappedStatement.class, Object.class})})
+        type = StatementHandler.class,
+        method = "parameterize",
+        args = {Statement.class})})
 public class TestIntercepts implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        return invocation.proceed();
+        //
+        System.out.println(" TestIntercepts -> intercept "+ invocation.getMethod().getName());
+        MetaObject metaObject = SystemMetaObject.forObject(invocation.getTarget());
+        //metaObject.getValue()
+        Object proceed = invocation.proceed();
+        return proceed;
     }
 
     @Override
     public Object plugin(Object target) {
-        return target;
+        System.out.println(" TestIntercepts -> plugin "+target);
+        Object wrap = Plugin.wrap(target, this);
+        return wrap;
     }
 
     @Override

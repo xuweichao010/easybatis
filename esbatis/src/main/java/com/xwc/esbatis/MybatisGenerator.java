@@ -55,6 +55,5 @@ public class MybatisGenerator implements ApplicationContextAware, ApplicationLis
                 parser.parse();
             }
         }
-
     }
 }
