@@ -3,6 +3,7 @@ package com.xwc.esbatis.assistant;
 import com.xwc.esbatis.anno.condition.enhance.*;
 import com.xwc.esbatis.anno.enums.ConditionEnum;
 import com.xwc.esbatis.anno.table.*;
+import com.xwc.esbatis.interfaces.Page;
 import com.xwc.esbatis.meta.*;
 import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.reflection.ParamNameUtil;
@@ -15,6 +16,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.OpenOption;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,9 +65,8 @@ public class AnnotationAssistan {
         EntityMate table = new EntityMate();
         table.setTableName(tableAnno.value());
         ColumMate columMate;
-        Field[] fieldArr = entityType.getDeclaredFields();
+        List<Field> fieldArr =  entityField(entityType);
         for (Field field : fieldArr) {
-
             Operation annotation = AnnotationUtils.findAnnotation(field, Operation.class);
             if (annotation == null || annotation.type() == FieldType.GENREAL) {
                 table.addDefault(analysisColum(field, entityType));
@@ -92,6 +93,19 @@ public class AnnotationAssistan {
         }
         return table.validate();
     }
+    private  List<Field> entityField(Class<?> entityType){
+        Class<?> superclass = entityType.getSuperclass();
+        ArrayList<Field> list = new ArrayList<>();
+        Field[] fields = entityType.getDeclaredFields();
+        for (Field field : fields) {
+            list.add(field);
+        }
+        if(superclass.equals(Object.class)){
+            return list;
+        }
+        list.addAll(entityField(superclass));
+        return list;
+    }
 
 
     private ColumMate analysisColum(Field field, Class<?> clazz) {
@@ -108,6 +122,11 @@ public class AnnotationAssistan {
         if (primaryKey != null) mapper.setKeyEnum(primaryKey.type());
         Colum colum = AnnotationUtils.findAnnotation(field, Colum.class);
         if (colum != null) mapper.setColunm(colum.colum());
+        Loglic loglic = AnnotationUtils.findAnnotation(field, Loglic.class);
+        if(loglic != null){
+            mapper.setValid(loglic.valid());
+            mapper.setInvalid(loglic.invalid());
+        }
         return mapper;
     }
 //
@@ -132,7 +151,7 @@ public class AnnotationAssistan {
                 query.addFilter(queryMate(f, index));
                 ++index;
             }
-            if (RowBounds.class.isAssignableFrom(par)) {
+            if (Page.class.isAssignableFrom(par)) {
                 query.setStart(new FilterColumMate("limitStart", "limit_start", ConditionEnum.LIMIT_START, 99));
                 query.setOffset(new FilterColumMate("limitOffset", "limit_offset", ConditionEnum.LIMIT_OFFSET, 99));
             }

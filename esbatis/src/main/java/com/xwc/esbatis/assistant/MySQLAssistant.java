@@ -51,11 +51,11 @@ public class MySQLAssistant implements SqlAssistant {
     }
 
     @Override
-    public StringBuilder builderSetLogic(ColumMate columMate,boolean isJoin) {
+    public StringBuilder builderSetLogic(ColumMate columMate, boolean isJoin) {
         StringBuilder sb = new StringBuilder();
         if (columMate != null) {
-            if(isJoin){
-               sb.append(" , ");
+            if (isJoin) {
+                sb.append(" , ");
             }
             sb.append(columMate.getColunm()).append(" = ").append(columMate.getInvalid());
         }
@@ -63,10 +63,10 @@ public class MySQLAssistant implements SqlAssistant {
     }
 
     @Override
-    public StringBuilder builderQueryLogic(ColumMate columMate,boolean isJoin) {
+    public StringBuilder builderQueryLogic(ColumMate columMate, boolean isJoin) {
         StringBuilder sb = new StringBuilder();
         if (columMate != null) {
-            if(isJoin) sb.append(" AND ");
+            if (isJoin) sb.append(" AND ");
             sb.append(columMate.getColunm()).append(" = ").append(columMate.getValid());
         }
         return sb;
@@ -85,14 +85,14 @@ public class MySQLAssistant implements SqlAssistant {
      * 构建插入数据片段
      */
     @Override
-    public StringBuilder builderInsert(List<ColumMate> list,ColumMate logic) {
+    public StringBuilder builderInsert(List<ColumMate> list, ColumMate logic) {
         StringBuilder colunm = new StringBuilder();
         StringBuilder field = new StringBuilder();
         list.forEach(item -> {
             colunm.append(", ").append(item.getColunm());
             field.append(", ").append(item.getBatisField());
         });
-        if(logic != null){
+        if (logic != null) {
             colunm.append(", ").append(logic.getColunm());
             field.append(", ").append(logic.getValid());
         }
@@ -104,14 +104,14 @@ public class MySQLAssistant implements SqlAssistant {
     }
 
     @Override
-    public StringBuilder builderInsertBatch(List<ColumMate> list,ColumMate logic) {
+    public StringBuilder builderInsertBatch(List<ColumMate> list, ColumMate logic) {
         StringBuilder colunm = new StringBuilder();
         StringBuilder field = new StringBuilder();
         list.forEach(item -> {
             colunm.append(", ").append(item.getColunm());
             field.append(", ").append(item.getBatisField("item"));
         });
-        if(logic != null){
+        if (logic != null) {
             colunm.append(", ").append(logic.getColunm());
             field.append(", ").append(logic.getValid());
         }
@@ -127,7 +127,7 @@ public class MySQLAssistant implements SqlAssistant {
      * 构建一个动态查询条件片段
      */
     @Override
-    public StringBuilder builderDynamicQuery(List<FilterColumMate> list) {
+    public StringBuilder builderDynamicQuery(List<FilterColumMate> list, ColumMate logic) {
         StringBuilder sb = new StringBuilder();
         sb.append(" <where> ");
         list.forEach(item -> {
@@ -159,12 +159,13 @@ public class MySQLAssistant implements SqlAssistant {
                     throw new BindingException("生成sql语句约束错误");
             }
         });
+        sb.append(builderQueryLogic(logic, true));
         sb.append(" </where>");
         return sb;
     }
 
     @Override
-    public StringBuilder builderQuery(List<FilterColumMate> list) {
+    public StringBuilder builderQuery(List<FilterColumMate> list, ColumMate logic) {
         StringBuilder sb = new StringBuilder();
         if (list.isEmpty()) return sb;
         list.forEach(item -> {
@@ -191,6 +192,7 @@ public class MySQLAssistant implements SqlAssistant {
                     throw new BindingException("生成sql语句约束错误");
             }
         });
+        sb.append(builderQueryLogic(logic, true));
         sb.delete(0, 4).insert(0, " WHERE ");
         return sb;
     }

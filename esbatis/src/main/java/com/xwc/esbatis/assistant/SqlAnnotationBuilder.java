@@ -34,8 +34,7 @@ public class SqlAnnotationBuilder {
         StringBuilder sb = new StringBuilder("<script> SELECT ");
         sb.append(sqlAssistant.builderColum(mate.getSelectColum(), annoColums))
                 .append(" FROM ").append(mate.getTableName())
-                .append(sqlAssistant.builderQuery(filterList))
-                .append(sqlAssistant.builderQueryLogic(mate.getLogic(), true))
+                .append(sqlAssistant.builderQuery(filterList, mate.getLogic()))
                 .append(" </script>");
         return sb.toString();
     }
@@ -64,18 +63,17 @@ public class SqlAnnotationBuilder {
         StringBuilder sb = new StringBuilder();
         sb.append(" <script> UPDATE ").append(mate.getTableName()).append(" SET ")
                 .append(sqlAssistant.builderSet(mate.getUpdateColum()))
-                .append(sqlAssistant.builderQuery(filterList))
-                .append(sqlAssistant.builderQueryLogic(mate.getLogic(), true))
+                .append(sqlAssistant.builderQuery(filterList, mate.getLogic()))
                 .append(" </script>");
         return sb.toString();
     }
 
-    public String update(QueryMate queryMate, String tableName) {
+    public String update(QueryMate queryMate, EntityMate entityMate) {
         List<ColumMate> setField = queryMate.getSet().stream().map(item -> (ColumMate) item).collect(Collectors.toList());
         StringBuilder sb = new StringBuilder();
-        sb.append("<script> UPDATE ").append(tableName).append(" SET ")
+        sb.append("<script> UPDATE ").append(entityMate.getTableName()).append(" SET ")
                 .append(sqlAssistant.builderSet(setField))
-                .append(sqlAssistant.builderQuery(queryMate.getQueryFilter())).append(" </script>");
+                .append(sqlAssistant.builderQuery(queryMate.getQueryFilter(), entityMate.getLogic())).append(" </script>");
         return sb.toString();
     }
 
@@ -84,11 +82,11 @@ public class SqlAnnotationBuilder {
         StringBuilder sb = new StringBuilder("<script> SELECT ");
         sb.append(sqlAssistant.builderCountOrDistinct(sqlAssistant.builderColum(mate.getSelectColum(), annoColums), count, distinct))
                 .append(" FROM ").append(mate.getTableName());
-        sb.append(isDynamic ? sqlAssistant.builderDynamicQuery(query.getQueryFilter()) : sqlAssistant.builderQuery(query.getQueryFilter()));
+        sb.append(isDynamic ? sqlAssistant.builderDynamicQuery(query.getQueryFilter(), mate.getLogic()) : sqlAssistant.builderQuery(query.getQueryFilter(), mate.getLogic()));
         sb.append(sqlAssistant.builderGroupBy(query.getGroup()))
-                .append(sqlAssistant.builderOrderBy(query.getOrder()))
-                .append(sqlAssistant.builderPage(query.getStart(), query.getOffset()))
-                .append(" </script>");
+                .append(sqlAssistant.builderOrderBy(query.getOrder()));
+        if (count == null) sb.append(sqlAssistant.builderPage(query.getStart(), query.getOffset()));
+        sb.append(" </script>");
         return sb.toString();
     }
 
@@ -101,11 +99,11 @@ public class SqlAnnotationBuilder {
         if (mate.isLogic()) {
             sb.append("<script> UPDATE ").append(mate.getTableName()).append(" SET ")
                     .append(sqlAssistant.builderSetLogic(mate.getLogic(), false))
-                    .append(sqlAssistant.builderQuery(filterList))
+                    .append(sqlAssistant.builderQuery(filterList, mate.getLogic()))
                     .append(" </script>");
         } else {
             sb.append("<script> DELETE FROM ").append(mate.getTableName())
-                    .append(sqlAssistant.builderQuery(filterList))
+                    .append(sqlAssistant.builderQuery(filterList, mate.getLogic()))
                     .append(" </script>");
         }
         return sb.toString();

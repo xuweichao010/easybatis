@@ -443,7 +443,7 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
                     break;
                 case BASE_PARAM_UPDATE:
                     queryMate = annotationAssistan.parseQueryMethod(method);
-                    sql = new String[]{sqlAnnotationBuilder.update(queryMate, entityMate.getTableName())};
+                    sql = new String[]{sqlAnnotationBuilder.update(queryMate, entityMate)};
                     break;
                 case BASE_DELETE:
                     sql = new String[]{sqlAnnotationBuilder.delete(entityMate)};
