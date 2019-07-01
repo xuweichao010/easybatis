@@ -3,9 +3,13 @@ package com.xwc.esbatis.meta;
 
 import com.xwc.esbatis.anno.enums.KeyEnum;
 import org.apache.ibatis.binding.BindingException;
+import org.apache.ibatis.mapping.SqlCommandType;
 
+import javax.activation.FileTypeMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 创建人：徐卫超
@@ -21,7 +25,18 @@ public class EntityMate {
     private String tableName;
     private KeyEnum keyEnum;
     private ColumMate logic;
+    private HashMap<FieldType, ColumMate> auditMap = new HashMap<>();
 
+
+    public void addAudit(FieldType fieldType, ColumMate columMate) {
+        if (columMate == null) return;
+        auditMap.put(fieldType, columMate);
+    }
+
+
+    public Map<FieldType, ColumMate> getAudit() {
+        return auditMap;
+    }
 
     public ColumMate getLogic() {
         return logic;
@@ -32,6 +47,7 @@ public class EntityMate {
     }
 
     public void setLogic(ColumMate logic) {
+        if (logic == null) return;
         this.logic = logic;
     }
 
@@ -107,6 +123,7 @@ public class EntityMate {
      * @param primaryKey
      */
     public void addPrimaryKey(ColumMate primaryKey) {
+        if (primaryKey == null) return;
         this.primaryKey = primaryKey;
     }
 

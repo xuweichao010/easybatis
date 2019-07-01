@@ -11,9 +11,9 @@ import java.lang.annotation.*;
  * 功能：
  */
 @Documented
-@Target({ElementType.FIELD})     //只能使用在：类、接口、注解、枚举
-@Retention(RetentionPolicy.RUNTIME)     //在运行时有效
-@Operation(type = FieldType.GENREAL)
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Operation(FieldType.GENREAL)
 public @interface Colum {
     String colum() default "";
 }

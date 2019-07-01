@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Operation(type = FieldType.KEY)
+@Operation(FieldType.KEY)
 public @interface PrimaryKey {
     KeyEnum type() default KeyEnum.AUTO;
 

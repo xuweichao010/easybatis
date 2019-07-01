@@ -3,6 +3,7 @@ package com.xwc.esbatis;
 import com.xwc.esbatis.assistant.GeneratorMapperAnnotationBuilder;
 import com.xwc.esbatis.assistant.Reflection;
 import com.xwc.esbatis.intercepts.TestIntercepts;
+import com.xwc.esbatis.meta.EntityMate;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -27,6 +29,7 @@ import java.util.List;
 public class MybatisGenerator implements ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MybatisGenerator.class);
+    private final HashMap<String,EntityMate> entityMateHashMap = new HashMap<>();
 
     @Autowired(required = false)
     private List<MapperFactoryBean> factoryBeans = new ArrayList<>();
@@ -48,6 +51,7 @@ public class MybatisGenerator implements ApplicationContextAware, ApplicationLis
             if (configuration == null) {
                 configuration = bean.getSqlSession().getConfiguration();
                 configuration.setMapUnderscoreToCamelCase(true);
+                configuration.setUseActualParamName(true);
                 configuration.addInterceptor(new TestIntercepts());
             }
             if (ec != null) {

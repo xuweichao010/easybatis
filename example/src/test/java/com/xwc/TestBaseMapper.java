@@ -33,6 +33,7 @@ public class TestBaseMapper {
     public void testInsert() {
         //测试自增类型的插入
         User user = new User();
+        user.setAccount("2312312");
         user.setOrgCode("201JV7");
         user.setOrgName("总部");
         user.setAccount("13147197616");
@@ -55,9 +56,14 @@ public class TestBaseMapper {
         //我们来更新一下用户的属性，为了简单我们把用户的属性全部设置为null
         User user = new User();
         user.setId(22L);
+        user.setAccount("1111");
         userMapper.update(user);
         User user1 = userMapper.selectKey(22L);
         System.out.println(JSONObject.toJSONString(user1));
+    }
+
+    @Test
+    public void testUpdateEnhance(){
     }
 
     //删除测试

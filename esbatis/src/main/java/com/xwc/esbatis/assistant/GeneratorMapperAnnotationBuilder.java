@@ -4,6 +4,7 @@ import com.xwc.esbatis.anno.*;
 import com.xwc.esbatis.anno.enums.KeyEnum;
 import com.xwc.esbatis.anno.enums.SqlOperationType;
 import com.xwc.esbatis.meta.EntityMate;
+import com.xwc.esbatis.meta.MethodMate;
 import com.xwc.esbatis.meta.QueryMate;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.annotations.ResultMap;
@@ -58,6 +59,7 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
     private final AnnotationAssistan annotationAssistan;
     private final SqlAnnotationBuilder sqlAnnotationBuilder;
     private static Set<Class<? extends Annotation>> GENDERATE_ANNOTATION_TYPES = new HashSet<>();
+    public static Map<String, MethodMate> methods = new HashMap<>();
 
     static {
         GENDERATE_ANNOTATION_TYPES.add(GenerateDelete.class);
@@ -416,6 +418,7 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
     //TODO 构建sql
     private SqlSource getSqlSourceFromAnnotations(Method method, Class<?> parameterType, LanguageDriver languageDriver) {
         try {
+            MethodMate md = new MethodMate();
             Annotation annotation = getSqlProviderAnnotationType(method);
             if (annotation == null) return null;
             Object value = annotation.getClass().getMethod("value").invoke(annotation);
@@ -427,6 +430,9 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
             Count count;
             Distinct distinct;
             QueryMate queryMate;
+            md.setOperationType((SqlOperationType) value);
+            md.setEntityMate(entityMate);
+            methods.put(type.getName() + "." + method.getName(), md);
             switch ((SqlOperationType) value) {
                 case BASE_SELECT_ONE:
                     sql = new String[]{sqlAnnotationBuilder.selectOne(entityMate, colums)};
@@ -482,6 +488,10 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
             sql.append(" ");
         }
         return languageDriver.createSqlSource(configuration, sql.toString().trim(), parameterTypeClass);
+    }
+
+    public static MethodMate get(String methodPath) {
+        return methods.get(methodPath);
     }
 
 

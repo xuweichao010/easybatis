@@ -2,6 +2,8 @@ package com.xwc.esbatis.meta;
 
 import com.xwc.esbatis.anno.enums.KeyEnum;
 
+import java.lang.reflect.Method;
+
 /**
  * 创建人：徐卫超
  * 创建时间：2019/4/13  17:16
@@ -9,6 +11,7 @@ import com.xwc.esbatis.anno.enums.KeyEnum;
  * 功能：属性
  */
 public class ColumMate {
+
     public static final String GA = "`";
     private String field;
     private String colunm;
@@ -16,12 +19,29 @@ public class ColumMate {
     private boolean isIgnore = false;
     private int valid;
     private int invalid;
-
+    private Method getter;
+    private Method setter;
 
 
     public ColumMate(String field, String colunm) {
         this.field = field;
         this.colunm = colunm;
+    }
+
+    public Method getGetter() {
+        return getter;
+    }
+
+    public void setGetter(Method getter) {
+        this.getter = getter;
+    }
+
+    public Method getSetter() {
+        return setter;
+    }
+
+    public void setSetter(Method setter) {
+        this.setter = setter;
     }
 
     public int getValid() {
@@ -68,9 +88,9 @@ public class ColumMate {
     }
 
     public String getColunm() {
-        if(colunm.startsWith(GA)){
+        if (colunm.startsWith(GA)) {
             return colunm;
-        }else {
+        } else {
             return GA + colunm + GA;
         }
     }

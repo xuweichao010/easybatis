@@ -65,42 +65,46 @@ public class AnnotationAssistan {
         EntityMate table = new EntityMate();
         table.setTableName(tableAnno.value());
         ColumMate columMate;
-        List<Field> fieldArr =  entityField(entityType);
+        List<Field> fieldArr = entityField(entityType);
         for (Field field : fieldArr) {
             Operation annotation = AnnotationUtils.findAnnotation(field, Operation.class);
-            if (annotation == null || annotation.type() == FieldType.GENREAL) {
-                table.addDefault(analysisColum(field, entityType));
-            } else if (annotation.type() == FieldType.KEY) {
-                columMate = analysisColum(field, entityType);
-                table.addPrimaryKey(columMate);
-                table.setKeyEnum(columMate.getKeyEnum());
-            } else if (annotation.type() == FieldType.CREATE_ID) {
-                //TODO
-            } else if (annotation.type() == FieldType.CREATE_NAME) {
-                //TODO
-            } else if (annotation.type() == FieldType.CREATE_NAME) {
-                //TODO
-            } else if (annotation.type() == FieldType.UPDATE_ID) {
-                //TODO
-            } else if (annotation.type() == FieldType.UPDATE_NAME) {
-                //TODO
-            } else if (annotation.type() == FieldType.UPDATE_TIME) {
-                //TODO
-            } else if (annotation.type() == FieldType.LOGLIC) {
-                //TODO
-                table.setLogic(analysisColum(field, entityType));
+            FieldType type = (annotation == null) ? FieldType.GENREAL : annotation.value();
+            switch (type) {
+                case KEY:
+                    columMate = analysisColum(field, entityType);
+                    table.addPrimaryKey(columMate);
+                    table.setKeyEnum(columMate.getKeyEnum());
+                    break;
+                case GENREAL:
+                    table.addDefault(analysisColum(field, entityType));
+                    break;
+                case IGNORE:
+                    break;
+                case LOGLIC:
+                    table.setLogic(analysisColum(field, entityType));
+                    break;
+                case CREATE_ID:
+                case UPDATE_ID:
+                case CREATE_NAME:
+                case CREATE_TIME:
+                case UPDATE_NAME:
+                case UPDATE_TIME:
+                    table.addAudit(annotation.value(), analysisColum(field, entityType));
+                    break;
             }
+
         }
         return table.validate();
     }
-    private  List<Field> entityField(Class<?> entityType){
+
+    private List<Field> entityField(Class<?> entityType) {
         Class<?> superclass = entityType.getSuperclass();
         ArrayList<Field> list = new ArrayList<>();
         Field[] fields = entityType.getDeclaredFields();
         for (Field field : fields) {
             list.add(field);
         }
-        if(superclass.equals(Object.class)){
+        if (superclass.equals(Object.class)) {
             return list;
         }
         list.addAll(entityField(superclass));
@@ -111,8 +115,10 @@ public class AnnotationAssistan {
     private ColumMate analysisColum(Field field, Class<?> clazz) {
         ColumMate mapper = new ColumMate(field.getName(), underscoreName(field.getName()));
         try {
-            Reflection.setter(field, clazz);
-            Reflection.getter(field, clazz);
+            Method setter = Reflection.setter(field, clazz);
+            Method getter = Reflection.getter(field, clazz);
+            mapper.setSetter(setter);
+            mapper.setGetter(getter);
         } catch (NoSuchMethodException e) {
             return null;
         }
@@ -123,7 +129,7 @@ public class AnnotationAssistan {
         Colum colum = AnnotationUtils.findAnnotation(field, Colum.class);
         if (colum != null) mapper.setColunm(colum.colum());
         Loglic loglic = AnnotationUtils.findAnnotation(field, Loglic.class);
-        if(loglic != null){
+        if (loglic != null) {
             mapper.setValid(loglic.valid());
             mapper.setInvalid(loglic.invalid());
         }
@@ -166,6 +172,7 @@ public class AnnotationAssistan {
      * @return
      */
     public QueryMate parseQueryMethod(Method method) {
+
         QueryMate query = new QueryMate();
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         int paramCount = parameterAnnotations.length;

@@ -3,6 +3,7 @@ package com.xwc.entity;
 import com.xwc.esbatis.anno.enums.KeyEnum;
 import com.xwc.esbatis.anno.table.PrimaryKey;
 import com.xwc.esbatis.anno.table.Table;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 
@@ -13,8 +14,7 @@ import java.io.Serializable;
  * 功能：
  */
 @Table("t_org")
-@SuppressWarnings("unused")
-public class Org implements Serializable {
+public class Org extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -1288582698027505711L;
     /**
@@ -35,80 +35,110 @@ public class Org implements Serializable {
      */
     private String parentName;
     /**
+     * 负责人
+     */
+    private String linkman;
+    /**
+     * 状态
+     */
+    private Integer status;
+    /**
+     * 联系方式
+     */
+    private String telephone;
+    /**
+     * 位置
+     */
+    private String address;
+    /**
      * 子机构的数量;用于生成机构代码
      */
-    private Integer sons = 0;
-
+    private Integer sons;
 
     /**
-     * 机构编码;代码生成
+     * 同步Id
      */
+    private String syncId;
+
+
+
     public String getCode() {
-        return this.code;
+        return code;
     }
 
-    /**
-     * 机构编码;代码生成
-     */
     public void setCode(String code) {
         this.code = code;
     }
 
-    /**
-     * 机构名称
-     */
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    /**
-     * 机构名称
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * 父机构编码;顶级机构父机构代码为空
-     */
     public String getParentCode() {
-        return this.parentCode;
+        return parentCode;
     }
 
-    /**
-     * 父机构编码;顶级机构父机构代码为空
-     */
     public void setParentCode(String parentCode) {
         this.parentCode = parentCode;
     }
 
-    /**
-     * 父机构名称
-     */
     public String getParentName() {
-        return this.parentName;
+        return parentName;
     }
 
-    /**
-     * 父机构名称
-     */
     public void setParentName(String parentName) {
         this.parentName = parentName;
     }
 
-    /**
-     * 子机构的数量;用于生成机构代码
-     */
-    public Integer getSons() {
-        return this.sons;
+    public String getLinkman() {
+        return linkman;
     }
 
-    /**
-     * 子机构的数量;用于生成机构代码
-     */
+    public void setLinkman(String linkman) {
+        this.linkman = linkman;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Integer getSons() {
+        return sons;
+    }
+
     public void setSons(Integer sons) {
         this.sons = sons;
     }
 
+    public String getSyncId() {
+        return syncId;
+    }
 
+    public void setSyncId(String syncId) {
+        this.syncId = syncId;
+    }
 }

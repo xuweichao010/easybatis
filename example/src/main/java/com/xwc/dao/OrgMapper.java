@@ -36,7 +36,7 @@ public interface OrgMapper extends BaseMapper<Org, String> {
 
 
     @GenerateSelectSql
-    List<Org> listByOrg(String name, @RightLike String code, @Param("sons") @In ArrayList<Integer> sons);
+    List<Org> listByOrg(String name, @RightLike String code, @In ArrayList<Integer> sons);
 
     @GenerateSelectSql(colums = "name")
     List<Org> listNameByOrg(String name, @RightLike String code, @In ArrayList<Integer> sons);

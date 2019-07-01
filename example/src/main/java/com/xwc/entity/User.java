@@ -3,6 +3,7 @@ package com.xwc.entity;
 import com.xwc.esbatis.anno.table.Loglic;
 import com.xwc.esbatis.anno.table.PrimaryKey;
 import com.xwc.esbatis.anno.table.Table;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 
@@ -13,8 +14,7 @@ import java.io.Serializable;
  * 功能：
  */
 @Table("t_user")
-@SuppressWarnings("unused")
-public class User implements Serializable {
+public class User extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -4279599274719815691L;
     /**
      * 用户ID
@@ -34,6 +34,26 @@ public class User implements Serializable {
      */
     private String name;
     /**
+     * 性别;0-男性;1-女性
+     */
+    private Integer gender;
+    /**
+     * 年龄
+     */
+    private Integer age;
+    /**
+     * 身份证号
+     */
+    private String identityNumber;
+    /**
+     * 职位类型
+     */
+    private Integer jobType;
+    /**
+     * 职位级别
+     */
+    private Integer jobLevel;
+    /**
      * 机构名
      */
     private String orgName;
@@ -41,102 +61,118 @@ public class User implements Serializable {
      * 机构代码
      */
     private String orgCode;
-
-    @Loglic(valid = 0, invalid = 1)
-    private Integer logic;
-
-
-    public Integer getLogic() {
-        return logic;
-    }
-
-    public void setLogic(Integer logic) {
-        this.logic = logic;
-    }
+    /**
+     * 同步标识
+     */
+    private String syncId;
 
     /**
-     * 用户ID
+     * 用户类型;1-超级管理员;2-管理员;3-普通用户
      */
+    private Integer type = 3;
+
+
     public Long getId() {
-        return this.id;
+        return id;
     }
 
-    /**
-     * 用户ID
-     */
     public void setId(Long id) {
         this.id = id;
     }
 
-    /**
-     * 账号
-     */
     public String getAccount() {
-        return this.account;
+        return account;
     }
 
-    /**
-     * 账号
-     */
     public void setAccount(String account) {
         this.account = account;
     }
 
-    /**
-     * 密码
-     */
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
-    /**
-     * 密码
-     */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    /**
-     * 用户名
-     */
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    /**
-     * 用户名
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * 机构名
-     */
-    public String getOrgName() {
-        return this.orgName;
+    public Integer getGender() {
+        return gender;
     }
 
-    /**
-     * 机构名
-     */
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getIdentityNumber() {
+        return identityNumber;
+    }
+
+    public void setIdentityNumber(String identityNumber) {
+        this.identityNumber = identityNumber;
+    }
+
+    public Integer getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(Integer jobType) {
+        this.jobType = jobType;
+    }
+
+    public Integer getJobLevel() {
+        return jobLevel;
+    }
+
+    public void setJobLevel(Integer jobLevel) {
+        this.jobLevel = jobLevel;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
     public void setOrgName(String orgName) {
         this.orgName = orgName;
     }
 
-    /**
-     * 机构代码
-     */
     public String getOrgCode() {
-        return this.orgCode;
+        return orgCode;
     }
 
-    /**
-     * 机构代码
-     */
     public void setOrgCode(String orgCode) {
         this.orgCode = orgCode;
     }
 
+    public String getSyncId() {
+        return syncId;
+    }
 
+    public void setSyncId(String syncId) {
+        this.syncId = syncId;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 }
