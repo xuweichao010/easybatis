@@ -2,21 +2,20 @@ package com.xwc.esbatis.intercepts;
 
 import com.xwc.esbatis.anno.enums.SqlOperationType;
 import com.xwc.esbatis.assistant.GeneratorMapperAnnotationBuilder;
+import com.xwc.esbatis.interfaces.AuditService;
 import com.xwc.esbatis.meta.ColumMate;
 import com.xwc.esbatis.meta.FieldType;
 import com.xwc.esbatis.meta.MethodMate;
 import org.apache.ibatis.executor.statement.RoutingStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.sql.Statement;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * 创建人：徐卫超
@@ -30,65 +29,130 @@ import java.util.Properties;
         args = {Statement.class})})
 public class TestIntercepts implements Interceptor {
 
+    private static final String PARAM_OBJECT = "parameterHandler.parameterObject";
+    private static final String MAPPED_STATEMENT = "parameterHandler.mappedStatement";
+    private AuditService auditService;
+
+
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+        if (auditService == null) invocation.proceed();
         MetaObject metaObject = SystemMetaObject.forObject(invocation.getTarget());
-        MappedStatement ms = (MappedStatement) metaObject.getValue("parameterHandler.mappedStatement");
+        MappedStatement ms = (MappedStatement) metaObject.getValue(MAPPED_STATEMENT);
+        if (ms.getSqlCommandType() != SqlCommandType.INSERT && ms.getSqlCommandType() != SqlCommandType.UPDATE) {
+            return invocation.proceed();
+        }
         MethodMate methodMate = GeneratorMapperAnnotationBuilder.get(ms.getId());
         if (methodMate == null) return invocation.proceed();
-        if(methodMate.getOperationType() == SqlOperationType.BASE_PARAM_UPDATE) return invocation.proceed();
-        Object value = metaObject.getValue("parameterHandler.parameterObject");
+        if (methodMate.getOperationType() == SqlOperationType.BASE_PARAM_UPDATE) return invocation.proceed();
+        Object value = metaObject.getValue(PARAM_OBJECT);
         if (methodMate.getEntityMate().getAudit().isEmpty()) return invocation.proceed();
-        audit(value, methodMate);
-        metaObject.setValue("parameterHandler.parameterObject",value);
+        value = auditInsert(value, methodMate, ms.getSqlCommandType());
+        metaObject.setValue(PARAM_OBJECT, value);
         return invocation.proceed();
     }
 
-    private Object audit(Object value, MethodMate methodMate) {
+    private Object auditInsert(Object value, MethodMate methodMate, SqlCommandType command) {
         if (value instanceof Map) {
+            Map map = (Map) value;
+            map.forEach((k, v) -> {
+                if (methodMate.getOperationType() == SqlOperationType.BASE_INSERT) {
+                    if (k instanceof List) {
+                        if (command == SqlCommandType.INSERT) {
+                            List list = (List) k;
+                            list.forEach(obj -> {
+                                setObject(obj, methodMate, false);
+                            });
+                        }
+                    }
+                } else if (methodMate.getOperationType() == SqlOperationType.BASE_PARAM_UPDATE) {
+                    setMap(map, methodMate, true);
+                }
 
+            });
         } else {
-            setObject(value,methodMate,false);
+            if (methodMate.getOperationType() == SqlOperationType.BASE_DELETE) {
+                HashMap<Object, Object> map = new HashMap<>();
+                if (methodMate.getArgs().size() == 1) {
+                    map.put(methodMate.getArgs().get(0), value);
+                    setMap(map, methodMate, true);
+                    value = map;
+                }
+            } else {
+                setObject(value, methodMate, command == SqlCommandType.UPDATE);
+            }
         }
-
         return value;
     }
 
-    private void setObject(Object value, MethodMate methodMate,boolean update) {
+    private void setObject(Object value, MethodMate methodMate, boolean update) {
         Map<FieldType, ColumMate> audit = methodMate.getEntityMate().getAudit();
-        audit.forEach((k,v)->{
-            try{
-                switch (k){
+        audit.forEach((k, v) -> {
+            try {
+                switch (k) {
                     case CREATE_ID:
-                        if(update)break;
-                        v.getSetter().invoke(value,new Integer(1));
+                        if (update) break;
+                        v.getSetter().invoke(value, auditService.userId());
                         break;
                     case CREATE_NAME:
-                        if(update)break;
-                        v.getSetter().invoke(value,"徐卫超");
+                        if (update) break;
+                        v.getSetter().invoke(value, auditService.userName());
                         break;
                     case CREATE_TIME:
-                        if(update)break;
-                        v.getSetter().invoke(value,new Date());
+                        if (update) break;
+                        v.getSetter().invoke(value, auditService.time());
                         break;
                     case UPDATE_ID:
-                        v.getSetter().invoke(value,new Integer(2));
+                        v.getSetter().invoke(value, auditService.userId());
                         break;
                     case UPDATE_TIME:
-                        v.getSetter().invoke(value,new Date());
+                        v.getSetter().invoke(value, auditService.time());
                         break;
                     case UPDATE_NAME:
-                        v.getSetter().invoke(value,"徐卫超2");
+                        v.getSetter().invoke(value, auditService.userName());
                         break;
-
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
         });
     }
 
+    private void setMap(Map value, MethodMate methodMate, boolean update) {
+        Map<FieldType, ColumMate> audit = methodMate.getEntityMate().getAudit();
+        audit.forEach((k, v) -> {
+            try {
+                switch (k) {
+                    case CREATE_ID:
+                        if (update) break;
+                        value.put(v.getColunm(), auditService.userId());
+                        break;
+                    case CREATE_NAME:
+                        if (update) break;
+                        value.put(v.getColunm(), auditService.userName());
+                        break;
+                    case CREATE_TIME:
+                        if (update) break;
+                        value.put(v.getColunm(), auditService.time());
+                        break;
+                    case UPDATE_ID:
+                        value.put(v.getColunm(), auditService.userId());
+                        break;
+                    case UPDATE_TIME:
+                        value.put(v.getColunm(), auditService.time());
+                        break;
+                    case UPDATE_NAME:
+                        value.put(v.getColunm(), auditService.userName());
+                        break;
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        });
+    }
 
 
     @Override
@@ -98,8 +162,17 @@ public class TestIntercepts implements Interceptor {
         return wrap;
     }
 
+    public TestIntercepts(AuditService auditService) {
+        this.auditService = auditService;
+    }
+
+    public TestIntercepts() {
+    }
+
     @Override
     public void setProperties(Properties properties) {
 
     }
+
+
 }

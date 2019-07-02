@@ -9,6 +9,7 @@ import com.xwc.esbatis.meta.EntityMate;
 import com.xwc.esbatis.meta.FilterColumMate;
 import com.xwc.esbatis.meta.QueryMate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -97,8 +98,11 @@ public class SqlAnnotationBuilder {
                 .collect(Collectors.toList());
         StringBuilder sb = new StringBuilder();
         if (mate.isLogic()) {
+            List<ColumMate> updateList = new ArrayList<>();
+            updateList.add(mate.getLogic());
+            updateList.addAll(mate.getUpdateColum());
             sb.append("<script> UPDATE ").append(mate.getTableName()).append(" SET ")
-                    .append(sqlAssistant.builderSetLogic(mate.getLogic(), false))
+                    .append(sqlAssistant.builderSet(updateList))
                     .append(sqlAssistant.builderQuery(filterList, mate.getLogic()))
                     .append(" </script>");
         } else {

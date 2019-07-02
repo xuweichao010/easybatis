@@ -26,6 +26,7 @@ public class EntityMate {
     private KeyEnum keyEnum;
     private ColumMate logic;
     private HashMap<FieldType, ColumMate> auditMap = new HashMap<>();
+    private FieldType[] updateType = new FieldType[]{FieldType.UPDATE_NAME, FieldType.UPDATE_TIME, FieldType.UPDATE_ID};
 
 
     public void addAudit(FieldType fieldType, ColumMate columMate) {
@@ -81,6 +82,9 @@ public class EntityMate {
         if (keyEnum != KeyEnum.AUTO) {
             columMates.add(0, primaryKey);
         }
+        if (!auditMap.isEmpty()) {
+            columMates.addAll(auditMap.values());
+        }
         return columMates;
     }
 
@@ -88,6 +92,11 @@ public class EntityMate {
         ArrayList<ColumMate> columMates = new ArrayList<>(defaultColum);
         if (keyEnum != KeyEnum.AUTO) {
             columMates.add(0, primaryKey);
+        }
+        if (!auditMap.isEmpty()) {
+            for (FieldType fieldType : updateType) {
+                columMates.add(auditMap.get(fieldType));
+            }
         }
         return columMates;
     }

@@ -25,6 +25,7 @@ import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.parsing.PropertyParser;
+import org.apache.ibatis.reflection.ParamNameUtil;
 import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
@@ -432,6 +433,7 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
             QueryMate queryMate;
             md.setOperationType((SqlOperationType) value);
             md.setEntityMate(entityMate);
+            md.setArgs(ParamNameUtil.getParamNames(method));
             methods.put(type.getName() + "." + method.getName(), md);
             switch ((SqlOperationType) value) {
                 case BASE_SELECT_ONE:
