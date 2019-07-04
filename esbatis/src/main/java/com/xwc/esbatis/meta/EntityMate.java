@@ -88,16 +88,23 @@ public class EntityMate {
         return columMates;
     }
 
+    public List<ColumMate> getUpdateAudit(){
+        ArrayList<ColumMate> list = new ArrayList<>(4);
+        if (!auditMap.isEmpty()) {
+            for (FieldType fieldType : updateType) {
+                list.add(auditMap.get(fieldType));
+            }
+        }
+        return list;
+    }
+
     public List<ColumMate> getUpdateColum() {
         ArrayList<ColumMate> columMates = new ArrayList<>(defaultColum);
         if (keyEnum != KeyEnum.AUTO) {
             columMates.add(0, primaryKey);
         }
-        if (!auditMap.isEmpty()) {
-            for (FieldType fieldType : updateType) {
-                columMates.add(auditMap.get(fieldType));
-            }
-        }
+        columMates.addAll(getUpdateAudit());
+
         return columMates;
     }
 

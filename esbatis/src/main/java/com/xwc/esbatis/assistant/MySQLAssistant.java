@@ -2,6 +2,7 @@ package com.xwc.esbatis.assistant;
 
 import com.xwc.esbatis.anno.Count;
 import com.xwc.esbatis.anno.Distinct;
+import com.xwc.esbatis.anno.enums.ConditionEnum;
 import com.xwc.esbatis.interfaces.SqlAssistant;
 import com.xwc.esbatis.meta.ColumMate;
 import com.xwc.esbatis.meta.FilterColumMate;
@@ -168,6 +169,9 @@ public class MySQLAssistant implements SqlAssistant {
     public StringBuilder builderQuery(List<FilterColumMate> list, ColumMate logic) {
         StringBuilder sb = new StringBuilder();
         if (list.isEmpty()) return sb;
+        if(logic != null){
+            list.add(new FilterColumMate(logic.getField(),logic.getColunm(), ConditionEnum.EQUEL,Integer.MAX_VALUE));
+        }
         list.forEach(item -> {
             switch (item.getConditionEnum()) {
                 case IN:
@@ -192,7 +196,6 @@ public class MySQLAssistant implements SqlAssistant {
                     throw new BindingException("生成sql语句约束错误");
             }
         });
-        sb.append(builderQueryLogic(logic, true));
         sb.delete(0, 4).insert(0, " WHERE ");
         return sb;
     }

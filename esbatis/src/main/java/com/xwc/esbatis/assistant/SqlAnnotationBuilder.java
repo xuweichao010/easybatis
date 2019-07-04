@@ -100,10 +100,11 @@ public class SqlAnnotationBuilder {
         if (mate.isLogic()) {
             List<ColumMate> updateList = new ArrayList<>();
             updateList.add(mate.getLogic());
-            updateList.addAll(mate.getUpdateColum());
+            updateList.addAll(mate.getUpdateAudit());
             sb.append("<script> UPDATE ").append(mate.getTableName()).append(" SET ")
                     .append(sqlAssistant.builderSet(updateList))
-                    .append(sqlAssistant.builderQuery(filterList, mate.getLogic()))
+                    .append(sqlAssistant.builderQuery(filterList,null))
+                    .append(sqlAssistant.builderQueryLogic(mate.getLogic(),true))
                     .append(" </script>");
         } else {
             sb.append("<script> DELETE FROM ").append(mate.getTableName())

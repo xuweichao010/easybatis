@@ -6,7 +6,6 @@ import com.xwc.esbatis.interfaces.AuditService;
 import com.xwc.esbatis.meta.ColumMate;
 import com.xwc.esbatis.meta.FieldType;
 import com.xwc.esbatis.meta.MethodMate;
-import org.apache.ibatis.executor.statement.RoutingStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -15,7 +14,10 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
 import java.sql.Statement;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * 创建人：徐卫超
@@ -126,27 +128,32 @@ public class TestIntercepts implements Interceptor {
                 switch (k) {
                     case CREATE_ID:
                         if (update) break;
-                        value.put(v.getColunm(), auditService.userId());
+                        value.put(v.getField(), auditService.userId());
                         break;
                     case CREATE_NAME:
                         if (update) break;
-                        value.put(v.getColunm(), auditService.userName());
+                        value.put(v.getField(), auditService.userName());
                         break;
                     case CREATE_TIME:
                         if (update) break;
-                        value.put(v.getColunm(), auditService.time());
+                        value.put(v.getField(), auditService.time());
                         break;
                     case UPDATE_ID:
-                        value.put(v.getColunm(), auditService.userId());
+                        value.put(v.getField(), auditService.userId());
                         break;
                     case UPDATE_TIME:
-                        value.put(v.getColunm(), auditService.time());
+                        value.put(v.getField(), auditService.time());
                         break;
                     case UPDATE_NAME:
-                        value.put(v.getColunm(), auditService.userName());
+                        value.put(v.getField(), auditService.userName());
                         break;
 
                 }
+                ColumMate logic = methodMate.getEntityMate().getLogic();
+                if (logic != null) {
+                    value.put(logic.getField(), logic.getInvalid());
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
