@@ -54,12 +54,13 @@ public class TestBaseMapper {
     @Test
     public void testUpdate() {
         //我们来更新一下用户的属性，为了简单我们把用户的属性全部设置为null
-        User user = new User();
-        user.setId(22L);
+
+        User user = userMapper.selectKey(9L);
         user.setAccount("1111");
+        user.setPassword("");
         userMapper.update(user);
-        User user1 = userMapper.selectKey(22L);
-        System.out.println(JSONObject.toJSONString(user1));
+
+        System.out.println(JSONObject.toJSONString(user));
     }
 
     @Test
@@ -70,7 +71,7 @@ public class TestBaseMapper {
     @Test
     public void testDelKey() {
         //最后我们把数据删除掉吧
-        long delete = userMapper.delete(16L);
+        long delete = userMapper.delete(6L);
         System.out.println(delete);
     }
 

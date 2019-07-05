@@ -99,12 +99,11 @@ public class SqlAnnotationBuilder {
         StringBuilder sb = new StringBuilder();
         if (mate.isLogic()) {
             List<ColumMate> updateList = new ArrayList<>();
-            updateList.add(mate.getLogic());
             updateList.addAll(mate.getUpdateAudit());
             sb.append("<script> UPDATE ").append(mate.getTableName()).append(" SET ")
                     .append(sqlAssistant.builderSet(updateList))
-                    .append(sqlAssistant.builderQuery(filterList,null))
-                    .append(sqlAssistant.builderQueryLogic(mate.getLogic(),true))
+                    .append(sqlAssistant.builderSetLogic(mate.getLogic(), !updateList.isEmpty()))
+                    .append(sqlAssistant.builderQuery(filterList, mate.getLogic()))
                     .append(" </script>");
         } else {
             sb.append("<script> DELETE FROM ").append(mate.getTableName())

@@ -160,7 +160,7 @@ public class MySQLAssistant implements SqlAssistant {
                     throw new BindingException("生成sql语句约束错误");
             }
         });
-        sb.append(builderQueryLogic(logic, true));
+        sb.append(builderQueryLogic(logic, !list.isEmpty()));
         sb.append(" </where>");
         return sb;
     }
@@ -168,10 +168,7 @@ public class MySQLAssistant implements SqlAssistant {
     @Override
     public StringBuilder builderQuery(List<FilterColumMate> list, ColumMate logic) {
         StringBuilder sb = new StringBuilder();
-        if (list.isEmpty()) return sb;
-        if(logic != null){
-            list.add(new FilterColumMate(logic.getField(),logic.getColunm(), ConditionEnum.EQUEL,Integer.MAX_VALUE));
-        }
+        if (list.isEmpty() && logic == null) return sb;
         list.forEach(item -> {
             switch (item.getConditionEnum()) {
                 case IN:
@@ -196,6 +193,7 @@ public class MySQLAssistant implements SqlAssistant {
                     throw new BindingException("生成sql语句约束错误");
             }
         });
+        sb.append(builderQueryLogic(logic,!list.isEmpty()));
         sb.delete(0, 4).insert(0, " WHERE ");
         return sb;
     }
