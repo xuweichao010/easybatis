@@ -29,7 +29,7 @@ import java.util.Properties;
         type = StatementHandler.class,
         method = "parameterize",
         args = {Statement.class})})
-public class TestIntercepts implements Interceptor {
+public class AuditIntercepts implements Interceptor {
 
     private static final String PARAM_OBJECT = "parameterHandler.parameterObject";
     private static final String MAPPED_STATEMENT = "parameterHandler.mappedStatement";
@@ -169,11 +169,11 @@ public class TestIntercepts implements Interceptor {
         return wrap;
     }
 
-    public TestIntercepts(AuditService auditService) {
+    public AuditIntercepts(AuditService auditService) {
         this.auditService = auditService;
     }
 
-    public TestIntercepts() {
+    public AuditIntercepts() {
     }
 
     @Override
