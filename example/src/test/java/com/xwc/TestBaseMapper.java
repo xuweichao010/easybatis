@@ -54,7 +54,6 @@ public class TestBaseMapper {
     @Test
     public void testUpdate() {
         //我们来更新一下用户的属性，为了简单我们把用户的属性全部设置为null
-
         User user = userMapper.selectKey(9L);
         user.setAccount("1111");
         user.setPassword("");

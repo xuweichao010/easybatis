@@ -64,8 +64,10 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
 
     static {
         GENDERATE_ANNOTATION_TYPES.add(GenerateDelete.class);
+        GENDERATE_ANNOTATION_TYPES.add(GenerateDeleteSql.class);
         GENDERATE_ANNOTATION_TYPES.add(GenerateInsert.class);
         GENDERATE_ANNOTATION_TYPES.add(GenerateUpdate.class);
+        GENDERATE_ANNOTATION_TYPES.add(GenerateUpdateSql.class);
         GENDERATE_ANNOTATION_TYPES.add(GenerateSelectOne.class);
         GENDERATE_ANNOTATION_TYPES.add(GenerateSelectQuery.class);
         GENDERATE_ANNOTATION_TYPES.add(GenerateSelectSql.class);
@@ -94,7 +96,10 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
             try {
                 // issue #237
                 if (!method.isBridge() && AnnotationUtils.findAnnotation(method, GeneratSql.class) != null) {
+
                     parseStatement(method);
+
+
                 }
             } catch (IncompleteElementException e) {
                 configuration.addIncompleteMethod(new MethodResolver(this, method));
@@ -456,6 +461,10 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
                 case BASE_DELETE:
                     sql = new String[]{sqlAnnotationBuilder.delete(entityMate)};
                     break;
+                case BASE_PARAM_DELETE:
+                    queryMate = annotationAssistan.parseQueryMethod(method);
+                    sql = new String[]{sqlAnnotationBuilder.delete(entityMate, queryMate)};
+                    break;
                 case BASE_QUERY_SELECT:
                     queryMate = annotationAssistan.parseQueryEntity(method);
                     count = AnnotationUtils.findAnnotation(method, Count.class);
@@ -521,9 +530,11 @@ public class GeneratorMapperAnnotationBuilder extends MapperAnnotationBuilder {
                 type = Insert.class;
                 break;
             case BASE_UPDATE:
+            case BASE_PARAM_UPDATE:
                 type = Update.class;
                 break;
             case BASE_DELETE:  //当为逻辑删除时改变自定义注解delete操作为update操作
+            case BASE_PARAM_DELETE:
                 if (entityMate.isLogic()) {
                     type = Update.class;
                 } else {

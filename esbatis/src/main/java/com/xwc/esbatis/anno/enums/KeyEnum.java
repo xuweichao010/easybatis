@@ -8,7 +8,7 @@ package com.xwc.esbatis.anno.enums;
  */
 public enum KeyEnum {
     AUTO,
-//    UUID,
+    UUID,
 //    SEQUENCE,
 //    SNOWFLAKE,
     CUSTOM;

@@ -12,5 +12,6 @@ public enum SqlOperationType {
     BASE_UPDATE, //创建一个标准的更新语句
     BASE_PARAM_UPDATE,
     BASE_DELETE, //创建一个标准的删除语句
+    BASE_PARAM_DELETE,
     BASE_PARAM_SELECT, //创建一个静态的sql
 }

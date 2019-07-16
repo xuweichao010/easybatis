@@ -92,7 +92,6 @@ public class SqlAnnotationBuilder {
     }
 
     public String delete(EntityMate mate) {
-
         List<FilterColumMate> filterList = Stream.of(mate.getKey())
                 .map(columMate -> new FilterColumMate(columMate.getField(), columMate.getColunm(), ConditionEnum.EQUEL, 0))
                 .collect(Collectors.toList());
@@ -108,6 +107,24 @@ public class SqlAnnotationBuilder {
         } else {
             sb.append("<script> DELETE FROM ").append(mate.getTableName())
                     .append(sqlAssistant.builderQuery(filterList, mate.getLogic()))
+                    .append(" </script>");
+        }
+        return sb.toString();
+    }
+
+    public String delete(EntityMate mate, QueryMate query) {
+        StringBuilder sb = new StringBuilder();
+        if (mate.isLogic()) {
+            List<ColumMate> updateList = new ArrayList<>();
+            updateList.addAll(mate.getUpdateAudit());
+            sb.append("<script> UPDATE ").append(mate.getTableName()).append(" SET ")
+                    .append(sqlAssistant.builderSet(updateList))
+                    .append(sqlAssistant.builderSetLogic(mate.getLogic(), !updateList.isEmpty()))
+                    .append(sqlAssistant.builderQuery(query.getQueryFilter(), mate.getLogic()))
+                    .append(" </script>");
+        } else {
+            sb.append("<script> DELETE FROM ").append(mate.getTableName())
+                    .append(sqlAssistant.builderQuery(query.getQueryFilter(), mate.getLogic()))
                     .append(" </script>");
         }
         return sb.toString();

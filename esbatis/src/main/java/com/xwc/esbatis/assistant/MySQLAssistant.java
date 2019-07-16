@@ -2,7 +2,6 @@ package com.xwc.esbatis.assistant;
 
 import com.xwc.esbatis.anno.Count;
 import com.xwc.esbatis.anno.Distinct;
-import com.xwc.esbatis.anno.enums.ConditionEnum;
 import com.xwc.esbatis.interfaces.SqlAssistant;
 import com.xwc.esbatis.meta.ColumMate;
 import com.xwc.esbatis.meta.FilterColumMate;

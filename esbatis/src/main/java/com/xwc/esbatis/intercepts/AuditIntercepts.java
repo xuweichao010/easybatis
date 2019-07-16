@@ -164,7 +164,6 @@ public class AuditIntercepts implements Interceptor {
 
     @Override
     public Object plugin(Object target) {
-        System.out.println(" TestIntercepts -> plugin " + target);
         Object wrap = Plugin.wrap(target, this);
         return wrap;
     }

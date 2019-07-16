@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @GeneratSql
 public @interface GenerateUpdateSql {
-    SqlOperationType value() default SqlOperationType.BASE_UPDATE;
+    SqlOperationType value() default SqlOperationType.BASE_PARAM_UPDATE;
 
     String colums() default "";
 }

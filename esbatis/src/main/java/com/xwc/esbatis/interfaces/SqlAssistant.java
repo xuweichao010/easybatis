@@ -58,7 +58,7 @@ public interface SqlAssistant {
     /**
      * 构建一个动态查询条件片段
      */
-    StringBuilder builderDynamicQuery(List<FilterColumMate> list,ColumMate logic);
+    StringBuilder builderDynamicQuery(List<FilterColumMate> list, ColumMate logic);
 
 
     /**
@@ -67,7 +67,7 @@ public interface SqlAssistant {
      * @param list
      * @return
      */
-    StringBuilder builderQuery(List<FilterColumMate> list,ColumMate logic);
+    StringBuilder builderQuery(List<FilterColumMate> list, ColumMate logic);
 
 
     /**

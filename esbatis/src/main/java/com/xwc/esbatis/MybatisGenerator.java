@@ -5,10 +5,7 @@ import com.xwc.esbatis.assistant.Reflection;
 import com.xwc.esbatis.intercepts.AuditIntercepts;
 import com.xwc.esbatis.interfaces.AuditService;
 import com.xwc.esbatis.interfaces.impl.DefualtAuditServiceImpl;
-import com.xwc.esbatis.meta.EntityMate;
 import org.mybatis.spring.mapper.MapperFactoryBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -18,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,13 +25,8 @@ import java.util.List;
  */
 @Configuration
 public class MybatisGenerator implements ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MybatisGenerator.class);
-    private final HashMap<String,EntityMate> entityMateHashMap = new HashMap<>();
-
     @Autowired(required = false)
     private List<MapperFactoryBean> factoryBeans = new ArrayList<>();
-
     @Autowired(required = false)
     private AuditService auditService = new DefualtAuditServiceImpl();
 

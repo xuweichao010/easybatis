@@ -3,9 +3,7 @@ package com.xwc.esbatis.meta;
 
 import com.xwc.esbatis.anno.enums.KeyEnum;
 import org.apache.ibatis.binding.BindingException;
-import org.apache.ibatis.mapping.SqlCommandType;
 
-import javax.activation.FileTypeMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
