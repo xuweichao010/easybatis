@@ -20,7 +20,7 @@ public class Org extends BaseEntity implements Serializable {
     /**
      * 机构编码;代码生成
      */
-    @PrimaryKey(type = KeyEnum.CUSTOM)
+    @PrimaryKey(type = KeyEnum.UUID)
     private String code;
     /**
      * 机构名称

@@ -24,16 +24,6 @@ import java.util.ArrayList;
 @SpringBootTest(classes = Application.class)
 public class TestMapper {
 
-    @Autowired
-    private UserMapper userMapper;
-
-
-    @Test
-    public void testInsert() {
-        User user = new User();
-        userMapper.updateBase(10,"徐卫超");
-        System.out.println(JSONObject.toJSONString(user));
-    }
 
 
 

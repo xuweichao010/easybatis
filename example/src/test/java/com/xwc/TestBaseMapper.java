@@ -3,6 +3,7 @@ package com.xwc;
 import com.alibaba.fastjson.JSONObject;
 import com.xwc.dao.OrgMapper;
 import com.xwc.dao.UserMapper;
+import com.xwc.entity.Org;
 import com.xwc.entity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +42,15 @@ public class TestBaseMapper {
         user.setPassword("123456");
         userMapper.insert(user);
         System.out.println(JSONObject.toJSONString(user));
+    }
+
+    @Test
+    public void testInsertUUID(){
+        Org org = new Org();
+        org.setName("1111");
+        org.setParentCode("1111");
+        org.setValid(0);
+        orgMapper.insert(org);
     }
 
 

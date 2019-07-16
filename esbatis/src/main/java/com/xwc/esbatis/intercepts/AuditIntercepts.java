@@ -1,5 +1,6 @@
 package com.xwc.esbatis.intercepts;
 
+import com.xwc.esbatis.anno.enums.KeyEnum;
 import com.xwc.esbatis.anno.enums.SqlOperationType;
 import com.xwc.esbatis.assistant.GeneratorMapperAnnotationBuilder;
 import com.xwc.esbatis.interfaces.AuditService;
@@ -13,16 +14,15 @@ import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * 创建人：徐卫超
  * 创建时间：2019/5/13  10:07
- * 业务：
+ * 业务：审计功能和自动注解生产策略插件
  * 功能：
  */
 @Intercepts({@Signature(
@@ -48,10 +48,57 @@ public class AuditIntercepts implements Interceptor {
         if (methodMate == null) return invocation.proceed();
         if (methodMate.getOperationType() == SqlOperationType.BASE_PARAM_UPDATE) return invocation.proceed();
         Object value = metaObject.getValue(PARAM_OBJECT);
+        //查看审计是否开启
         if (methodMate.getEntityMate().getAudit().isEmpty()) return invocation.proceed();
         value = auditInsert(value, methodMate, ms.getSqlCommandType());
+        if (methodMate.getEntityMate().getKey().getKeyEnum() != KeyEnum.AUTO) {
+            value = genderKey(value, methodMate, ms.getSqlCommandType());
+        }
         metaObject.setValue(PARAM_OBJECT, value);
         return invocation.proceed();
+    }
+
+    private Object genderKey(Object value, MethodMate methodMate, SqlCommandType command) {
+        if (value instanceof Map) {
+            Map map = (Map) value;
+            map.forEach((k, v) -> {
+                if (methodMate.getOperationType() == SqlOperationType.BASE_INSERT) {
+                    if (k instanceof List) {
+                        if (command == SqlCommandType.INSERT) {
+                            List list = (List) k;
+                            list.forEach(obj -> {
+                                insertKey(obj, methodMate);
+                            });
+                        }
+                    }
+                }
+            });
+        } else {
+            if (methodMate.getOperationType() == SqlOperationType.BASE_INSERT) {
+                insertKey(value, methodMate);
+            }
+        }
+        return value;
+    }
+
+    private void insertKey(Object value, MethodMate methodMate) {
+        Method setter = methodMate.getEntityMate().getKey().getSetter();
+        Method getter = methodMate.getEntityMate().getKey().getGetter();
+        KeyEnum keyEnum = methodMate.getEntityMate().getKey().getKeyEnum();
+        try {
+            Object vObject = getter.invoke(value);
+            if (vObject == null) {
+                if (keyEnum == KeyEnum.UUID) {
+                    setter.invoke(value, uuid());
+                }
+            }
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String uuid() {
+        return UUID.randomUUID().toString().replace("-", "").toLowerCase();
     }
 
     private Object auditInsert(Object value, MethodMate methodMate, SqlCommandType command) {
