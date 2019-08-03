@@ -1,4 +1,0 @@
-rootProject.name = 'esbatis-demo'
-include 'example'
-include 'esbatis'
-

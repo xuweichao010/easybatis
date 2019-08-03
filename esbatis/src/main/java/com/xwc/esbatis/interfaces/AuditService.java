@@ -1,1 +1,0 @@
-package com.xwc.esbatis.interfaces;/** * 创建人：徐卫超 * 时间：2019/7/2 9:33 * 功能： * 备注： */public interface AuditService {    Object userId();    Object userName();    Object time();}
