@@ -1,13 +1,12 @@
 package com.xwc.open.esbatis.assistant;
 
 
-import com.xwc.open.esbatis.EsbatisProperties;
 import com.xwc.open.esbatis.anno.*;
 import com.xwc.open.esbatis.enums.IdType;
 import com.xwc.open.esbatis.meta.EntityMate;
+import com.xwc.open.esbatis.mysql.MySqlSyntaxTemplate;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.builder.CacheRefResolver;
@@ -24,7 +23,6 @@ import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.parsing.PropertyParser;
-import org.apache.ibatis.reflection.ParamNameUtil;
 import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
@@ -35,7 +33,6 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.AnnotationUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,7 +73,7 @@ public class EsbatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         this.assistant = new MapperBuilderAssistant(configuration, resource);
         this.configuration = configuration;
         this.type = type;
-        this.annotationAssistan = new AnnotationAssistan(configuration, new MySqlSyntaxTemplate());
+        this.annotationAssistan = new AnnotationAssistan(configuration,new MySqlSyntaxTemplate());
         this.entityMate = annotationAssistan.parseEntityMate(entityClass);
         //  this.sqlAnnotationBuilder = new SqlAnnotationBuilder(new MySQLAssistant());
     }

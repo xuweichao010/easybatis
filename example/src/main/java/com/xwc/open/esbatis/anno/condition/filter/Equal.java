@@ -1,5 +1,6 @@
 package com.xwc.open.esbatis.anno.condition.filter;
 
+import com.xwc.open.esbatis.enums.ConditionType;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
@@ -13,6 +14,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
+@Condition(type = ConditionType.EQUEL)
 public @interface Equal {
 
     /**

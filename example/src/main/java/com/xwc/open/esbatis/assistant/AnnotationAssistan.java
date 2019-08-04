@@ -1,8 +1,8 @@
 package com.xwc.open.esbatis.assistant;
 
 
-import com.xwc.open.esbatis.EsbatisProperties;
 import com.xwc.open.esbatis.anno.auditor.*;
+import com.xwc.open.esbatis.anno.condition.filter.Condition;
 import com.xwc.open.esbatis.anno.condition.filter.Equal;
 import com.xwc.open.esbatis.anno.table.*;
 import com.xwc.open.esbatis.enums.ConditionType;
@@ -10,6 +10,7 @@ import com.xwc.open.esbatis.interfaces.Page;
 import com.xwc.open.esbatis.interfaces.SyntaxTemplate;
 import com.xwc.open.esbatis.meta.*;
 import org.apache.ibatis.binding.BindingException;
+import org.apache.ibatis.reflection.ParamNameUtil;
 import org.apache.ibatis.session.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
 
@@ -31,6 +32,7 @@ public class AnnotationAssistan {
 
     private Configuration configuration;
     private SyntaxTemplate template;
+    private int DEFAULT_ORDER = 99;
 
     public AnnotationAssistan(Configuration configuration, SyntaxTemplate template) {
         this.configuration = configuration;
@@ -155,7 +157,7 @@ public class AnnotationAssistan {
      * @return
      */
     public ConditionMate parseQuery(Method method) {
-        ConditionMate condition = new ConditionMate();
+        ConditionMate conditionMate = new ConditionMate(template);
         Class<?>[] parameterTypes = method.getParameterTypes();
         int paramCount = parameterTypes.length;
         if (paramCount != 1) throw new BindingException("parameters filed null Unable to build Sql");
@@ -167,83 +169,96 @@ public class AnnotationAssistan {
             Attribute attribute = analysisAttribute(f, clazz);
             Annotation annotation = chooseAnnotationType(f);
             if (annotation == null) {
-                conditionAttribute = new ConditionAttribute(attribute, ConditionType.EQUEL);
-                condition.add(conditionAttribute);
+                conditionAttribute = new ConditionAttribute(attribute, DEFAULT_ORDER, ConditionType.EQUEL);
+                conditionMate.add(conditionAttribute);
             } else {
                 annotation = AnnotationUtils.findAnnotation(f, annotation.annotationType());
                 updateColum(annotation, attribute);
-                new ConditionAttribute(attribute.get)
+                Object index = AnnotationUtils.getValue(annotation, "index");
+                Condition condition = AnnotationUtils.getAnnotation(annotation, Condition.class);
+                conditionAttribute = new ConditionAttribute(attribute, (int) index, condition.type());
+                conditionMate.add(conditionAttribute);
             }
 
         }
-//        if (Page.class.isAssignableFrom(par)) {
-//            query.setStart(new FilterColumMate("limitStart", "limit_start", ConditionEnum.LIMIT_START, 99));
-//            query.setOffset(new FilterColumMate("limitOffset", "limit_offset", ConditionEnum.LIMIT_OFFSET, 99));
-//        }
+        if (Page.class.isAssignableFrom(clazz)) {
+            conditionMate.add(new ConditionAttribute(
+                    new Attribute("limitStart", "limit_start", null, null)
+                    , 99, ConditionType.LIMIT_START));
+            conditionMate.add(new ConditionAttribute(
+                    new Attribute("limitOffset", "limit_offset", null, null)
+                    , 99, ConditionType.LIMIT_OFFSET));
+        }
 
+        return conditionMate;
+    }
+
+    /**
+     * 解析查询方法
+     *
+     * @param method
+     * @return
+     */
+    public QueryMate parseQueryMethod(Method method) {
+        ConditionMate query = new ConditionMate(template);
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        int paramCount = parameterAnnotations.length;
+        List<String> paramNames = ParamNameUtil.getParamNames(method);
+        for (int i = 0; i < paramCount; ++i) {
+            ConditionAttribute paramFilter = analysisParam(parameterAnnotations[i], i, paramNames.get(i));
+            query.addFilter(paramFilter);
+        }
         return query;
     }
 
-//    /**
-//     * 解析查询方法
-//     *
-//     * @param method
-//     * @return
-//     */
-//    public QueryMate parseQueryMethod(Method method) {
-//
-//        QueryMate query = new QueryMate();
-//        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-//        int paramCount = parameterAnnotations.length;
-//        List<String> paramNames = ParamNameUtil.getParamNames(method);
-//        for (int i = 0; i < paramCount; ++i) {
-//            FilterColumMate paramFilter = queryMate(parameterAnnotations[i], i, paramNames.get(i));
-//            query.addFilter(paramFilter);
-//        }
-//        return query;
-//    }
+    /**
+     * 获取对象属性的过滤条件
+     *
+     */
+    public ConditionAttribute analysisParam(Annotation[] annotations, Integer index, String paramNames) {
+        Annotation annotation = chooseAnnotationType(annotations);
+        Attribute attribute = new Attribute(paramNames, underscoreName(paramNames), null, null);
+        if (annotation == null) {
+            return new ConditionAttribute(attribute, index + DEFAULT_ORDER, ConditionType.EQUEL);
+        } else {
+            annotation = AnnotationUtils.findAnnotation(annotation.annotationType());
+            updateColum(annotation, attribute);
+            int annoIndex = (int) AnnotationUtils.getValue(annotation, "index");
+            Condition condition = AnnotationUtils.getAnnotation(annotation, Condition.class);
+            return new ConditionAttribute(attribute, annoIndex, condition.type());
+        }
+    }
 
-//    /**
-//     * 获取对象属性的过滤条件
-//     *
-//     * @param field
-//     * @return
-//     */
-//    public FilterColumMate queryMate(Field field, Integer index) {
-//        Annotation[] declaredAnnotations = field.getDeclaredAnnotations();
-//        return this.queryMate(declaredAnnotations, index, field.getName());
-//    }
-
-//    /**
-//     * 获取方法属性的注解属性
-//     *
-//     * @param annotations
-//     * @param paramName
-//     * @return
-//     */
-//    public FilterColumMate queryMate(Annotation[] annotations, int index, String paramName) {
-//        Annotation annotation = chooseAnnotationType(annotations);
-//        FilterColumMate filter = new FilterColumMate();
-//        if (annotation == null) {
-//            filter.setConditionEnum(ConditionEnum.EQUEL);
-//            filter.setIndex(DEFAULT_ORDER + index);
-//            filter.setField(paramName);
-//            filter.setColunm(underscoreName(paramName));
-//        } else {
-//            try {
-//                String colum = (String) annotation.getClass().getMethod("colum").invoke(annotation);
-//                filter.setField(paramName);
-//                filter.setColunm(colum.isEmpty() ? underscoreName(paramName) : underscoreName(colum));
-//                int annoIndex = (int) annotation.getClass().getMethod("index").invoke(annotation);
-//                filter.setIndex(annoIndex == DEFAULT_ORDER ? annoIndex + DEFAULT_ORDER : annoIndex);
-//                ConditionEnum type = (ConditionEnum) annotation.getClass().getMethod("type").invoke(annotation);
-//                filter.setConditionEnum(type);
-//            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return filter;
-//    }
+    /**
+     * 获取方法属性的注解属性
+     *
+     * @param annotations
+     * @param paramName
+     * @return
+     */
+    public FilterColumMate queryMate(Annotation[] annotations, int index, String paramName) {
+        Annotation annotation = chooseAnnotationType(annotations);
+        FilterColumMate filter = new FilterColumMate();
+        if (annotation == null) {
+            filter.setConditionEnum(ConditionEnum.EQUEL);
+            filter.setIndex(DEFAULT_ORDER + index);
+            filter.setField(paramName);
+            filter.setColunm(underscoreName(paramName));
+        } else {
+            try {
+                String colum = (String) annotation.getClass().getMethod("colum").invoke(annotation);
+                filter.setField(paramName);
+                filter.setColunm(colum.isEmpty() ? underscoreName(paramName) : underscoreName(colum));
+                int annoIndex = (int) annotation.getClass().getMethod("index").invoke(annotation);
+                filter.setIndex(annoIndex == DEFAULT_ORDER ? annoIndex + DEFAULT_ORDER : annoIndex);
+                ConditionEnum type = (ConditionEnum) annotation.getClass().getMethod("type").invoke(annotation);
+                filter.setConditionEnum(type);
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+        return filter;
+    }
 
     /**
      * 判断是否是忽略字段
@@ -254,6 +269,15 @@ public class AnnotationAssistan {
 
     public Annotation chooseAnnotationType(Field field) {
         Annotation[] annotations = field.getDeclaredAnnotations();
+        for (Annotation annotation : annotations) {
+            if (queryAnnoSet.contains(annotation.annotationType())) {
+                return annotation;
+            }
+        }
+        return null;
+    }
+
+    public Annotation chooseAnnotationType( Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             if (queryAnnoSet.contains(annotation.annotationType())) {
                 return annotation;
@@ -289,9 +313,5 @@ public class AnnotationAssistan {
             return result.toString();
         }
         return camelCaseName;
-    }
-
-    public static void setProperties(EsbatisProperties properties) {
-        AnnotationAssistan.properties = properties;
     }
 }

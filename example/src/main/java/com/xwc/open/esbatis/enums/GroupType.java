@@ -1,1 +1,1 @@
-package com.xwc.open.esbatis.enums;/** * 创建人：徐卫超 * 时间：2019/8/4 10:32 * 功能： * 备注： */public enum GroupType {    CLOUM_FIELD,    CLOUM_IN_FILED,    JUDGE_NULL,    ORDER,    MYSQL_START,    MYSQL_OFFSET;}
+package com.xwc.open.esbatis.enums;/** * 创建人：徐卫超 * 时间：2019/8/4 10:32 * 功能： * 备注： */public enum GroupType {    CLOUM_FIELD,    CLOUM_IN_FILED,    JUDGE_NULL,    ORDER,    MYSQL_START,    MYSQL_OFFSET,    SET;}
