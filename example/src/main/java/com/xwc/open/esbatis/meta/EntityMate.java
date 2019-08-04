@@ -40,7 +40,7 @@ public class EntityMate {
     /**
      * 属性信息
      */
-    private Attribute logic;
+    private LoglicAttribute logic;
 
     public EntityMate(String tableName) {
         this.tableName = tableName;
@@ -53,6 +53,14 @@ public class EntityMate {
     public void setId(Attribute id, IdType type) {
         this.id = id;
         this.type = type;
+    }
+
+    public void setLogic(LoglicAttribute logic) {
+        this.logic = logic;
+    }
+
+    public LoglicAttribute getLogic() {
+        return logic;
     }
 
     public void addAuditorAttribute(AuditorAttribute attribute) {

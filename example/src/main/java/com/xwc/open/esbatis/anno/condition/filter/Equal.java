@@ -15,9 +15,27 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Equal {
 
+    /**
+     * 查询条件排序
+     *
+     * @return
+     */
+    int index() default 99;
+
+    /**
+     * 关联的数据库的列  默认使用属性名
+     *
+     * @return
+     */
     @AliasFor("value")
     String colum() default "";
 
+
+    /**
+     * 关联的数据库的列  默认使用属性名
+     *
+     * @return
+     */
     @AliasFor("colum")
     String value() default "";
 

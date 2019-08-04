@@ -1,0 +1,1 @@
+package com.xwc.open.esbatis.interfaces;import com.xwc.open.esbatis.enums.ConditionType;import com.xwc.open.esbatis.enums.GroupType;/** * 创建人：徐卫超 * 时间：2019/8/4 10:19 * 功能： * 备注： */public interface SyntaxTemplate {    String template(ConditionType type);    GroupType group(ConditionType type);}

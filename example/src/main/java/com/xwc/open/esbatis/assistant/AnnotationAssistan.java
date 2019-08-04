@@ -4,15 +4,13 @@ package com.xwc.open.esbatis.assistant;
 import com.xwc.open.esbatis.EsbatisProperties;
 import com.xwc.open.esbatis.anno.auditor.*;
 import com.xwc.open.esbatis.anno.condition.filter.Equal;
-import com.xwc.open.esbatis.anno.table.Colum;
-import com.xwc.open.esbatis.anno.table.Id;
-import com.xwc.open.esbatis.anno.table.Ignore;
-import com.xwc.open.esbatis.anno.table.Table;
-import com.xwc.open.esbatis.meta.Attribute;
-import com.xwc.open.esbatis.meta.AuditorAttribute;
-import com.xwc.open.esbatis.meta.EntityMate;
+import com.xwc.open.esbatis.anno.table.*;
+import com.xwc.open.esbatis.enums.ConditionType;
+import com.xwc.open.esbatis.interfaces.Page;
+import com.xwc.open.esbatis.interfaces.SyntaxTemplate;
+import com.xwc.open.esbatis.meta.*;
+import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.session.Configuration;
-import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
@@ -30,13 +28,13 @@ import java.util.Set;
  * 功能：用于获取注解信息
  */
 public class AnnotationAssistan {
-    private static EsbatisProperties properties;
 
-    private static int DEFAULT_ORDER = 99;
     private Configuration configuration;
+    private SyntaxTemplate template;
 
-    public AnnotationAssistan(Configuration configuration) {
+    public AnnotationAssistan(Configuration configuration, SyntaxTemplate template) {
         this.configuration = configuration;
+        this.template = template;
     }
 
     private static Set<Class<? extends Annotation>> queryAnnoSet = new HashSet<>();
@@ -46,7 +44,6 @@ public class AnnotationAssistan {
     static {
         queryAnnoSet.add(Equal.class);
     }
-
 
 
     static {
@@ -62,15 +59,14 @@ public class AnnotationAssistan {
      * 解析实体信息
      */
     public EntityMate parseEntityMate(Class<?> entityType) {
-        Table tableAnno = AnnotationUtils.findAnnotation(entityType,Table.class);
+        Table tableAnno = AnnotationUtils.findAnnotation(entityType, Table.class);
         if (tableAnno == null) throw new RuntimeException(entityType.getName() + "not find @Table Annotaion");
         Object name = AnnotationUtils.getValue(tableAnno, "name");
-        if(name == null)  throw new RuntimeException(entityType.getName() + "not find @Table Annotaion");
+        if (name == null) throw new RuntimeException(entityType.getName() + "not find @Table Annotaion");
         EntityMate entity = new EntityMate(name.toString());
         List<Field> fieldArr = entityField(entityType);
         for (Field field : fieldArr) {
-            Ignore ignore = AnnotationUtils.findAnnotation(field, Ignore.class);
-            if (ignore != null) continue;
+            if (isIgnore(field)) continue;
             Attribute attribute = analysisAttribute(field, entityType);
             if (attribute == null) continue;
             Id id = AnnotationUtils.findAnnotation(field, Id.class);
@@ -87,13 +83,20 @@ public class AnnotationAssistan {
                 entity.addAttribute(attribute);
                 continue;
             }
+            Loglic loglic = AnnotationUtils.findAnnotation(field, Loglic.class);
+            if (loglic != null) {
+                LoglicAttribute loglicAttribute = new LoglicAttribute(attribute, loglic.valid(), loglic.invalid());
+                updateColum(loglic, loglicAttribute);
+                entity.setLogic(loglicAttribute);
+                continue;
+            }
             Annotation[] annotations = field.getDeclaredAnnotations();
             Annotation annotation = chooseAduitorAnnotationType(annotations);
-            annotation = AnnotationUtils.findAnnotation(field,annotation.getClass()); //使Spring 的 AliasFor 注解生效
+
             if (annotation == null) {
                 entity.addAttribute(attribute);
             } else {
-
+                annotation = AnnotationUtils.findAnnotation(field, annotation.annotationType()); //使Spring 的 AliasFor 注解生效
                 updateColum(annotation, attribute);
                 Boolean hidden;
                 Object object = AnnotationUtils.getValue(annotation, "hidden");
@@ -145,32 +148,41 @@ public class AnnotationAssistan {
     }
 
 
-//    /**
-//     * 解析查询实体
-//     *
-//     * @param method
-//     * @return
-//     */
-//    public QueryMate parseQueryEntity(Method method) {
-//        QueryMate query = new QueryMate();
-//        int index = 0;
-//        Class<?>[] parameterTypes = method.getParameterTypes();
-//        int paramCount = parameterTypes.length;
-//        if (paramCount != 1) throw new BindingException("parameters filed null Unable to build Sql");
-//        for (Class<?> par : parameterTypes) {
-//            List<Field> fields = Reflection.getField(par);
-//            for (Field f : fields) {
-//                if (isIgnore(f)) continue;
-//                query.addFilter(queryMate(f, index));
-//                ++index;
-//            }
-//            if (Page.class.isAssignableFrom(par)) {
-//                query.setStart(new FilterColumMate("limitStart", "limit_start", ConditionEnum.LIMIT_START, 99));
-//                query.setOffset(new FilterColumMate("limitOffset", "limit_offset", ConditionEnum.LIMIT_OFFSET, 99));
-//            }
+    /**
+     * 解析查询实体
+     *
+     * @param method
+     * @return
+     */
+    public ConditionMate parseQuery(Method method) {
+        ConditionMate condition = new ConditionMate();
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        int paramCount = parameterTypes.length;
+        if (paramCount != 1) throw new BindingException("parameters filed null Unable to build Sql");
+        Class<?> clazz = parameterTypes[0];
+        List<Field> fields = Reflection.getField(clazz);
+        ConditionAttribute conditionAttribute;
+        for (Field f : fields) {
+            if (isIgnore(f)) continue;
+            Attribute attribute = analysisAttribute(f, clazz);
+            Annotation annotation = chooseAnnotationType(f);
+            if (annotation == null) {
+                conditionAttribute = new ConditionAttribute(attribute, ConditionType.EQUEL);
+                condition.add(conditionAttribute);
+            } else {
+                annotation = AnnotationUtils.findAnnotation(f, annotation.annotationType());
+                updateColum(annotation, attribute);
+                new ConditionAttribute(attribute.get)
+            }
+
+        }
+//        if (Page.class.isAssignableFrom(par)) {
+//            query.setStart(new FilterColumMate("limitStart", "limit_start", ConditionEnum.LIMIT_START, 99));
+//            query.setOffset(new FilterColumMate("limitOffset", "limit_offset", ConditionEnum.LIMIT_OFFSET, 99));
 //        }
-//        return query;
-//    }
+
+        return query;
+    }
 
 //    /**
 //     * 解析查询方法
@@ -240,7 +252,8 @@ public class AnnotationAssistan {
         return AnnotationUtils.findAnnotation(field, Ignore.class) != null;
     }
 
-    public Annotation chooseAnnotationType(Annotation[] annotations) {
+    public Annotation chooseAnnotationType(Field field) {
+        Annotation[] annotations = field.getDeclaredAnnotations();
         for (Annotation annotation : annotations) {
             if (queryAnnoSet.contains(annotation.annotationType())) {
                 return annotation;

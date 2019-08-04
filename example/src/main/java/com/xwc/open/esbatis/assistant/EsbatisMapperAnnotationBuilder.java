@@ -76,7 +76,7 @@ public class EsbatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         this.assistant = new MapperBuilderAssistant(configuration, resource);
         this.configuration = configuration;
         this.type = type;
-        this.annotationAssistan = new AnnotationAssistan(configuration);
+        this.annotationAssistan = new AnnotationAssistan(configuration, new MySqlSyntaxTemplate());
         this.entityMate = annotationAssistan.parseEntityMate(entityClass);
         //  this.sqlAnnotationBuilder = new SqlAnnotationBuilder(new MySQLAssistant());
     }
