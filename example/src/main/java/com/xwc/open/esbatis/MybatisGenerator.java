@@ -1,6 +1,5 @@
 package com.xwc.open.esbatis;
 
-import com.xwc.open.esbatis.assistant.AnnotationAssistan;
 import com.xwc.open.esbatis.assistant.EsbatisMapperAnnotationBuilder;
 import com.xwc.open.esbatis.assistant.Reflection;
 import org.apache.ibatis.session.Configuration;
@@ -35,7 +34,7 @@ public class MybatisGenerator implements ApplicationContextAware, ApplicationLis
     }
 
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        AnnotationAssistan.setProperties(esbatisProperties());
+        //AnnotationAssistan(esbatisProperties());
         this.configuration = applicationContext.getBean(SqlSessionFactory.class).getConfiguration();
         Collection<Class<?>> mappers = configuration.getMapperRegistry().getMappers();
         for (Class<?> clazz : mappers) {

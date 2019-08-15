@@ -62,8 +62,6 @@ public class EsbatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         GENDERATE_ANNOTATION_TYPES.add(DeleteSql.class);
         GENDERATE_ANNOTATION_TYPES.add(InsertSql.class);
         GENDERATE_ANNOTATION_TYPES.add(UpdateSql.class);
-        GENDERATE_ANNOTATION_TYPES.add(UpdateParam.class);
-        GENDERATE_ANNOTATION_TYPES.add(SelectParam.class);
         GENDERATE_ANNOTATION_TYPES.add(SelectSql.class);
     }
 

@@ -1,8 +1,8 @@
 package com.xwc.open.esbatis.interfaces;
 
 import com.xwc.open.esbatis.anno.DeleteSql;
-import com.xwc.open.esbatis.anno.SelectParam;
 import com.xwc.open.esbatis.anno.InsertSql;
+import com.xwc.open.esbatis.anno.SelectSql;
 import com.xwc.open.esbatis.anno.UpdateSql;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface BaseMapper<E, K> {
 
-    @SelectParam
+    @SelectSql
     E selectKey(K id);
 
     @InsertSql

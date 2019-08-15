@@ -12,11 +12,16 @@ import com.xwc.open.esbatis.meta.*;
 import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.reflection.ParamNameUtil;
 import org.apache.ibatis.session.Configuration;
+import org.springframework.core.annotation.AliasFor;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.lang.Nullable;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +43,6 @@ public class AnnotationAssistan {
         this.configuration = configuration;
         this.template = template;
     }
-
     private static Set<Class<? extends Annotation>> queryAnnoSet = new HashSet<>();
 
     private static Set<Class<? extends Annotation>> auditorAnnoSet = new HashSet<>();
@@ -46,7 +50,6 @@ public class AnnotationAssistan {
     static {
         queryAnnoSet.add(Equal.class);
     }
-
 
     static {
         auditorAnnoSet.add(CreateId.class);
@@ -116,12 +119,10 @@ public class AnnotationAssistan {
         return entity.validate(entityType);
     }
 
-    private void updateColum(Annotation annotation, Attribute attribute) {
-        Object value = AnnotationUtils.getValue(annotation);
-        if (value == null) return;
-        attribute.updateColunm(underscoreName(value.toString()));
-    }
 
+    /**
+     * 获取对象中的属性
+     */
     private List<Field> entityField(Class<?> entityType) {
         Class<?> superclass = entityType.getSuperclass();
         ArrayList<Field> list = new ArrayList<>();
@@ -136,7 +137,9 @@ public class AnnotationAssistan {
         return list;
     }
 
-
+    /**
+     * 解析属性
+     */
     private Attribute analysisAttribute(Field field, Class<?> clazz) {
         Method setter;
         Method getter;
@@ -149,19 +152,28 @@ public class AnnotationAssistan {
         return new Attribute(field.getName(), underscoreName(field.getName()), getter, setter);
     }
 
+    /**
+     * 解析方法上的查询条件
+     */
+    public ConditionMate parseSelect(Method method) {
+        Parameter[] parameters = method.getParameters();
+        if (parameters.length == 1) {
+            if (!isDefualtClass(parameters[0].getType())) {
+                return parseSelectObject(method);
+            } else {
+                return parseSelectParam(method);
+            }
+        } else {
+            return parseSelectParam(method);
+        }
+    }
 
     /**
      * 解析查询实体
-     *
-     * @param method
-     * @return
      */
-    public ConditionMate parseQuery(Method method) {
+    public ConditionMate parseSelectObject(Method method) {
         ConditionMate conditionMate = new ConditionMate(template);
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        int paramCount = parameterTypes.length;
-        if (paramCount != 1) throw new BindingException("parameters filed null Unable to build Sql");
-        Class<?> clazz = parameterTypes[0];
+        Class<?> clazz = method.getParameterTypes()[0];
         List<Field> fields = Reflection.getField(clazz);
         ConditionAttribute conditionAttribute;
         for (Field f : fields) {
@@ -179,7 +191,6 @@ public class AnnotationAssistan {
                 conditionAttribute = new ConditionAttribute(attribute, (int) index, condition.type());
                 conditionMate.add(conditionAttribute);
             }
-
         }
         if (Page.class.isAssignableFrom(clazz)) {
             conditionMate.add(new ConditionAttribute(
@@ -189,31 +200,53 @@ public class AnnotationAssistan {
                     new Attribute("limitOffset", "limit_offset", null, null)
                     , 99, ConditionType.LIMIT_OFFSET));
         }
-
         return conditionMate;
     }
 
     /**
-     * 解析查询方法
-     *
-     * @param method
-     * @return
+     *解析查询参数
      */
-    public QueryMate parseQueryMethod(Method method) {
-        ConditionMate query = new ConditionMate(template);
+    public ConditionMate parseSelectParam(Method method) {
+        ConditionMate condition = new ConditionMate(template);
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         int paramCount = parameterAnnotations.length;
         List<String> paramNames = ParamNameUtil.getParamNames(method);
         for (int i = 0; i < paramCount; ++i) {
             ConditionAttribute paramFilter = analysisParam(parameterAnnotations[i], i, paramNames.get(i));
-            query.addFilter(paramFilter);
+            condition.add(paramFilter);
         }
-        return query;
+        return condition;
+    }
+
+    /**
+     * 获取注解中的值
+     */
+    private Object getValue(Annotation annotation, @Nullable String attributeName) {
+        if (annotation == null || !StringUtils.hasText(attributeName)) {
+            return null;
+        }
+        try {
+            Method method = annotation.annotationType().getDeclaredMethod(attributeName);
+            AliasFor aliasFor = AnnotationUtils.findAnnotation(method, AliasFor.class);
+            if (aliasFor == null) {
+                ReflectionUtils.makeAccessible(method);
+                return method.invoke(annotation);
+            } else {
+                ReflectionUtils.makeAccessible(method);
+                Object value = method.invoke(annotation);
+                if (value.equals(AnnotationUtils.getDefaultValue(annotation, attributeName))) {
+                    return getValue(annotation, aliasFor.value());
+                } else {
+                    return value;
+                }
+            }
+        } catch (Throwable ex) {
+            return null;
+        }
     }
 
     /**
      * 获取对象属性的过滤条件
-     *
      */
     public ConditionAttribute analysisParam(Annotation[] annotations, Integer index, String paramNames) {
         Annotation annotation = chooseAnnotationType(annotations);
@@ -221,8 +254,7 @@ public class AnnotationAssistan {
         if (annotation == null) {
             return new ConditionAttribute(attribute, index + DEFAULT_ORDER, ConditionType.EQUEL);
         } else {
-            annotation = AnnotationUtils.findAnnotation(annotation.annotationType());
-            updateColum(annotation, attribute);
+            updateCustomColum(annotation, attribute);
             int annoIndex = (int) AnnotationUtils.getValue(annotation, "index");
             Condition condition = AnnotationUtils.getAnnotation(annotation, Condition.class);
             return new ConditionAttribute(attribute, annoIndex, condition.type());
@@ -230,45 +262,24 @@ public class AnnotationAssistan {
     }
 
     /**
-     * 获取方法属性的注解属性
-     *
-     * @param annotations
-     * @param paramName
-     * @return
-     */
-    public FilterColumMate queryMate(Annotation[] annotations, int index, String paramName) {
-        Annotation annotation = chooseAnnotationType(annotations);
-        FilterColumMate filter = new FilterColumMate();
-        if (annotation == null) {
-            filter.setConditionEnum(ConditionEnum.EQUEL);
-            filter.setIndex(DEFAULT_ORDER + index);
-            filter.setField(paramName);
-            filter.setColunm(underscoreName(paramName));
-        } else {
-            try {
-                String colum = (String) annotation.getClass().getMethod("colum").invoke(annotation);
-                filter.setField(paramName);
-                filter.setColunm(colum.isEmpty() ? underscoreName(paramName) : underscoreName(colum));
-                int annoIndex = (int) annotation.getClass().getMethod("index").invoke(annotation);
-                filter.setIndex(annoIndex == DEFAULT_ORDER ? annoIndex + DEFAULT_ORDER : annoIndex);
-                ConditionEnum type = (ConditionEnum) annotation.getClass().getMethod("type").invoke(annotation);
-                filter.setConditionEnum(type);
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-        }
-        return filter;
-    }
-
-    /**
      * 判断是否是忽略字段
      */
-    public boolean isIgnore(Field field) {
+    private boolean isIgnore(Field field) {
         return AnnotationUtils.findAnnotation(field, Ignore.class) != null;
     }
 
-    public Annotation chooseAnnotationType(Field field) {
+    /**
+     * 判断属性是否有条件查询注解
+     */
+    private Annotation chooseAnnotationType(Field field) {
         Annotation[] annotations = field.getDeclaredAnnotations();
+        return this.chooseAduitorAnnotationType(annotations);
+    }
+
+    /**
+     * 判断注解数组中是否有查询条件注解
+     */
+    private Annotation chooseAnnotationType(Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             if (queryAnnoSet.contains(annotation.annotationType())) {
                 return annotation;
@@ -277,15 +288,9 @@ public class AnnotationAssistan {
         return null;
     }
 
-    public Annotation chooseAnnotationType( Annotation[] annotations) {
-        for (Annotation annotation : annotations) {
-            if (queryAnnoSet.contains(annotation.annotationType())) {
-                return annotation;
-            }
-        }
-        return null;
-    }
-
+    /**
+     * 检查
+     */
     public Annotation chooseAduitorAnnotationType(Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             if (auditorAnnoSet.contains(annotation.annotationType())) {
@@ -293,6 +298,31 @@ public class AnnotationAssistan {
             }
         }
         return null;
+    }
+
+    /**
+     * 判断对象是否是默认对象
+     */
+    private boolean isDefualtClass(Class<?> clazz) {
+        return clazz != null && clazz.getClassLoader() == null;
+    }
+
+    /**
+     * 更新列属性
+     */
+    private void updateColum(Annotation annotation, Attribute attribute) {
+        Object value = AnnotationUtils.getValue(annotation);
+        if (value == null) return;
+        attribute.updateColunm(underscoreName(value.toString()));
+    }
+
+    /**
+     * 更新列属性
+     */
+    private void updateCustomColum(Annotation annotation, Attribute attribute) {
+        Object value = this.getValue(annotation, "value");
+        if (value == null || value.toString().isEmpty()) return;
+        attribute.updateColunm(underscoreName(value.toString()));
     }
 
     private String underscoreName(String camelCaseName) {
