@@ -13,7 +13,7 @@ import java.lang.annotation.*;
  */
 
 @Documented
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Id {
     @AliasFor("value")

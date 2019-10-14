@@ -1,12 +1,14 @@
 package com.xwc.open.esbatis.meta;
 
 
+import com.xwc.open.esbatis.enums.AuditorType;
 import com.xwc.open.esbatis.enums.IdType;
 import org.apache.ibatis.binding.BindingException;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 创建人：徐卫超
@@ -55,6 +57,69 @@ public class EntityMate {
         this.type = type;
     }
 
+    public String getTableName() {
+        return tableName;
+    }
+
+    public List<Attribute> updateAttributeList() {
+        ArrayList<Attribute> list = new ArrayList<>();
+        list.addAll(attributeList);
+        auditorAttributeList.forEach(auditor -> {
+            if (auditor.getType().getGroup() == AuditorType.Group.UPDATE) list.add(auditor);
+        });
+        return list;
+    }
+
+    @Deprecated
+    public String selectCloums() {
+        StringBuilder sb = new StringBuilder();
+        attributeList.forEach(attr -> sb.append(", ").append(attr.getColunm()));
+        auditorAttributeList.stream().filter(attr -> !attr.isHidden()).forEach(attr -> sb.append(", ").append(attr.getColunm()));
+        return sb.substring(1);
+    }
+
+    @Deprecated
+    public String insertCloums() {
+        StringBuilder sb = new StringBuilder();
+        attributeList.forEach(attr -> sb.append(", ").append(attr.getColunm()));
+        auditorAttributeList.stream().forEach(attr -> sb.append(", ").append(attr.getColunm()));
+        return sb.substring(1);
+    }
+
+    @Deprecated
+    public String insertField(String item) {
+        StringBuilder sb = new StringBuilder();
+        attributeList.forEach(attr -> sb.append(", ").append(attr.getBatisField(item)));
+        auditorAttributeList.stream().forEach(attr -> sb.append(", ").append(attr.getColunm()));
+        return sb.substring(1);
+    }
+
+    public List<Attribute> selectAttribute() {
+        ArrayList<Attribute> list = new ArrayList<>();
+        list.add(id);
+        list.addAll(attributeList);
+        list.addAll(auditorAttributeList.stream().filter(attr -> !attr.isHidden()).collect(Collectors.toList()));
+        return list;
+    }
+
+    public List<Attribute> insertAttribute() {
+        ArrayList<Attribute> list = new ArrayList<>();
+        list.add(id);
+        list.addAll(attributeList);
+        list.addAll(auditorAttributeList);
+        return list;
+    }
+
+    public List<Attribute> updateAttribute() {
+        ArrayList<Attribute> list = new ArrayList<>();
+        list.add(id);
+        list.addAll(attributeList);
+        list.addAll(auditorAttributeList.stream().filter(attr->attr.getType().getGroup() == AuditorType.Group.UPDATE)
+                .collect(Collectors.toList()));
+        return list;
+    }
+
+
     public void setLogic(LoglicAttribute logic) {
         this.logic = logic;
     }
@@ -68,6 +133,9 @@ public class EntityMate {
         auditorAttributeList.add(attribute);
     }
 
+    public List<AuditorAttribute> auditorAttributeList() {
+        return auditorAttributeList;
+    }
 
     public IdType getType() {
         return type;
@@ -75,7 +143,7 @@ public class EntityMate {
 
 
     public EntityMate validate(Class<?> clazz) {
-        if (StringUtils.isEmpty(tableName)) {
+        if (tableName == null && tableName.isEmpty()) {
             throw new BindingException(clazz.toString() + ": 获取不到表名 ");
         }
         if (id == null) {
@@ -87,4 +155,6 @@ public class EntityMate {
     public Attribute getId() {
         return id;
     }
+
+
 }

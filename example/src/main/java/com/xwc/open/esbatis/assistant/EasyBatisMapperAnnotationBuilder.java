@@ -2,9 +2,14 @@ package com.xwc.open.esbatis.assistant;
 
 
 import com.xwc.open.esbatis.anno.*;
+import com.xwc.open.esbatis.anno.condition.Count;
+import com.xwc.open.esbatis.anno.condition.Distinct;
+import com.xwc.open.esbatis.enums.ConditionType;
 import com.xwc.open.esbatis.enums.IdType;
-import com.xwc.open.esbatis.meta.EntityMate;
+import com.xwc.open.esbatis.interfaces.SQLAssistant;
+import com.xwc.open.esbatis.meta.*;
 import com.xwc.open.esbatis.mysql.MySqlSyntaxTemplate;
+import com.xwc.open.esbatis.plugin.ParameterizePlugin;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.binding.MapperMethod;
@@ -33,6 +38,7 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotationUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,34 +52,38 @@ import java.util.*;
  * 业务：
  * 功能：
  */
-public class EsbatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
+public class EasyBatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(EsbatisMapperAnnotationBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(EasyBatisMapperAnnotationBuilder.class);
     private final Configuration configuration;
     private final MapperBuilderAssistant assistant;
     private final Class<?> type;
     private final EntityMate entityMate;
+    private final SQLAssistant sqlAssistant;
     private final AnnotationAssistan annotationAssistan;
-    //  private final SqlAnnotationBuilder sqlAnnotationBuilder;
     private static Set<Class<? extends Annotation>> GENDERATE_ANNOTATION_TYPES = new HashSet<>();
-//    public static Map<String, MethodMate> methods = new HashMap<>();
+    public static Map<String, AuditorMate> methods = new HashMap<>();
 
     static {
         GENDERATE_ANNOTATION_TYPES.add(DeleteSql.class);
         GENDERATE_ANNOTATION_TYPES.add(InsertSql.class);
         GENDERATE_ANNOTATION_TYPES.add(UpdateSql.class);
         GENDERATE_ANNOTATION_TYPES.add(SelectSql.class);
+
     }
 
-    public EsbatisMapperAnnotationBuilder(Configuration configuration, Class<?> type, Class<?> entityClass) {
+    public EasyBatisMapperAnnotationBuilder(Configuration configuration, Class<?> type, Class<?> entityClass) {
         super(configuration, type);
         String resource = type.getName().replace('.', '/') + ".java (best guess)";
         this.assistant = new MapperBuilderAssistant(configuration, resource);
         this.configuration = configuration;
         this.type = type;
-        this.annotationAssistan = new AnnotationAssistan(configuration,new MySqlSyntaxTemplate());
+        //TODO 支持多语言入口
+
+        MySqlSyntaxTemplate mySqlSyntaxTemplate = new MySqlSyntaxTemplate();
+        annotationAssistan = new AnnotationAssistan(configuration, mySqlSyntaxTemplate);
+        sqlAssistant = new MySQLAssistan(mySqlSyntaxTemplate);
         this.entityMate = annotationAssistan.parseEntityMate(entityClass);
-        //  this.sqlAnnotationBuilder = new SqlAnnotationBuilder(new MySQLAssistant());
     }
 
     public void parse() {
@@ -86,13 +96,10 @@ public class EsbatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         Method[] methods = type.getMethods();
         for (Method method : methods) {
             try {
-//                // issue #237
-//                if (!method.isBridge() && AnnotationUtils.findAnnotation(method, GeneratSql.class) != null) {
-//
-//                    parseStatement(method);
-//
-//
-//                }
+                // issue #237
+                if (!method.isBridge() && getSqlProviderAnnotationType(method) != null) {
+                    parseStatement(method);
+                }
             } catch (IncompleteElementException e) {
                 configuration.addIncompleteMethod(new MethodResolver(this, method));
             }
@@ -236,12 +243,12 @@ public class EsbatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
 
     @SuppressWarnings("all")
     void parseStatement(Method method) {
+        final String mappedStatementId = type.getName() + "." + method.getName();
         Class<?> parameterTypeClass = getParameterType(method);
         LanguageDriver languageDriver = getLanguageDriver(method);
-        SqlSource sqlSource = getSqlSourceFromAnnotations(method, parameterTypeClass, languageDriver);
+        SqlSource sqlSource = getSqlSourceFromAnnotations(method, parameterTypeClass, languageDriver, mappedStatementId);
         if (sqlSource != null) {
             Options options = method.getAnnotation(Options.class);
-            final String mappedStatementId = type.getName() + "." + method.getName();
             Integer fetchSize = null;
             Integer timeout = null;
             StatementType statementType = StatementType.PREPARED;
@@ -414,66 +421,55 @@ public class EsbatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
     }
 
     //TODO 构建sql
-    private SqlSource getSqlSourceFromAnnotations(Method method, Class<?> parameterType, LanguageDriver languageDriver) {
+    private SqlSource getSqlSourceFromAnnotations(Method method, Class<?> parameterType, LanguageDriver languageDriver, String mappedStatementId) {
         try {
-//            MethodMate md = new MethodMate();
-//            Annotation annotation = getSqlProviderAnnotationType(method);
-//            if (annotation == null) return null;
-//            Object value = annotation.getClass().getMethod("value").invoke(annotation);
-//            if (!(value instanceof SqlOperationType)) {
-//                throw new BuilderException("Could not find value method on SQL annotation Type");
-//            }
-//            String colums = (String) annotation.getClass().getMethod("colums").invoke(annotation);
-//            String[] sql;
-//            Count count;
-//            Distinct distinct;
-//            QueryMate queryMate;
-//            md.setOperationType((SqlOperationType) value);
-//            md.setEntityMate(entityMate);
-//            md.setArgs(ParamNameUtil.getParamNames(method));
-//            methods.put(type.getName() + "." + method.getName(), md);
-//            switch ((SqlOperationType) value) {
-//                case BASE_SELECT_ONE:
-//                    sql = new String[]{sqlAnnotationBuilder.selectOne(entityMate, colums)};
-//                    break;
-//                case BASE_INSERT:
-//                    if (Collection.class.isAssignableFrom(parameterType)) {
-//                        sql = new String[]{sqlAnnotationBuilder.insertBatch(entityMate)};
-//                    } else {
-//                        sql = new String[]{sqlAnnotationBuilder.insert(entityMate)};
-//                    }
-//                    break;
-//                case BASE_UPDATE:
-//                    sql = new String[]{sqlAnnotationBuilder.update(entityMate)};
-//                    break;
-//                case BASE_PARAM_UPDATE:
-//                    queryMate = annotationAssistan.parseQueryMethod(method);
-//                    sql = new String[]{sqlAnnotationBuilder.update(queryMate, entityMate)};
-//                    break;
-//                case BASE_DELETE:
-//                    sql = new String[]{sqlAnnotationBuilder.delete(entityMate)};
-//                    break;
-//                case BASE_PARAM_DELETE:
-//                    queryMate = annotationAssistan.parseQueryMethod(method);
-//                    sql = new String[]{sqlAnnotationBuilder.delete(entityMate, queryMate)};
-//                    break;
-//                case BASE_QUERY_SELECT:
-//                    queryMate = annotationAssistan.parseQueryEntity(method);
-//                    count = AnnotationUtils.findAnnotation(method, Count.class);
-//                    distinct = AnnotationUtils.findAnnotation(method, Distinct.class);
-//                    sql = new String[]{sqlAnnotationBuilder.selectQuery(entityMate, queryMate, colums, true, count, distinct)};
-//                    break;
-//                case BASE_PARAM_SELECT:
-//                    queryMate = annotationAssistan.parseQueryMethod(method);
-//                    count = AnnotationUtils.findAnnotation(method, Count.class);
-//                    distinct = AnnotationUtils.findAnnotation(method, Distinct.class);
-//                    sql = new String[]{sqlAnnotationBuilder.selectQuery(entityMate, queryMate, colums, false, count, distinct)};
-//                    break;
-//                default:
-//                    return null;
-//            }
-//            logger.info("接口：{} ---> | 方法: {} | SQL: --- > {}", type.getName(), method.getName(), sql);
-            return buildSqlSourceFromStrings(new String[]{""}, parameterType, languageDriver);
+            AuditorMate md = new AuditorMate(entityMate);
+            Annotation annotation = getSqlProviderAnnotationType(method);
+            if (annotation == null) return null;
+            String[] sql;
+            boolean isObject = false;
+            ParamKey key = AnnotationUtils.findAnnotation(method, ParamKey.class);
+            if (annotation instanceof SelectSql) {
+                Count count = AnnotationUtils.findAnnotation(method, Count.class);
+                Distinct distinct = AnnotationUtils.findAnnotation(method, Distinct.class);
+                isObject = annotationAssistan.isCustomObject(method);
+                StringBuilder sb = sqlAssistant.select(entityMate,
+                        annotationAssistan.parseSelect(method),
+                        isObject,
+                        true, count, distinct, key);
+                sql = new String[]{sb.toString()};
+            } else if (annotation instanceof UpdateSql) {
+                isObject = !annotationAssistan.isParamSet(method);
+                StringBuilder sb = sqlAssistant.update(entityMate,
+                        annotationAssistan.parseSelect(method),
+                        annotationAssistan.isParamSet(method), true);
+                sql = new String[]{sb.toString()};
+            } else if (annotation instanceof InsertSql) {
+                isObject = true;
+                StringBuilder sb = sqlAssistant.insert(entityMate, annotationAssistan.paramentersIsCollections(method));
+                sql = new String[]{sb.toString()};
+            } else if (annotation instanceof DeleteSql) {
+                isObject = false;
+                if(entityMate.getLogic() == null){
+                    StringBuilder sb = sqlAssistant.delete(entityMate, annotationAssistan.parseSelect(method),
+                            annotationAssistan.isCustomObject(method), true, key);
+                    sql = new String[]{sb.toString()};
+                }else {
+                    ConditionMate conditionMate = annotationAssistan.parseSelect(method);
+                    conditionMate.add(new LoglicConditionAttribute(entityMate.getLogic(),true));
+                    StringBuilder sb = sqlAssistant.update(entityMate,
+                            conditionMate,
+                            true, false);
+                    sql = new String[]{sb.toString()};
+                }
+
+            } else {
+                throw new RuntimeException("");
+            }
+            logger.info("接口：{} ---> | 方法: {} | SQL: --- > {}", type.getName(), method.getName(), sql);
+            methods.put(type.getName() + "." + method.getName(), md);
+            ParameterizePlugin.addMethodMate(mappedStatementId, new MethodMate(entityMate, method, key != null, isObject));
+            return buildSqlSourceFromStrings(sql, parameterType, languageDriver);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BuilderException("Could not find value method on SQL annotation.  Cause: " + e, e);
@@ -492,50 +488,21 @@ public class EsbatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         }
         return languageDriver.createSqlSource(configuration, sql.toString().trim(), parameterTypeClass);
     }
-//
-//    public static MethodMate get(String methodPath) {
-//        return methods.get(methodPath);
-//    }
-
 
     //TODO  标识command
     private SqlCommandType getSqlCommandType(Method method) {
-//        Annotation annotation = getSqlProviderAnnotationType(method);
-//        if (annotation == null) return SqlCommandType.UNKNOWN;
-//        Object value;
-//        try {
-//            value = annotation.getClass().getMethod("value").invoke(annotation);
-//        } catch (Exception e) {
-//            throw new BuilderException("Could not find type method on SQL annotation .  Cause: " + e, e);
-//        }
-//        if (!(value instanceof SqlOperationType)) {
-//            throw new BuilderException("Could not find type method on SQL annotation .");
-//        }
-//        Class<? extends Annotation> type;
-//        switch ((SqlOperationType) value) {
-//            case BASE_PARAM_SELECT:
-//            case BASE_QUERY_SELECT:
-//            case BASE_SELECT_ONE:
-//                type = Select.class;
-//                break;
-//            case BASE_INSERT:
-//                type = Insert.class;
-//                break;
-//            case BASE_UPDATE:
-//            case BASE_PARAM_UPDATE:
-//                type = Update.class;
-//                break;
-//            case BASE_DELETE:  //当为逻辑删除时改变自定义注解delete操作为update操作
-//            case BASE_PARAM_DELETE:
-//                if (entityMate.isLogic()) {
-//                    type = Update.class;
-//                } else {
-//                    type = Delete.class;
-//                }
-//                break;
-//            default:
-//                throw new BindingException("Not Find SQL command");
-//        }
+        Annotation annotation = getSqlProviderAnnotationType(method);
+        if (annotation == null) return SqlCommandType.UNKNOWN;
+        Class<? extends Annotation> type;
+        if (annotation instanceof SelectSql) {
+            type = Select.class;
+        } else if (annotation instanceof InsertSql) {
+            type = Insert.class;
+        } else if (annotation instanceof Delete && entityMate.getLogic() == null) {
+            type = Delete.class;
+        } else {
+            type = Update.class;
+        }
         return SqlCommandType.valueOf(type.getSimpleName().toUpperCase(Locale.ENGLISH));
     }
 

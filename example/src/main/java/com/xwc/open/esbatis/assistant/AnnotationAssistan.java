@@ -4,12 +4,12 @@ package com.xwc.open.esbatis.assistant;
 import com.xwc.open.esbatis.anno.auditor.*;
 import com.xwc.open.esbatis.anno.condition.filter.Condition;
 import com.xwc.open.esbatis.anno.condition.filter.Equal;
+import com.xwc.open.esbatis.anno.condition.filter.SetParam;
 import com.xwc.open.esbatis.anno.table.*;
 import com.xwc.open.esbatis.enums.ConditionType;
 import com.xwc.open.esbatis.interfaces.Page;
 import com.xwc.open.esbatis.interfaces.SyntaxTemplate;
 import com.xwc.open.esbatis.meta.*;
-import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.reflection.ParamNameUtil;
 import org.apache.ibatis.session.Configuration;
 import org.springframework.core.annotation.AliasFor;
@@ -22,10 +22,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 创建人：徐卫超
@@ -33,6 +30,7 @@ import java.util.Set;
  * 业务：
  * 功能：用于获取注解信息
  */
+@SuppressWarnings("all")
 public class AnnotationAssistan {
 
     private Configuration configuration;
@@ -43,6 +41,7 @@ public class AnnotationAssistan {
         this.configuration = configuration;
         this.template = template;
     }
+
     private static Set<Class<? extends Annotation>> queryAnnoSet = new HashSet<>();
 
     private static Set<Class<? extends Annotation>> auditorAnnoSet = new HashSet<>();
@@ -156,22 +155,52 @@ public class AnnotationAssistan {
      * 解析方法上的查询条件
      */
     public ConditionMate parseSelect(Method method) {
-        Parameter[] parameters = method.getParameters();
-        if (parameters.length == 1) {
-            if (!isDefualtClass(parameters[0].getType())) {
-                return parseSelectObject(method);
-            } else {
-                return parseSelectParam(method);
-            }
+        if (isCustomObject(method)) {
+            return parseSelectObject(method);
         } else {
             return parseSelectParam(method);
+        }
+    }
+
+    public boolean isCustomObject(Method method) {
+        Parameter[] parameters = method.getParameters();
+        if (parameters.length == 1) {
+            if (!isDefualtClass(parameters[0].getClass())) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isParamSet(Method method) {
+        Parameter[] parameters = method.getParameters();
+        if (parameters.length == 1) {
+            SetParam annotation = AnnotationUtils.findAnnotation(parameters[0].getType(), SetParam.class);
+            if (annotation == null) return false;
+        }
+        return true;
+    }
+
+    public boolean paramentersIsCollections(Method method) {
+        Parameter[] parameters = method.getParameters();
+        if (parameters.length == 1) {
+            if (Collection.class.isAssignableFrom(parameters[0].getType())) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            throw new RuntimeException("错误");
         }
     }
 
     /**
      * 解析查询实体
      */
-    public ConditionMate parseSelectObject(Method method) {
+    private ConditionMate parseSelectObject(Method method) {
         ConditionMate conditionMate = new ConditionMate(template);
         Class<?> clazz = method.getParameterTypes()[0];
         List<Field> fields = Reflection.getField(clazz);
@@ -204,9 +233,9 @@ public class AnnotationAssistan {
     }
 
     /**
-     *解析查询参数
+     * 解析查询参数
      */
-    public ConditionMate parseSelectParam(Method method) {
+    private ConditionMate parseSelectParam(Method method) {
         ConditionMate condition = new ConditionMate(template);
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         int paramCount = parameterAnnotations.length;
@@ -221,7 +250,7 @@ public class AnnotationAssistan {
     /**
      * 获取注解中的值
      */
-    private Object getValue(Annotation annotation, @Nullable String attributeName) {
+    public static Object getValue(Annotation annotation, @Nullable String attributeName) {
         if (annotation == null || !StringUtils.hasText(attributeName)) {
             return null;
         }
@@ -248,7 +277,7 @@ public class AnnotationAssistan {
     /**
      * 获取对象属性的过滤条件
      */
-    public ConditionAttribute analysisParam(Annotation[] annotations, Integer index, String paramNames) {
+    private ConditionAttribute analysisParam(Annotation[] annotations, Integer index, String paramNames) {
         Annotation annotation = chooseAnnotationType(annotations);
         Attribute attribute = new Attribute(paramNames, underscoreName(paramNames), null, null);
         if (annotation == null) {
@@ -303,9 +332,10 @@ public class AnnotationAssistan {
     /**
      * 判断对象是否是默认对象
      */
-    private boolean isDefualtClass(Class<?> clazz) {
+    public static boolean isDefualtClass(Class<?> clazz) {
         return clazz != null && clazz.getClassLoader() == null;
     }
+
 
     /**
      * 更新列属性
@@ -344,4 +374,6 @@ public class AnnotationAssistan {
         }
         return camelCaseName;
     }
+
+
 }

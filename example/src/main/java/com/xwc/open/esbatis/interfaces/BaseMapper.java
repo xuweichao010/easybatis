@@ -1,11 +1,8 @@
 package com.xwc.open.esbatis.interfaces;
 
-import com.xwc.open.esbatis.anno.DeleteSql;
-import com.xwc.open.esbatis.anno.InsertSql;
-import com.xwc.open.esbatis.anno.SelectSql;
-import com.xwc.open.esbatis.anno.UpdateSql;
+import com.xwc.open.esbatis.anno.*;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * 创建人：徐卫超
@@ -17,18 +14,20 @@ import java.util.List;
 public interface BaseMapper<E, K> {
 
     @SelectSql
+    @ParamKey
     E selectKey(K id);
 
-    @InsertSql
-    void insert(E entity);
-
-    @InsertSql
-    void insertBatch(List<E> list);
-
     @UpdateSql
-    void update(E entity);
+    Long update(E entity);
+
+    @InsertSql
+    Long insert(E entity);
+
+    @InsertSql
+    Long insertBatch(Collection<E> list);
 
     @DeleteSql
+    @ParamKey
     long delete(K id);
 
 }

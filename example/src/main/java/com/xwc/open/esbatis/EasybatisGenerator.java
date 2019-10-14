@@ -1,16 +1,17 @@
 package com.xwc.open.esbatis;
 
-import com.xwc.open.esbatis.assistant.EsbatisMapperAnnotationBuilder;
+import com.xwc.open.esbatis.assistant.EasyBatisMapperAnnotationBuilder;
 import com.xwc.open.esbatis.assistant.Reflection;
+import com.xwc.open.esbatis.plugin.ParameterizePlugin;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.Collection;
@@ -23,7 +24,9 @@ import java.util.Collection;
  */
 @org.springframework.context.annotation.Configuration
 @EnableConfigurationProperties
-public class MybatisGenerator implements ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
+public class EasybatisGenerator implements ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
+     private static final Logger logger = LoggerFactory.getLogger(EasybatisGenerator.class);
+
 
     private ApplicationContext applicationContext;
     private Configuration configuration;
@@ -34,19 +37,16 @@ public class MybatisGenerator implements ApplicationContextAware, ApplicationLis
     }
 
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        //AnnotationAssistan(esbatisProperties());
         this.configuration = applicationContext.getBean(SqlSessionFactory.class).getConfiguration();
         Collection<Class<?>> mappers = configuration.getMapperRegistry().getMappers();
         for (Class<?> clazz : mappers) {
             Class<?> ec = Reflection.getEntityClass(clazz);
-            EsbatisMapperAnnotationBuilder parser = new EsbatisMapperAnnotationBuilder(configuration, clazz, ec);
+            EasyBatisMapperAnnotationBuilder parser = new EasyBatisMapperAnnotationBuilder(configuration, clazz, ec);
             parser.parse();
         }
-    }
-
-    @Bean
-    @ConfigurationProperties(prefix = "esbatis")
-    public EsbatisProperties esbatisProperties() {
-        return new EsbatisProperties();
+        configuration.setMapUnderscoreToCamelCase(true);
+        configuration.setUseActualParamName(true);
+         configuration.addInterceptor(new ParameterizePlugin());
+        logger.info("Spring 容器启动");
     }
 }

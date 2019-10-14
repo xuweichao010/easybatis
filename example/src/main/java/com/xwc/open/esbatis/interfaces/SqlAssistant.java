@@ -1,10 +1,10 @@
 package com.xwc.open.esbatis.interfaces;
 
+import com.xwc.open.esbatis.anno.ParamKey;
 import com.xwc.open.esbatis.anno.condition.Count;
 import com.xwc.open.esbatis.anno.condition.Distinct;
-import com.xwc.open.esbatis.meta.Attribute;
-
-import java.util.List;
+import com.xwc.open.esbatis.meta.ConditionMate;
+import com.xwc.open.esbatis.meta.EntityMate;
 
 /**
  * 创建人：徐卫超
@@ -12,60 +12,15 @@ import java.util.List;
  * 业务：
  * 功能：定义相关sql片段的实现逻辑
  */
-public interface SqlAssistant {
+public interface SQLAssistant {
 
-    String TMPLATE_IF = "<if test='%s != null' > %s </if>";
-    String ALL_COLUMS = "*";
+    StringBuilder delete(EntityMate entity, ConditionMate condition, boolean isObject, boolean isDynamic, ParamKey key);
 
+    StringBuilder select(EntityMate entity, ConditionMate condition, boolean isObject, boolean isDynamic, Count count, Distinct distinct, ParamKey key);
 
-    /**
-     * 构建需要查询字段
-     */
-    StringBuilder builderCountOrDistinct(Count count, Distinct distinct, List<Attribute> list);
+    StringBuilder insert(EntityMate entity, boolean isBatch);
 
-
-    /**
-     * 构建过滤语句
-     */
-    StringBuilder builderColum(List<Attribute> list, String cloums);
-
-
-    /**
-     * 构建一个修改片段
-     */
-    StringBuilder builderSet(List<Attribute> set);
-
-    /**
-     * 构建插入片段
-     */
-    StringBuilder builderInsert(List<Attribute> list);
-
-
-    /**
-     * 构建批量插入数据片段
-     */
-    StringBuilder builderInsertBatch(List<Attribute> list);
-
-
-
-    /**
-     * 构建一个排序的片段
-     *
-     * @param mate
-     * @return
-     */
-    StringBuilder builderOrderBy(Attribute mate);
-
-
-
-    /**
-     * 构建一个分页的片段
-     *
-     * @param start
-     * @param offset
-     * @return
-     */
-    StringBuilder builderPage(Attribute start, Attribute offset);
+    StringBuilder update(EntityMate entity, ConditionMate condition, boolean isUpdateParam, boolean isDynamic);
 
 
 }
