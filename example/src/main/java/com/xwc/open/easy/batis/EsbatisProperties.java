@@ -1,1 +1,0 @@
-package com.xwc.open.easy.batis;import com.xwc.open.easy.batis.enums.IdType;/** * 创建人：徐卫超 * 时间：2019/8/3 18:17 * 功能： * 备注： */public class EsbatisProperties {    private IdType type = IdType.AUTO;    public IdType getType() {        return type;    }    public void setType(IdType type) {        this.type = type;    }}

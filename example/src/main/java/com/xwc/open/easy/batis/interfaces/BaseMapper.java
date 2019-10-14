@@ -1,7 +1,6 @@
 package com.xwc.open.easy.batis.interfaces;
 
 import com.xwc.open.easy.batis.anno.*;
-import com.xwc.open.esbatis.anno.*;
 
 import java.util.Collection;
 
@@ -12,7 +11,7 @@ import java.util.Collection;
  * 功能：
  */
 @SuppressWarnings("unused")
-public interface BaseMapper<E, K> {
+public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 
     @SelectSql
     @ParamKey

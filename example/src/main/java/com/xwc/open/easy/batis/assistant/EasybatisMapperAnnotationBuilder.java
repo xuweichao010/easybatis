@@ -7,9 +7,7 @@ import com.xwc.open.easy.batis.enums.IdType;
 import com.xwc.open.easy.batis.interfaces.SQLAssistant;
 import com.xwc.open.easy.batis.meta.*;
 import com.xwc.open.easy.batis.mysql.MySqlSyntaxTemplate;
-import com.xwc.open.esbatis.anno.*;
 import com.xwc.open.easy.batis.anno.condition.Count;
-import com.xwc.open.esbatis.meta.*;
 import com.xwc.open.easy.batis.plugin.ParameterizePlugin;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.annotations.ResultMap;
@@ -53,9 +51,9 @@ import java.util.*;
  * 业务：
  * 功能：
  */
-public class EasyBatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
+public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(EasyBatisMapperAnnotationBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(EasybatisMapperAnnotationBuilder.class);
     private final Configuration configuration;
     private final MapperBuilderAssistant assistant;
     private final Class<?> type;
@@ -73,7 +71,7 @@ public class EasyBatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
 
     }
 
-    public EasyBatisMapperAnnotationBuilder(Configuration configuration, Class<?> type, Class<?> entityClass) {
+    public EasybatisMapperAnnotationBuilder(Configuration configuration, Class<?> type, Class<?> entityClass) {
         super(configuration, type);
         String resource = type.getName().replace('.', '/') + ".java (best guess)";
         this.assistant = new MapperBuilderAssistant(configuration, resource);
