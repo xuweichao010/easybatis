@@ -10,17 +10,23 @@ import java.io.Serializable;
 /**
  * 创建人：徐卫超
  * 创建时间：2019/4/27  10:17
- * 业务：测试UUID实体
+ * 业务：测试逻辑删除功能实体
  * 功能：
  */
 @Table("t_user")
-public class User implements Serializable {
+public class UserLogic implements Serializable {
     private static final long serialVersionUID = -4279599274719815691L;
     @Id(type = IdType.UUID)
     private String id;
 
     private String name;
 
+
+    /**
+     * 是否有效
+     */
+    @Loglic(valid = 0, invalid = 1)
+    private Integer valid;
 
     public String getId() {
         return id;
@@ -38,10 +44,19 @@ public class User implements Serializable {
         this.name = name;
     }
 
+    public Integer getValid() {
+        return valid;
+    }
+
+    public void setValid(Integer valid) {
+        this.valid = valid;
+    }
+
     @Override
     public String toString() {
         return "UserLogic{" +
                 "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

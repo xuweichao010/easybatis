@@ -1,0 +1,1 @@
+package com.xwc.open.easy.example;/** * 创建人：徐卫超 * 时间：2019/10/14 16:20 * 功能：测试审计功能 * 备注： */public class TestAuditor {}

@@ -30,7 +30,6 @@ public class Org  {
      * 父机构名称
      */
     private String parentName;
-
     /**
      * 地址信息
      */

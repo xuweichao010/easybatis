@@ -68,7 +68,6 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         GENDERATE_ANNOTATION_TYPES.add(InsertSql.class);
         GENDERATE_ANNOTATION_TYPES.add(UpdateSql.class);
         GENDERATE_ANNOTATION_TYPES.add(SelectSql.class);
-
     }
 
     public EasybatisMapperAnnotationBuilder(Configuration configuration, Class<?> type, Class<?> entityClass) {
@@ -78,7 +77,6 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         this.configuration = configuration;
         this.type = type;
         //TODO 支持多语言入口
-
         MySqlSyntaxTemplate mySqlSyntaxTemplate = new MySqlSyntaxTemplate();
         annotationAssistan = new AnnotationAssistan(configuration, mySqlSyntaxTemplate);
         sqlAssistant = new MySQLAssistan(mySqlSyntaxTemplate);
