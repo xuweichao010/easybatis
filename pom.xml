@@ -10,14 +10,9 @@
         <relativePath/>
     </parent>
     <groupId>com.xwc.open</groupId>
-    <artifactId>esbatis-demo</artifactId>
+    <artifactId>easy-batis-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
-    <modules>
-        <module>esbatis</module>
-        <module>example</module>
-    </modules>
-
+    <version>2.0</version>
     <repositories>
         <repository>
             <id>aliyun-repo</id>

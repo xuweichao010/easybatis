@@ -1,1 +1,0 @@
-package com.xwc.open.esbatis.interfaces;/** * 创建人：徐卫超 * 时间：2019/8/3 15:08 * 功能：esbatis审计功能接口 * 备注： */public interface AuditorAware {    /**     * 注入到     * @return     */    Object id();    Object name();    Object time();}
