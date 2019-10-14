@@ -8,7 +8,7 @@ import com.xwc.open.easy.batis.interfaces.SQLAssistant;
 import com.xwc.open.easy.batis.meta.*;
 import com.xwc.open.easy.batis.mysql.MySqlSyntaxTemplate;
 import com.xwc.open.easy.batis.anno.condition.Count;
-import com.xwc.open.easy.batis.plugin.ParameterizePlugin;
+import com.xwc.open.easy.batis.plugin.EasybatisPlugin;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.binding.MapperMethod;
@@ -465,7 +465,7 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             }
             logger.info("接口：{} ---> | 方法: {} | SQL: --- > {}", type.getName(), method.getName(), sql);
             methods.put(type.getName() + "." + method.getName(), md);
-            ParameterizePlugin.addMethodMate(mappedStatementId, new MethodMate(entityMate, method, key != null, isObject));
+            EasybatisPlugin.addMethodMate(mappedStatementId, new MethodMate(entityMate, method, key != null, isObject));
             return buildSqlSourceFromStrings(sql, parameterType, languageDriver);
         } catch (Exception e) {
             e.printStackTrace();

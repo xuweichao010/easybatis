@@ -3,7 +3,7 @@ package com.xwc.open.easy.batis;
 import com.xwc.open.easy.batis.assistant.EasybatisMapperAnnotationBuilder;
 import com.xwc.open.easy.batis.assistant.Reflection;
 import com.xwc.open.easy.batis.interfaces.EasyMapper;
-import com.xwc.open.easy.batis.plugin.ParameterizePlugin;
+import com.xwc.open.easy.batis.plugin.EasybatisPlugin;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
@@ -13,7 +13,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.Collection;
@@ -51,7 +50,7 @@ public class EasybatisGenerator implements ApplicationContextAware, ApplicationL
         }
         configuration.setMapUnderscoreToCamelCase(true);
         configuration.setUseActualParamName(true);
-        configuration.addInterceptor(new ParameterizePlugin());
+        configuration.addInterceptor(new EasybatisPlugin());
         easybatisInit = true;
     }
 }

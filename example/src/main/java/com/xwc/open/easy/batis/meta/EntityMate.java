@@ -106,6 +106,7 @@ public class EntityMate {
         list.add(id);
         list.addAll(attributeList);
         list.addAll(auditorAttributeList);
+        list.add(logic);
         return list;
     }
 

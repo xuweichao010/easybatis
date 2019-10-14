@@ -12,6 +12,7 @@ import java.io.Serializable;
  * 创建时间：2019/4/27  10:17
  * 业务：测试逻辑删除功能实体
  * 功能：
+ *
  */
 @Table("t_user")
 public class UserLogic implements Serializable {
@@ -20,7 +21,6 @@ public class UserLogic implements Serializable {
     private String id;
 
     private String name;
-
 
     /**
      * 是否有效
