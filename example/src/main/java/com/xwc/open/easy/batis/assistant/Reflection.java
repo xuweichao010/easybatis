@@ -23,11 +23,24 @@ public class Reflection {
 
     private static final String SETTER = "set";
     private static final String GETTER = "get";
+    private static final String IS = "is";
 
     public static <T> Method getter(Field field, Class<T> clazz) throws NoSuchMethodException {
-        String fieldName = field.getName();
-        String mthodeName = GETTER + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-        return clazz.getMethod(mthodeName);
+        if(boolean.class.isAssignableFrom(field.getType()) || Boolean.class.isAssignableFrom(field.getType())){
+            String fieldName = field.getName();
+            String mthodeName = GETTER + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+            try {
+                return clazz.getMethod(mthodeName);
+            }catch (NoSuchMethodException e){
+                mthodeName = IS + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+                return clazz.getMethod(mthodeName);
+            }
+        }else {
+            String fieldName = field.getName();
+            String mthodeName = GETTER + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+            return clazz.getMethod(mthodeName);
+        }
+
     }
 
     public static List<Field> getField(Class<?> typeClass) {

@@ -469,7 +469,7 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             return buildSqlSourceFromStrings(sql, parameterType, languageDriver);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BuilderException("Could not find value method on SQL annotation.  Cause: " + e, e);
+            throw new BuilderException("Could not find value method on SQL annotation.  Cause: " +e.getMessage(), e);
         }
     }
 

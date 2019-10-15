@@ -104,9 +104,9 @@ public class EntityMate {
     public List<Attribute> insertAttribute() {
         ArrayList<Attribute> list = new ArrayList<>();
         list.add(id);
-        list.addAll(attributeList);
-        list.addAll(auditorAttributeList);
-        list.add(logic);
+        if (attributeList != null && !attributeList.isEmpty()) list.addAll(attributeList);
+        if (auditorAttributeList != null && !auditorAttributeList.isEmpty()) list.addAll(auditorAttributeList);
+        if (logic != null) list.add(logic);
         return list;
     }
 
@@ -114,7 +114,7 @@ public class EntityMate {
         ArrayList<Attribute> list = new ArrayList<>();
         list.add(id);
         list.addAll(attributeList);
-        list.addAll(auditorAttributeList.stream().filter(attr->attr.getType().getGroup() == AuditorType.Group.UPDATE)
+        list.addAll(auditorAttributeList.stream().filter(attr -> attr.getType().getGroup() == AuditorType.Group.UPDATE)
                 .collect(Collectors.toList()));
         return list;
     }

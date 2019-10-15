@@ -2,12 +2,10 @@ package com.xwc.open.easy.batis.assistant;
 
 
 import com.xwc.open.easy.batis.anno.auditor.*;
-import com.xwc.open.easy.batis.anno.condition.filter.Condition;
-import com.xwc.open.easy.batis.anno.condition.filter.Equal;
+import com.xwc.open.easy.batis.anno.condition.filter.*;
 import com.xwc.open.easy.batis.anno.table.*;
 import com.xwc.open.easy.batis.interfaces.SyntaxTemplate;
 import com.xwc.open.easy.batis.meta.*;
-import com.xwc.open.easy.batis.anno.condition.filter.SetParam;
 import com.xwc.open.easy.batis.enums.ConditionType;
 import com.xwc.open.easy.batis.interfaces.Page;
 import org.apache.ibatis.reflection.ParamNameUtil;
@@ -48,6 +46,9 @@ public class AnnotationAssistan {
 
     static {
         queryAnnoSet.add(Equal.class);
+        queryAnnoSet.add(NotEqual.class);
+        queryAnnoSet.add(IsNull.class);
+        queryAnnoSet.add(NotNull.class);
     }
 
     static {
@@ -146,6 +147,7 @@ public class AnnotationAssistan {
             setter = Reflection.setter(field, clazz);
             getter = Reflection.getter(field, clazz);
         } catch (NoSuchMethodException e) {
+            e.printStackTrace();
             return null;
         }
         return new Attribute(field.getName(), underscoreName(field.getName()), getter, setter);
@@ -165,7 +167,7 @@ public class AnnotationAssistan {
     public boolean isCustomObject(Method method) {
         Parameter[] parameters = method.getParameters();
         if (parameters.length == 1) {
-            if (!isDefualtClass(parameters[0].getClass())) {
+            if (!isDefualtClass(parameters[0].getType())) {
                 return true;
             } else {
                 return false;
@@ -208,7 +210,7 @@ public class AnnotationAssistan {
         for (Field f : fields) {
             if (isIgnore(f)) continue;
             Attribute attribute = analysisAttribute(f, clazz);
-            Annotation annotation = chooseAnnotationType(f);
+            Annotation annotation = chooseFieldQueryAnnotationType(f);
             if (annotation == null) {
                 conditionAttribute = new ConditionAttribute(attribute, DEFAULT_ORDER, ConditionType.EQUEL);
                 conditionMate.add(conditionAttribute);
@@ -278,7 +280,7 @@ public class AnnotationAssistan {
      * 获取对象属性的过滤条件
      */
     private ConditionAttribute analysisParam(Annotation[] annotations, Integer index, String paramNames) {
-        Annotation annotation = chooseAnnotationType(annotations);
+        Annotation annotation = chooseQueryAnnotationType(annotations);
         Attribute attribute = new Attribute(paramNames, underscoreName(paramNames), null, null);
         if (annotation == null) {
             return new ConditionAttribute(attribute, index + DEFAULT_ORDER, ConditionType.EQUEL);
@@ -300,15 +302,16 @@ public class AnnotationAssistan {
     /**
      * 判断属性是否有条件查询注解
      */
-    private Annotation chooseAnnotationType(Field field) {
+    private Annotation chooseFieldQueryAnnotationType(Field field) {
         Annotation[] annotations = field.getDeclaredAnnotations();
-        return this.chooseAduitorAnnotationType(annotations);
+        return this.chooseQueryAnnotationType(annotations);
     }
+
 
     /**
      * 判断注解数组中是否有查询条件注解
      */
-    private Annotation chooseAnnotationType(Annotation[] annotations) {
+    private Annotation chooseQueryAnnotationType(Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             if (queryAnnoSet.contains(annotation.annotationType())) {
                 return annotation;

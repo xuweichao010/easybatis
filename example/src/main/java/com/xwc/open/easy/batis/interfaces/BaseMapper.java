@@ -1,6 +1,7 @@
 package com.xwc.open.easy.batis.interfaces;
 
 import com.xwc.open.easy.batis.anno.*;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.Collection;
 
