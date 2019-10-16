@@ -3,6 +3,7 @@ package com.xwc.open.easy.example.entity;
 import com.xwc.open.easy.batis.anno.table.Id;
 import com.xwc.open.easy.batis.anno.table.Table;
 import com.xwc.open.easy.batis.enums.IdType;
+import lombok.Data;
 
 /**
  * 创建人：徐卫超
@@ -11,6 +12,7 @@ import com.xwc.open.easy.batis.enums.IdType;
  * 功能：
  */
 @Table("t_org")
+@Data
 public class Org  {
 
     /**
@@ -35,54 +37,8 @@ public class Org  {
      */
     private String address;
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getParentCode() {
-        return parentCode;
-    }
-
-    public void setParentCode(String parentCode) {
-        this.parentCode = parentCode;
-    }
-
-    public String getParentName() {
-        return parentName;
-    }
-
-    public void setParentName(String parentName) {
-        this.parentName = parentName;
-    }
-
-    @Override
-    public String toString() {
-        return "Org{" +
-                "code='" + code + '\'' +
-                ", name='" + name + '\'' +
-                ", parentCode='" + parentCode + '\'' +
-                ", parentName='" + parentName + '\'' +
-                ", address='" + address + '\'' +
-                '}';
-    }
+    /**
+     * 组织信息
+     */
+    private Integer employeesNum;
 }
