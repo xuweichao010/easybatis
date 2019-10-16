@@ -8,6 +8,7 @@ import com.xwc.open.easy.batis.interfaces.SyntaxTemplate;
 import com.xwc.open.easy.batis.meta.*;
 import com.xwc.open.easy.batis.enums.ConditionType;
 import com.xwc.open.easy.batis.interfaces.Page;
+import com.xwc.open.easy.batis.meta.Condition;
 import org.apache.ibatis.reflection.ParamNameUtil;
 import org.apache.ibatis.session.Configuration;
 import org.springframework.core.annotation.AliasFor;
@@ -165,7 +166,7 @@ public class AnnotationAssistan {
     /**
      * 解析方法上的查询条件
      */
-    public ConditionMate parseSelect(Method method) {
+    public Condition parseSelect(Method method) {
         if (isCustomObject(method)) {
             return parseSelectObject(method);
         } else {
@@ -211,8 +212,8 @@ public class AnnotationAssistan {
     /**
      * 解析查询实体
      */
-    private ConditionMate parseSelectObject(Method method) {
-        ConditionMate conditionMate = new ConditionMate(template);
+    private Condition parseSelectObject(Method method) {
+        Condition conditionMate = new Condition(template);
         Class<?> clazz = method.getParameterTypes()[0];
         List<Field> fields = Reflection.getField(clazz);
         ConditionAttribute conditionAttribute;
@@ -222,23 +223,21 @@ public class AnnotationAssistan {
             Annotation annotation = chooseFieldQueryAnnotationType(f);
             if (annotation == null) {
                 conditionAttribute = new ConditionAttribute(attribute, DEFAULT_ORDER, ConditionType.EQUEL);
-                conditionMate.add(conditionAttribute);
+                conditionMate.addQuery(conditionAttribute);
             } else {
                 annotation = AnnotationUtils.findAnnotation(f, annotation.annotationType());
                 updateColum(annotation, attribute);
                 Object index = AnnotationUtils.getValue(annotation, "index");
-                Condition condition = AnnotationUtils.getAnnotation(annotation, Condition.class);
+                com.xwc.open.easy.batis.anno.condition.filter.Condition condition = AnnotationUtils.getAnnotation(annotation, com.xwc.open.easy.batis.anno.condition.filter.Condition.class);
                 conditionAttribute = new ConditionAttribute(attribute, (int) index, condition.type());
-                conditionMate.add(conditionAttribute);
+                conditionMate.addQuery(conditionAttribute);
             }
         }
         if (Page.class.isAssignableFrom(clazz)) {
-            conditionMate.add(new ConditionAttribute(
-                    new Attribute("limitStart", "limit_start", null, null)
-                    , 99, ConditionType.LIMIT_START));
-            conditionMate.add(new ConditionAttribute(
-                    new Attribute("limitOffset", "limit_offset", null, null)
-                    , 99, ConditionType.LIMIT_OFFSET));
+            conditionMate.addPage(
+                    new Attribute("limitStart", null, null, null),
+                    new Attribute("limitOffset", null, null, null)
+            );
         }
         return conditionMate;
     }
@@ -246,14 +245,14 @@ public class AnnotationAssistan {
     /**
      * 解析查询参数
      */
-    private ConditionMate parseSelectParam(Method method) {
-        ConditionMate condition = new ConditionMate(template);
+    private Condition parseSelectParam(Method method) {
+        Condition condition = new Condition(template);
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         int paramCount = parameterAnnotations.length;
         List<String> paramNames = ParamNameUtil.getParamNames(method);
         for (int i = 0; i < paramCount; ++i) {
             ConditionAttribute paramFilter = analysisParam(parameterAnnotations[i], i, paramNames.get(i));
-            condition.add(paramFilter);
+            condition.addQuery(paramFilter);
         }
         return condition;
     }
@@ -296,7 +295,7 @@ public class AnnotationAssistan {
         } else {
             updateCustomColum(annotation, attribute);
             int annoIndex = (int) AnnotationUtils.getValue(annotation, "index");
-            Condition condition = AnnotationUtils.getAnnotation(annotation, Condition.class);
+            com.xwc.open.easy.batis.anno.condition.filter.Condition condition = AnnotationUtils.getAnnotation(annotation, com.xwc.open.easy.batis.anno.condition.filter.Condition.class);
             return new ConditionAttribute(attribute, annoIndex, condition.type());
         }
     }

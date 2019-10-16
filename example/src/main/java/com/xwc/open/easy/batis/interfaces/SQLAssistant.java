@@ -3,7 +3,7 @@ package com.xwc.open.easy.batis.interfaces;
 import com.xwc.open.easy.batis.anno.ParamKey;
 import com.xwc.open.easy.batis.anno.condition.Count;
 import com.xwc.open.easy.batis.anno.condition.Distinct;
-import com.xwc.open.easy.batis.meta.ConditionMate;
+import com.xwc.open.easy.batis.meta.Condition;
 import com.xwc.open.easy.batis.meta.EntityMate;
 
 /**
@@ -14,13 +14,13 @@ import com.xwc.open.easy.batis.meta.EntityMate;
  */
 public interface SQLAssistant {
 
-    StringBuilder delete(EntityMate entity, ConditionMate condition, boolean isObject, boolean isDynamic, ParamKey key);
+    StringBuilder delete(EntityMate entity, Condition condition, boolean isObject, boolean isDynamic, ParamKey key);
 
-    StringBuilder select(EntityMate entity, ConditionMate condition, boolean isObject, boolean isDynamic, Count count, Distinct distinct, ParamKey key);
+    StringBuilder select(EntityMate entity, Condition condition, boolean isObject, boolean isDynamic, Count count, Distinct distinct, ParamKey key);
 
     StringBuilder insert(EntityMate entity, boolean isBatch);
 
-    StringBuilder update(EntityMate entity, ConditionMate condition, boolean isUpdateParam, boolean isDynamic);
+    StringBuilder update(EntityMate entity, Condition condition, boolean isUpdateParam, boolean isDynamic);
 
 
 }
