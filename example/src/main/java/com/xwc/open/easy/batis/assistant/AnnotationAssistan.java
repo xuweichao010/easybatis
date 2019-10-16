@@ -49,6 +49,11 @@ public class AnnotationAssistan {
         queryAnnoSet.add(NotEqual.class);
         queryAnnoSet.add(IsNull.class);
         queryAnnoSet.add(NotNull.class);
+        queryAnnoSet.add(In.class);
+        queryAnnoSet.add(NotIn.class);
+        queryAnnoSet.add(Like.class);
+        queryAnnoSet.add(RightLike.class);
+        queryAnnoSet.add(LeftLike.class);
     }
 
     static {
