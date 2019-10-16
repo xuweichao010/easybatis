@@ -235,8 +235,8 @@ public class AnnotationAssistan {
         }
         if (Page.class.isAssignableFrom(clazz)) {
             conditionMate.addPage(
-                    new Attribute("limitStart", null, null, null),
-                    new Attribute("limitOffset", null, null, null)
+                    new Attribute(Page.START, null, null, null),
+                    new Attribute(Page.OFFSET, null, null, null)
             );
         }
         return conditionMate;

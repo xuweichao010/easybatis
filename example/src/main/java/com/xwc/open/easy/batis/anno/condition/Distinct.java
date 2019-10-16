@@ -1,5 +1,7 @@
 package com.xwc.open.easy.batis.anno.condition;
 
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.*;
 
 /**
@@ -12,5 +14,9 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Distinct {
+    @AliasFor("value")
     String colums() default "*";
+
+    @AliasFor("colums")
+    String value() default "*";
 }
