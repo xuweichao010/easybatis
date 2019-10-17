@@ -161,7 +161,6 @@ public class AnnotationAssistan {
             setter = Reflection.setter(field, clazz);
             getter = Reflection.getter(field, clazz);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
             return null;
         }
         return new Attribute(field.getName(), underscoreName(field.getName()), getter, setter);

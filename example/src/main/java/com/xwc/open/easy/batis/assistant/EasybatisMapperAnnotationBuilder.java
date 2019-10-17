@@ -454,7 +454,7 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
                     sql = new String[]{sb.toString()};
                 }else {
                     Condition conditionMate = annotationAssistan.parseSelect(method);
-                    conditionMate.addQuery(new LoglicConditionAttribute(entityMate.getLogic(),true));
+                    conditionMate.setLoglic(entityMate.getLogic());
                     StringBuilder sb = sqlAssistant.update(entityMate,
                             conditionMate,
                             true, false);

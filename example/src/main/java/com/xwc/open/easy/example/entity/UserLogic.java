@@ -19,7 +19,6 @@ public class UserLogic implements Serializable {
     private static final long serialVersionUID = -4279599274719815691L;
     @Id(type = IdType.UUID)
     private String id;
-
     private String name;
 
     /**

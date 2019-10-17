@@ -29,6 +29,6 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 
     @DeleteSql
     @ParamKey
-    long delete(K id);
+    Long delete(K id);
 
 }
