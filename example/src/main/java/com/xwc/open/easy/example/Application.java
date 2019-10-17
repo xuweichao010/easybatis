@@ -1,6 +1,5 @@
 package com.xwc.open.easy.example;
 
-
 import com.xwc.open.easy.batis.EnableEasyBatis;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

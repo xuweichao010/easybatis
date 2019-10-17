@@ -2,6 +2,8 @@ package com.xwc.open.easy.batis.assistant;
 
 
 import com.xwc.open.easy.batis.anno.auditor.*;
+import com.xwc.open.easy.batis.anno.condition.filter.Offset;
+import com.xwc.open.easy.batis.anno.condition.filter.Start;
 import com.xwc.open.easy.batis.anno.condition.filter.*;
 import com.xwc.open.easy.batis.anno.table.*;
 import com.xwc.open.easy.batis.interfaces.SyntaxTemplate;
@@ -59,6 +61,8 @@ public class AnnotationAssistan {
         queryAnnoSet.add(GreaterThanEqual.class);
         queryAnnoSet.add(LessThan.class);
         queryAnnoSet.add(LessThanEqual.class);
+        queryAnnoSet.add(Start.class);
+        queryAnnoSet.add(Offset.class);
     }
 
     static {
@@ -252,6 +256,14 @@ public class AnnotationAssistan {
         List<String> paramNames = ParamNameUtil.getParamNames(method);
         for (int i = 0; i < paramCount; ++i) {
             ConditionAttribute paramFilter = analysisParam(parameterAnnotations[i], i, paramNames.get(i));
+            if(paramFilter.getType() == ConditionType.START ){
+                condition.addPage(paramFilter,null);
+                continue;
+            }
+            if(paramFilter.getType() == ConditionType.OFFSET){
+                condition.addPage(null,paramFilter);
+                continue;
+            }
             condition.addQuery(paramFilter);
         }
         return condition;
