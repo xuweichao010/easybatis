@@ -1,0 +1,1 @@
+package com.xwc.open.example.dao;import com.xwc.open.easybatis.interfaces.BaseMapper;import com.xwc.open.example.entity.User;import org.apache.ibatis.annotations.Mapper;/** * 创建人：徐卫超 * 时间：2019/8/3 15:52 * 功能： * 备注： */@Mapperpublic interface UserMapper extends BaseMapper<User, String> {}

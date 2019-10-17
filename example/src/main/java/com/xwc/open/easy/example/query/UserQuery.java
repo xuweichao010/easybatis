@@ -1,1 +1,0 @@
-package com.xwc.open.easy.example.query;import com.xwc.open.easy.batis.anno.condition.filter.In;import lombok.Data;import java.util.List;/** * 创建人：徐卫超 * 时间：2019/10/17 18:03 * 功能： * 备注： */@Datapublic class UserQuery {    private String id;    private String name;    @In("id")    private List<String> idList;}
