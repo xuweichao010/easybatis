@@ -57,7 +57,7 @@ public class EntityMate {
     }
 
     public String getTableName() {
-        return tableName;
+        return tableName + " ";
     }
 
     public List<Attribute> updateAttributeList() {
