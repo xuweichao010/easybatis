@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
     <groupId>com.xwc.open</groupId>
-    <artifactId>easy-batis-parent</artifactId>
+    <artifactId>easybatis-example</artifactId>
     <packaging>pom</packaging>
     <version>2.0</version>
     <repositories>
