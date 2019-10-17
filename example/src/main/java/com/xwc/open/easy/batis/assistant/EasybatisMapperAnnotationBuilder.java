@@ -427,13 +427,14 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             boolean isObject = false;
             ParamKey key = AnnotationUtils.findAnnotation(method, ParamKey.class);
             if (annotation instanceof SelectSql) {
+                SelectSql selectSql = (SelectSql) annotation;
                 Count count = AnnotationUtils.findAnnotation(method, Count.class);
                 Distinct distinct = AnnotationUtils.findAnnotation(method, Distinct.class);
                 isObject = annotationAssistan.isCustomObject(method);
                 StringBuilder sb = sqlAssistant.select(entityMate,
                         annotationAssistan.parseSelect(method),
                         isObject,
-                        true, count, distinct, key);
+                        selectSql.dynamic(), count, distinct, key);
                 sql = new String[]{sb.toString()};
             } else if (annotation instanceof UpdateSql) {
                 isObject = !annotationAssistan.isParamSet(method);
