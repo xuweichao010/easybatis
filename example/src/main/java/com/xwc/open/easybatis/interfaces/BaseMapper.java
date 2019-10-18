@@ -1,6 +1,5 @@
 package com.xwc.open.easybatis.interfaces;
 
-import com.xwc.open.easy.batis.anno.*;
 import com.xwc.open.easybatis.anno.*;
 
 import java.util.Collection;

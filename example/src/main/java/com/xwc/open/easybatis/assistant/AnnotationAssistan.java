@@ -1,19 +1,13 @@
 package com.xwc.open.easybatis.assistant;
 
 
-import com.xwc.open.easy.batis.anno.auditor.*;
 import com.xwc.open.easybatis.anno.auditor.*;
-import com.xwc.open.easybatis.anno.condition.filter.Offset;
 import com.xwc.open.easybatis.anno.condition.filter.*;
-import com.xwc.open.easy.batis.anno.condition.filter.*;
-import com.xwc.open.easy.batis.anno.table.*;
 import com.xwc.open.easybatis.anno.table.*;
-import com.xwc.open.easybatis.interfaces.SyntaxTemplate;
-import com.xwc.open.easy.batis.meta.*;
 import com.xwc.open.easybatis.enums.ConditionType;
 import com.xwc.open.easybatis.interfaces.Page;
+import com.xwc.open.easybatis.interfaces.SyntaxTemplate;
 import com.xwc.open.easybatis.meta.*;
-import com.xwc.open.easybatis.meta.Condition;
 import org.apache.ibatis.reflection.ParamNameUtil;
 import org.apache.ibatis.session.Configuration;
 import org.springframework.core.annotation.AliasFor;
@@ -66,6 +60,7 @@ public class AnnotationAssistan {
         queryAnnoSet.add(LessThanEqual.class);
         queryAnnoSet.add(Start.class);
         queryAnnoSet.add(Offset.class);
+        queryAnnoSet.add(OrderBy.class);
     }
 
     static {
@@ -172,7 +167,7 @@ public class AnnotationAssistan {
     /**
      * 解析方法上的查询条件
      */
-    public Condition parseSelect(Method method) {
+    public ConditionMate parseSelect(Method method) {
         if (isCustomObject(method)) {
             return parseSelectObject(method);
         } else {
@@ -218,8 +213,8 @@ public class AnnotationAssistan {
     /**
      * 解析查询实体
      */
-    private Condition parseSelectObject(Method method) {
-        Condition conditionMate = new Condition(template);
+    private ConditionMate parseSelectObject(Method method) {
+        ConditionMate conditionMate = new ConditionMate(template);
         Class<?> clazz = method.getParameterTypes()[0];
         List<Field> fields = Reflection.getField(clazz);
         ConditionAttribute conditionAttribute;
@@ -235,6 +230,12 @@ public class AnnotationAssistan {
                 updateColum(annotation, attribute);
                 Object index = AnnotationUtils.getValue(annotation, "index");
                 Condition condition = AnnotationUtils.getAnnotation(annotation, Condition.class);
+                if (condition.type() == ConditionType.ORDER_BY) {
+                    OrderBy orderBy = (OrderBy) annotation;
+                    OrderConditionAttribute orderCondition = new OrderConditionAttribute(attribute, orderBy.byValue(), condition.type(), orderBy.order());
+                    conditionMate.addOrder(orderCondition);
+                    continue;
+                }
                 conditionAttribute = new ConditionAttribute(attribute, (int) index, condition.type());
                 conditionMate.addQuery(conditionAttribute);
             }
@@ -251,19 +252,23 @@ public class AnnotationAssistan {
     /**
      * 解析查询参数
      */
-    private Condition parseSelectParam(Method method) {
-        Condition condition = new Condition(template);
+    private ConditionMate parseSelectParam(Method method) {
+        ConditionMate condition = new ConditionMate(template);
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         int paramCount = parameterAnnotations.length;
         List<String> paramNames = ParamNameUtil.getParamNames(method);
         for (int i = 0; i < paramCount; ++i) {
             ConditionAttribute paramFilter = analysisParam(parameterAnnotations[i], i, paramNames.get(i));
-            if(paramFilter.getType() == ConditionType.START ){
-                condition.addPage(paramFilter,null);
+            if (paramFilter.getType() == ConditionType.START) {
+                condition.addPage(paramFilter, null);
                 continue;
             }
-            if(paramFilter.getType() == ConditionType.OFFSET){
-                condition.addPage(null,paramFilter);
+            if (paramFilter.getType() == ConditionType.OFFSET) {
+                condition.addPage(null, paramFilter);
+                continue;
+            }
+            if (paramFilter.getType() == ConditionType.ORDER_BY) {
+                condition.addOrder((OrderConditionAttribute)paramFilter);
                 continue;
             }
             condition.addQuery(paramFilter);
@@ -310,6 +315,10 @@ public class AnnotationAssistan {
             updateCustomColum(annotation, attribute);
             int annoIndex = (int) AnnotationUtils.getValue(annotation, "index");
             Condition condition = AnnotationUtils.getAnnotation(annotation, Condition.class);
+            if (condition.type() == ConditionType.ORDER_BY) {
+                OrderBy orderBy = (OrderBy) annotation;
+                return new OrderConditionAttribute(attribute, orderBy.byValue(), condition.type(), orderBy.order());
+            }
             return new ConditionAttribute(attribute, annoIndex, condition.type());
         }
     }

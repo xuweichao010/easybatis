@@ -1,19 +1,17 @@
 package com.xwc.open.easybatis.assistant;
 
 
-import com.xwc.open.easy.batis.anno.*;
+import com.xwc.open.easybatis.anno.*;
+import com.xwc.open.easybatis.anno.condition.Count;
 import com.xwc.open.easybatis.anno.condition.Distinct;
 import com.xwc.open.easybatis.enums.IdType;
 import com.xwc.open.easybatis.interfaces.SQLAssistant;
-import com.xwc.open.easy.batis.meta.*;
-import com.xwc.open.easybatis.mysql.MySqlSyntaxTemplate;
-import com.xwc.open.easybatis.anno.condition.Count;
-import com.xwc.open.easybatis.plugin.EasybatisPlugin;
-import com.xwc.open.easybatis.anno.*;
 import com.xwc.open.easybatis.meta.AuditorMate;
-import com.xwc.open.easybatis.meta.Condition;
+import com.xwc.open.easybatis.meta.ConditionMate;
 import com.xwc.open.easybatis.meta.EntityMate;
 import com.xwc.open.easybatis.meta.MethodMate;
+import com.xwc.open.easybatis.mysql.MySqlSyntaxTemplate;
+import com.xwc.open.easybatis.plugin.EasybatisPlugin;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.binding.MapperMethod;
@@ -458,7 +456,7 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
                             annotationAssistan.isCustomObject(method), true, key);
                     sql = new String[]{sb.toString()};
                 }else {
-                    Condition conditionMate = annotationAssistan.parseSelect(method);
+                    ConditionMate conditionMate = annotationAssistan.parseSelect(method);
                     conditionMate.setLoglic(entityMate.getLogic());
                     StringBuilder sb = sqlAssistant.update(entityMate,
                             conditionMate,
