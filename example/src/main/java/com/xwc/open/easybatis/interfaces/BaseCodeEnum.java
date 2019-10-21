@@ -1,0 +1,1 @@
+package com.xwc.open.easybatis.interfaces;/** * 创建人：徐卫超 * 时间：2019/10/21 11:33 * 功能： * 备注： */public interface BaseCodeEnum <T> {    int getCode();    T newInstance(int code);}

@@ -69,6 +69,14 @@ public class EntityMate {
         return list;
     }
 
+    public List<Attribute> updateAuditorAttributeList() {
+        ArrayList<Attribute> list = new ArrayList<>();
+        auditorAttributeList.forEach(auditor -> {
+            if (auditor.getType().getGroup() == AuditorType.Group.UPDATE) list.add(auditor);
+        });
+        return list;
+    }
+
     @Deprecated
     public String selectCloums() {
         StringBuilder sb = new StringBuilder();
