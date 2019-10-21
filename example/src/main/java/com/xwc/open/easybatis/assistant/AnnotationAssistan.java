@@ -75,7 +75,7 @@ public class AnnotationAssistan {
     /**
      * 解析实体信息
      */
-    public EntityMate parseEntityMate(Class<?> entityType) {
+    public  EntityMate parseEntityMate(Class<?> entityType) {
         Table tableAnno = AnnotationUtils.findAnnotation(entityType, Table.class);
         if (tableAnno == null) throw new RuntimeException(entityType.getName() + "not find @Table Annotaion");
         Object name = AnnotationUtils.getValue(tableAnno, "name");
