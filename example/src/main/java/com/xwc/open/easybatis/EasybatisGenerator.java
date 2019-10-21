@@ -2,13 +2,10 @@ package com.xwc.open.easybatis;
 
 import com.xwc.open.easybatis.assistant.EasybatisMapperAnnotationBuilder;
 import com.xwc.open.easybatis.assistant.Reflection;
-import com.xwc.open.easybatis.interfaces.BaseCodeEnum;
 import com.xwc.open.easybatis.interfaces.EasyMapper;
-import com.xwc.open.easybatis.interfaces.impl.ValueEnumTypeHandler;
 import com.xwc.open.easybatis.plugin.EasybatisPlugin;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -18,9 +15,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * 创建人：徐卫超
