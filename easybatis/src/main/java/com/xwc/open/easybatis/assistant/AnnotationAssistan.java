@@ -232,7 +232,7 @@ public class AnnotationAssistan {
                 Condition condition = AnnotationUtils.getAnnotation(annotation, Condition.class);
                 if (condition.type() == ConditionType.ORDER_BY) {
                     OrderBy orderBy = (OrderBy) annotation;
-                    OrderConditionAttribute orderCondition = new OrderConditionAttribute(attribute, orderBy.byValue(), condition.type(), orderBy.order());
+                    OrderConditionAttribute orderCondition = new OrderConditionAttribute(attribute, orderBy.byValue(), condition.type(), orderBy.order(),orderBy.by());
                     conditionMate.addOrder(orderCondition);
                     continue;
                 }
@@ -317,7 +317,7 @@ public class AnnotationAssistan {
             Condition condition = AnnotationUtils.getAnnotation(annotation, Condition.class);
             if (condition.type() == ConditionType.ORDER_BY) {
                 OrderBy orderBy = (OrderBy) annotation;
-                return new OrderConditionAttribute(attribute, orderBy.byValue(), condition.type(), orderBy.order());
+                return new OrderConditionAttribute(attribute, orderBy.byValue(), condition.type(), orderBy.order(),orderBy.by());
             }
             return new ConditionAttribute(attribute, annoIndex, condition.type());
         }

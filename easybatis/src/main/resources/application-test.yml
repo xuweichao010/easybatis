@@ -1,0 +1,7 @@
+# 数据库配置
+spring:
+  datasource:
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:mysql://122.112.154.250:3306/easybatis?characterEncoding=utf8
+      username: root
+      password: root
