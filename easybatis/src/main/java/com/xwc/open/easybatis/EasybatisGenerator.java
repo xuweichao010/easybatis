@@ -43,7 +43,7 @@ public class EasybatisGenerator implements ApplicationContextAware, ApplicationL
         this.applicationContext = applicationContext;
         this.configuration = applicationContext.getBean(SqlSessionFactory.class).getConfiguration();
         Collection<Class<?>> mappers = configuration.getMapperRegistry().getMappers();
-        if (!mappers.isEmpty() || easybatisInit) {
+        if (!mappers.isEmpty() && easybatisInit) {
             easybatisInit = false;
             initEasybatis(configuration, mappers);
         }
@@ -53,7 +53,7 @@ public class EasybatisGenerator implements ApplicationContextAware, ApplicationL
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         this.configuration = applicationContext.getBean(SqlSessionFactory.class).getConfiguration();
         Collection<Class<?>> mappers = configuration.getMapperRegistry().getMappers();
-        if (!mappers.isEmpty() || easybatisInit) {
+        if (!mappers.isEmpty() && easybatisInit) {
             easybatisInit = false;
             initEasybatis(configuration, mappers);
         }
@@ -67,7 +67,6 @@ public class EasybatisGenerator implements ApplicationContextAware, ApplicationL
                 parser.parse();
             }
         }
-        configuration.setMapUnderscoreToCamelCase(true);
         configuration.setUseActualParamName(true);
         configuration.addInterceptor(new EasybatisPlugin());
         configuration.getTypeHandlerRegistry().setDefaultEnumTypeHandler(EnumTypeHandler.class);
