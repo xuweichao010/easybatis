@@ -1,1 +1,0 @@
-package com.xwc.open.easybatis.assistant;import com.xwc.open.easybatis.interfaces.PrimaryKeyBuilder;import java.util.UUID;/** * 创建人：徐卫超 * 时间：2019/9/7 9:36 * 功能： * 备注： */public class DefaultPrimaryKeyBuilder implements PrimaryKeyBuilder {    @Override    public String uuid() {        return UUID.randomUUID().toString().replaceAll("-", "");    }}

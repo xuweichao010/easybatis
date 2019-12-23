@@ -1,1 +1,0 @@
-package com.xwc.open.easybatis.enums;/** * 创建人：徐卫超 * 时间：2019/8/4 10:32 * 功能： * 备注： */public enum GroupType {    CLOUM_FIELD, //key = value    CLOUM_IN_FILED,  //key in ('','')    JUDGE_NULL, // key is null  or key is not null    ORDER,  //order by    MYSQL_START, //limit s    MYSQL_OFFSET,    SET;}
