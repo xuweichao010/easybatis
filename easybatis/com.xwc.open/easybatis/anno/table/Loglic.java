@@ -1,0 +1,1 @@
+package com.xwc.open.easybatis.anno.table;import java.lang.annotation.*;/** * 创建人：徐卫超 * 时间：2019/6/21 11:45 * 功能： * 备注： */@Documented@Target({ElementType.FIELD,ElementType.METHOD})@Retention(RetentionPolicy.RUNTIME)public @interface Loglic {    int valid();    int invalid();}
