@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.Collection;
@@ -33,6 +34,11 @@ public class EasybatisGenerator implements ApplicationContextAware, ApplicationL
     private ApplicationContext applicationContext;
     private Configuration configuration;
 
+    @Bean
+    public EasybatisEnvironment easybatisEnvironment(){
+        return new EasybatisEnvironment();
+    }
+
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
@@ -47,7 +53,6 @@ public class EasybatisGenerator implements ApplicationContextAware, ApplicationL
                 parser.parse();
             }
         }
-        configuration.setMapUnderscoreToCamelCase(true);
         configuration.setUseActualParamName(true);
         configuration.addInterceptor(new EasybatisPlugin());
         configuration.getTypeHandlerRegistry().setDefaultEnumTypeHandler(EnumTypeHandler.class);

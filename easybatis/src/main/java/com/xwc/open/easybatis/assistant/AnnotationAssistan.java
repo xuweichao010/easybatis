@@ -1,10 +1,12 @@
 package com.xwc.open.easybatis.assistant;
 
 
+import com.xwc.open.easybatis.EasybatisEnvironment;
 import com.xwc.open.easybatis.anno.auditor.*;
 import com.xwc.open.easybatis.anno.condition.filter.*;
 import com.xwc.open.easybatis.anno.table.*;
 import com.xwc.open.easybatis.enums.ConditionType;
+import com.xwc.open.easybatis.enums.IdType;
 import com.xwc.open.easybatis.interfaces.Page;
 import com.xwc.open.easybatis.interfaces.SyntaxTemplate;
 import com.xwc.open.easybatis.meta.*;
@@ -75,7 +77,7 @@ public class AnnotationAssistan {
     /**
      * 解析实体信息
      */
-    public  EntityMate parseEntityMate(Class<?> entityType) {
+    public EntityMate parseEntityMate(Class<?> entityType) {
         Table tableAnno = AnnotationUtils.findAnnotation(entityType, Table.class);
         if (tableAnno == null) throw new RuntimeException(entityType.getName() + "not find @Table Annotaion");
         Object name = AnnotationUtils.getValue(tableAnno, "name");
@@ -91,7 +93,7 @@ public class AnnotationAssistan {
                 Object value = AnnotationUtils.getValue(id);
                 if (value == null) continue;
                 attribute.updateColunm(underscoreName(value.toString()));
-                entity.setId(attribute, id.type());
+                entity.setId(attribute, id.type() == IdType.GLOBAL ? EasybatisEnvironment.getType() : id.type());
                 continue;
             }
             Colum colum = AnnotationUtils.findAnnotation(field, Colum.class);
@@ -232,7 +234,7 @@ public class AnnotationAssistan {
                 Condition condition = AnnotationUtils.getAnnotation(annotation, Condition.class);
                 if (condition.type() == ConditionType.ORDER_BY) {
                     OrderBy orderBy = (OrderBy) annotation;
-                    OrderConditionAttribute orderCondition = new OrderConditionAttribute(attribute, orderBy.byValue(), condition.type(), orderBy.order(),orderBy.by());
+                    OrderConditionAttribute orderCondition = new OrderConditionAttribute(attribute, orderBy.byValue(), condition.type(), orderBy.order(), orderBy.by());
                     conditionMate.addOrder(orderCondition);
                     continue;
                 }
@@ -268,7 +270,7 @@ public class AnnotationAssistan {
                 continue;
             }
             if (paramFilter.getType() == ConditionType.ORDER_BY) {
-                condition.addOrder((OrderConditionAttribute)paramFilter);
+                condition.addOrder((OrderConditionAttribute) paramFilter);
                 continue;
             }
             condition.addQuery(paramFilter);
@@ -317,7 +319,7 @@ public class AnnotationAssistan {
             Condition condition = AnnotationUtils.getAnnotation(annotation, Condition.class);
             if (condition.type() == ConditionType.ORDER_BY) {
                 OrderBy orderBy = (OrderBy) annotation;
-                return new OrderConditionAttribute(attribute, orderBy.byValue(), condition.type(), orderBy.order(),orderBy.by());
+                return new OrderConditionAttribute(attribute, orderBy.byValue(), condition.type(), orderBy.order(), orderBy.by());
             }
             return new ConditionAttribute(attribute, annoIndex, condition.type());
         }

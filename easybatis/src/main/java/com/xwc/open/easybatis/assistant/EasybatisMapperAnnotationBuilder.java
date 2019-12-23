@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.assistant;
 
 
+import com.xwc.open.easybatis.EasybatisEnvironment;
 import com.xwc.open.easybatis.anno.*;
 import com.xwc.open.easybatis.anno.condition.Count;
 import com.xwc.open.easybatis.anno.condition.Distinct;
@@ -467,7 +468,9 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             } else {
                 throw new RuntimeException("");
             }
-            logger.info("接口：{} ---> | 方法: {} | SQL: --- > {}", type.getName(), method.getName(), sql);
+            if(EasybatisEnvironment.isSqlLogger()){
+                logger.info("接口：{} ---> | 方法: {} | SQL: --- > {}", type.getName(), method.getName(), sql);
+            }
             methods.put(type.getName() + "." + method.getName(), md);
             EasybatisPlugin.addMethodMate(mappedStatementId, new MethodMate(entityMate, method, key != null, isObject));
             return buildSqlSourceFromStrings(sql, parameterType, languageDriver);
