@@ -2,6 +2,7 @@ package com.xwc.open.easybatis;
 
 import com.xwc.open.easybatis.assistant.EasybatisMapperAnnotationBuilder;
 import com.xwc.open.easybatis.assistant.Reflection;
+import com.xwc.open.easybatis.handler.impl.EnumTypeHandler;
 import com.xwc.open.easybatis.interfaces.EasyMapper;
 import com.xwc.open.easybatis.plugin.EasybatisPlugin;
 import org.apache.ibatis.session.Configuration;
@@ -37,7 +38,6 @@ public class EasybatisGenerator implements ApplicationContextAware, ApplicationL
     }
 
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        if(easybatisInit) return;
         this.configuration = applicationContext.getBean(SqlSessionFactory.class).getConfiguration();
         Collection<Class<?>> mappers = configuration.getMapperRegistry().getMappers();
         for (Class<?> clazz : mappers) {
@@ -50,6 +50,8 @@ public class EasybatisGenerator implements ApplicationContextAware, ApplicationL
         configuration.setMapUnderscoreToCamelCase(true);
         configuration.setUseActualParamName(true);
         configuration.addInterceptor(new EasybatisPlugin());
+        configuration.getTypeHandlerRegistry().setDefaultEnumTypeHandler(EnumTypeHandler.class);
         easybatisInit = true;
+        logger.info("easybatis 初始化完毕");
     }
 }
