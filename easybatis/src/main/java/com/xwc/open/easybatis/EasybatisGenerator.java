@@ -29,30 +29,45 @@ import java.util.Collection;
 @EnableConfigurationProperties
 public class EasybatisGenerator implements ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
     private static final Logger logger = LoggerFactory.getLogger(EasybatisGenerator.class);
-    private static  boolean easybatisInit = false;
+    private static boolean easybatisInit = true;
 
     private ApplicationContext applicationContext;
     private Configuration configuration;
 
     @Bean
-    public EasybatisEnvironment easybatisEnvironment(){
+    public EasybatisEnvironment easybatisEnvironment() {
         return new EasybatisEnvironment();
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+        this.configuration = applicationContext.getBean(SqlSessionFactory.class).getConfiguration();
+        Collection<Class<?>> mappers = configuration.getMapperRegistry().getMappers();
+        if (!mappers.isEmpty() || easybatisInit) {
+            easybatisInit = false;
+            initEasybatis(configuration, mappers);
+        }
+
     }
 
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         this.configuration = applicationContext.getBean(SqlSessionFactory.class).getConfiguration();
         Collection<Class<?>> mappers = configuration.getMapperRegistry().getMappers();
+        if (!mappers.isEmpty() || easybatisInit) {
+            easybatisInit = false;
+            initEasybatis(configuration, mappers);
+        }
+    }
+
+    private void initEasybatis(Configuration configuration, Collection<Class<?>> mappers) {
         for (Class<?> clazz : mappers) {
-            if(EasyMapper.class.isAssignableFrom(clazz)){
+            if (EasyMapper.class.isAssignableFrom(clazz)) {
                 Class<?> ec = Reflection.getEntityClass(clazz);
                 EasybatisMapperAnnotationBuilder parser = new EasybatisMapperAnnotationBuilder(configuration, clazz, ec);
                 parser.parse();
             }
         }
+        configuration.setMapUnderscoreToCamelCase(true);
         configuration.setUseActualParamName(true);
         configuration.addInterceptor(new EasybatisPlugin());
         configuration.getTypeHandlerRegistry().setDefaultEnumTypeHandler(EnumTypeHandler.class);
