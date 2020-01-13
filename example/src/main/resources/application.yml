@@ -48,7 +48,7 @@ mybatis: # myBatis 配置
   configuration:
     map-underscore-to-camel-case: true
     type: AUTO
-    sqlLogger: false
+    sqlLogger: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql 日志
   mapper-locations: classpath*:com/xwc/**/*.xml
 flyway:

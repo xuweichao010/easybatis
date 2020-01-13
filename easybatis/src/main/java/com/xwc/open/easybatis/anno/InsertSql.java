@@ -14,9 +14,4 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface InsertSql {
-    @AliasFor("colums")
-    String value() default "";
-
-    @AliasFor("value")
-    String colums() default "";
 }

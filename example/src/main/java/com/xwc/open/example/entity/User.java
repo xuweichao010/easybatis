@@ -3,6 +3,7 @@ package com.xwc.open.example.entity;
 import com.xwc.open.easybatis.anno.table.Id;
 import com.xwc.open.easybatis.anno.table.Table;
 import com.xwc.open.easybatis.enums.IdType;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
  * 功能：
  */
 @Table("t_user")
+@Data
 public class User implements Serializable {
     private static final long serialVersionUID = -4279599274719815691L;
     @Id(type = IdType.UUID)
@@ -20,27 +22,4 @@ public class User implements Serializable {
 
     private String name;
 
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "UserLogic{" +
-                "id='" + id + '\'' +
-                '}';
-    }
 }
