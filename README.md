@@ -143,8 +143,6 @@ public interface OrgMapper extends BaseMapper<Org, String> {
 
   ![](./file/PrimaryKeySelect.png)
 
-  
-
 - 测试修改数据
 
   - 代码
