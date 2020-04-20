@@ -141,7 +141,7 @@ public interface OrgMapper extends BaseMapper<Org, String> {
 
   - 日志和输出结果
 
-  ![](.\file\PrimaryKeySelect.png)
+  ![](./file/PrimaryKeySelect.png)
 
 - 测试修改数据
 
