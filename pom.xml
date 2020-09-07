@@ -13,6 +13,10 @@
     <artifactId>easybatis-example</artifactId>
     <packaging>pom</packaging>
     <version>2.0</version>
+    <modules>
+        <module>easybatis</module>
+        <module>example</module>
+    </modules>
     <repositories>
         <repository>
             <id>aliyun-repo</id>
