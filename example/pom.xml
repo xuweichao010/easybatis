@@ -53,6 +53,7 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+
     <!-- 编译组件 -->
     <build>
         <plugins>
