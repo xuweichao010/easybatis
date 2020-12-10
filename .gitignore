@@ -1,0 +1,9 @@
+.git/*
+.gradle/
+.idea/**
+build/
+target/
+*.iml
+*/*/target/**
+*-dev.yml
+

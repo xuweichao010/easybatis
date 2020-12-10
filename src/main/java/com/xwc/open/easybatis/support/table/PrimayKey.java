@@ -1,0 +1,1 @@
+package com.xwc.open.easybatis.support.table;import com.xwc.open.easybatis.enums.IdType;/** * 创建人：徐卫超 * 时间：2019/8/3 16:35 * 功能：主键描述对象 */public class PrimayKey extends Column {    private IdType idType;    public PrimayKey(Column column, IdType idType) {        super(column);        this.idType = idType;    }}
