@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.core.assistant;
+package com.xwc.open.easybatis.core.commons;
 
 /**
  * 作者：徐卫超 cc

@@ -6,13 +6,15 @@ import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
-import com.xwc.open.easybatis.core.anno.auditor.*;
 import com.xwc.open.easybatis.core.anno.condition.Count;
 import com.xwc.open.easybatis.core.anno.condition.Distinct;
 import com.xwc.open.easybatis.core.anno.condition.Join;
 import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.anno.condition.filter.*;
 import com.xwc.open.easybatis.core.anno.table.*;
+import com.xwc.open.easybatis.core.commons.AnnotationUtils;
+import com.xwc.open.easybatis.core.commons.Reflection;
+import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
@@ -106,7 +108,7 @@ public class AnnotationAssistan {
     public TableMeta parseEntityMate(Class<?> entityType) {
         TableMeta table = new TableMeta();
         table.setTableName(tableName(entityType));
-        List<Field> fieldArr = com.xwc.open.easybatis.core.assistant.Reflection.getField(entityType);
+        List<Field> fieldArr = Reflection.getField(entityType);
         for (Field field : fieldArr) {
             if (isIgnore(field)) continue;
             //处理 普通属性
@@ -184,7 +186,7 @@ public class AnnotationAssistan {
         Parameter[] parameters = method.getParameters();
         List<String> paramNames = ParamNameUtil.getParamNames(method);
         for (int i = 0; i < paramNames.size(); i++) {
-            boolean customObject = com.xwc.open.easybatis.core.assistant.Reflection.isCustomObject(parameters[i].getType());
+            boolean customObject = Reflection.isCustomObject(parameters[i].getType());
             //基础类型且参数只有一个
             if (parameters.length == 1 && !customObject) {
                 paramList.add(parseParameter(parameters[i], paramNames.get(i), i));
@@ -211,7 +213,7 @@ public class AnnotationAssistan {
      * @return
      */
     public List<ParamMeta> parseCustomParameter(Parameter parameter, String paramName, int index, boolean isMulti) {
-        List<Field> fieldList = com.xwc.open.easybatis.core.assistant.Reflection.getField(parameter.getType());
+        List<Field> fieldList = Reflection.getField(parameter.getType());
         List<ParamMeta> paramList = new ArrayList<>();
         for (int i = 0; i < fieldList.size(); i++) {
             Field field = fieldList.get(i);
@@ -223,7 +225,7 @@ public class AnnotationAssistan {
     }
 
     public ParamMeta parseParameter(Parameter parameter, String paramName, int index) {
-        return createQuery(parameter.getAnnotations(), paramName, index, com.xwc.open.easybatis.core.assistant.Reflection.isCustomObject(parameter.getType()), null);
+        return createQuery(parameter.getAnnotations(), paramName, index, Reflection.isCustomObject(parameter.getType()), null);
     }
 
     /**
@@ -318,8 +320,8 @@ public class AnnotationAssistan {
         Method getter;
         Method setter;
         try {
-            getter = com.xwc.open.easybatis.core.assistant.Reflection.getter(field, clazz);
-            setter = com.xwc.open.easybatis.core.assistant.Reflection.setter(field, clazz);
+            getter = Reflection.getter(field, clazz);
+            setter = Reflection.setter(field, clazz);
         } catch (NoSuchMethodException e) {
             return null;
         }

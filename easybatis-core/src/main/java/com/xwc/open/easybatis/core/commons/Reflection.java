@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.core.assistant;
+package com.xwc.open.easybatis.core.commons;
 
 
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;

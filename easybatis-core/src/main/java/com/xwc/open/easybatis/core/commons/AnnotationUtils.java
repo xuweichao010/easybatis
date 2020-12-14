@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.core.assistant;
+package com.xwc.open.easybatis.core.commons;
 
 import com.xwc.open.easybatis.core.anno.condition.Count;
 import com.xwc.open.easybatis.core.anno.condition.filter.Condition;
