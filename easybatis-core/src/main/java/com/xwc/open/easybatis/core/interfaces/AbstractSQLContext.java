@@ -1,12 +1,13 @@
 package com.xwc.open.easybatis.core.interfaces;
 
+import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
 import com.xwc.open.easybatis.core.interfaces.condition.NullCondition;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.Column;
-import org.springframework.util.StringUtils;
+
 
 import java.util.ArrayList;
 import java.util.List;

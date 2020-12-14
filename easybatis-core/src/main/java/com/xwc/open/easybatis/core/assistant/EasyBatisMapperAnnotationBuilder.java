@@ -22,7 +22,6 @@ import java.util.Set;
  * 业务：
  * 功能：
  */
-@Slf4j
 public class EasyBatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
 
     private final Configuration configuration;
