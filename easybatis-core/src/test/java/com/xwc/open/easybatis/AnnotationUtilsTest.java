@@ -3,6 +3,7 @@ package com.xwc.open.easybatis;
 import com.xwc.open.easybatis.core.anno.auditor.Auditor;
 import com.xwc.open.easybatis.core.anno.auditor.UpdateId;
 import com.xwc.open.easybatis.core.anno.table.Column;
+import com.xwc.open.easybatis.core.anno.table.Table;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import java.lang.reflect.Field;
  */
 public class AnnotationUtilsTest {
     @Test
-    public void findAnnotationTest() {
+    public void findAnnotationFieldsTest() {
         Field[] fields = AnnotationUtilsObject.class.getDeclaredFields();
         for (Field field : fields) {
             if (field.getName().equals("name")) {
@@ -33,6 +34,12 @@ public class AnnotationUtilsTest {
     }
 
     @Test
+    public void findAnnotationTypeTest() {
+        Table annotation = AnnotationUtils.findAnnotation(AnnotationUtilsObject.class, Table.class);
+        Assert.assertNotNull(annotation);
+    }
+
+    @Test
     public void getValueTest() {
         Field[] fields = AnnotationUtilsObject.class.getDeclaredFields();
         for (Field field : fields) {
@@ -46,6 +53,7 @@ public class AnnotationUtilsTest {
     }
 
 
+    @Table("t_test")
     public static class AnnotationUtilsObject {
         @Column("name")
         private String name;

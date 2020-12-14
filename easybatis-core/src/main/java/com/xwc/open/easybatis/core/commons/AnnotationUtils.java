@@ -47,12 +47,26 @@ public class AnnotationUtils {
     }
 
     public static <T extends Annotation> T findAnnotation(Method method, Class<T> annotationClass) {
-        return method.getAnnotation(annotationClass);
+        T annotation = method.getDeclaredAnnotation(annotationClass);
+        if (annotation == null) {
+            annotation = findAnnotationArray(method.getDeclaredAnnotations(), annotationClass);
+            if (annotation != null) {
+                return annotation;
+            }
+        }
+        return annotation;
     }
 
 
     public static <T extends Annotation> T findAnnotation(Class<?> typeClass, Class<T> annotationClass) {
-        return typeClass.getAnnotation(annotationClass);
+        T annotation = typeClass.getDeclaredAnnotation(annotationClass);
+        if (annotation == null) {
+            annotation = findAnnotationArray(typeClass.getDeclaredAnnotations(), annotationClass);
+            if (annotation != null) {
+                return annotation;
+            }
+        }
+        return annotation;
     }
 
     public static Object getValue(Annotation annotation, String name) {
