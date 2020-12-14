@@ -1,0 +1,1 @@
+package com.xwc.open.easybatis.core.enums;/** * 创建人：徐卫超 * 时间：2019/10/21 15:31 * 功能： * 备注： */public interface BaseEnum {    int value();}

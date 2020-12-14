@@ -1,0 +1,47 @@
+package com.xwc.open.easybatis.core.anno.table;
+
+import com.xwc.open.easybatis.core.enums.IdType;
+
+import java.lang.annotation.*;
+
+/**
+ * 创建人：徐卫超
+ * 创建时间：2019/1/18  15:13
+ * 业务：
+ * 功能：
+ */
+
+@Documented
+@Target({ElementType.FIELD, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Id {
+    /**
+     * 属性和数据表之间的列关系
+     *
+     * @return
+     */
+    String column() default "";
+
+    /**
+     * 查询是否查询该字段 false 查询 true 不查询
+     *
+     * @return
+     */
+    boolean selectIgnore() default false;
+
+    /**
+     * 是否更新该字段 false更新 true不更新
+     *
+     * @return
+     */
+    boolean updatgeIgnore() default true;
+
+    /**
+     * 主键类型
+     *
+     * @return
+     */
+    IdType type() default IdType.GLOBAL;
+
+
+}
