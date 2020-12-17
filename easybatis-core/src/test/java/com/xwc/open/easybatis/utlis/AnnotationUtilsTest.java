@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis;
+package com.xwc.open.easybatis.utlis;
 
 import com.xwc.open.easybatis.core.anno.auditor.Auditor;
 import com.xwc.open.easybatis.core.anno.auditor.UpdateId;
@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 /**
  * 作者：徐卫超 cc
  * 时间：2020/12/14
- * 描述：注解测试
+ * 描述：注解工具类单元测试
  */
 public class AnnotationUtilsTest {
     @Test
@@ -47,6 +47,13 @@ public class AnnotationUtilsTest {
                 Column column = AnnotationUtils.findAnnotation(field, Column.class);
                 Object value = AnnotationUtils.getValue(column, "value");
                 Assert.assertEquals(String.valueOf(value), "name");
+            } else if (field.getName().equals("updateId")) {
+                UpdateId updateId = AnnotationUtils.findAnnotation(field, UpdateId.class);
+                Object value = AnnotationUtils.getValue(updateId, "value");
+                Assert.assertNotNull(value);
+                Auditor auditor = AnnotationUtils.findAnnotation(field, Auditor.class);
+                value = AnnotationUtils.getValue(auditor, "type");
+                Assert.assertNotNull(value);
             }
         }
 

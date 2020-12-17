@@ -1,17 +1,20 @@
 package com.xwc.open.easybatis.core.assistant;
 
 
-import com.xwc.open.easybatis.core.EasyBatisEnvironment;
+import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
+import com.xwc.open.easybatis.core.anno.auditor.*;
 import com.xwc.open.easybatis.core.anno.condition.Count;
 import com.xwc.open.easybatis.core.anno.condition.Distinct;
 import com.xwc.open.easybatis.core.anno.condition.Join;
 import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.anno.condition.filter.*;
-import com.xwc.open.easybatis.core.anno.table.*;
+import com.xwc.open.easybatis.core.anno.table.Column;
+import com.xwc.open.easybatis.core.anno.table.Ignore;
+import com.xwc.open.easybatis.core.anno.table.Table;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.commons.StringUtils;
@@ -22,6 +25,7 @@ import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.AuditorColumn;
+import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import com.xwc.open.easybatis.core.support.table.LoglicColumn;
 import com.xwc.open.easybatis.core.support.table.PrimayKey;
 import org.apache.ibatis.reflection.ParamNameUtil;
@@ -40,10 +44,10 @@ import java.util.*;
  */
 public class AnnotationAssistan {
 
-    private final EasyBatisEnvironment environment;
+    private final EasybatisConfiguration configuration;
 
-    public AnnotationAssistan(EasyBatisEnvironment environment) {
-        this.environment = environment;
+    public AnnotationAssistan(EasybatisConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     private final static Set<Class<? extends Annotation>> queryAnnoSet = new HashSet<>();
@@ -53,22 +57,22 @@ public class AnnotationAssistan {
     private final static Set<Class<? extends Annotation>> operationAnnoSet = new HashSet<>();
 
     static {
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.Equal.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.NotEqual.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.IsNull.class);
+        queryAnnoSet.add(Equal.class);
+        queryAnnoSet.add(NotEqual.class);
+        queryAnnoSet.add(IsNull.class);
         queryAnnoSet.add(NotNull.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.In.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.NotIn.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.Like.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.RightLike.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.LeftLike.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.GreaterThan.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.GreaterThanEqual.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.LessThan.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.LessThanEqual.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.Start.class);
+        queryAnnoSet.add(In.class);
+        queryAnnoSet.add(NotIn.class);
+        queryAnnoSet.add(Like.class);
+        queryAnnoSet.add(RightLike.class);
+        queryAnnoSet.add(LeftLike.class);
+        queryAnnoSet.add(GreaterThan.class);
+        queryAnnoSet.add(GreaterThanEqual.class);
+        queryAnnoSet.add(LessThan.class);
+        queryAnnoSet.add(LessThanEqual.class);
+        queryAnnoSet.add(Start.class);
         queryAnnoSet.add(Offset.class);
-        queryAnnoSet.add(com.xwc.open.easybatis.core.anno.condition.filter.OrderBy.class);
+        queryAnnoSet.add(OrderBy.class);
     }
 
     static {
@@ -79,20 +83,20 @@ public class AnnotationAssistan {
     }
 
     static {
-        auditorAnnoSet.add(com.xwc.open.easybatis.core.anno.auditor.CreateId.class);
-        auditorAnnoSet.add(com.xwc.open.easybatis.core.anno.auditor.UpdateId.class);
-        auditorAnnoSet.add(com.xwc.open.easybatis.core.anno.auditor.CreateName.class);
-        auditorAnnoSet.add(com.xwc.open.easybatis.core.anno.auditor.UpdateName.class);
-        auditorAnnoSet.add(com.xwc.open.easybatis.core.anno.auditor.CreateTime.class);
-        auditorAnnoSet.add(com.xwc.open.easybatis.core.anno.auditor.UpdateTime.class);
+        auditorAnnoSet.add(CreateId.class);
+        auditorAnnoSet.add(UpdateId.class);
+        auditorAnnoSet.add(CreateName.class);
+        auditorAnnoSet.add(UpdateName.class);
+        auditorAnnoSet.add(CreateTime.class);
+        auditorAnnoSet.add(UpdateTime.class);
     }
 
     public String tableName(Class<?> entityType) {
-        com.xwc.open.easybatis.core.anno.table.Table tableAnno = AnnotationUtils.findAnnotation(entityType, Table.class);
+        Table tableAnno = AnnotationUtils.findAnnotation(entityType, Table.class);
         if (tableAnno == null) throw new RuntimeException(entityType.getName() + "not find @Table Annotaion");
-        String name = (String) AnnotationUtils.getValue(tableAnno, "name");
-        if (StringUtils.isEmpty(name) && environment.getTablePrefix() != null) {
-            return environment.getTablePrefix() + underscoreName(entityType.getSimpleName());
+        String name = (String) AnnotationUtils.getValue(tableAnno, "value");
+        if (StringUtils.isEmpty(name) && configuration.getTablePrefix() != null) {
+            return configuration.getTablePrefix() + underscoreName(entityType.getSimpleName());
         }
         //TODO 后期支持达式
         if (name == null) throw new RuntimeException(entityType.getName() + "not find @Table Annotaion");
@@ -113,9 +117,9 @@ public class AnnotationAssistan {
             if (isIgnore(field)) continue;
             //处理 普通属性
             Column annotation = AnnotationUtils.findAnnotation(field, Column.class);
-            com.xwc.open.easybatis.core.support.table.Column column = analysisColunm(field, annotation, entityType);
-            if (column != null) {
-                table.addColumn(column);
+            ColumnMeta columnMeta = analysisColunm(field, annotation, entityType);
+            if (columnMeta != null) {
+                table.addColumn(columnMeta);
             }
 
 //            Annotation aduitorAnnotationType = chooseAduitorAnnotationType(field);
@@ -272,9 +276,9 @@ public class AnnotationAssistan {
     public PrimayKey primayKey(Field field, Class<?> clazz) {
         com.xwc.open.easybatis.core.anno.table.Id id = AnnotationUtils.findAnnotation(field, com.xwc.open.easybatis.core.anno.table.Id.class);
         if (id == null) return null;
-        com.xwc.open.easybatis.core.support.table.Column column = analysisColunm(field, id, clazz);
-        if (column == null) return null;
-        return new PrimayKey(column, id.type() == IdType.GLOBAL ? environment.useGlobalPrimaKeyType() : id.type());
+        ColumnMeta columnMeta = analysisColunm(field, id, clazz);
+        if (columnMeta == null) return null;
+        return new PrimayKey(columnMeta, id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type());
     }
 
     /**
@@ -287,9 +291,9 @@ public class AnnotationAssistan {
     public LoglicColumn loglic(Field field, Class<?> clazz) {
         com.xwc.open.easybatis.core.anno.table.Loglic loglic = AnnotationUtils.findAnnotation(field, com.xwc.open.easybatis.core.anno.table.Loglic.class);
         if (loglic == null) return null;
-        com.xwc.open.easybatis.core.support.table.Column column = analysisColunm(field, loglic, clazz);
-        if (column == null) return null;
-        return new LoglicColumn(column, loglic.invalid(), loglic.invalid());
+        ColumnMeta columnMeta = analysisColunm(field, loglic, clazz);
+        if (columnMeta == null) return null;
+        return new LoglicColumn(columnMeta, loglic.invalid(), loglic.invalid());
     }
 
     /**
@@ -301,11 +305,11 @@ public class AnnotationAssistan {
      * @return 当审计信息存在时返回AuditorColumn 否则返回空
      */
     public AuditorColumn auditor(Annotation annotation, Field field, Class<?> clazz) {
-        com.xwc.open.easybatis.core.anno.auditor.Auditor auditor = AnnotationUtils.findAnnotation(annotation.getClass(), com.xwc.open.easybatis.core.anno.auditor.Auditor.class);
+        Auditor auditor = AnnotationUtils.findAnnotation(annotation.getClass(), Auditor.class);
         if (auditor == null) return null;
-        com.xwc.open.easybatis.core.support.table.Column column = analysisColunm(field, annotation, clazz);
-        if (column == null) return null;
-        return new AuditorColumn(column, auditor.type());
+        ColumnMeta columnMeta = analysisColunm(field, annotation, clazz);
+        if (columnMeta == null) return null;
+        return new AuditorColumn(columnMeta, auditor.type());
     }
 
     /**
@@ -316,7 +320,7 @@ public class AnnotationAssistan {
      * @param clazz      实体的class对象
      * @return 字段和数据表的字段映射关系 如果存在关系则返回Column 负责返回空
      */
-    private com.xwc.open.easybatis.core.support.table.Column analysisColunm(Field field, Annotation annotation, Class<?> clazz) {
+    private ColumnMeta analysisColunm(Field field, Annotation annotation, Class<?> clazz) {
         Method getter;
         Method setter;
         try {
@@ -331,13 +335,13 @@ public class AnnotationAssistan {
         } else {
             map = new HashMap<>();
         }
-        com.xwc.open.easybatis.core.support.table.Column column = new com.xwc.open.easybatis.core.support.table.Column(map, getter, setter, field.getName());
-        if (!StringUtils.hasText(column.getColumn())) {
-            column.setColumn(underscoreName(column.getField()));
+        ColumnMeta columnMeta = new ColumnMeta(map, getter, setter, field.getName());
+        if (!StringUtils.hasText(columnMeta.getColumn())) {
+            columnMeta.setColumn(underscoreName(columnMeta.getField()));
         } else {
-            column.setResult(true);
+            columnMeta.setResult(true);
         }
-        return column;
+        return columnMeta;
     }
 
 
@@ -392,7 +396,7 @@ public class AnnotationAssistan {
 
 
     private String underscoreName(String camelCaseName) {
-        if (environment.isMapUnderscoreToCamelCase()) {
+        if (configuration.isMapUnderscoreToCamelCase()) {
             StringBuilder result = new StringBuilder();
             if (camelCaseName != null && camelCaseName.length() > 0) {
                 result.append(camelCaseName.substring(0, 1).toLowerCase());

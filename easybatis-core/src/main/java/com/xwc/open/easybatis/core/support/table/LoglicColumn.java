@@ -5,13 +5,13 @@ package com.xwc.open.easybatis.core.support.table;
  * 时间：2020/9/9
  * 描述：逻辑列
  */
-public class LoglicColumn extends Column {
+public class LoglicColumn extends ColumnMeta {
     private int valid;
 
     private int invalid;
 
-    public LoglicColumn(Column column, int valid, int invalid) {
-        super(column);
+    public LoglicColumn(ColumnMeta columnMeta, int valid, int invalid) {
+        super(columnMeta);
         this.valid = valid;
         this.invalid = invalid;
     }

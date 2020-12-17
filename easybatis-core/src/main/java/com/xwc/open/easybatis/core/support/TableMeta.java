@@ -1,7 +1,7 @@
 package com.xwc.open.easybatis.core.support;
 
 import com.xwc.open.easybatis.core.support.table.AuditorColumn;
-import com.xwc.open.easybatis.core.support.table.Column;
+import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import com.xwc.open.easybatis.core.support.table.LoglicColumn;
 import com.xwc.open.easybatis.core.support.table.PrimayKey;
 import lombok.Data;
@@ -35,7 +35,7 @@ public class TableMeta {
     /**
      * 普通属性信息
      */
-    private List<Column> columnList = new ArrayList<>(10);
+    private List<ColumnMeta> columnMetaList = new ArrayList<>(10);
     /**
      * 审计信息
      */
@@ -67,9 +67,9 @@ public class TableMeta {
     }
 
 
-    public void addColumn(Column column) {
-        this.columnList.add(column);
-        setResult(column.isResult());
+    public void addColumn(ColumnMeta columnMeta) {
+        this.columnMetaList.add(columnMeta);
+        setResult(columnMeta.isResult());
     }
 
 }

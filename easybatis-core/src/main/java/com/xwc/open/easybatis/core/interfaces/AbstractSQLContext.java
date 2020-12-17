@@ -6,7 +6,7 @@ import com.xwc.open.easybatis.core.interfaces.condition.NullCondition;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
-import com.xwc.open.easybatis.core.support.table.Column;
+import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 
 
 import java.util.ArrayList;
@@ -32,8 +32,8 @@ public abstract class AbstractSQLContext implements SQLContext {
     }
 
     public String selectColunm(TableMeta metadata) {
-        ArrayList<Column> list = new ArrayList<>();
-        list.addAll(metadata.getColumnList());
+        ArrayList<ColumnMeta> list = new ArrayList<>();
+        list.addAll(metadata.getColumnMetaList());
         list.addAll(metadata.getAuditorList());
         return list.stream()
                 .filter(column -> !column.isSelectIgnore())

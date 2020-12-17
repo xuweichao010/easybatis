@@ -1,10 +1,5 @@
 package com.xwc.open.easybatis.core.commons;
 
-import com.xwc.open.easybatis.core.anno.condition.Count;
-import com.xwc.open.easybatis.core.anno.condition.filter.Condition;
-import com.xwc.open.easybatis.core.anno.table.Column;
-import com.xwc.open.easybatis.core.anno.table.Table;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
