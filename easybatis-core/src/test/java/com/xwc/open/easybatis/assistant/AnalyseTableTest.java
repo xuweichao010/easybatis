@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.assistant;
 
 
+import com.xwc.open.easybatis.assistant.table.TableColumn;
 import com.xwc.open.easybatis.assistant.table.TableNotValue;
 import com.xwc.open.easybatis.assistant.table.TableValue;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
@@ -12,7 +13,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.swing.table.TableColumn;
 
 /**
  * 作者：徐卫超 cc
@@ -31,7 +31,7 @@ public class AnalyseTableTest {
         configuration.setUseActualParamName(true);
         configuration.setMapUnderscoreToCamelCase(true);
         this.configuration = new EasybatisConfiguration(configuration);
-        this.annotationAssistant = new AnnotationAssistant(this.configuration);
+        this.annotationAssistant = this.configuration.getAnnotationAssistant();
     }
 
     @Test

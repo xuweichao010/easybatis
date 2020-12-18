@@ -15,6 +15,9 @@ repositories {
 compileJava {
     options.compilerArgs << '-parameters'
 }
+compileTestJava{
+    options.compilerArgs << '-parameters'
+}
 dependencies {
     implementation 'org.mybatis:mybatis:3.5.6'
     runtimeOnly 'mysql:mysql-connector-java:8.0.21'

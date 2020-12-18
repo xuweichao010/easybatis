@@ -52,6 +52,7 @@ public class AnnotationAssistant {
     public AnnotationAssistant(EasybatisConfiguration configuration) {
         this.configuration = configuration;
     }
+
     private final static Set<Class<? extends Annotation>> auditorAnnoSet = Stream.of(CreateId.class,
             UpdateId.class, CreateName.class, UpdateName.class, CreateTime.class, UpdateTime.class).collect(Collectors.toSet());
     private final static Set<Class<? extends Annotation>> operationAnnoSet = Stream
@@ -220,9 +221,9 @@ public class AnnotationAssistant {
             param.setColumnName(underscoreName(paramName));
         } else {
             Map<String, Object> map = AnnotationUtils.getAnnotationAttributes(annotation);
-            param.setColumnName((String) map.get("column"));
+            param.setColumnName((String) map.get("value"));
             param.setAlias((String) map.get("alias"));
-            Condition condition = AnnotationUtils.findAnnotation(annotation.getClass(), Condition.class);
+            Condition condition = AnnotationUtils.findAnnotation(annotation.annotationType(), Condition.class);
             if (condition == null) {
                 throw new EasyBatisException("注解格式不符合规范");
             }

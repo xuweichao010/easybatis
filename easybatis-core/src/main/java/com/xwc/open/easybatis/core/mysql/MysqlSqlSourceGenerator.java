@@ -27,6 +27,7 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         if (!methodMetaData.getParamMetaList().isEmpty() || methodMetaData.getTableMetadata().getLogic() != null) {
             sb.append(" WHERE ").append(this.queryCondition(methodMetaData));
         }
+        sb.append("</script>");
 
         return sb.toString();
     }

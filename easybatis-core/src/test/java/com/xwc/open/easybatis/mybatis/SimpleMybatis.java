@@ -34,7 +34,7 @@ public class SimpleMybatis {
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.configuration = this.sqlSessionFactory.getConfiguration();
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
-        configuration.addMapper(UserMapper.class);
+        easybatisConfiguration.addMapper(UserMapper.class);
     }
 
     @Test
@@ -50,6 +50,8 @@ public class SimpleMybatis {
         System.out.println(user1.toString());
         Assert.assertNotNull(user1);
 
+        User user2 = mapper.get("37bd0225cc94400db744aac8dee8a001");
+        System.out.println(user2);
 
     }
 }

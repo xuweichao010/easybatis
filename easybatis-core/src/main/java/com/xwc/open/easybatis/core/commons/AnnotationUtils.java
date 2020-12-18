@@ -77,15 +77,12 @@ public class AnnotationUtils {
     }
 
     public static Map<String, Object> getAnnotationAttributes(Annotation annotation) {
-        Class<? extends Annotation> aClass = annotation.getClass();
-        Field[] fields = aClass.getFields();
-        return Arrays.stream(fields).collect(Collectors.toMap(field -> {
-            return field.getName();
-        }, field -> {
-            //return  field.get(annotation);
-            return new Object();
+        return Arrays.stream(annotation.annotationType().getDeclaredMethods()).collect(Collectors.toMap(Method::getName, method -> {
+            try {
+               return method.invoke(annotation);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+               return null;
+            }
         }));
     }
-
-
 }
