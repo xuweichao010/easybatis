@@ -1,18 +1,15 @@
 package com.xwc.open.easybatis.core.support;
 
-import com.xwc.open.easybatis.core.anno.condition.Count;
-import com.xwc.open.easybatis.core.anno.condition.Distinct;
-import com.xwc.open.easybatis.core.anno.condition.Join;
-import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
-import lombok.Builder;
 import lombok.Data;
+import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Data
-@Builder
 public class MethodMeta {
 
     private String methodName;
@@ -20,30 +17,9 @@ public class MethodMeta {
     /**
      * SQL操作的类型
      */
-    private Annotation sqlCommond;
+    private SqlCommandType sqlCommond;
 
     private boolean dynamic;
-
-    /**
-     * 是否是Join语句
-     */
-    private Join join;
-
-    /**
-     * 是否属统计总数方法
-     */
-    private Count count;
-
-    /**
-     * 是否需要对结果进行去重
-     */
-    private Distinct distinct;
-
-    /**
-     * 是否是主键查询
-     */
-    private PrimaryKey key;
-
     /**
      * 关联的表的实体的定义信息
      */
@@ -51,11 +27,44 @@ public class MethodMeta {
     /**
      * 方法上的注解定义信息
      */
-    List<Annotation> methodAnntaion;
+    Set<Annotation> methodAnnotation = new HashSet<>();
 
     /**
      * 参数有的定义信息
      */
     List<ParamMeta> paramMetaList;
+
+
+    public void addAnnotation(Annotation annotation) {
+        if (annotation != null) {
+            this.methodAnnotation.add(annotation);
+        }
+    }
+
+    public boolean hashAnnotation(Class<?> annotationClass) {
+        if (annotationClass == null) {
+            return false;
+        }
+        for (Annotation ann : methodAnnotation) {
+            if (annotationClass.equals(ann.annotationType())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public <T extends Annotation> T findAnnotation(Class<T> annotationClass) {
+        if (annotationClass == null) {
+            return null;
+        }
+        for (Annotation ann : methodAnnotation) {
+            if (annotationClass.equals(ann.annotationType())) {
+                return (T) ann;
+            }
+        }
+        return null;
+    }
+
 
 }

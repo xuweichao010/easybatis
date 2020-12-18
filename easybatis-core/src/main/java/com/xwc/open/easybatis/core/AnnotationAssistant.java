@@ -29,6 +29,7 @@ import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import com.xwc.open.easybatis.core.support.table.LoglicColumn;
 import com.xwc.open.easybatis.core.support.table.PrimayKey;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.ParamNameUtil;
 
 import java.lang.annotation.Annotation;
@@ -65,14 +66,13 @@ public class AnnotationAssistant {
 
     public String tableName(Class<?> entityType) {
         Table tableAnno = AnnotationUtils.findAnnotation(entityType, Table.class);
-        if (tableAnno == null) throw new RuntimeException(entityType.getName() + "not find @Table Annotaion");
+        if (tableAnno == null) throw new RuntimeException(entityType.getName() + "not find @Table Annotation");
         String name = (String) AnnotationUtils.getValue(tableAnno, "value");
         if (StringUtils.isEmpty(name) && configuration.getTablePrefix() != null) {
             return configuration.getTablePrefix() + underscoreName(entityType.getSimpleName());
         }
-        //TODO 后期支持达式
-        if (name == null) throw new RuntimeException(entityType.getName() + "not find @Table Annotaion");
-        return String.valueOf(name);
+        if (StringUtils.isEmpty(name)) throw new RuntimeException(entityType.getName() + " not find @Table Annotation");
+        return name;
     }
 
     /**
@@ -131,7 +131,7 @@ public class AnnotationAssistant {
         Annotation operationAnnotationType = chooseOperationAnnotationType(method);
         if (operationAnnotationType == null) return null;
         if (operationAnnotationType instanceof SelectSql) {
-            return parseSelectMethodMate(method, tableMetadata);
+            return parseSelectMethodMate(method, tableMetadata, (SelectSql) operationAnnotationType);
         } else if (operationAnnotationType instanceof InsertSql) {
             // TODO 插入情况
         } else if (operationAnnotationType instanceof UpdateSql) {
@@ -143,17 +143,19 @@ public class AnnotationAssistant {
         return null;
     }
 
-    public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata) {
-        MethodMeta metadata = MethodMeta.builder()
-                .count(AnnotationUtils.findAnnotation(method, Count.class))
-                .distinct(AnnotationUtils.findAnnotation(method, Distinct.class))
-                .join(AnnotationUtils.findAnnotation(method, Join.class))
-                .key(AnnotationUtils.findAnnotation(method, PrimaryKey.class))
-                .paramMetaList(parseMethodParam(method))
-                .tableMetadata(tableMetadata)
-                .methodName(method.getName())
-                .build();
-        return metadata;
+    public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata, SelectSql selectSql) {
+        MethodMeta meta = new MethodMeta();
+        meta.setDynamic(selectSql.dynamic());
+        meta.setParamMetaList(parseMethodParam(method));
+        meta.setTableMetadata(tableMetadata);
+        meta.setMethodName(method.getName());
+        meta.setSqlCommond(SqlCommandType.SELECT);
+        meta.addAnnotation(selectSql);
+        meta.addAnnotation(AnnotationUtils.findAnnotation(method, Count.class));
+        meta.addAnnotation(AnnotationUtils.findAnnotation(method, Distinct.class));
+        meta.addAnnotation(AnnotationUtils.findAnnotation(method, Join.class));
+        meta.addAnnotation(AnnotationUtils.findAnnotation(method, PrimaryKey.class));
+        return meta;
     }
 
     private List<ParamMeta> parseMethodParam(Method method) {

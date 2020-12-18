@@ -1,5 +1,7 @@
 package com.xwc.open.easybatis.core.interfaces;
 
+import com.xwc.open.easybatis.core.anno.SelectSql;
+import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
 import com.xwc.open.easybatis.core.interfaces.condition.NullCondition;
@@ -22,16 +24,24 @@ public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
     protected List<QueryCondition> list = new ArrayList<>();
 
 
-    public String selectColumn(TableMeta metadata) {
+    public String selectColumn(MethodMeta metadata) {
+        SelectSql selectSql = metadata.findAnnotation(SelectSql.class);
+        if (StringUtils.hasText(selectSql.value())) {
+            return selectSql.value();
+        }
         ArrayList<ColumnMeta> list = new ArrayList<>();
-        list.addAll(metadata.getColumnMetaList());
-        list.addAll(metadata.getAuditorList());
+        list.addAll(metadata.getTableMetadata().getColumnMetaList());
+        list.addAll(metadata.getTableMetadata().getAuditorList());
         return list.stream()
                 .filter(column -> !column.isSelectIgnore())
                 .map(column -> "`" + column.getColumn() + "`").collect(Collectors.joining(","));
+
     }
 
     public String queryCondition(MethodMeta metadata) {
+        if (metadata.hashAnnotation(PrimaryKey.class)) {
+            return mapCondition(,false);
+        }
         StringBuilder sb = new StringBuilder();
         // 处理方法上的非对象参数条件
         sb.append(metadata.getParamMetaList().stream().filter(paramMetaData -> !paramMetaData.isCustom())

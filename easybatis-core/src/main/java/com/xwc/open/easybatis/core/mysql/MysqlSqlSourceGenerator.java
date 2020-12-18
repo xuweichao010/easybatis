@@ -22,7 +22,7 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
     public String select(MethodMeta methodMetaData) {
         StringBuilder sb = new StringBuilder();
         sb.append("<script>")
-                .append(" SELECT ").append(this.selectColumn(methodMetaData.getTableMetadata()))
+                .append(" SELECT ").append(this.selectColumn(methodMetaData))
                 .append(" FROM ").append(methodMetaData.getTableMetadata().getTableName());
         if (!methodMetaData.getParamMetaList().isEmpty() || methodMetaData.getTableMetadata().getLogic() != null) {
             sb.append(" WHERE ").append(this.queryCondition(methodMetaData));
