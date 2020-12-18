@@ -13,4 +13,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface DeleteSql {
+
+    /**
+     * @return A database id that correspond this statement
+     * @since 3.5.5
+     */
+    String databaseId() default "";
 }

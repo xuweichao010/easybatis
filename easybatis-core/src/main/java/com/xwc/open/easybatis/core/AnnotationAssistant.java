@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.core.assistant;
+package com.xwc.open.easybatis.core;
 
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
@@ -28,6 +28,7 @@ import com.xwc.open.easybatis.core.support.table.AuditorColumn;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import com.xwc.open.easybatis.core.support.table.LoglicColumn;
 import com.xwc.open.easybatis.core.support.table.PrimayKey;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.reflection.ParamNameUtil;
 
 import java.lang.annotation.Annotation;
@@ -35,6 +36,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 创建人：徐卫超
@@ -42,54 +45,22 @@ import java.util.*;
  * 业务：
  * 功能：用于获取注解信息
  */
-public class AnnotationAssistan {
+public class AnnotationAssistant {
 
     private final EasybatisConfiguration configuration;
 
-    public AnnotationAssistan(EasybatisConfiguration configuration) {
+    public AnnotationAssistant(EasybatisConfiguration configuration) {
         this.configuration = configuration;
     }
-
-    private final static Set<Class<? extends Annotation>> queryAnnoSet = new HashSet<>();
-
-    private final static Set<Class<? extends Annotation>> auditorAnnoSet = new HashSet<>();
-
-    private final static Set<Class<? extends Annotation>> operationAnnoSet = new HashSet<>();
-
-    static {
-        queryAnnoSet.add(Equal.class);
-        queryAnnoSet.add(NotEqual.class);
-        queryAnnoSet.add(IsNull.class);
-        queryAnnoSet.add(NotNull.class);
-        queryAnnoSet.add(In.class);
-        queryAnnoSet.add(NotIn.class);
-        queryAnnoSet.add(Like.class);
-        queryAnnoSet.add(RightLike.class);
-        queryAnnoSet.add(LeftLike.class);
-        queryAnnoSet.add(GreaterThan.class);
-        queryAnnoSet.add(GreaterThanEqual.class);
-        queryAnnoSet.add(LessThan.class);
-        queryAnnoSet.add(LessThanEqual.class);
-        queryAnnoSet.add(Start.class);
-        queryAnnoSet.add(Offset.class);
-        queryAnnoSet.add(OrderBy.class);
-    }
-
-    static {
-        operationAnnoSet.add(SelectSql.class);
-        operationAnnoSet.add(InsertSql.class);
-        operationAnnoSet.add(UpdateSql.class);
-        operationAnnoSet.add(DeleteSql.class);
-    }
-
-    static {
-        auditorAnnoSet.add(CreateId.class);
-        auditorAnnoSet.add(UpdateId.class);
-        auditorAnnoSet.add(CreateName.class);
-        auditorAnnoSet.add(UpdateName.class);
-        auditorAnnoSet.add(CreateTime.class);
-        auditorAnnoSet.add(UpdateTime.class);
-    }
+    private final static Set<Class<? extends Annotation>> auditorAnnoSet = Stream.of(CreateId.class,
+            UpdateId.class, CreateName.class, UpdateName.class, CreateTime.class, UpdateTime.class).collect(Collectors.toSet());
+    private final static Set<Class<? extends Annotation>> operationAnnoSet = Stream
+            .of(SelectSql.class, InsertSql.class, UpdateSql.class, DeleteSql.class).collect(Collectors.toSet());
+    private static final Set<Class<? extends Annotation>> queryAnnoSet = Stream
+            .of(Equal.class, NotEqual.class, IsNull.class, NotNull.class, In.class, NotIn.class,
+                    Like.class, RightLike.class, LeftLike.class, GreaterThan.class, GreaterThanEqual.class, LessThan.class
+                    , LessThanEqual.class, Start.class, Offset.class, OrderBy.class)
+            .collect(Collectors.toSet());
 
     public String tableName(Class<?> entityType) {
         Table tableAnno = AnnotationUtils.findAnnotation(entityType, Table.class);

@@ -4,12 +4,7 @@ package com.xwc.open.easybatis.assistant;
 import com.xwc.open.easybatis.assistant.table.TableNotValue;
 import com.xwc.open.easybatis.assistant.table.TableValue;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
-import com.xwc.open.easybatis.core.anno.SelectSql;
-import com.xwc.open.easybatis.core.anno.condition.filter.IsNull;
-import com.xwc.open.easybatis.core.anno.table.Column;
-import com.xwc.open.easybatis.core.assistant.AnnotationAssistan;
-import com.xwc.open.easybatis.core.enums.ConditionType;
-import com.xwc.open.easybatis.core.support.MethodMeta;
+import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import org.apache.ibatis.session.Configuration;
@@ -18,9 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.swing.table.TableColumn;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 作者：徐卫超 cc
@@ -29,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class AnalyseTableTest {
 
-    AnnotationAssistan annotationAssistan;
+    AnnotationAssistant annotationAssistant;
     EasybatisConfiguration configuration;
 
 
@@ -39,25 +31,25 @@ public class AnalyseTableTest {
         configuration.setUseActualParamName(true);
         configuration.setMapUnderscoreToCamelCase(true);
         this.configuration = new EasybatisConfiguration(configuration);
-        this.annotationAssistan = new AnnotationAssistan(this.configuration);
+        this.annotationAssistant = new AnnotationAssistant(this.configuration);
     }
 
     @Test
     public void parseEntityName() {
-        TableMeta tableMetadata = annotationAssistan.parseEntityMate(TableValue.class);
+        TableMeta tableMetadata = annotationAssistant.parseEntityMate(TableValue.class);
         Assert.assertEquals(tableMetadata.getTableName(), "t_table");
     }
 
     @Test
     public void parseEntityGenderName() {
         configuration.setTablePrefix("t_");
-        TableMeta tableMetadata = annotationAssistan.parseEntityMate(TableNotValue.class);
+        TableMeta tableMetadata = annotationAssistant.parseEntityMate(TableNotValue.class);
         Assert.assertEquals(tableMetadata.getTableName(), "t_table_not_value");
     }
 
     @Test
     public void parseEntityColumn() {
-        TableMeta tableMetadata = annotationAssistan.parseEntityMate(TableColumn.class);
+        TableMeta tableMetadata = annotationAssistant.parseEntityMate(TableColumn.class);
         for (ColumnMeta column : tableMetadata.getColumnMetaList()) {
             if (column.getField().equals("address")) {
                 Assert.assertEquals(column.getColumn(), "address_column");
