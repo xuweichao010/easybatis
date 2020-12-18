@@ -8,24 +8,17 @@ import com.xwc.open.easybatis.core.support.ParamMeta;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 创建人：徐卫超 CC
  * 时间：2020/9/19 15:10
- * 备注：
+ * 备注： 比较类型的
  */
 public class CompareCondition implements QueryCondition {
-    private Set<ConditionType> conditionTypeSet;
-
-    public CompareCondition() {
-        this.conditionTypeSet = new HashSet<>();
-        conditionTypeSet.add(ConditionType.EQUEL);
-        conditionTypeSet.add(ConditionType.NOT_EQUEL);
-        conditionTypeSet.add(ConditionType.GT);
-        conditionTypeSet.add(ConditionType.GTQ);
-        conditionTypeSet.add(ConditionType.LT);
-        conditionTypeSet.add(ConditionType.LTQ);
-    }
+    private final Set<ConditionType> conditionTypeSet = Stream.of(ConditionType.EQUEL,ConditionType.NOT_EQUEL,ConditionType.GT,
+            ConditionType.GTQ,ConditionType.LT,ConditionType.LTQ).collect(Collectors.toSet());
 
     @Override
     public String apply(ParamMeta metaData, boolean isDynamic) {
@@ -33,9 +26,7 @@ public class CompareCondition implements QueryCondition {
         String condition = "`" + metaData.getColumnName() + "` " +
                 metaData.getCondition().expression() +
                 " #{" + metaData.getParamName() + "}";
-        if (StringUtils.hasText(metaData.getAlias())) {
-            condition = metaData.getAlias() + "." + condition;
-        }
+        if (StringUtils.hasText(metaData.getAlias())) condition = metaData.getAlias() + "." + condition;
         if (metaData.isCustom()) {
             return dynamicIf(metaData.getParamName(), condition);
         } else if (isDynamic) {

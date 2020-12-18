@@ -148,7 +148,7 @@ public class AnnotationAssistant {
                 .distinct(AnnotationUtils.findAnnotation(method, Distinct.class))
                 .join(AnnotationUtils.findAnnotation(method, Join.class))
                 .key(AnnotationUtils.findAnnotation(method, PrimaryKey.class))
-                .paramMetaData(parseMethodParam(method))
+                .paramMetaList(parseMethodParam(method))
                 .tableMetadata(tableMetadata)
                 .methodName(method.getName())
                 .build();

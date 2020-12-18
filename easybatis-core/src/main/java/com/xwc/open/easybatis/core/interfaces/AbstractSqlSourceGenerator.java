@@ -18,20 +18,11 @@ import java.util.stream.Collectors;
  * 时间：2020/9/19 14:30
  * 备注：
  */
-public abstract class AbstractSQLContext implements SQLContext {
-    private List<QueryCondition> list;
+public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
+    protected List<QueryCondition> list = new ArrayList<>();
 
-    public AbstractSQLContext(List<QueryCondition> list) {
-        this.list = list;
-    }
 
-    public AbstractSQLContext() {
-        list = new ArrayList<>();
-        list.add(new CompareCondition());
-        list.add(new NullCondition());
-    }
-
-    public String selectColunm(TableMeta metadata) {
+    public String selectColumn(TableMeta metadata) {
         ArrayList<ColumnMeta> list = new ArrayList<>();
         list.addAll(metadata.getColumnMetaList());
         list.addAll(metadata.getAuditorList());
@@ -40,15 +31,21 @@ public abstract class AbstractSQLContext implements SQLContext {
                 .map(column -> "`" + column.getColumn() + "`").collect(Collectors.joining(","));
     }
 
-    public String queryCondition(MethodMeta metadata, boolean isDynamic) {
-        return metadata.getParamMetaData().stream().filter(paramMetaData -> !paramMetaData.isCustom())
-                .map(paramMetaData -> mapCondition(paramMetaData, isDynamic))
+    public String queryCondition(MethodMeta metadata) {
+        StringBuilder sb = new StringBuilder();
+        // 处理方法上的非对象参数条件
+        sb.append(metadata.getParamMetaList().stream().filter(paramMetaData -> !paramMetaData.isCustom())
+                .map(paramMetaData -> mapCondition(paramMetaData, metadata.isDynamic()))
                 .filter(StringUtils::hasText).collect(Collectors.joining(" AND "))
-                + " " +
-                metadata.getParamMetaData().stream()
-                        .filter(ParamMeta::isCustom)
-                        .map(paramMetaData -> mapCondition(paramMetaData, isDynamic))
-                        .filter(StringUtils::hasText).collect(Collectors.joining(" "));
+        );
+        // 处理方法上的对象参数条件
+        sb.append(metadata.getParamMetaList().stream()
+                .filter(ParamMeta::isCustom)
+                .map(paramMetaData -> mapCondition(paramMetaData, metadata.isDynamic()))
+                .filter(StringUtils::hasText).collect(Collectors.joining(" ")));
+        // 处理逻辑删除
+
+        return sb.toString();
 
     }
 

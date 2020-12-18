@@ -22,6 +22,8 @@ public class MethodMeta {
      */
     private Annotation sqlCommond;
 
+    private boolean dynamic;
+
     /**
      * 是否是Join语句
      */
@@ -42,7 +44,6 @@ public class MethodMeta {
      */
     private PrimaryKey key;
 
-
     /**
      * 关联的表的实体的定义信息
      */
@@ -55,6 +56,6 @@ public class MethodMeta {
     /**
      * 参数有的定义信息
      */
-    List<ParamMeta> paramMetaData;
+    List<ParamMeta> paramMetaList;
 
 }

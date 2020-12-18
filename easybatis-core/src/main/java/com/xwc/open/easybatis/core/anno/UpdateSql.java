@@ -15,6 +15,12 @@ import java.lang.annotation.*;
 public @interface UpdateSql {
 
     /**
+     * query对象查询查询时dynamic 自动为true
+     * @return
+     */
+    boolean dynamic() default false;
+
+    /**
      * @return A database id that correspond this statement
      * @since 3.5.5
      */

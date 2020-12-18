@@ -23,4 +23,6 @@ public class ParamMeta {
     private ConditionType condition;
 
     private String alias;
+
+    private boolean dynamic;
 }
