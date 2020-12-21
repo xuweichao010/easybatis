@@ -18,7 +18,7 @@ public interface QueryCondition {
     }
 
     default String dynamicIsNull(String conditionParam, String conditionQuery) {
-        return "( #{" + conditionParam + "} IS NULL OR " + conditionQuery + " )";
+        return "AND ( #{" + conditionParam + "} IS NULL OR " + conditionQuery + " )";
     }
 
     default String doApply(String conditionParam, String conditionQuery, ParamType type) {
