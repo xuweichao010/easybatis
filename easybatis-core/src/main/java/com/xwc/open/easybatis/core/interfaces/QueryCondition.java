@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.core.interfaces;
 
+import com.xwc.open.easybatis.core.enums.ParamType;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 
 /**
@@ -9,7 +10,7 @@ import com.xwc.open.easybatis.core.support.ParamMeta;
  */
 public interface QueryCondition {
 
-    String apply(ParamMeta metaData, boolean isDynamic);
+    String apply(ParamMeta metaData);
 
 
     default String dynamicIf(String conditionParam, String conditionQuery) {
@@ -18,5 +19,17 @@ public interface QueryCondition {
 
     default String dynamicIsNull(String conditionParam, String conditionQuery) {
         return "( #{" + conditionParam + "} IS NULL OR " + conditionQuery + " )";
+    }
+
+    default String doApply(String conditionParam, String conditionQuery, ParamType type) {
+        if (type == ParamType.FILED_TYPE || type == ParamType.PARAM_TYPE) {
+            return conditionQuery;
+        } else if (type == ParamType.FILED_TYPE_DYNAMIC) {
+            return dynamicIf(conditionParam, conditionQuery);
+        } else if (type == ParamType.PARAM_TYPE_DYNAMIC) {
+            return dynamicIsNull(conditionParam, conditionQuery);
+        } else {
+            return null;
+        }
     }
 }

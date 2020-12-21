@@ -23,9 +23,6 @@ public @interface LessThan {
      */
     int index() default 99;
 
-
-
-
     /**
      * 属性和数据表之间的列关系
      *
@@ -40,4 +37,11 @@ public @interface LessThan {
      * @return
      */
     String alias() default "";
+
+    /**
+     * query对象查询查询时dynamic 自动为true
+     *
+     * @return
+     */
+    boolean dynamic() default false;
 }

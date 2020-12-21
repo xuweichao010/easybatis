@@ -17,22 +17,17 @@ import java.util.stream.Stream;
  * 备注： 比较类型的
  */
 public class CompareCondition implements QueryCondition {
-    private final Set<ConditionType> conditionTypeSet = Stream.of(ConditionType.EQUEL,ConditionType.NOT_EQUEL,ConditionType.GT,
-            ConditionType.GTQ,ConditionType.LT,ConditionType.LTQ).collect(Collectors.toSet());
+    private final Set<ConditionType> conditionTypeSet = Stream.of(ConditionType.EQUEL, ConditionType.NOT_EQUEL, ConditionType.GT,
+            ConditionType.GTQ, ConditionType.LT, ConditionType.LTQ).collect(Collectors.toSet());
 
     @Override
-    public String apply(ParamMeta metaData, boolean isDynamic) {
+    public String apply(ParamMeta metaData) {
         if (!conditionTypeSet.contains(metaData.getCondition())) return null;
         String condition = "`" + metaData.getColumnName() + "` " +
                 metaData.getCondition().expression() +
                 " #{" + metaData.getParamName() + "}";
         if (StringUtils.hasText(metaData.getAlias())) condition = metaData.getAlias() + "." + condition;
-        if (metaData.isCustom()) {
-            return dynamicIf(metaData.getParamName(), condition);
-        } else if (isDynamic) {
-            return dynamicIsNull(metaData.getParamName(), condition);
-        }
-        return condition;
+        return doApply(metaData.getParamName(), condition, metaData.getType());
     }
 
 }

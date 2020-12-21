@@ -20,6 +20,7 @@ import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.IdType;
+import com.xwc.open.easybatis.core.enums.ParamType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
@@ -89,34 +90,33 @@ public class AnnotationAssistant {
             if (isIgnore(field)) continue;
             //处理 普通属性
             Column annotation = AnnotationUtils.findAnnotation(field, Column.class);
-            ColumnMeta columnMeta = analysisColunm(field, annotation, entityType);
+            ColumnMeta columnMeta = analysisColunm(field, null, entityType);
             if (columnMeta != null) {
                 table.addColumn(columnMeta);
             }
 
-//            Annotation aduitorAnnotationType = chooseAduitorAnnotationType(field);
-//            if (aduitorAnnotationType != null) {
-//                AuditorColumn auditor = auditor(aduitorAnnotationType, field, entityType);
-//                if (auditor != null) table.addAuditor(auditor);
-//            } else {
-//                //处理主键
-//                PrimayKey primayKey = primayKey(field, entityType);
-//                if (primayKey != null && table.getId() != null) {
-//                    throw new EasyBatisException(entityType.getName() + "发现多个主键声明");
-//                } else if (primayKey != null) {
-//                    table.setId(primayKey);
-//                    continue;
-//                }
-//                //处理逻辑删除
-//                LoglicColumn loglic = loglic(field, entityType);
-//                if (loglic != null && table.getLoglic() != null) {
-//                    throw new EasyBatisException(entityType.getName() + "发现多个逻辑字段声明");
-//                } else if (loglic != null) {
-//                    table.setLoglic(loglic);
-//                    continue;
-//                }
-//
-//            }
+            Annotation aduitorAnnotationType = chooseAduitorAnnotationType(field);
+            if (aduitorAnnotationType != null) {
+                AuditorColumn auditor = auditor(aduitorAnnotationType, field, entityType);
+                if (auditor != null) table.addAuditor(auditor);
+            } else {
+                //处理主键
+                PrimayKey primayKey = primayKey(field, entityType);
+                if (primayKey != null && table.getId() != null) {
+                    throw new EasyBatisException(entityType.getName() + "发现多个主键声明");
+                } else if (primayKey != null) {
+                    table.setId(primayKey);
+                    continue;
+                }
+                //处理逻辑删除
+                LoglicColumn loglic = loglic(field, entityType);
+                if (loglic != null && table.getLogic() != null) {
+                    throw new EasyBatisException(entityType.getName() + "发现多个逻辑字段声明");
+                } else if (loglic != null) {
+                    table.setLogic(loglic);
+                    continue;
+                }
+            }
         }
         return table;
     }
@@ -221,17 +221,32 @@ public class AnnotationAssistant {
         if (annotation == null) {
             param.setCondition(ConditionType.EQUEL);
             param.setColumnName(underscoreName(paramName));
+            if (isCustom) {
+                param.setType(ParamType.PARAM_TYPE_DYNAMIC);
+            } else {
+                param.setType(ParamType.FILED_TYPE);
+            }
         } else {
             Map<String, Object> map = AnnotationUtils.getAnnotationAttributes(annotation);
             param.setColumnName((String) map.get("value"));
             param.setAlias((String) map.get("alias"));
+            boolean dynamic = (boolean) map.get("dynamic");
+            if (isCustom) {
+                param.setType(ParamType.PARAM_TYPE_DYNAMIC);
+            } else {
+                if (dynamic) {
+                    param.setType(ParamType.FILED_TYPE_DYNAMIC);
+                } else {
+                    param.setType(ParamType.FILED_TYPE);
+                }
+            }
             Condition condition = AnnotationUtils.findAnnotation(annotation.annotationType(), Condition.class);
             if (condition == null) {
                 throw new EasyBatisException("注解格式不符合规范");
             }
             param.setCondition(condition.type());
         }
-        param.setCustom(isCustom);
+
         return param;
     }
 

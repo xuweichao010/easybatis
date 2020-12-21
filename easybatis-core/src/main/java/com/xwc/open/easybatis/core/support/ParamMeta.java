@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.core.support;
 
 import com.xwc.open.easybatis.core.enums.ConditionType;
+import com.xwc.open.easybatis.core.enums.ParamType;
 import lombok.Data;
 
 /**
@@ -14,7 +15,7 @@ public class ParamMeta {
     /**
      * 属于自定义对象还是java对象 true 是自定义对象  false为非自定义对象
      */
-    private boolean custom;
+    private ParamType type;
 
     private String paramName;
 
@@ -24,5 +25,16 @@ public class ParamMeta {
 
     private String alias;
 
-    private boolean dynamic;
+    public ParamMeta() {
+    }
+
+    public static ParamMeta builder(String columnName, String paramName, ConditionType type) {
+        ParamMeta tar = new ParamMeta();
+        tar.columnName = columnName;
+        tar.paramName = paramName;
+        tar.condition = type;
+        tar.type = ParamType.FILED_TYPE;
+        return tar;
+    }
+
 }

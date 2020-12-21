@@ -3,12 +3,15 @@ package com.xwc.open.easybatis.core.interfaces;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.commons.StringUtils;
+import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
 import com.xwc.open.easybatis.core.interfaces.condition.NullCondition;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
+import com.xwc.open.easybatis.core.support.table.LoglicColumn;
+import com.xwc.open.easybatis.core.support.table.PrimayKey;
 
 
 import java.util.ArrayList;
@@ -39,29 +42,31 @@ public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
     }
 
     public String queryCondition(MethodMeta metadata) {
+        List<ParamMeta> paramMetaList = new ArrayList<>();
         if (metadata.hashAnnotation(PrimaryKey.class)) {
-            return mapCondition(,false);
+            PrimayKey id = metadata.getTableMetadata().getId();
+            paramMetaList.add(ParamMeta.builder(id.getColumn(), id.getField(), ConditionType.EQUEL));
+        } else {
+            paramMetaList.addAll(metadata.getParamMetaList());
         }
-        StringBuilder sb = new StringBuilder();
-        // 处理方法上的非对象参数条件
-        sb.append(metadata.getParamMetaList().stream().filter(paramMetaData -> !paramMetaData.isCustom())
-                .map(paramMetaData -> mapCondition(paramMetaData, metadata.isDynamic()))
-                .filter(StringUtils::hasText).collect(Collectors.joining(" AND "))
-        );
+        if (metadata.getTableMetadata().getLogic() != null) {
+            LoglicColumn logic = metadata.getTableMetadata().getLogic();
+            paramMetaList.add(ParamMeta.builder(logic.getColumn(), logic.getField(), ConditionType.EQUEL));
+        }
         // 处理方法上的对象参数条件
-        sb.append(metadata.getParamMetaList().stream()
-                .filter(ParamMeta::isCustom)
-                .map(paramMetaData -> mapCondition(paramMetaData, metadata.isDynamic()))
-                .filter(StringUtils::hasText).collect(Collectors.joining(" ")));
-        // 处理逻辑删除
-
-        return sb.toString();
+        String queryCondition = paramMetaList.stream()
+                .map(this::mapCondition)
+                .filter(StringUtils::hasText).collect(Collectors.joining(" ")).trim();
+        if (queryCondition.startsWith("AND")) {
+            return queryCondition.substring("AND".length());
+        }
+        return queryCondition;
 
     }
 
-    private String mapCondition(ParamMeta metadata, boolean isDynamic) {
+    private String mapCondition(ParamMeta metadata) {
         for (QueryCondition queryCondition : list) {
-            String condition = queryCondition.apply(metadata, isDynamic);
+            String condition = queryCondition.apply(metadata);
             if (StringUtils.hasText(condition)) {
                 return condition;
             }

@@ -37,4 +37,11 @@ public @interface Offset {
      * @return
      */
     String alias() default "";
+
+    /**
+     * query对象查询查询时dynamic 自动为true
+     *
+     * @return
+     */
+    boolean dynamic() default false;
 }

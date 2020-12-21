@@ -36,22 +36,22 @@ public class SimpleMybatis {
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
         easybatisConfiguration.addMapper(UserMapper.class);
     }
-
-    @Test
-    public void testConnect() {
-        UserMapper mapper = sqlSessionFactory.openSession().getMapper(UserMapper.class);
-        User user = mapper.find("37bd0225cc94400db744aac8dee8a001");
-        System.out.println(user);
-        Assert.assertNotNull(user);
-        User userQuery = new User();
-        userQuery.setOrgCode("200");
-        userQuery.setAge(0);
-        User user1 = mapper.find1("37bd0225cc94400db744aac8dee8a001", userQuery);
-        System.out.println(user1.toString());
-        Assert.assertNotNull(user1);
-
-        User user2 = mapper.get("37bd0225cc94400db744aac8dee8a001");
-        System.out.println(user2);
-
-    }
+//
+//    @Test
+//    public void testConnect() {
+//        UserMapper mapper = sqlSessionFactory.openSession().getMapper(UserMapper.class);
+//        User user = mapper.find("37bd0225cc94400db744aac8dee8a001");
+//        System.out.println(user);
+//        Assert.assertNotNull(user);
+//        User userQuery = new User();
+//        userQuery.setOrgCode("200");
+//        userQuery.setAge(0);
+//        User user1 = mapper.find1("37bd0225cc94400db744aac8dee8a001", userQuery);
+//        System.out.println(user1.toString());
+//        Assert.assertNotNull(user1);
+//
+//        User user2 = mapper.get("37bd0225cc94400db744aac8dee8a001");
+//        System.out.println(user2);
+//
+//    }
 }
