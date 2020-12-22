@@ -1,7 +1,6 @@
 package com.xwc.open.easybatis.core;
 
 
-import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
@@ -10,7 +9,6 @@ import com.xwc.open.easybatis.core.anno.auditor.*;
 import com.xwc.open.easybatis.core.anno.condition.Count;
 import com.xwc.open.easybatis.core.anno.condition.Distinct;
 import com.xwc.open.easybatis.core.anno.condition.Join;
-import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.anno.condition.filter.*;
 import com.xwc.open.easybatis.core.anno.table.*;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
@@ -23,11 +21,9 @@ import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
-import com.xwc.open.easybatis.core.support.table.AuditorColumn;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import com.xwc.open.easybatis.core.support.table.LoglicColumn;
-import com.xwc.open.easybatis.core.support.table.PrimayKey;
-import org.apache.ibatis.annotations.*;
+import com.xwc.open.easybatis.core.support.table.PrimaryKey;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.ParamNameUtil;
 
@@ -90,17 +86,21 @@ public class AnnotationAssistant {
             if (columnMeta == null) continue;
             if (columnMeta.hashAnnotationType(Id.class)) {
                 Id id = columnMeta.chooseAnnotationType(Id.class);
-                table.setId(new PrimayKey(columnMeta, id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type(), id));
+                table.setId(new PrimaryKey(columnMeta, id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type(), id));
+                continue;
             } else if (columnMeta.hashAnnotationType(Loglic.class)) {
                 Loglic loglic = columnMeta.chooseAnnotationType(Loglic.class);
                 table.setLogic(new LoglicColumn(columnMeta, loglic));
+                continue;
             } else if (columnMeta.hashAnnotationType(Auditor.class)) {
 //                columnMeta.chooseAnnotationType(Auditor.class);
 //                table.addAuditor(new AuditorColumn(columnMeta, Auditor));
+                continue;
             } else if (columnMeta.hashAnnotationType(Column.class)) {
-                Loglic loglic = columnMeta.chooseAnnotationType(Loglic.class);
-                columnMeta.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(loglic));
+                Column column = columnMeta.chooseAnnotationType(Column.class);
+                columnMeta.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(column));
             }
+            table.addColumn(columnMeta);
         }
         return table;
     }
@@ -138,7 +138,7 @@ public class AnnotationAssistant {
         meta.addAnnotation(AnnotationUtils.findAnnotation(method, Count.class));
         meta.addAnnotation(AnnotationUtils.findAnnotation(method, Distinct.class));
         meta.addAnnotation(AnnotationUtils.findAnnotation(method, Join.class));
-        meta.addAnnotation(AnnotationUtils.findAnnotation(method, PrimaryKey.class));
+        meta.addAnnotation(AnnotationUtils.findAnnotation(method, com.xwc.open.easybatis.core.anno.condition.PrimaryKey.class));
         return meta;
     }
 

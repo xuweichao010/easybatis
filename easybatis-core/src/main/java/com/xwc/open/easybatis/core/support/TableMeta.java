@@ -3,7 +3,7 @@ package com.xwc.open.easybatis.core.support;
 import com.xwc.open.easybatis.core.support.table.AuditorColumn;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import com.xwc.open.easybatis.core.support.table.LoglicColumn;
-import com.xwc.open.easybatis.core.support.table.PrimayKey;
+import com.xwc.open.easybatis.core.support.table.PrimaryKey;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class TableMeta {
     /**
      * 主键信息
      */
-    private PrimayKey id;
+    private PrimaryKey id;
 
     /**
      * 普通属性信息
@@ -47,7 +47,7 @@ public class TableMeta {
     private LoglicColumn logic;
 
 
-    public void setId(PrimayKey id) {
+    public void setId(PrimaryKey id) {
         this.id = id;
         setResult(id.isResult());
     }

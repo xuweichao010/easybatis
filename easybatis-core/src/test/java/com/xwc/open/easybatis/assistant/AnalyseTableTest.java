@@ -10,6 +10,7 @@ import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
+import com.xwc.open.easybatis.core.support.table.PrimaryKey;
 import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,6 +55,12 @@ public class AnalyseTableTest {
     @Test
     public void parseEntityColumn() {
         TableMeta tableMetadata = annotationAssistant.parseEntityMate(TableColumn.class);
+        if (tableMetadata.getColumnMetaList().isEmpty()) {
+            Assert.fail();
+        }
+        if(tableMetadata.getId() == null){
+            Assert.fail();
+        }
         for (ColumnMeta column : tableMetadata.getColumnMetaList()) {
             if (column.getField().equals("address")) {
                 Assert.assertEquals(column.getColumn(), "address_column");

@@ -1,17 +1,13 @@
 package com.xwc.open.easybatis.core.interfaces;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
-import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
-import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
-import com.xwc.open.easybatis.core.interfaces.condition.NullCondition;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
-import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import com.xwc.open.easybatis.core.support.table.LoglicColumn;
-import com.xwc.open.easybatis.core.support.table.PrimayKey;
+import com.xwc.open.easybatis.core.support.table.PrimaryKey;
 
 
 import java.util.ArrayList;
@@ -43,8 +39,8 @@ public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
 
     public String queryCondition(MethodMeta metadata) {
         List<ParamMeta> paramMetaList = new ArrayList<>();
-        if (metadata.hashAnnotation(PrimaryKey.class)) {
-            PrimayKey id = metadata.getTableMetadata().getId();
+        if (metadata.hashAnnotation(com.xwc.open.easybatis.core.anno.condition.PrimaryKey.class)) {
+            PrimaryKey id = metadata.getTableMetadata().getId();
             paramMetaList.add(ParamMeta.builder(id.getColumn(), id.getField(), ConditionType.EQUEL));
         } else {
             paramMetaList.addAll(metadata.getParamMetaList());

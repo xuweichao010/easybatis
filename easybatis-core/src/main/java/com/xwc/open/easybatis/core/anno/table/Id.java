@@ -20,7 +20,7 @@ public @interface Id {
      *
      * @return
      */
-    String column() default "";
+    String value() default "";
 
     /**
      * 查询是否查询该字段 false 查询 true 不查询
