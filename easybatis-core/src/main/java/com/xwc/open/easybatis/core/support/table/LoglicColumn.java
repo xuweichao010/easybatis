@@ -1,5 +1,8 @@
 package com.xwc.open.easybatis.core.support.table;
 
+import com.xwc.open.easybatis.core.anno.table.Loglic;
+import com.xwc.open.easybatis.core.commons.AnnotationUtils;
+
 /**
  * 作者：徐卫超 cc
  * 时间：2020/9/9
@@ -10,10 +13,13 @@ public class LoglicColumn extends ColumnMeta {
 
     private int invalid;
 
-    public LoglicColumn(ColumnMeta columnMeta, int valid, int invalid) {
+    public LoglicColumn(ColumnMeta columnMeta, Loglic loglic) {
         super(columnMeta);
-        this.valid = valid;
-        this.invalid = invalid;
+        this.valid = loglic.valid();
+        this.invalid = loglic.invalid();
+        this.setUpdateIgnore(true);
+        this.setInsertIgnore(false);
+        this.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(loglic));
     }
 
     public int getValid() {

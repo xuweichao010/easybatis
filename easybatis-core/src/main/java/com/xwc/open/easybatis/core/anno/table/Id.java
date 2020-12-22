@@ -30,13 +30,6 @@ public @interface Id {
     boolean selectIgnore() default false;
 
     /**
-     * 是否更新该字段 false更新 true不更新
-     *
-     * @return
-     */
-    boolean updatgeIgnore() default true;
-
-    /**
      * 主键类型
      *
      * @return

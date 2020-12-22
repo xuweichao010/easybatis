@@ -12,9 +12,7 @@ import com.xwc.open.easybatis.core.anno.condition.Distinct;
 import com.xwc.open.easybatis.core.anno.condition.Join;
 import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.anno.condition.filter.*;
-import com.xwc.open.easybatis.core.anno.table.Column;
-import com.xwc.open.easybatis.core.anno.table.Ignore;
-import com.xwc.open.easybatis.core.anno.table.Table;
+import com.xwc.open.easybatis.core.anno.table.*;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.commons.StringUtils;
@@ -88,34 +86,20 @@ public class AnnotationAssistant {
         List<Field> fieldArr = Reflection.getField(entityType);
         for (Field field : fieldArr) {
             if (isIgnore(field)) continue;
-            //处理 普通属性
-            Column annotation = AnnotationUtils.findAnnotation(field, Column.class);
-            ColumnMeta columnMeta = analysisColunm(field, null, entityType);
-            if (columnMeta != null) {
-                table.addColumn(columnMeta);
-            }
-
-            Annotation aduitorAnnotationType = chooseAduitorAnnotationType(field);
-            if (aduitorAnnotationType != null) {
-                AuditorColumn auditor = auditor(aduitorAnnotationType, field, entityType);
-                if (auditor != null) table.addAuditor(auditor);
-            } else {
-                //处理主键
-                PrimayKey primayKey = primayKey(field, entityType);
-                if (primayKey != null && table.getId() != null) {
-                    throw new EasyBatisException(entityType.getName() + "发现多个主键声明");
-                } else if (primayKey != null) {
-                    table.setId(primayKey);
-                    continue;
-                }
-                //处理逻辑删除
-                LoglicColumn loglic = loglic(field, entityType);
-                if (loglic != null && table.getLogic() != null) {
-                    throw new EasyBatisException(entityType.getName() + "发现多个逻辑字段声明");
-                } else if (loglic != null) {
-                    table.setLogic(loglic);
-                    continue;
-                }
+            ColumnMeta columnMeta = analysisColunm(field, entityType);
+            if (columnMeta == null) continue;
+            if (columnMeta.hashAnnotationType(Id.class)) {
+                Id id = columnMeta.chooseAnnotationType(Id.class);
+                table.setId(new PrimayKey(columnMeta, id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type(), id));
+            } else if (columnMeta.hashAnnotationType(Loglic.class)) {
+                Loglic loglic = columnMeta.chooseAnnotationType(Loglic.class);
+                table.setLogic(new LoglicColumn(columnMeta, loglic));
+            } else if (columnMeta.hashAnnotationType(Auditor.class)) {
+//                columnMeta.chooseAnnotationType(Auditor.class);
+//                table.addAuditor(new AuditorColumn(columnMeta, Auditor));
+            } else if (columnMeta.hashAnnotationType(Column.class)) {
+                Loglic loglic = columnMeta.chooseAnnotationType(Loglic.class);
+                columnMeta.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(loglic));
             }
         }
         return table;
@@ -256,60 +240,13 @@ public class AnnotationAssistant {
 
 
     /**
-     * 获取主键信息
-     *
-     * @param field 字段信息
-     * @param clazz 实体的Class
-     * @return 当主键信息存在时 返回 PrimayKey 否则返回空
-     */
-    public PrimayKey primayKey(Field field, Class<?> clazz) {
-        com.xwc.open.easybatis.core.anno.table.Id id = AnnotationUtils.findAnnotation(field, com.xwc.open.easybatis.core.anno.table.Id.class);
-        if (id == null) return null;
-        ColumnMeta columnMeta = analysisColunm(field, id, clazz);
-        if (columnMeta == null) return null;
-        return new PrimayKey(columnMeta, id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type());
-    }
-
-    /**
-     * 获取逻辑字段信息
-     *
-     * @param field 字段信息
-     * @param clazz 实体的Class
-     * @return 当逻辑属性存在时返回 LoglicColumn 否则返回空
-     */
-    public LoglicColumn loglic(Field field, Class<?> clazz) {
-        com.xwc.open.easybatis.core.anno.table.Loglic loglic = AnnotationUtils.findAnnotation(field, com.xwc.open.easybatis.core.anno.table.Loglic.class);
-        if (loglic == null) return null;
-        ColumnMeta columnMeta = analysisColunm(field, loglic, clazz);
-        if (columnMeta == null) return null;
-        return new LoglicColumn(columnMeta, loglic.invalid(), loglic.invalid());
-    }
-
-    /**
-     * 获取审计注解的信息
-     *
-     * @param annotation 审计注解
-     * @param field      字段信息
-     * @param clazz      实体的Class
-     * @return 当审计信息存在时返回AuditorColumn 否则返回空
-     */
-    public AuditorColumn auditor(Annotation annotation, Field field, Class<?> clazz) {
-        Auditor auditor = AnnotationUtils.findAnnotation(annotation.getClass(), Auditor.class);
-        if (auditor == null) return null;
-        ColumnMeta columnMeta = analysisColunm(field, annotation, clazz);
-        if (columnMeta == null) return null;
-        return new AuditorColumn(columnMeta, auditor.type());
-    }
-
-    /**
      * 解析字段的注解信息
      *
-     * @param field      字段
-     * @param annotation 字段描述注解信息
-     * @param clazz      实体的class对象
+     * @param field 字段
+     * @param clazz 实体的class对象
      * @return 字段和数据表的字段映射关系 如果存在关系则返回Column 负责返回空
      */
-    private ColumnMeta analysisColunm(Field field, Annotation annotation, Class<?> clazz) {
+    private ColumnMeta analysisColunm(Field field, Class<?> clazz) {
         Method getter;
         Method setter;
         try {
@@ -318,19 +255,7 @@ public class AnnotationAssistant {
         } catch (NoSuchMethodException e) {
             return null;
         }
-        Map<String, Object> map;
-        if (annotation != null) {
-            map = AnnotationUtils.getAnnotationAttributes(annotation);
-        } else {
-            map = new HashMap<>();
-        }
-        ColumnMeta columnMeta = new ColumnMeta(map, getter, setter, field.getName());
-        if (!StringUtils.hasText(columnMeta.getColumn())) {
-            columnMeta.setColumn(underscoreName(columnMeta.getField()));
-        } else {
-            columnMeta.setResult(true);
-        }
-        return columnMeta;
+        return ColumnMeta.builder(field, getter, setter, underscoreName(field.getName()));
     }
 
 
