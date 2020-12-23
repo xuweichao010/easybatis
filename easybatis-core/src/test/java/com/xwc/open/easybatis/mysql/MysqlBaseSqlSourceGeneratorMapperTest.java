@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.stream.Stream;
 
 /**
  * 作者：徐卫超 cc
@@ -44,13 +45,11 @@ public class MysqlBaseSqlSourceGeneratorMapperTest {
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.configuration = this.sqlSessionFactory.getConfiguration();
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
-        easybatisConfiguration.addMapper(UserMapper.class);
         this.annotationAssistant = easybatisConfiguration.getAnnotationAssistant();
         this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(MysqlBaseSqlSourceGeneratorMapper.class));
 
 
     }
-
 
     @Test
     public void selectKey() {
@@ -58,7 +57,6 @@ public class MysqlBaseSqlSourceGeneratorMapperTest {
         MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        System.out.println(select);
         Assert.assertEquals("<script> SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source WHERE `id` = #{id}</script>", select);
     }
 
@@ -68,7 +66,6 @@ public class MysqlBaseSqlSourceGeneratorMapperTest {
         MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        System.out.println(select);
         Assert.assertEquals("<script> SELECT id FROM t_mysql_sql_source</script>", select);
     }
 
@@ -78,7 +75,6 @@ public class MysqlBaseSqlSourceGeneratorMapperTest {
         MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        System.out.println(select);
         Assert.assertEquals("<script> SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source</script>", select);
     }
 
@@ -88,8 +84,11 @@ public class MysqlBaseSqlSourceGeneratorMapperTest {
         MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        System.out.println(select);
-        Assert.assertEquals(select, "<script> SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source WHERE  (#{name} IS NULL OR `name` = #{name})</script>");
+        String targetSql = "<script>" +
+                " SELECT `id`,`orgCode`,`orgName`,`name`" +
+                " FROM t_mysql_sql_source WHERE  (#{name} IS NULL OR `name` = #{name})" +
+                "</script>";
+        Assert.assertEquals(select, targetSql);
     }
 
     @Test
@@ -98,11 +97,89 @@ public class MysqlBaseSqlSourceGeneratorMapperTest {
         MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        System.out.println(select);
-        Assert.assertEquals(select,"<script> SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source WHERE  (#{name} IS NULL OR `name` = #{name})</script>");
+        String targetSql = "<script>" +
+                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " WHERE  (#{name} IS NULL OR `name` = #{name})" +
+                "</script>";
+        Assert.assertEquals(select, targetSql);
+    }
+
+    @Test
+    public void methodGlobalMultiDynamic() {
+        Method method = chooseMethod(MysqlBaseSqlSourceGeneratorMapper.class, "methodGlobalMultiDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
+                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String targetSql = "<script>" +
+                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " WHERE  (#{name} IS NULL OR `name` = #{name})" +
+                " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
+                "</script>";
+        Assert.assertEquals(select, targetSql);
+    }
+
+    @Test
+    public void methodParamMultiDynamic() {
+        Method method = chooseMethod(MysqlBaseSqlSourceGeneratorMapper.class, "methodParamMultiDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
+                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String targetSql = "<script>" +
+                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " WHERE  (#{name} IS NULL OR `name` = #{name})" +
+                " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
+                "</script>";
+        Assert.assertEquals(select, targetSql);
     }
 
 
+    @Test
+    public void methodCustom() {
+        Method method = chooseMethod(MysqlBaseSqlSourceGeneratorMapper.class, "methodCustom");
+        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
+                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String targetSql = "<script>" +
+                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " WHERE <if test='id'>  AND `id` = #{id} </if>" +
+                " <if test='orgCode'>  AND `orgCode` = #{orgCode} </if>" +
+                "</script>";
+        Assert.assertEquals(select, targetSql);
+
+    }
+
+
+    @Test
+    public void methodMultiCustom() {
+        Method method = chooseMethod(MysqlBaseSqlSourceGeneratorMapper.class, "methodMultiCustom");
+        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
+                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String targetSql = "<script>" +
+                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " WHERE <if test='one.id'>  AND `id` = #{one.id} </if>" +
+                " <if test='one.orgCode'>  AND `orgCode` = #{one.orgCode} </if>" +
+                " <if test='two.orgName'>  AND `orgName` = #{two.orgName} </if>" +
+                " <if test='two.name'>  AND `name` = #{two.name} </if>" +
+                "</script>";
+        Assert.assertEquals(select, targetSql);
+    }
+
+    @Test
+    public void methodMixture() {
+        Method method = chooseMethod(MysqlBaseSqlSourceGeneratorMapper.class, "methodMixture");
+        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
+                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String targetSql = "<script>" +
+                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " WHERE `name` = #{name}" +
+                " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
+                " <if test='two.orgName'>  AND `orgName` = #{two.orgName} </if>" +
+                " <if test='two.name'>  AND `name` = #{two.name} </if>" +
+                "</script>";
+        Assert.assertEquals(select, targetSql);
+    }
 
 
     private Method chooseMethod(Class<?> classType, String methodName) {

@@ -192,7 +192,7 @@ public class AnnotationAssistant {
     public ParamMeta createQuery(Annotation[] annotations, String paramName, int index, boolean isCustom, String prefix, boolean methodGlobalDynamic) {
         ParamMeta param = ParamMeta.builder(underscoreName(paramName),
                 StringUtils.hasText(prefix) ? prefix + "." + paramName : paramName,
-                ConditionType.EQUAL,null,isCustom,methodGlobalDynamic);
+                ConditionType.EQUAL, null, isCustom, methodGlobalDynamic);
         Annotation annotation = chooseQueryAnnotationType(annotations);
         if (annotation != null) {
             Map<String, Object> map = AnnotationUtils.getAnnotationAttributes(annotation);
@@ -200,6 +200,8 @@ public class AnnotationAssistant {
             Condition condition = AnnotationUtils.findAnnotation(annotation.annotationType(), Condition.class);
             if (condition == null) {
                 throw new EasyBatisException("注解格式不符合规范");
+            } else {
+                param.setCondition(condition.type());
             }
         }
 

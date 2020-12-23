@@ -14,7 +14,7 @@ public interface QueryCondition {
 
 
     default String dynamicIf(String conditionParam, String conditionQuery) {
-        return "<if test=\"" + conditionParam + "\"> " + " AND " + conditionQuery + " </if>";
+        return "<if test='" + conditionParam + "'> " + " AND " + conditionQuery + " </if>";
     }
 
     default String dynamicIsNull(String conditionParam, String conditionQuery) {
