@@ -6,9 +6,6 @@ import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.anno.auditor.*;
-import com.xwc.open.easybatis.core.anno.condition.Count;
-import com.xwc.open.easybatis.core.anno.condition.Distinct;
-import com.xwc.open.easybatis.core.anno.condition.Join;
 import com.xwc.open.easybatis.core.anno.condition.filter.*;
 import com.xwc.open.easybatis.core.anno.table.*;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
@@ -16,14 +13,13 @@ import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.IdType;
-import com.xwc.open.easybatis.core.enums.ParamType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import com.xwc.open.easybatis.core.support.table.LoglicColumn;
-import com.xwc.open.easybatis.core.support.table.PrimaryKey;
+import com.xwc.open.easybatis.core.support.table.IdMeta;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.ParamNameUtil;
 
@@ -86,7 +82,7 @@ public class AnnotationAssistant {
             if (columnMeta == null) continue;
             if (columnMeta.hashAnnotationType(Id.class)) {
                 Id id = columnMeta.chooseAnnotationType(Id.class);
-                table.setId(new PrimaryKey(columnMeta, id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type(), id));
+                table.setId(new IdMeta(columnMeta, id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type(), id));
                 continue;
             } else if (columnMeta.hashAnnotationType(Loglic.class)) {
                 Loglic loglic = columnMeta.chooseAnnotationType(Loglic.class);
@@ -130,39 +126,33 @@ public class AnnotationAssistant {
     public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata, SelectSql selectSql) {
         MethodMeta meta = new MethodMeta();
         meta.setDynamic(selectSql.dynamic());
-        meta.setParamMetaList(parseMethodParam(method));
         meta.setTableMetadata(tableMetadata);
         meta.setMethodName(method.getName());
         meta.setSqlCommond(SqlCommandType.SELECT);
-        meta.addAnnotation(selectSql);
-        meta.addAnnotation(AnnotationUtils.findAnnotation(method, Count.class));
-        meta.addAnnotation(AnnotationUtils.findAnnotation(method, Distinct.class));
-        meta.addAnnotation(AnnotationUtils.findAnnotation(method, Join.class));
-        meta.addAnnotation(AnnotationUtils.findAnnotation(method, com.xwc.open.easybatis.core.anno.condition.PrimaryKey.class));
+        meta.setParamMetaList(parseMethodParam(method, selectSql.dynamic()));
+        meta.setMethod(method);
         return meta;
     }
 
-    private List<ParamMeta> parseMethodParam(Method method) {
+    private List<ParamMeta> parseMethodParam(Method method, boolean methodGlobalDynamic) {
         ArrayList<ParamMeta> paramList = new ArrayList<>();
-        ArrayList<ParamMeta> ObjectList = new ArrayList<>();
         Parameter[] parameters = method.getParameters();
         List<String> paramNames = ParamNameUtil.getParamNames(method);
         for (int i = 0; i < paramNames.size(); i++) {
             boolean customObject = Reflection.isCustomObject(parameters[i].getType());
             //基础类型且参数只有一个
             if (parameters.length == 1 && !customObject) {
-                paramList.add(parseParameter(parameters[i], paramNames.get(i), i));
+                paramList.add(parseParameter(parameters[i], paramNames.get(i), i, methodGlobalDynamic));
             } else if (parameters.length == 1) { // 参数有多个且是自定义类型
-                ObjectList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, false));
+                paramList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, false));
             } else { // 参数可能是基础加混合类型
                 if (customObject) {
-                    ObjectList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, true));
+                    paramList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, true));
                 } else {
-                    paramList.add(parseParameter(parameters[i], paramNames.get(i), i));
+                    paramList.add(parseParameter(parameters[i], paramNames.get(i), i, methodGlobalDynamic));
                 }
             }
         }
-        paramList.addAll(ObjectList);
         return paramList;
     }
 
@@ -179,15 +169,16 @@ public class AnnotationAssistant {
         List<ParamMeta> paramList = new ArrayList<>();
         for (int i = 0; i < fieldList.size(); i++) {
             Field field = fieldList.get(i);
-            ParamMeta paramMetaData = createQuery(field.getAnnotations(),
-                    field.getName(), index, true, isMulti ? paramName : null);
+            ParamMeta paramMetaData = createQuery(field.getDeclaredAnnotations(),
+                    field.getName(), index, true, isMulti ? paramName : null, true);
             paramList.add(paramMetaData);
         }
         return paramList;
     }
 
-    public ParamMeta parseParameter(Parameter parameter, String paramName, int index) {
-        return createQuery(parameter.getAnnotations(), paramName, index, Reflection.isCustomObject(parameter.getType()), null);
+    public ParamMeta parseParameter(Parameter parameter, String paramName, int index, boolean methodGlobalDynamic) {
+        return createQuery(parameter.getDeclaredAnnotations(), paramName, index,
+                Reflection.isCustomObject(parameter.getType()), null, methodGlobalDynamic);
     }
 
     /**
@@ -198,41 +189,23 @@ public class AnnotationAssistant {
      * @param prefix      参数名 是有需要携带前缀
      * @return ParamMetaData
      */
-    public ParamMeta createQuery(Annotation[] annotations, String paramName, int index, boolean isCustom, String prefix) {
-        ParamMeta param = new ParamMeta();
-        param.setParamName(StringUtils.hasText(prefix) ? prefix + "." + paramName : paramName);
+    public ParamMeta createQuery(Annotation[] annotations, String paramName, int index, boolean isCustom, String prefix, boolean methodGlobalDynamic) {
+        ParamMeta param = ParamMeta.builder(underscoreName(paramName),
+                StringUtils.hasText(prefix) ? prefix + "." + paramName : paramName,
+                ConditionType.EQUAL,null,isCustom,methodGlobalDynamic);
         Annotation annotation = chooseQueryAnnotationType(annotations);
-        if (annotation == null) {
-            param.setCondition(ConditionType.EQUEL);
-            param.setColumnName(underscoreName(paramName));
-            if (isCustom) {
-                param.setType(ParamType.PARAM_TYPE_DYNAMIC);
-            } else {
-                param.setType(ParamType.FILED_TYPE);
-            }
-        } else {
+        if (annotation != null) {
             Map<String, Object> map = AnnotationUtils.getAnnotationAttributes(annotation);
-            param.setColumnName((String) map.get("value"));
-            param.setAlias((String) map.get("alias"));
-            boolean dynamic = (boolean) map.get("dynamic");
-            if (isCustom) {
-                param.setType(ParamType.PARAM_TYPE_DYNAMIC);
-            } else {
-                if (dynamic) {
-                    param.setType(ParamType.FILED_TYPE_DYNAMIC);
-                } else {
-                    param.setType(ParamType.FILED_TYPE);
-                }
-            }
+            param.mergeConditionAnnotation(map);
             Condition condition = AnnotationUtils.findAnnotation(annotation.annotationType(), Condition.class);
             if (condition == null) {
                 throw new EasyBatisException("注解格式不符合规范");
             }
-            param.setCondition(condition.type());
         }
 
         return param;
     }
+
 
     private int getQueryIndex(int annoIndex, int paramIndex) {
         return annoIndex == -1 ? paramIndex : annoIndex;

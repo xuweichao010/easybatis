@@ -6,17 +6,14 @@ import com.xwc.open.easybatis.assistant.table.TableNotValue;
 import com.xwc.open.easybatis.assistant.table.TableValue;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
-import com.xwc.open.easybatis.core.enums.ConditionType;
-import com.xwc.open.easybatis.core.support.MethodMeta;
+import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
-import com.xwc.open.easybatis.core.support.table.PrimaryKey;
+import com.xwc.open.easybatis.core.support.table.IdMeta;
 import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -58,8 +55,19 @@ public class AnalyseTableTest {
         if (tableMetadata.getColumnMetaList().isEmpty()) {
             Assert.fail();
         }
-        if(tableMetadata.getId() == null){
+        if (tableMetadata.getId() == null) {
             Assert.fail();
+        } else {
+            IdMeta id = tableMetadata.getId();
+            if (id.getIdType() == IdType.AUTO) {
+                Assert.assertFalse(id.isSelectIgnore());
+                Assert.assertFalse(id.isUpdateIgnore());
+                Assert.assertTrue(id.isInsertIgnore());
+            }else {
+                Assert.assertFalse(id.isSelectIgnore());
+                Assert.assertFalse(id.isUpdateIgnore());
+                Assert.assertFalse(id.isInsertIgnore());
+            }
         }
         for (ColumnMeta column : tableMetadata.getColumnMetaList()) {
             if (column.getField().equals("address")) {

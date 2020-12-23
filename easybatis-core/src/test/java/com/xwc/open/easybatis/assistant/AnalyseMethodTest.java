@@ -2,17 +2,12 @@ package com.xwc.open.easybatis.assistant;
 
 
 import com.xwc.open.easybatis.assistant.method.MethodTestUserMapper;
-import com.xwc.open.easybatis.assistant.table.TableColumn;
-import com.xwc.open.easybatis.assistant.table.TableNotValue;
-import com.xwc.open.easybatis.assistant.table.TableValue;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
-import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import com.xwc.open.easybatis.model.User;
-import com.xwc.open.easybatis.mybatis.UserMapper;
 import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,7 +52,7 @@ public class AnalyseMethodTest {
                 AtomicInteger count = new AtomicInteger();
                 metadata.getParamMetaList().forEach(paramMetaData -> {
                     if (paramMetaData.getParamName().equals("name")) {
-                        Assert.assertEquals(ConditionType.EQUEL, paramMetaData.getCondition());
+                        Assert.assertEquals(ConditionType.EQUAL, paramMetaData.getCondition());
                         Assert.assertEquals("name", paramMetaData.getParamName());
                         count.incrementAndGet();
                     }
@@ -68,7 +63,7 @@ public class AnalyseMethodTest {
                     }
                     if (paramMetaData.getParamName().equals("paramQuery.condition1")) {
                         Assert.assertEquals("condition1", paramMetaData.getColumnName());
-                        Assert.assertEquals(ConditionType.EQUEL, paramMetaData.getCondition());
+                        Assert.assertEquals(ConditionType.EQUAL, paramMetaData.getCondition());
                         count.incrementAndGet();
                     }
                     if (paramMetaData.getParamName().equals("paramQuery.condition2")) {

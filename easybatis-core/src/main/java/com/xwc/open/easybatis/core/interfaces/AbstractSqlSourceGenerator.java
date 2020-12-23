@@ -1,13 +1,14 @@
 package com.xwc.open.easybatis.core.interfaces;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
+import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import com.xwc.open.easybatis.core.support.table.LoglicColumn;
-import com.xwc.open.easybatis.core.support.table.PrimaryKey;
+import com.xwc.open.easybatis.core.support.table.IdMeta;
 
 
 import java.util.ArrayList;
@@ -24,30 +25,27 @@ public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
 
 
     public String selectColumn(MethodMeta metadata) {
-        SelectSql selectSql = metadata.findAnnotation(SelectSql.class);
+        SelectSql selectSql = metadata.chooseAnnotationType(SelectSql.class);
         if (StringUtils.hasText(selectSql.value())) {
             return selectSql.value();
         }
-        ArrayList<ColumnMeta> list = new ArrayList<>();
-        list.addAll(metadata.getTableMetadata().getColumnMetaList());
-        list.addAll(metadata.getTableMetadata().getAuditorList());
-        return list.stream()
-                .filter(column -> !column.isSelectIgnore())
+
+        return metadata.selectColumnList().stream()
                 .map(column -> "`" + column.getColumn() + "`").collect(Collectors.joining(","));
 
     }
 
     public String queryCondition(MethodMeta metadata) {
         List<ParamMeta> paramMetaList = new ArrayList<>();
-        if (metadata.hashAnnotation(com.xwc.open.easybatis.core.anno.condition.PrimaryKey.class)) {
-            PrimaryKey id = metadata.getTableMetadata().getId();
-            paramMetaList.add(ParamMeta.builder(id.getColumn(), id.getField(), ConditionType.EQUEL));
+        if (metadata.hashAnnotationType(PrimaryKey.class)) {
+            IdMeta id = metadata.getTableMetadata().getId();
+            paramMetaList.add(ParamMeta.builderEqual(id.getColumn(), id.getField()));
         } else {
             paramMetaList.addAll(metadata.getParamMetaList());
         }
         if (metadata.getTableMetadata().getLogic() != null) {
             LoglicColumn logic = metadata.getTableMetadata().getLogic();
-            paramMetaList.add(ParamMeta.builder(logic.getColumn(), logic.getField(), ConditionType.EQUEL));
+            paramMetaList.add(ParamMeta.builderEqual(logic.getColumn(), logic.getField()));
         }
         // 处理方法上的对象参数条件
         String queryCondition = paramMetaList.stream()

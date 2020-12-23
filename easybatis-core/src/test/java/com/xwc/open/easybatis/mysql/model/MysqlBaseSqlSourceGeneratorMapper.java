@@ -1,7 +1,9 @@
 package com.xwc.open.easybatis.mysql.model;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
+import com.xwc.open.easybatis.core.anno.condition.Distinct;
 import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
+import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
 import com.xwc.open.easybatis.core.interfaces.EasyMapper;
 import com.xwc.open.easybatis.model.User;
 
@@ -10,7 +12,7 @@ import com.xwc.open.easybatis.model.User;
  * 时间：2020/12/18
  * 描述：
  */
-public interface MysqlSqlSourceGeneratorMapper extends EasyMapper<MysqlSqlSource, String> {
+public interface MysqlBaseSqlSourceGeneratorMapper extends EasyMapper<MysqlSqlSource, String> {
 
     @SelectSql
     void findAll();
@@ -21,5 +23,12 @@ public interface MysqlSqlSourceGeneratorMapper extends EasyMapper<MysqlSqlSource
     @SelectSql
     @PrimaryKey
     void selectKey(String key);
+
+    @SelectSql(dynamic = true)
+    void methodGlobalDynamic(String name);
+
+    @SelectSql
+    void methodParamDynamic(@Equal(dynamic = true) String name);
+
 
 }

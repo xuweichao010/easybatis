@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Condition(type = ConditionType.EQUEL)
+@Condition(type = ConditionType.EQUAL)
 public @interface Equal {
 
     /**

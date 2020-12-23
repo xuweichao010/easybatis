@@ -1,19 +1,20 @@
 package com.xwc.open.easybatis.core.support;
 
+import com.xwc.open.easybatis.core.commons.AnnotationUtils;
+import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import lombok.Data;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Data
 public class MethodMeta {
 
     private String methodName;
-
     /**
      * SQL操作的类型
      */
@@ -24,10 +25,8 @@ public class MethodMeta {
      * 关联的表的实体的定义信息
      */
     TableMeta tableMetadata;
-    /**
-     * 方法上的注解定义信息
-     */
-    Set<Annotation> methodAnnotation = new HashSet<>();
+
+    private Method method;
 
     /**
      * 参数有的定义信息
@@ -35,35 +34,20 @@ public class MethodMeta {
     List<ParamMeta> paramMetaList;
 
 
-    public void addAnnotation(Annotation annotation) {
-        if (annotation != null) {
-            this.methodAnnotation.add(annotation);
-        }
+    public <T extends Annotation> T chooseAnnotationType(Class<T> annotationClass) {
+        return AnnotationUtils.findAnnotation(this.method, annotationClass);
     }
 
-    public boolean hashAnnotation(Class<?> annotationClass) {
-        if (annotationClass == null) {
-            return false;
-        }
-        for (Annotation ann : methodAnnotation) {
-            if (annotationClass.equals(ann.annotationType())) {
-                return true;
-            }
-        }
-        return false;
+    public boolean hashAnnotationType(Class<? extends Annotation> annotationClass) {
+        return chooseAnnotationType(annotationClass) != null;
     }
-
-
-    public <T extends Annotation> T findAnnotation(Class<T> annotationClass) {
-        if (annotationClass == null) {
-            return null;
-        }
-        for (Annotation ann : methodAnnotation) {
-            if (annotationClass.equals(ann.annotationType())) {
-                return (T) ann;
-            }
-        }
-        return null;
+    public List<ColumnMeta> selectColumnList() {
+        ArrayList<ColumnMeta> list = new ArrayList<>();
+        list.add(tableMetadata.getId());
+        list.addAll(tableMetadata.getColumnMetaList());
+        list.addAll(tableMetadata.getAuditorList());
+        list.add(tableMetadata.getLogic());
+        return list.stream().filter(Objects::nonNull).filter(column -> !column.isSelectIgnore()).collect(Collectors.toList());
     }
 
 
