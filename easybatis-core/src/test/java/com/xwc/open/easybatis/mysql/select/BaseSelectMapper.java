@@ -1,18 +1,16 @@
-package com.xwc.open.easybatis.mysql.model;
+package com.xwc.open.easybatis.mysql.select;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
-import com.xwc.open.easybatis.core.anno.condition.Distinct;
 import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
 import com.xwc.open.easybatis.core.interfaces.EasyMapper;
-import com.xwc.open.easybatis.model.User;
 
 /**
  * 作者：徐卫超 cc
  * 时间：2020/12/18
  * 描述：
  */
-public interface MysqlBaseSqlSourceGeneratorMapper extends EasyMapper<MysqlSqlSource, String> {
+public interface BaseSelectMapper extends EasyMapper<BaseSelectEntity, String> {
 
     @SelectSql
     void findAll();
@@ -38,13 +36,13 @@ public interface MysqlBaseSqlSourceGeneratorMapper extends EasyMapper<MysqlSqlSo
     void methodParamMultiDynamic(@Equal(dynamic = true) String name, @Equal(dynamic = true) String orgCode);
 
     @SelectSql
-    void methodCustom(MysqlSqlSourceFilterOne one);
+    void methodCustom(BaseSelectFilterOne one);
 
     @SelectSql
-    void methodMultiCustom(MysqlSqlSourceFilterOne one, MysqlSqlSourceFilterTwo two);
+    void methodMultiCustom(BaseSelectFilterOne one, BaseSelectFilterTwo two);
 
     @SelectSql
-    void methodMixture(@Equal String name, @Equal(dynamic = true) String orgCode, MysqlSqlSourceFilterTwo two);
+    void methodMixture(@Equal String name, @Equal(dynamic = true) String orgCode, BaseSelectFilterTwo two);
 
 
 }

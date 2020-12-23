@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.mysql.model;
+package com.xwc.open.easybatis.mysql.select;
 
 import com.xwc.open.easybatis.core.anno.table.Id;
 import com.xwc.open.easybatis.core.anno.table.Table;
@@ -10,7 +10,7 @@ import com.xwc.open.easybatis.core.enums.IdType;
  * 描述：
  */
 @Table("t_mysql_sql_source")
-public class MysqlSqlSource {
+public class BaseSelectEntity {
     /**
      * 用户id
      */

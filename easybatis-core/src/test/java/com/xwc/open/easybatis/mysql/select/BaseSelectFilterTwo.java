@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.mysql.model;
+package com.xwc.open.easybatis.mysql.select;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import lombok.Data;
  */
 
 @Data
-public class MysqlSqlSourceFilterTwo {
+public class BaseSelectFilterTwo {
     /**
      * 机构名称
      */

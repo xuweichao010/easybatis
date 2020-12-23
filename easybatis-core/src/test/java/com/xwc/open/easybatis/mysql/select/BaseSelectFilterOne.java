@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.mysql.model;
+package com.xwc.open.easybatis.mysql.select;
 
 import com.xwc.open.easybatis.core.anno.table.Id;
 import com.xwc.open.easybatis.core.enums.IdType;
@@ -10,7 +10,7 @@ import lombok.Data;
  * 描述：
  */
 @Data
-public class MysqlSqlSourceFilterOne {
+public class BaseSelectFilterOne {
 
     private String id;
 
