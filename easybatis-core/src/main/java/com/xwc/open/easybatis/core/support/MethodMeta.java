@@ -27,11 +27,12 @@ public class MethodMeta {
     TableMeta tableMetadata;
 
     private Method method;
-
     /**
      * 参数有的定义信息
      */
     List<ParamMeta> paramMetaList;
+
+    private boolean isBatch = false;
 
 
     public <T extends Annotation> T chooseAnnotationType(Class<T> annotationClass) {
@@ -41,6 +42,7 @@ public class MethodMeta {
     public boolean hashAnnotationType(Class<? extends Annotation> annotationClass) {
         return chooseAnnotationType(annotationClass) != null;
     }
+
     public List<ColumnMeta> selectColumnList() {
         ArrayList<ColumnMeta> list = new ArrayList<>();
         list.add(tableMetadata.getId());
@@ -50,5 +52,20 @@ public class MethodMeta {
         return list.stream().filter(Objects::nonNull).filter(column -> !column.isSelectIgnore()).collect(Collectors.toList());
     }
 
+    public List<ColumnMeta> insertColumnList() {
+        return column().stream().filter(Objects::nonNull).filter(column -> !column.isInsertIgnore()).collect(Collectors.toList());
+    }
 
+    public List<ColumnMeta> updateColumnList() {
+        return column().stream().filter(Objects::nonNull).filter(column -> !column.isUpdateIgnore()).collect(Collectors.toList());
+    }
+
+    public List<ColumnMeta> column() {
+        ArrayList<ColumnMeta> list = new ArrayList<>();
+        list.add(tableMetadata.getId());
+        list.addAll(tableMetadata.getColumnMetaList());
+        list.addAll(tableMetadata.getAuditorList());
+        list.add(tableMetadata.getLogic());
+        return list;
+    }
 }

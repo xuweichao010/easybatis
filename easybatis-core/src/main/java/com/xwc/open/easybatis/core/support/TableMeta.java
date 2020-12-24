@@ -46,6 +46,8 @@ public class TableMeta {
      */
     private LoglicColumn logic;
 
+    private Class<?> source;
+
 
     public void setId(IdMeta id) {
         this.id = id;

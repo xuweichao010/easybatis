@@ -2,6 +2,7 @@ package com.xwc.open.easybatis.core.mysql;
 
 import com.xwc.open.easybatis.core.interfaces.AbstractSqlSourceGenerator;
 import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
+import com.xwc.open.easybatis.core.interfaces.impl.DefaultInsertValueField;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 
 import java.util.stream.Collectors;
@@ -15,7 +16,8 @@ import java.util.stream.Stream;
 public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
 
     public MysqlSqlSourceGenerator() {
-        this.list = Stream.of(new CompareCondition()).collect(Collectors.toList());
+        this.conditionList = Stream.of(new CompareCondition()).collect(Collectors.toList());
+        this.insertColumnValue = new DefaultInsertValueField();
     }
 
     @Override
@@ -34,8 +36,17 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
 
     @Override
     public String insert(MethodMeta methodMetaData) {
-        return null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("<script>")
+                .append(" INSERT INTO")
+                .append(methodMetaData.getTableMetadata().getTableName())
+                .append(" (").append(this.insertColumn(methodMetaData)).append(")")
+                .append(" VALUES ")
+                .append(this.insertColumnValue(methodMetaData));
+        sql.append("</script>");
+        return sql.toString();
     }
+
 
     @Override
     public String update(MethodMeta methodMetaData) {

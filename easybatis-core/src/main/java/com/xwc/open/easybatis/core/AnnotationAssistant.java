@@ -27,6 +27,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -113,7 +114,7 @@ public class AnnotationAssistant {
         if (operationAnnotationType instanceof SelectSql) {
             return parseSelectMethodMate(method, tableMetadata, (SelectSql) operationAnnotationType);
         } else if (operationAnnotationType instanceof InsertSql) {
-            // TODO 插入情况
+            return parseInsertMethodMate(method, tableMetadata);
         } else if (operationAnnotationType instanceof UpdateSql) {
 
         } else if (operationAnnotationType instanceof DeleteSql) {
@@ -123,33 +124,65 @@ public class AnnotationAssistant {
         return null;
     }
 
+    private MethodMeta parseInsertMethodMate(Method method, TableMeta tableMetadata) {
+        MethodMeta meta = new MethodMeta();
+        meta.setDynamic(false);
+        meta.setTableMetadata(tableMetadata);
+        meta.setMethodName(method.getName());
+        meta.setSqlCommond(SqlCommandType.SELECT);
+        meta.setMethod(method);
+        meta.setParamMetaList(parseInsertMethodParam(meta));
+        return meta;
+    }
+
+    private List<ParamMeta> parseInsertMethodParam(MethodMeta meta) {
+        Type[] genericParameterTypes = meta.getMethod().getGenericParameterTypes();
+        List<String> paramNames = ParamNameUtil.getParamNames(meta.getMethod());
+        if (genericParameterTypes.length == 1) {
+            Type genericParameterType = genericParameterTypes[0];
+            if (!checkType(genericParameterTypes[0], meta.getTableMetadata().getSource())) {
+                throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
+            }
+            return Collections.singletonList(ParamMeta.builderInsert(paramNames.get(0), true));
+        } else if (genericParameterTypes.length > 1) {
+            //TODO  带处理
+            return new ArrayList<>();
+        } else {
+            throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
+        }
+    }
+
+    private boolean checkType(Type entityType, Class<?> entityClass) {
+        return entityType.getTypeName().equals("E");
+    }
+
     public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata, SelectSql selectSql) {
         MethodMeta meta = new MethodMeta();
         meta.setDynamic(selectSql.dynamic());
         meta.setTableMetadata(tableMetadata);
         meta.setMethodName(method.getName());
-        meta.setSqlCommond(SqlCommandType.SELECT);
-        meta.setParamMetaList(parseMethodParam(method, selectSql.dynamic()));
+        meta.setSqlCommond(SqlCommandType.INSERT);
         meta.setMethod(method);
+        meta.setParamMetaList(parseSelectMethodParam(meta));
         return meta;
     }
 
-    private List<ParamMeta> parseMethodParam(Method method, boolean methodGlobalDynamic) {
+    private List<ParamMeta> parseSelectMethodParam(MethodMeta methodMeta) {
         ArrayList<ParamMeta> paramList = new ArrayList<>();
-        Parameter[] parameters = method.getParameters();
-        List<String> paramNames = ParamNameUtil.getParamNames(method);
+        Parameter[] parameters = methodMeta.getMethod().getParameters();
+        List<String> paramNames = ParamNameUtil.getParamNames(methodMeta.getMethod());
         for (int i = 0; i < paramNames.size(); i++) {
             boolean customObject = Reflection.isCustomObject(parameters[i].getType());
             //基础类型且参数只有一个
             if (parameters.length == 1 && !customObject) {
-                paramList.add(parseParameter(parameters[i], paramNames.get(i), i, methodGlobalDynamic));
+                paramList.add(parseParameter(parameters[i], paramNames.get(i), i, methodMeta.isDynamic()));
             } else if (parameters.length == 1) { // 参数有多个且是自定义类型
-                paramList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, false));
+                paramList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, false, methodMeta));
             } else { // 参数可能是基础加混合类型
                 if (customObject) {
-                    paramList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, true));
+                    paramList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, true, methodMeta));
                 } else {
-                    paramList.add(parseParameter(parameters[i], paramNames.get(i), i, methodGlobalDynamic));
+                    paramList.add(parseParameter(parameters[i], paramNames.get(i), i, methodMeta.isDynamic()));
                 }
             }
         }
@@ -164,7 +197,7 @@ public class AnnotationAssistant {
      * @param index
      * @return
      */
-    public List<ParamMeta> parseCustomParameter(Parameter parameter, String paramName, int index, boolean isMulti) {
+    public List<ParamMeta> parseCustomParameter(Parameter parameter, String paramName, int index, boolean isMulti, MethodMeta methodMeta) {
         List<Field> fieldList = Reflection.getField(parameter.getType());
         List<ParamMeta> paramList = new ArrayList<>();
         for (int i = 0; i < fieldList.size(); i++) {

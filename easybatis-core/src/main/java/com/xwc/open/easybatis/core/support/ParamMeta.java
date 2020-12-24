@@ -34,15 +34,17 @@ public class ParamMeta {
 
     private boolean custom = false;
 
+    private boolean entity = false;
+
     private ParamMeta() {
     }
 
 
-    public static ParamMeta builder(String columnName, String paramName, ConditionType type, String alias, boolean custom, boolean dynamic) {
+    public static ParamMeta builder(String columnName, String paramName, ConditionType condition, String alias, boolean custom, boolean dynamic) {
         ParamMeta tar = new ParamMeta();
         tar.columnName = columnName;
         tar.paramName = paramName;
-        tar.condition = type;
+        tar.condition = condition;
         tar.type = ParamType.FILED_TYPE;
         tar.alias = alias;
         tar.custom = custom;
@@ -53,6 +55,12 @@ public class ParamMeta {
 
     public static ParamMeta builderEqual(String column, String field) {
         return builder(column, field, ConditionType.EQUAL, null, false, false);
+    }
+
+    public static ParamMeta builderInsert(String field, boolean entity) {
+        ParamMeta builder = builder(field, field, ConditionType.EQUAL, null, false, false);
+        builder.setEntity(entity);
+        return builder;
     }
 
     public void mergeConditionAnnotation(Map<String, Object> map) {

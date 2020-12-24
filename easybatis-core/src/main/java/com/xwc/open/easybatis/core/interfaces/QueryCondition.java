@@ -8,26 +8,18 @@ import com.xwc.open.easybatis.core.support.ParamMeta;
  * 时间：2020/9/19 15:07
  * 备注：
  */
-public interface QueryCondition {
+public interface QueryCondition extends MyBatisOrSqlTemplate {
 
     String apply(ParamMeta metaData);
 
-
-    default String dynamicIf(String conditionParam, String conditionQuery) {
-        return "<if test='" + conditionParam + "'> " + " AND " + conditionQuery + " </if>";
-    }
-
-    default String dynamicIsNull(String conditionParam, String conditionQuery) {
-        return "AND (#{" + conditionParam + "} IS NULL OR " + conditionQuery + ")";
-    }
 
     default String doApply(String conditionParam, String conditionQuery, ParamType type) {
         if (type == ParamType.FILED_TYPE || type == ParamType.PARAM_TYPE) {
             return conditionQuery;
         } else if (type == ParamType.FILED_TYPE_DYNAMIC) {
-            return dynamicIf(conditionParam, conditionQuery);
+            return dynamicConditionIf(conditionParam, conditionQuery);
         } else if (type == ParamType.PARAM_TYPE_DYNAMIC) {
-            return dynamicIsNull(conditionParam, conditionQuery);
+            return dynamicConditionIsNull(conditionParam, conditionQuery);
         } else {
             return null;
         }

@@ -2,6 +2,7 @@ package com.xwc.open.easybatis.mysql;
 
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
+import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
@@ -46,22 +47,21 @@ public class BaseInsertTest {
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
         this.annotationAssistant = easybatisConfiguration.getAnnotationAssistant();
         this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(BaseInsertMapper.class));
-
-
     }
 
     @Test
-    public void selectKey() {
-        Method method = chooseMethod(BaseSelectMapper.class, "selectKey");
-        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
-                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source WHERE `id` = #{id}</script>", select);
+    public void insert() {
+        Method method = chooseMethod(BaseInsertMapper.class, "insert");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        System.out.println(select);
+
     }
 
 
     private Method chooseMethod(Class<?> classType, String methodName) {
-        Method[] declaredMethod = classType.getDeclaredMethods();
+        Method[] declaredMethod = classType.getMethods();
         for (Method method : declaredMethod) {
             if (method.getName().equals(methodName)) {
                 return method;
