@@ -38,12 +38,12 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
     public String insert(MethodMeta methodMetaData) {
         StringBuilder sql = new StringBuilder();
         sql.append("<script>")
-                .append(" INSERT INTO")
+                .append(" INSERT INTO ")
                 .append(methodMetaData.getTableMetadata().getTableName())
                 .append(" (").append(this.insertColumn(methodMetaData)).append(")")
                 .append(" VALUES ")
                 .append(this.insertColumnValue(methodMetaData));
-        sql.append("</script>");
+        sql.append(" </script>");
         return sql.toString();
     }
 

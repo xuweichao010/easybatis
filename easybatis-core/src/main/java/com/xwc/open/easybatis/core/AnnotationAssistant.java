@@ -76,6 +76,7 @@ public class AnnotationAssistant {
     public TableMeta parseEntityMate(Class<?> entityType) {
         TableMeta table = new TableMeta();
         table.setTableName(tableName(entityType));
+        table.setSource(entityType);
         List<Field> fieldArr = Reflection.getField(entityType);
         for (Field field : fieldArr) {
             if (isIgnore(field)) continue;
@@ -140,7 +141,7 @@ public class AnnotationAssistant {
         List<String> paramNames = ParamNameUtil.getParamNames(meta.getMethod());
         if (genericParameterTypes.length == 1) {
             Type genericParameterType = genericParameterTypes[0];
-            if (!checkType(genericParameterTypes[0], meta.getTableMetadata().getSource())) {
+            if (!isEntityParam(genericParameterTypes[0], meta.getTableMetadata().getSource())) {
                 throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
             }
             return Collections.singletonList(ParamMeta.builderInsert(paramNames.get(0), true));
@@ -152,8 +153,8 @@ public class AnnotationAssistant {
         }
     }
 
-    private boolean checkType(Type entityType, Class<?> entityClass) {
-        return entityType.getTypeName().equals("E");
+    private boolean isEntityParam(Type entityType, Class<?> entityClass) {
+        return entityType.getTypeName().equals("E") || entityType.equals(entityClass);
     }
 
     public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata, SelectSql selectSql) {

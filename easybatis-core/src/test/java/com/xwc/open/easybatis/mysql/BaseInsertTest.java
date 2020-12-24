@@ -50,12 +50,33 @@ public class BaseInsertTest {
     }
 
     @Test
+    public void insertMulti() {
+        Method method = chooseMethod(BaseInsertMapper.class, "insertEntity");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sqlTarget = "<script>" +
+                " INSERT INTO t_mysql_sql_source" +
+                " (`id`, `orgCode`, `orgName`, `name`)" +
+                " VALUES" +
+                " (#{id}, #{orgCode}, #{orgName}, #{name})" +
+                " </script>";
+        Assert.assertEquals(select, sqlTarget);
+    }
+
+    @Test
     public void insert() {
         Method method = chooseMethod(BaseInsertMapper.class, "insert");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
-        System.out.println(select);
+        String sqlTarget = "<script>" +
+                " INSERT INTO t_mysql_sql_source" +
+                " (`id`, `orgCode`, `orgName`, `name`)" +
+                " VALUES" +
+                " (#{id}, #{orgCode}, #{orgName}, #{name})" +
+                " </script>";
+        Assert.assertEquals(select, sqlTarget);
 
     }
 

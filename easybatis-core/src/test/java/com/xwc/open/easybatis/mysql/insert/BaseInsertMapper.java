@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.mysql.insert;
 
+import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 
 /**
@@ -8,5 +9,8 @@ import com.xwc.open.easybatis.core.interfaces.BaseMapper;
  * 描述：插入测试mapper
  */
 public interface BaseInsertMapper extends BaseMapper<BaseInsertEntity, String> {
+
+    @InsertSql
+    Object insertEntity(BaseInsertEntity entity);
 
 }

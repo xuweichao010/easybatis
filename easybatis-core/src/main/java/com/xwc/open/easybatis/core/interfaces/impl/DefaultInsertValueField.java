@@ -24,9 +24,9 @@ public class DefaultInsertValueField implements InsertValueField {
         List<ParamMeta> entityList = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity)
                 .collect(Collectors.toList());
         if (entityList.size() == 1 && methodMeta.getParamMetaList().size() == 1) {
-            fieldValue.append(" (")
+            fieldValue.append("(")
                     .append(methodMeta.insertColumnList().stream().map(column -> "#{" + column.getField() + "}")
-                            .collect(Collectors.joining(",")))
+                            .collect(Collectors.joining(", ")))
                     .append(")");
         } else if (entityList.size() == 1 && methodMeta.getParamMetaList().size() > 1) {
             ParamMeta paramMeta = entityList.get(0);

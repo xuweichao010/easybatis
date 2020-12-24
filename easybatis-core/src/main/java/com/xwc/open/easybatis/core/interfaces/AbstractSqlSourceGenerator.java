@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
     protected List<QueryCondition> conditionList = new ArrayList<>();
-    protected DefaultInsertValueField insertColumnValue;
+    protected InsertValueField insertColumnValue;
 
 
     public String selectColumn(MethodMeta metadata) {
@@ -31,13 +31,13 @@ public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
             return selectSql.value();
         }
         return metadata.selectColumnList().stream()
-                .map(column -> "`" + column.getColumn() + "`").collect(Collectors.joining(","));
+                .map(column -> "`" + column.getColumn() + "`").collect(Collectors.joining(", "));
 
     }
 
     public String insertColumn(MethodMeta methodMeta) {
         return methodMeta.insertColumnList().stream().map(column -> "`" + column.getColumn() + "`")
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining(", "));
     }
 
     public String insertColumnValue(MethodMeta methodMeta) {
