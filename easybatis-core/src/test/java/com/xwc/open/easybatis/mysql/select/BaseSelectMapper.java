@@ -31,7 +31,6 @@ public interface BaseSelectMapper extends EasyMapper<BaseSelectEntity, String> {
     @SelectSql(dynamic = true)
     void methodGlobalMultiDynamic(String name, String orgCode);
 
-
     @SelectSql
     void methodParamMultiDynamic(@Equal(dynamic = true) String name, @Equal(dynamic = true) String orgCode);
 

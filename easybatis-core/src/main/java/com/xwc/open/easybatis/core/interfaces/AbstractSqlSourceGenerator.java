@@ -3,8 +3,6 @@ package com.xwc.open.easybatis.core.interfaces;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.commons.StringUtils;
-import com.xwc.open.easybatis.core.excp.EasyBatisException;
-import com.xwc.open.easybatis.core.interfaces.impl.DefaultInsertValueField;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.table.LoglicColumn;
@@ -22,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
     protected List<QueryCondition> conditionList = new ArrayList<>();
-    protected InsertValueField insertColumnValue;
+    protected InsertValueSnippet insertColumnValue;
 
 
     public String selectColumn(MethodMeta metadata) {

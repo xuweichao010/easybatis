@@ -36,7 +36,7 @@ public class ParamMeta {
 
     private boolean entity = false;
 
-    private boolean batch = false;
+    private boolean list = false;
 
     private ParamMeta() {
     }
@@ -59,10 +59,10 @@ public class ParamMeta {
         return builder(column, field, ConditionType.EQUAL, null, false, false);
     }
 
-    public static ParamMeta builderInsert(String field, boolean entity, boolean batch) {
+    public static ParamMeta builderInsert(String field, boolean entity, boolean list) {
         ParamMeta builder = builder(field, field, ConditionType.EQUAL, null, false, false);
         builder.setEntity(entity);
-        builder.setBatch(batch);
+        builder.setList(list);
         return builder;
     }
 

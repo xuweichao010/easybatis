@@ -114,7 +114,7 @@ public class AnnotationAssistant {
         } else if (operationAnnotationType instanceof InsertSql) {
             return parseInsertMethodMate(method, tableMetadata);
         } else if (operationAnnotationType instanceof UpdateSql) {
-
+            return parseUpdateMethodMate(method, tableMetadata);
         } else if (operationAnnotationType instanceof DeleteSql) {
 
         }
@@ -127,18 +127,44 @@ public class AnnotationAssistant {
         meta.setDynamic(false);
         meta.setTableMetadata(tableMetadata);
         meta.setMethodName(method.getName());
-        meta.setSqlCommond(SqlCommandType.SELECT);
+        meta.setSqlCommond(SqlCommandType.INSERT);
         meta.setMethod(method);
-        meta.setParamMetaList(parseInsertMethodParam(meta));
+        meta.setParamMetaList(parseUpdateMethodParam(meta));
         return meta;
     }
+
+    private MethodMeta parseUpdateMethodMate(Method method, TableMeta tableMetadata) {
+        MethodMeta meta = new MethodMeta();
+        meta.setDynamic(false);
+        meta.setTableMetadata(tableMetadata);
+        meta.setMethodName(method.getName());
+        meta.setSqlCommond(SqlCommandType.UPDATE);
+        meta.setMethod(method);
+        List<ParamMeta> list = parseInsertMethodParam(meta).stream().filter(ParamMeta::isList).collect(Collectors.toList());
+        if (!list.isEmpty()) {
+            throw new EasyBatisException("无法处理批量跟新数据");
+        }
+        return meta;
+    }
+
+    public List<ParamMeta> parseUpdateMethodParam(MethodMeta meta) {
+        Type[] genericParameterTypes = meta.getMethod().getGenericParameterTypes();
+        List<String> paramNames = ParamNameUtil.getParamNames(meta.getMethod());
+        List<ParamMeta> list = new ArrayList<>();
+        for (int i = 0; i < genericParameterTypes.length; i++) {
+            ParamMeta paramMeta = parseInsertOrUpdateParam(genericParameterTypes[i], paramNames.get(i), meta.getTableMetadata().getSource());
+            list.add(paramMeta);
+        }
+        return list;
+    }
+
 
     private List<ParamMeta> parseInsertMethodParam(MethodMeta meta) {
         Type[] genericParameterTypes = meta.getMethod().getGenericParameterTypes();
         List<String> paramNames = ParamNameUtil.getParamNames(meta.getMethod());
         List<ParamMeta> list = new ArrayList<>();
         for (int i = 0; i < genericParameterTypes.length; i++) {
-            ParamMeta paramMeta = parseInsertParam(genericParameterTypes[i], paramNames.get(i), meta.getTableMetadata().getSource());
+            ParamMeta paramMeta = parseInsertOrUpdateParam(genericParameterTypes[i], paramNames.get(i), meta.getTableMetadata().getSource());
             list.add(paramMeta);
         }
         List<ParamMeta> collect = list.stream().filter(ParamMeta::isEntity).collect(Collectors.toList());
@@ -148,7 +174,7 @@ public class AnnotationAssistant {
         return list;
     }
 
-    private ParamMeta parseInsertParam(Type type, String paramName, Class<?> entityClass) {
+    private ParamMeta parseInsertOrUpdateParam(Type type, String paramName, Class<?> entityClass) {
         //处理接口泛型
         if (type instanceof TypeVariable) {
             if (isEntityParam(type, entityClass)) {

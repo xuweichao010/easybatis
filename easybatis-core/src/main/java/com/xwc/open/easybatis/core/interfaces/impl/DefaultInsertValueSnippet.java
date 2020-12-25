@@ -1,13 +1,11 @@
 package com.xwc.open.easybatis.core.interfaces.impl;
 
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
-import com.xwc.open.easybatis.core.interfaces.InsertValueField;
+import com.xwc.open.easybatis.core.interfaces.InsertValueSnippet;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
-import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +14,7 @@ import java.util.stream.Collectors;
  * 时间：2020/12/24
  * 描述：
  */
-public class DefaultInsertValueField implements InsertValueField {
+public class DefaultInsertValueSnippet implements InsertValueSnippet {
 
     @Override
     public String apply(MethodMeta methodMeta) {
@@ -29,12 +27,12 @@ public class DefaultInsertValueField implements InsertValueField {
         ParamMeta entityParam = entityList.get(0);
         if (methodMeta.getParamMetaList().size() == 1) {
             String valueSnippet = this.insertValueSnippet(methodMeta.insertColumnList(), null);
-            if (entityParam.isBatch()) {
+            if (entityParam.isList()) {
                 return this.insertBatchForeach(valueSnippet, null);
             }
             return valueSnippet;
         } else if (methodMeta.getParamMetaList().size() > 1) {
-            if (entityParam.isBatch()) {
+            if (entityParam.isList()) {
                 return this.insertBatchForeach(this.insertValueSnippet(methodMeta.insertColumnList(), null), entityParam.getParamName());
             } else {
                 return this.insertValueSnippet(methodMeta.insertColumnList(), entityParam.getParamName());

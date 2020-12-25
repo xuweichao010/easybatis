@@ -2,7 +2,7 @@ package com.xwc.open.easybatis.core.mysql;
 
 import com.xwc.open.easybatis.core.interfaces.AbstractSqlSourceGenerator;
 import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
-import com.xwc.open.easybatis.core.interfaces.impl.DefaultInsertValueField;
+import com.xwc.open.easybatis.core.interfaces.impl.DefaultInsertValueSnippet;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 
 import java.util.stream.Collectors;
@@ -17,7 +17,7 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
 
     public MysqlSqlSourceGenerator() {
         this.conditionList = Stream.of(new CompareCondition()).collect(Collectors.toList());
-        this.insertColumnValue = new DefaultInsertValueField();
+        this.insertColumnValue = new DefaultInsertValueSnippet();
     }
 
     @Override
