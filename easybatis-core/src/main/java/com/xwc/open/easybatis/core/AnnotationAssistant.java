@@ -140,14 +140,22 @@ public class AnnotationAssistant {
         Type[] genericParameterTypes = meta.getMethod().getGenericParameterTypes();
         List<String> paramNames = ParamNameUtil.getParamNames(meta.getMethod());
         if (genericParameterTypes.length == 1) {
-            Type genericParameterType = genericParameterTypes[0];
             if (!isEntityParam(genericParameterTypes[0], meta.getTableMetadata().getSource())) {
                 throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
             }
             return Collections.singletonList(ParamMeta.builderInsert(paramNames.get(0), true));
         } else if (genericParameterTypes.length > 1) {
-            //TODO  带处理
-            return new ArrayList<>();
+            ArrayList<ParamMeta> list = new ArrayList<>();
+            for (int i = 0; i < paramNames.size(); i++) {
+                ParamMeta paramMeta;
+                if (isEntityParam(genericParameterTypes[i], meta.getTableMetadata().getSource())) {
+                    paramMeta = ParamMeta.builderInsert(paramNames.get(i), true);
+                } else {
+                    paramMeta = ParamMeta.builderInsert(paramNames.get(i), false);
+                }
+                list.add(paramMeta);
+            }
+            return list;
         } else {
             throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
         }

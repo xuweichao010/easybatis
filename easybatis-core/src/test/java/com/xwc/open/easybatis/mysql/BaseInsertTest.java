@@ -50,8 +50,8 @@ public class BaseInsertTest {
     }
 
     @Test
-    public void insertMulti() {
-        Method method = chooseMethod(BaseInsertMapper.class, "insertEntity");
+    public void insert() {
+        Method method = chooseMethod(BaseInsertMapper.class, "insert");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
@@ -65,8 +65,8 @@ public class BaseInsertTest {
     }
 
     @Test
-    public void insert() {
-        Method method = chooseMethod(BaseInsertMapper.class, "insert");
+    public void insertEntity() {
+        Method method = chooseMethod(BaseInsertMapper.class, "insertEntity");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
@@ -77,7 +77,29 @@ public class BaseInsertTest {
                 " (#{id}, #{orgCode}, #{orgName}, #{name})" +
                 " </script>";
         Assert.assertEquals(select, sqlTarget);
+    }
 
+
+    @Test
+    public void insertMulti() {
+        Method method = chooseMethod(BaseInsertMapper.class, "insertMulti");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sqlTarget = "<script>" +
+                " INSERT INTO t_mysql_sql_source (`id`, `orgCode`, `orgName`, `name`)" +
+                " VALUES" +
+                " (#{entity.id},#{entity.orgCode},#{entity.orgName},#{entity.name})" +
+                " </script>";
+        Assert.assertEquals(select, sqlTarget);
+    }
+
+    @Test
+    public void insertBatch() {
+        Method method = chooseMethod(BaseInsertMapper.class, "insertBatch");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
     }
 
 

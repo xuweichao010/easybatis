@@ -19,22 +19,33 @@ public class DefaultInsertValueField implements InsertValueField {
 
     @Override
     public String apply(MethodMeta methodMeta) {
-        StringBuilder fieldValue = new StringBuilder();
+        StringBuilder fieldSql = new StringBuilder();
 
         List<ParamMeta> entityList = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity)
                 .collect(Collectors.toList());
+        fieldSql.append("(");
         if (entityList.size() == 1 && methodMeta.getParamMetaList().size() == 1) {
-            fieldValue.append("(")
-                    .append(methodMeta.insertColumnList().stream().map(column -> "#{" + column.getField() + "}")
-                            .collect(Collectors.joining(", ")))
-                    .append(")");
+
+            fieldSql.append(methodMeta.insertColumnList().stream().map(column -> this.fieldColumn(column.getField(), null))
+                    .collect(Collectors.joining(", ")));
+
         } else if (entityList.size() == 1 && methodMeta.getParamMetaList().size() > 1) {
             ParamMeta paramMeta = entityList.get(0);
-            return methodMeta.insertColumnList().stream().map(column -> "#{" + paramMeta.getParamName() + "." + column.getField() + "}")
-                    .collect(Collectors.joining(","));
+            fieldSql.append(methodMeta.insertColumnList().stream().map(column -> this.fieldColumn(column.getField(), paramMeta.getParamName()))
+                    .collect(Collectors.joining(",")));
         } else {
             throw new EasyBatisException(" 发现了两个需要解析的entity数据");
         }
-        return fieldValue.toString();
+        fieldSql.append(")");
+        return fieldSql.toString();
+    }
+
+    public String fieldColumn(String field, String prefix) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("#{");
+        if (prefix != null) {
+            sb.append(prefix).append(".");
+        }
+        return sb.append(field).append("}").toString();
     }
 }
