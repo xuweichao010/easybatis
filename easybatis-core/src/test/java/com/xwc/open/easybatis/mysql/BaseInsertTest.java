@@ -103,7 +103,7 @@ public class BaseInsertTest {
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
                 " VALUES " +
-                " <foreach item= 'item'  collection=list separator=', '>" +
+                " <foreach item= 'item'  collection='list' separator=', '>" +
                 " (#{id}, #{orgCode}, #{orgName}, #{name})" +
                 " </foreach>" +
                 " </script>";
@@ -120,7 +120,41 @@ public class BaseInsertTest {
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
                 " VALUES " +
-                " <foreach item= 'item'  collection=list separator=', '>" +
+                " <foreach item= 'item'  collection='list' separator=', '>" +
+                " (#{id}, #{orgCode}, #{orgName}, #{name})" +
+                " </foreach>" +
+                " </script>";
+        Assert.assertEquals(sqlTarget, select);
+    }
+
+    @Test
+    public void insertBatchMixture() {
+        Method method = chooseMethod(BaseInsertMapper.class, "insertBatchMixture");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sqlTarget = "<script>" +
+                " INSERT INTO t_mysql_sql_source" +
+                " (`id`, `orgCode`, `orgName`, `name`)" +
+                " VALUES " +
+                " <foreach item= 'item'  collection='listParam' separator=', '>" +
+                " (#{id}, #{orgCode}, #{orgName}, #{name})" +
+                " </foreach>" +
+                " </script>";
+        Assert.assertEquals(sqlTarget, select);
+    }
+
+    @Test
+    public void insertBatchEntityMixture() {
+        Method method = chooseMethod(BaseInsertMapper.class, "insertBatchEntityMixture");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sqlTarget = "<script>" +
+                " INSERT INTO t_mysql_sql_source" +
+                " (`id`, `orgCode`, `orgName`, `name`)" +
+                " VALUES " +
+                " <foreach item= 'item'  collection='listParam' separator=', '>" +
                 " (#{id}, #{orgCode}, #{orgName}, #{name})" +
                 " </foreach>" +
                 " </script>";

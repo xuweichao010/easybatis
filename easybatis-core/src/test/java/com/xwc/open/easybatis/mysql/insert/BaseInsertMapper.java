@@ -10,7 +10,7 @@ import java.util.List;
  * 时间：2020/12/23
  * 描述：插入测试mapper
  */
-public interface BaseInsertMapper extends BaseMapper<BaseInsertEntity, String> {
+public interface BaseInsertMapper extends MixtureBaseMapper<BaseInsertEntity, String> {
 
     @InsertSql
     Object insertEntity(BaseInsertEntity entity);
@@ -20,5 +20,8 @@ public interface BaseInsertMapper extends BaseMapper<BaseInsertEntity, String> {
 
     @InsertSql
     Object insertBatchEntity(List<BaseInsertEntity> list);
+
+    @InsertSql
+    Object insertBatchEntityMixture(String tableName, List<BaseInsertEntity> listParam);
 
 }
