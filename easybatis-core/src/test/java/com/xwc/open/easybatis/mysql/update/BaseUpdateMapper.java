@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.mysql.update;
 
 import com.xwc.open.easybatis.core.anno.InsertSql;
+import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 import com.xwc.open.easybatis.mysql.insert.BaseInsertEntity;
 import com.xwc.open.easybatis.mysql.insert.MixtureBaseMapper;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * 时间：2020/12/23
  * 描述：插入测试mapper
  */
-public interface BaseUpdateMapper extends MixtureBaseMapper<BaseInsertEntity, String> {
+public interface BaseUpdateMapper extends BaseMapper<BaseInsertEntity, String> {
 
     @InsertSql
     Object insertEntity(BaseInsertEntity entity);

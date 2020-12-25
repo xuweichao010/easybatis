@@ -6,9 +6,11 @@ import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
+import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.mysql.select.BaseSelectMapper;
+import com.xwc.open.easybatis.mysql.update.BaseUpdateMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -50,13 +52,15 @@ public class BaseUpdateTest {
     }
 
     @Test
-    public void selectKey() {
-        Method method = chooseMethod(BaseSelectMapper.class, "selectKey");
+    public void update() {
+        Method method = chooseMethod(BaseUpdateMapper.class, "update");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
+        String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        System.out.println(select);
     }
 
     private Method chooseMethod(Class<?> classType, String methodName) {
-        Method[] declaredMethod = classType.getDeclaredMethods();
+        Method[] declaredMethod = classType.getMethods();
         for (Method method : declaredMethod) {
             if (method.getName().equals(methodName)) {
                 return method;

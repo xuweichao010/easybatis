@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.core.interfaces;
 
+import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 
 /**
@@ -8,5 +9,5 @@ import com.xwc.open.easybatis.core.support.ParamMeta;
  * 描述：更新语句更新列片段SQL构建
  */
 public interface UpdateColumnSnippet {
-    String apply(ParamMeta metaData);
+    String apply(MethodMeta methodMeta);
 }

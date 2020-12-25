@@ -11,6 +11,10 @@ public interface MyBatisOrSqlTemplate {
         return "<if test='" + conditionParam + "'> " + " AND " + conditionQuery + " </if>";
     }
 
+    default String dynamicSetIf(String setParam, String setValue) {
+        return "<if test='" + setParam + "'> " + setValue + " </if>";
+    }
+
     default String dynamicConditionIsNull(String conditionParam, String conditionQuery) {
         return "AND (#{" + conditionParam + "} IS NULL OR " + conditionQuery + ")";
     }

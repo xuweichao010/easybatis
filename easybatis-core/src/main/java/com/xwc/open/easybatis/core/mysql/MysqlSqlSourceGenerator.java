@@ -3,6 +3,8 @@ package com.xwc.open.easybatis.core.mysql;
 import com.xwc.open.easybatis.core.interfaces.AbstractSqlSourceGenerator;
 import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
 import com.xwc.open.easybatis.core.interfaces.impl.DefaultInsertValueSnippet;
+import com.xwc.open.easybatis.core.interfaces.impl.DefaultUpdateColumnSnippet;
+import com.xwc.open.easybatis.core.interfaces.impl.DefaultUpdateConditionSnippet;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 
 import java.util.stream.Collectors;
@@ -18,6 +20,8 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
     public MysqlSqlSourceGenerator() {
         this.conditionList = Stream.of(new CompareCondition()).collect(Collectors.toList());
         this.insertColumnValue = new DefaultInsertValueSnippet();
+        this.updateColumnSnippet = new DefaultUpdateColumnSnippet();
+        this.updateConditionSnippet = new DefaultUpdateConditionSnippet();
     }
 
     @Override
@@ -30,7 +34,6 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
             sb.append(" WHERE ").append(this.queryCondition(methodMetaData));
         }
         sb.append("</script>");
-
         return sb.toString();
     }
 
@@ -50,7 +53,14 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
 
     @Override
     public String update(MethodMeta methodMetaData) {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("<script>")
+                .append(" UPDATE ").append(methodMetaData.getTableMetadata().getTableName())
+                .append(" FROM ").append(methodMetaData.getTableMetadata().getTableName())
+                .append(methodMetaData.isDynamic() ? " " : " SET ").append(this.updateColumnSnippet.apply(methodMetaData))
+                .append(" WHERE ").append(this.updateConditionSnippet.apply(methodMetaData));
+        sb.append("</script>");
+        return sb.toString();
     }
 
     @Override

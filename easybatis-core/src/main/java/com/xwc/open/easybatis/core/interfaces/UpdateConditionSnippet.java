@@ -1,6 +1,6 @@
 package com.xwc.open.easybatis.core.interfaces;
 
-import com.xwc.open.easybatis.core.support.ParamMeta;
+import com.xwc.open.easybatis.core.support.MethodMeta;
 
 /**
  * 作者：徐卫超 cc
@@ -8,5 +8,5 @@ import com.xwc.open.easybatis.core.support.ParamMeta;
  * 描述：更新语句更新条件SQL片段构建
  */
 public interface UpdateConditionSnippet {
-    String apply(ParamMeta metaData);
+    String apply(MethodMeta methodMeta);
 }

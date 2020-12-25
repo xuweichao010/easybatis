@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
     protected List<QueryCondition> conditionList = new ArrayList<>();
     protected InsertValueSnippet insertColumnValue;
+    protected UpdateColumnSnippet updateColumnSnippet;
+    protected UpdateConditionSnippet updateConditionSnippet;
 
 
     public String selectColumn(MethodMeta metadata) {

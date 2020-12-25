@@ -140,7 +140,8 @@ public class AnnotationAssistant {
         meta.setMethodName(method.getName());
         meta.setSqlCommond(SqlCommandType.UPDATE);
         meta.setMethod(method);
-        List<ParamMeta> list = parseInsertMethodParam(meta).stream().filter(ParamMeta::isList).collect(Collectors.toList());
+        meta.setParamMetaList(parseInsertMethodParam(meta));
+        List<ParamMeta> list = meta.getParamMetaList().stream().filter(ParamMeta::isList).collect(Collectors.toList());
         if (!list.isEmpty()) {
             throw new EasyBatisException("无法处理批量跟新数据");
         }
@@ -152,10 +153,38 @@ public class AnnotationAssistant {
         List<String> paramNames = ParamNameUtil.getParamNames(meta.getMethod());
         List<ParamMeta> list = new ArrayList<>();
         for (int i = 0; i < genericParameterTypes.length; i++) {
-            ParamMeta paramMeta = parseInsertOrUpdateParam(genericParameterTypes[i], paramNames.get(i), meta.getTableMetadata().getSource());
+            ParamMeta paramMeta = parseUpdateParam(genericParameterTypes[i], paramNames.get(i), meta.getTableMetadata().getSource());
             list.add(paramMeta);
         }
         return list;
+    }
+
+    private ParamMeta parseUpdateParam(Type type, String paramName, Class<?> entityClass) {
+        //处理接口泛型
+        if (type instanceof TypeVariable) {
+            if (isEntityParam(type, entityClass)) {
+                return ParamMeta.builderInsert(paramName, true, false);
+            } else {
+                throw new EasyBatisException("泛型类型不匹配");
+            }
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType genericParameterType = (ParameterizedType) type;
+            if (Collection.class.isAssignableFrom((Class<?>) genericParameterType.getRawType())) {
+                if (!isEntityParam(genericParameterType.getActualTypeArguments()[0], entityClass)) {
+                    throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
+                }
+                return ParamMeta.builderInsert(paramName, true, true);
+            } else {
+                return ParamMeta.builderInsert(paramName, false, false);
+            }
+        } else {
+            if (isEntityParam(type, entityClass)) {
+                return ParamMeta.builderInsert(paramName, true, false);
+            } else {
+                return ParamMeta.builderInsert(paramName, false, false);
+            }
+
+        }
     }
 
 
@@ -164,7 +193,7 @@ public class AnnotationAssistant {
         List<String> paramNames = ParamNameUtil.getParamNames(meta.getMethod());
         List<ParamMeta> list = new ArrayList<>();
         for (int i = 0; i < genericParameterTypes.length; i++) {
-            ParamMeta paramMeta = parseInsertOrUpdateParam(genericParameterTypes[i], paramNames.get(i), meta.getTableMetadata().getSource());
+            ParamMeta paramMeta = parseInsertParam(genericParameterTypes[i], paramNames.get(i), meta.getTableMetadata().getSource());
             list.add(paramMeta);
         }
         List<ParamMeta> collect = list.stream().filter(ParamMeta::isEntity).collect(Collectors.toList());
@@ -174,7 +203,7 @@ public class AnnotationAssistant {
         return list;
     }
 
-    private ParamMeta parseInsertOrUpdateParam(Type type, String paramName, Class<?> entityClass) {
+    private ParamMeta parseInsertParam(Type type, String paramName, Class<?> entityClass) {
         //处理接口泛型
         if (type instanceof TypeVariable) {
             if (isEntityParam(type, entityClass)) {
@@ -217,7 +246,30 @@ public class AnnotationAssistant {
         return meta;
     }
 
+    @Deprecated
     private List<ParamMeta> parseSelectMethodParam(MethodMeta methodMeta) {
+        ArrayList<ParamMeta> paramList = new ArrayList<>();
+        Parameter[] parameters = methodMeta.getMethod().getParameters();
+        List<String> paramNames = ParamNameUtil.getParamNames(methodMeta.getMethod());
+        for (int i = 0; i < paramNames.size(); i++) {
+            boolean customObject = Reflection.isCustomObject(parameters[i].getType());
+            //基础类型且参数只有一个
+            if (parameters.length == 1 && !customObject) {
+                paramList.add(parseParameter(parameters[i], paramNames.get(i), i, methodMeta.isDynamic()));
+            } else if (parameters.length == 1) { // 参数有多个且是自定义类型
+                paramList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, false, methodMeta));
+            } else { // 参数可能是基础加混合类型
+                if (customObject) {
+                    paramList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, true, methodMeta));
+                } else {
+                    paramList.add(parseParameter(parameters[i], paramNames.get(i), i, methodMeta.isDynamic()));
+                }
+            }
+        }
+        return paramList;
+    }
+
+    private List<ParamMeta> parseMethodParam(MethodMeta methodMeta) {
         ArrayList<ParamMeta> paramList = new ArrayList<>();
         Parameter[] parameters = methodMeta.getMethod().getParameters();
         List<String> paramNames = ParamNameUtil.getParamNames(methodMeta.getMethod());

@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.core.support;
 
+import com.xwc.open.easybatis.core.anno.condition.filter.SetParam;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.ParamType;
@@ -38,6 +39,7 @@ public class ParamMeta {
 
     private boolean list = false;
 
+
     private ParamMeta() {
     }
 
@@ -63,6 +65,14 @@ public class ParamMeta {
         ParamMeta builder = builder(field, field, ConditionType.EQUAL, null, false, false);
         builder.setEntity(entity);
         builder.setList(list);
+        return builder;
+    }
+
+    public static ParamMeta builderUpdate(String field, boolean entity, boolean list) {
+        ParamMeta builder = builder(field, field, ConditionType.EQUAL, null, false, false);
+        builder.setList(list);
+        builder.setEntity(entity);
+        builder.setCondition(ConditionType.SET_PARAM);
         return builder;
     }
 
