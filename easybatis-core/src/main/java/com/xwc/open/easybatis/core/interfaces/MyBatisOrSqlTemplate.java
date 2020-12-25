@@ -7,16 +7,16 @@ package com.xwc.open.easybatis.core.interfaces;
  */
 public interface MyBatisOrSqlTemplate {
 
-    default String dynamicConditionIf(String conditionParam, String conditionQuery) {
-        return "<if test='" + conditionParam + "'> " + " AND " + conditionQuery + " </if>";
+    default String dynamicConditionIf(String paramName, String conditionQuery) {
+        return "<if test='" + paramName + "'> " + " AND " + conditionQuery + " </if>";
     }
 
     default String dynamicSetIf(String setParam, String setValue) {
         return "<if test='" + setParam + "'> " + setValue + " </if>";
     }
 
-    default String dynamicConditionIsNull(String conditionParam, String conditionQuery) {
-        return "AND (#{" + conditionParam + "} IS NULL OR " + conditionQuery + ")";
+    default String dynamicConditionIsNull(String paramName, String conditionQuery) {
+        return "AND (" + mybatisParam(paramName) + " IS NULL OR " + conditionQuery + ")";
     }
 
     default String insertBatchForeach(String fieldList, String paramName) {
@@ -26,5 +26,12 @@ public interface MyBatisOrSqlTemplate {
         return " <foreach item= 'item'  collection='" + paramName + "' separator=', '> "
                 + fieldList
                 + " </foreach>";
+    }
+
+    default String mybatisParam(String fieldName, String... prefix) {
+        if (prefix.length == 1) {
+            return "#{ " + prefix[0] + "." + fieldName + "}";
+        }
+        return "#{" + fieldName + "}";
     }
 }

@@ -129,7 +129,7 @@ public class AnnotationAssistant {
         meta.setMethodName(method.getName());
         meta.setSqlCommond(SqlCommandType.INSERT);
         meta.setMethod(method);
-        meta.setParamMetaList(parseUpdateMethodParam(meta));
+        meta.setParamMetaList(parseInsertMethodParam(meta));
         return meta;
     }
 
@@ -140,7 +140,7 @@ public class AnnotationAssistant {
         meta.setMethodName(method.getName());
         meta.setSqlCommond(SqlCommandType.UPDATE);
         meta.setMethod(method);
-        meta.setParamMetaList(parseInsertMethodParam(meta));
+        meta.setParamMetaList(parseUpdateMethodParam(meta));
         List<ParamMeta> list = meta.getParamMetaList().stream().filter(ParamMeta::isList).collect(Collectors.toList());
         if (!list.isEmpty()) {
             throw new EasyBatisException("无法处理批量跟新数据");
@@ -163,27 +163,18 @@ public class AnnotationAssistant {
         //处理接口泛型
         if (type instanceof TypeVariable) {
             if (isEntityParam(type, entityClass)) {
-                return ParamMeta.builderInsert(paramName, true, false);
+                return ParamMeta.builderUpdate(paramName, true, false);
             } else {
                 throw new EasyBatisException("泛型类型不匹配");
             }
         } else if (type instanceof ParameterizedType) {
-            ParameterizedType genericParameterType = (ParameterizedType) type;
-            if (Collection.class.isAssignableFrom((Class<?>) genericParameterType.getRawType())) {
-                if (!isEntityParam(genericParameterType.getActualTypeArguments()[0], entityClass)) {
-                    throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
-                }
-                return ParamMeta.builderInsert(paramName, true, true);
-            } else {
-                return ParamMeta.builderInsert(paramName, false, false);
-            }
+            return ParamMeta.builderUpdate(paramName, false, false);
         } else {
             if (isEntityParam(type, entityClass)) {
-                return ParamMeta.builderInsert(paramName, true, false);
+                return ParamMeta.builderUpdate(paramName, true, false);
             } else {
-                return ParamMeta.builderInsert(paramName, false, false);
+                return ParamMeta.builderUpdate(paramName, false, false);
             }
-
         }
     }
 
