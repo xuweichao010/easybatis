@@ -54,7 +54,7 @@ public class BaseSelectTest {
         MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source WHERE `id` = #{id}</script>", select);
+        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source WHERE `id` = #{id}</script>", select);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class BaseSelectTest {
         MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source</script>", select);
+        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source</script>", select);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class BaseSelectTest {
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
-                " SELECT `id`,`orgCode`,`orgName`,`name`" +
+                " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_mysql_sql_source WHERE  (#{name} IS NULL OR `name` = #{name})" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
@@ -95,7 +95,7 @@ public class BaseSelectTest {
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
-                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE  (#{name} IS NULL OR `name` = #{name})" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
@@ -108,7 +108,7 @@ public class BaseSelectTest {
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
-                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE  (#{name} IS NULL OR `name` = #{name})" +
                 " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
                 "</script>";
@@ -122,7 +122,7 @@ public class BaseSelectTest {
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
-                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE  (#{name} IS NULL OR `name` = #{name})" +
                 " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
                 "</script>";
@@ -137,7 +137,7 @@ public class BaseSelectTest {
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
-                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE <if test='id'>  AND `id` = #{id} </if>" +
                 " <if test='orgCode'>  AND `orgCode` = #{orgCode} </if>" +
                 "</script>";
@@ -153,7 +153,7 @@ public class BaseSelectTest {
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
-                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE <if test='one.id'>  AND `id` = #{one.id} </if>" +
                 " <if test='one.orgCode'>  AND `orgCode` = #{one.orgCode} </if>" +
                 " <if test='two.orgName'>  AND `orgName` = #{two.orgName} </if>" +
@@ -169,7 +169,7 @@ public class BaseSelectTest {
                 tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
-                " SELECT `id`,`orgCode`,`orgName`,`name` FROM t_mysql_sql_source" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE `name` = #{name}" +
                 " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
                 " <if test='two.orgName'>  AND `orgName` = #{two.orgName} </if>" +
