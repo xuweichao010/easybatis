@@ -19,7 +19,7 @@ public class DefaultUpdateConditionSnippet implements UpdateConditionSnippet, My
         ParamMeta paramMeta = methodMeta.getParamMetaList().get(0);
         if (methodMeta.getParamMetaList().size() == 1 && paramMeta.isEntity()) {
             IdMeta id = methodMeta.getTableMetadata().getId();
-            return id.getColumn() + " = " + this.mybatisParam(id.getField());
+            return id.getColumn() + " = " + this.mybatisParam(id.getField(), null);
         } else {
             return null;
         }

@@ -79,6 +79,20 @@ public class BaseUpdateTest {
         Assert.assertEquals(select, targetSql);
     }
 
+    @Test
+    public void updateEntityMixture() {
+        Method method = chooseMethod(BaseUpdateMapper.class, "updateEntityMixture");
+        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
+        String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String targetSql = "<script>" +
+                " UPDATE t_mysql_sql_source FROM t_mysql_sql_source" +
+                " SET id = #{id}, orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
+                " WHERE" +
+                " id = #{id}" +
+                "</script>";
+        Assert.assertEquals(select, targetSql);
+    }
+
     private Method chooseMethod(Class<?> classType, String methodName) {
         Method[] declaredMethod = classType.getMethods();
         for (Method method : declaredMethod) {

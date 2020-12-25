@@ -18,4 +18,7 @@ public interface BaseUpdateMapper extends BaseMapper<BaseUpdateEntity, String> {
     @UpdateSql
     Object updateEntity(BaseUpdateEntity entity);
 
+    @UpdateSql
+    Object updateEntityMixture(String tableName, BaseUpdateEntity entity);
+
 }

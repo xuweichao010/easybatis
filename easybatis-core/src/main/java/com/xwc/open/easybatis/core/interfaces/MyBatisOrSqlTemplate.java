@@ -16,7 +16,7 @@ public interface MyBatisOrSqlTemplate {
     }
 
     default String dynamicConditionIsNull(String paramName, String conditionQuery) {
-        return "AND (" + mybatisParam(paramName) + " IS NULL OR " + conditionQuery + ")";
+        return "AND (" + mybatisParam(paramName, null) + " IS NULL OR " + conditionQuery + ")";
     }
 
     default String insertBatchForeach(String fieldList, String paramName) {
@@ -28,9 +28,9 @@ public interface MyBatisOrSqlTemplate {
                 + " </foreach>";
     }
 
-    default String mybatisParam(String fieldName, String... prefix) {
-        if (prefix.length == 1) {
-            return "#{ " + prefix[0] + "." + fieldName + "}";
+    default String mybatisParam(String fieldName, String prefix) {
+        if (prefix != null) {
+            return "#{ " + prefix + "." + fieldName + "}";
         }
         return "#{" + fieldName + "}";
     }
