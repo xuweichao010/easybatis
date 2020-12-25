@@ -24,10 +24,7 @@ import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.ParamNameUtil;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -139,25 +136,43 @@ public class AnnotationAssistant {
     private List<ParamMeta> parseInsertMethodParam(MethodMeta meta) {
         Type[] genericParameterTypes = meta.getMethod().getGenericParameterTypes();
         List<String> paramNames = ParamNameUtil.getParamNames(meta.getMethod());
-        if (genericParameterTypes.length == 1) {
-            if (!isEntityParam(genericParameterTypes[0], meta.getTableMetadata().getSource())) {
-                throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
+        List<ParamMeta> list = new ArrayList<>();
+        for (int i = 0; i < genericParameterTypes.length; i++) {
+            ParamMeta paramMeta = parseInsertParam(genericParameterTypes[i], paramNames.get(i), meta.getTableMetadata().getSource());
+            list.add(paramMeta);
+        }
+        List<ParamMeta> collect = list.stream().filter(ParamMeta::isEntity).collect(Collectors.toList());
+        if (collect.size() != 1) {
+            throw new EasyBatisException("无法查到实体类型");
+        }
+        return list;
+    }
+
+    private ParamMeta parseInsertParam(Type type, String paramName, Class<?> entityClass) {
+        //处理接口泛型
+        if (type instanceof TypeVariable) {
+            if (isEntityParam(type, entityClass)) {
+                return ParamMeta.builderInsert(paramName, true, false);
+            } else {
+                throw new EasyBatisException("泛型类型不匹配");
             }
-            return Collections.singletonList(ParamMeta.builderInsert(paramNames.get(0), true));
-        } else if (genericParameterTypes.length > 1) {
-            ArrayList<ParamMeta> list = new ArrayList<>();
-            for (int i = 0; i < paramNames.size(); i++) {
-                ParamMeta paramMeta;
-                if (isEntityParam(genericParameterTypes[i], meta.getTableMetadata().getSource())) {
-                    paramMeta = ParamMeta.builderInsert(paramNames.get(i), true);
-                } else {
-                    paramMeta = ParamMeta.builderInsert(paramNames.get(i), false);
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType genericParameterType = (ParameterizedType) type;
+            if (Collection.class.isAssignableFrom((Class<?>) genericParameterType.getRawType())) {
+                if (!isEntityParam(genericParameterType.getActualTypeArguments()[0], entityClass)) {
+                    throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
                 }
-                list.add(paramMeta);
+                return ParamMeta.builderInsert(paramName, true, true);
+            } else {
+                return ParamMeta.builderInsert(paramName, false, false);
             }
-            return list;
         } else {
-            throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
+            if (isEntityParam(type, entityClass)) {
+                return ParamMeta.builderInsert(paramName, true, false);
+            } else {
+                return ParamMeta.builderInsert(paramName, false, false);
+            }
+
         }
     }
 

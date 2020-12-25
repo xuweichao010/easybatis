@@ -79,7 +79,6 @@ public class BaseInsertTest {
         Assert.assertEquals(select, sqlTarget);
     }
 
-
     @Test
     public void insertMulti() {
         Method method = chooseMethod(BaseInsertMapper.class, "insertMulti");
@@ -89,7 +88,7 @@ public class BaseInsertTest {
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source (`id`, `orgCode`, `orgName`, `name`)" +
                 " VALUES" +
-                " (#{entity.id},#{entity.orgCode},#{entity.orgName},#{entity.name})" +
+                " (#{entity.id}, #{entity.orgCode}, #{entity.orgName}, #{entity.name})" +
                 " </script>";
         Assert.assertEquals(select, sqlTarget);
     }
@@ -100,6 +99,32 @@ public class BaseInsertTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sqlTarget = "<script>" +
+                " INSERT INTO t_mysql_sql_source" +
+                " (`id`, `orgCode`, `orgName`, `name`)" +
+                " VALUES " +
+                " <foreach item= 'item'  collection=list separator=', '>" +
+                " (#{id}, #{orgCode}, #{orgName}, #{name})" +
+                " </foreach>" +
+                " </script>";
+        Assert.assertEquals(sqlTarget, select);
+    }
+
+    @Test
+    public void insertBatchEntity() {
+        Method method = chooseMethod(BaseInsertMapper.class, "insertBatchEntity");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sqlTarget = "<script>" +
+                " INSERT INTO t_mysql_sql_source" +
+                " (`id`, `orgCode`, `orgName`, `name`)" +
+                " VALUES " +
+                " <foreach item= 'item'  collection=list separator=', '>" +
+                " (#{id}, #{orgCode}, #{orgName}, #{name})" +
+                " </foreach>" +
+                " </script>";
+        Assert.assertEquals(sqlTarget, select);
     }
 
 

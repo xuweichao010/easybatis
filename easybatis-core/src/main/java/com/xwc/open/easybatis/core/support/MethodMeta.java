@@ -32,9 +32,6 @@ public class MethodMeta {
      */
     List<ParamMeta> paramMetaList;
 
-    private boolean isBatch = false;
-
-
     public <T extends Annotation> T chooseAnnotationType(Class<T> annotationClass) {
         return AnnotationUtils.findAnnotation(this.method, annotationClass);
     }

@@ -87,6 +87,27 @@ public class Reflection {
         return null;
     }
 
+    public static Class<?> geCollectionEntityClass(Class<?> mapperClass) {
+        Type[] types = mapperClass.getGenericInterfaces();
+        for (Type type : types) {
+            if (type instanceof ParameterizedType) {
+                ParameterizedType t = (ParameterizedType) type;
+                if (EasyMapper.class.isAssignableFrom((Class<?>) t.getRawType())) {
+                    return (Class<?>) t.getActualTypeArguments()[0];
+                }
+            }
+        }
+        for (Type type : types) {
+            if (type instanceof Class) {
+                Class<?> clazz = getEntityClass((Class) type);
+                if (clazz != null) {
+                    return clazz;
+                }
+            }
+        }
+        return null;
+    }
+
     public static boolean isPrimitive(Object obj) {
         try {
             return ((Class<?>) obj.getClass().getField("TYPE").get(null)).isPrimitive();

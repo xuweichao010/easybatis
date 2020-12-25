@@ -19,6 +19,6 @@ public interface BaseInsertMapper extends BaseMapper<BaseInsertEntity, String> {
     Object insertMulti(String tableName, BaseInsertEntity entity);
 
     @InsertSql
-    Object insertBatch(List<BaseInsertEntity> list);
+    Object insertBatchEntity(List<BaseInsertEntity> list);
 
 }

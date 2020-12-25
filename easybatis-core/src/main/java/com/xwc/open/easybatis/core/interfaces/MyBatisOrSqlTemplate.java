@@ -14,4 +14,13 @@ public interface MyBatisOrSqlTemplate {
     default String dynamicConditionIsNull(String conditionParam, String conditionQuery) {
         return "AND (#{" + conditionParam + "} IS NULL OR " + conditionQuery + ")";
     }
+
+    default String insertBatchForeach(String fieldList, String paramName) {
+        if (paramName == null) {
+            paramName = "list";
+        }
+        return " <foreach item= 'item'  collection=" + paramName + " separator=', '> "
+                + fieldList
+                + " </foreach>";
+    }
 }
