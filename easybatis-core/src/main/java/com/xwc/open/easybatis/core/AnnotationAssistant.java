@@ -151,8 +151,7 @@ public class AnnotationAssistant {
             ParamMeta paramMeta = ParamMeta.builderEqual(underscoreName(paramName), paramName);
             if (isEntityParam(parameter.getParameterizedType(), entityClass)) {
                 paramMeta.setEntity(true);
-            }
-            if (isKeyParam(parameter.getParameterizedType())) {
+            } else if (isKeyParam(parameter.getParameterizedType())) {
                 paramMeta.setPrimaryKey(true);
             } else {
                 throw new EasyBatisException("泛型类型不匹配");
@@ -172,7 +171,7 @@ public class AnnotationAssistant {
             if (isEntityParam(parameter.getParameterizedType(), entityClass)) {
                 return ParamMeta.builderInsert(paramName, true, false);
             } else if (Reflection.isCustomObject(parameter.getType()) && command == SqlCommandType.SELECT) {
-                return parseCustomParameter((Class<?>) parameter.getParameterizedType(), true, paramName);
+                return parseCustomParameter((Class<?>) parameter.getParameterizedType(), paramName);
             } else {
                 return parseAnnotation(parameter.getAnnotations(), paramName, dynamic);
             }
@@ -180,17 +179,16 @@ public class AnnotationAssistant {
     }
 
 
-    private ParamMeta parseCustomParameter(Class<?> type, boolean dynamic, String paramName) {
-        ParamMeta param = ParamMeta.builder(this.underscoreName(paramName), paramName, dynamic);
+    private ParamMeta parseCustomParameter(Class<?> type, String paramName) {
+        ParamMeta param = ParamMeta.builder(this.underscoreName(paramName), paramName, true);
         List<Field> fieldList = Reflection.getField(type);
         List<ParamMeta> paramList = new ArrayList<>();
-        for (int i = 0; i < fieldList.size(); i++) {
-            Field field = fieldList.get(i);
+        for (Field field : fieldList) {
             ParamMeta paramMetaData = parseAnnotation(field.getDeclaredAnnotations(),
                     field.getName(), true);
             paramMetaData.setParentParamName(param.getParamName());
             paramList.add(paramMetaData);
-            param.setDynamic(dynamic);
+            param.setDynamic(true);
         }
         param.setChildList(paramList);
         return param;
@@ -235,7 +233,7 @@ public class AnnotationAssistant {
         meta.setMethodName(method.getName());
         meta.setSqlCommand(SqlCommandType.INSERT);
         meta.setMethod(method);
-        meta.setParamMetaList(parseInsertMethodParam(meta));
+        meta.setParamMetaList(parseMethodParam(meta));
         return meta;
     }
 
@@ -285,112 +283,12 @@ public class AnnotationAssistant {
     }
 
 
-    private List<ParamMeta> parseInsertMethodParam(MethodMeta meta) {
-        Type[] genericParameterTypes = meta.getMethod().getGenericParameterTypes();
-        List<String> paramNames = ParamNameUtil.getParamNames(meta.getMethod());
-        List<ParamMeta> list = new ArrayList<>();
-        for (int i = 0; i < genericParameterTypes.length; i++) {
-            ParamMeta paramMeta = parseInsertParam(genericParameterTypes[i], paramNames.get(i), meta.getTableMetadata().getSource());
-            list.add(paramMeta);
-        }
-        List<ParamMeta> collect = list.stream().filter(ParamMeta::isEntity).collect(Collectors.toList());
-        if (collect.size() != 1) {
-            throw new EasyBatisException("无法查到实体类型");
-        }
-        return list;
-    }
-
-    private ParamMeta parseInsertParam(Type type, String paramName, Class<?> entityClass) {
-        //处理接口泛型
-        if (type instanceof TypeVariable) {
-            if (isEntityParam(type, entityClass)) {
-                return ParamMeta.builderInsert(paramName, true, false);
-            } else {
-                throw new EasyBatisException("泛型类型不匹配");
-            }
-        } else if (type instanceof ParameterizedType) {
-            ParameterizedType genericParameterType = (ParameterizedType) type;
-            if (Collection.class.isAssignableFrom((Class<?>) genericParameterType.getRawType())) {
-                if (!isEntityParam(genericParameterType.getActualTypeArguments()[0], entityClass)) {
-                    throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
-                }
-                return ParamMeta.builderInsert(paramName, true, true);
-            } else {
-                return ParamMeta.builderInsert(paramName, false, false);
-            }
-        } else {
-            if (isEntityParam(type, entityClass)) {
-                return ParamMeta.builderInsert(paramName, true, false);
-            } else {
-                return ParamMeta.builderInsert(paramName, false, false);
-            }
-
-        }
-    }
-
     private boolean isEntityParam(Type entityType, Class<?> entityClass) {
         return entityType.getTypeName().equals("E") || entityType.equals(entityClass);
     }
 
     private boolean isKeyParam(Type entityType) {
         return entityType.getTypeName().equals("K");
-    }
-
-
-    /**
-     * 解析自定义对象查询条件
-     *
-     * @param parameter
-     * @param paramName
-     * @param index
-     * @return
-     */
-    public List<ParamMeta> parseCustomParameter(Parameter parameter, String paramName, int index, boolean isMulti, MethodMeta methodMeta) {
-        List<Field> fieldList = Reflection.getField(parameter.getType());
-        List<ParamMeta> paramList = new ArrayList<>();
-        for (int i = 0; i < fieldList.size(); i++) {
-            Field field = fieldList.get(i);
-            ParamMeta paramMetaData = createQuery(field.getDeclaredAnnotations(),
-                    field.getName(), true, isMulti ? paramName : null, true);
-            paramList.add(paramMetaData);
-        }
-        return paramList;
-    }
-
-    public ParamMeta parseParameter(Parameter parameter, String paramName, int index, boolean methodGlobalDynamic) {
-        return createQuery(parameter.getDeclaredAnnotations(), paramName,
-                Reflection.isCustomObject(parameter.getType()), null, methodGlobalDynamic);
-    }
-
-    /**
-     * @param annotations 查询条件上的注解信息
-     * @param paramName   参数名
-     * @param isCustom    是否是自定义对象
-     * @param prefix      参数名 是有需要携带前缀
-     * @return ParamMetaData
-     */
-    public ParamMeta createQuery(Annotation[] annotations, String paramName, boolean isCustom, String prefix, boolean methodGlobalDynamic) {
-        ParamMeta param = ParamMeta.builder(underscoreName(paramName),
-                StringUtils.hasText(prefix) ? prefix + "." + paramName : paramName,
-                ConditionType.EQUAL, null, isCustom, methodGlobalDynamic);
-        Annotation annotation = chooseQueryAnnotationType(annotations);
-        if (annotation != null) {
-            Map<String, Object> map = AnnotationUtils.getAnnotationAttributes(annotation);
-            param.mergeConditionAnnotation(map);
-            Condition condition = AnnotationUtils.findAnnotation(annotation.annotationType(), Condition.class);
-            if (condition == null) {
-                throw new EasyBatisException("注解格式不符合规范");
-            } else {
-                param.setCondition(condition.type());
-            }
-        }
-
-        return param;
-    }
-
-
-    private int getQueryIndex(int annoIndex, int paramIndex) {
-        return annoIndex == -1 ? paramIndex : annoIndex;
     }
 
 
