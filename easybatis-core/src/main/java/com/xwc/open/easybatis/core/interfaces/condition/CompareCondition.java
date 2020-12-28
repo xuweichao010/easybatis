@@ -22,10 +22,9 @@ public class CompareCondition implements QueryCondition {
     public String apply(ParamMeta metaData) {
         if (!conditionTypeSet.contains(metaData.getCondition())) return null;
         String condition = "`" + metaData.getColumnName() + "` " +
-                metaData.getCondition().expression() +
-                " #{" + metaData.getParamName() + "}";
-        if (StringUtils.hasText(metaData.getAlias())) condition = metaData.getAlias() + "." + condition;
-        return doApply(metaData.getParamName(), condition, metaData.getType());
+                metaData.getCondition().expression() + " " +
+                this.mybatisParam(metaData.getParamName(), metaData.getParentParamName());
+        return doApply(metaData.getParamName(), condition, metaData.paramType());
     }
 
 }

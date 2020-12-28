@@ -37,7 +37,7 @@ public class BaseSelectTest {
 
     @Before
     public void before() throws IOException {
-        String resource = "mybatis.xml";
+        String resource = "mybatis.xml" ;
         InputStream inputStream = Resources.getResourceAsStream(resource);
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.configuration = this.sqlSessionFactory.getConfiguration();
@@ -84,7 +84,7 @@ public class BaseSelectTest {
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_mysql_sql_source WHERE  (#{name} IS NULL OR `name` = #{name})" +
-                "</script>";
+                "</script>" ;
         Assert.assertEquals(select, targetSql);
     }
 
@@ -97,7 +97,7 @@ public class BaseSelectTest {
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE  (#{name} IS NULL OR `name` = #{name})" +
-                "</script>";
+                "</script>" ;
         Assert.assertEquals(select, targetSql);
     }
 
@@ -111,7 +111,7 @@ public class BaseSelectTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE  (#{name} IS NULL OR `name` = #{name})" +
                 " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
-                "</script>";
+                "</script>" ;
         Assert.assertEquals(select, targetSql);
     }
 
@@ -125,7 +125,7 @@ public class BaseSelectTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE  (#{name} IS NULL OR `name` = #{name})" +
                 " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
-                "</script>";
+                "</script>" ;
         Assert.assertEquals(select, targetSql);
     }
 
@@ -140,7 +140,7 @@ public class BaseSelectTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE <if test='id'>  AND `id` = #{id} </if>" +
                 " <if test='orgCode'>  AND `orgCode` = #{orgCode} </if>" +
-                "</script>";
+                "</script>" ;
         Assert.assertEquals(select, targetSql);
 
     }
@@ -158,7 +158,7 @@ public class BaseSelectTest {
                 " <if test='one.orgCode'>  AND `orgCode` = #{one.orgCode} </if>" +
                 " <if test='two.orgName'>  AND `orgName` = #{two.orgName} </if>" +
                 " <if test='two.name'>  AND `name` = #{two.name} </if>" +
-                "</script>";
+                "</script>" ;
         Assert.assertEquals(select, targetSql);
     }
 
@@ -174,13 +174,13 @@ public class BaseSelectTest {
                 " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
                 " <if test='two.orgName'>  AND `orgName` = #{two.orgName} </if>" +
                 " <if test='two.name'>  AND `name` = #{two.name} </if>" +
-                "</script>";
+                "</script>" ;
         Assert.assertEquals(select, targetSql);
     }
 
 
     private Method chooseMethod(Class<?> classType, String methodName) {
-        Method[] declaredMethod = classType.getDeclaredMethods();
+        Method[] declaredMethod = classType.getMethods();
         for (Method method : declaredMethod) {
             if (method.getName().equals(methodName)) {
                 return method;

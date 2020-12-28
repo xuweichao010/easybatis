@@ -7,6 +7,7 @@ import com.xwc.open.easybatis.core.enums.ParamType;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,6 +22,7 @@ public class ParamMeta {
     /**
      * 属于自定义对象还是java对象 true 是自定义对象  false为非自定义对象
      */
+    @Deprecated
     private ParamType type;
 
     private String paramName;
@@ -29,20 +31,30 @@ public class ParamMeta {
 
     private ConditionType condition;
 
+    private String parentParamName;
+
     private String alias;
 
     private boolean dynamic = false;
-
-    private boolean custom = false;
 
     private boolean entity = false;
 
     private boolean list = false;
 
-    private boolean primaryKey = true;
+    private boolean primaryKey = false;
 
+    private List<ParamMeta> childList;
 
     private ParamMeta() {
+    }
+
+    public static ParamMeta builder(String columnName, String paramName, boolean dynamic) {
+        ParamMeta tar = new ParamMeta();
+        tar.columnName = columnName;
+        tar.paramName = paramName;
+        tar.dynamic = dynamic;
+        tar.condition = ConditionType.NONE;
+        return tar;
     }
 
 
@@ -53,7 +65,6 @@ public class ParamMeta {
         tar.condition = condition;
         tar.type = ParamType.FILED_TYPE;
         tar.alias = alias;
-        tar.custom = custom;
         tar.dynamic = dynamic;
         tar.paramType();
         return tar;
@@ -90,13 +101,13 @@ public class ParamMeta {
         ;
     }
 
-    public void paramType() {
-        if (this.custom) {
-            this.type = ParamType.FILED_TYPE_DYNAMIC;
+    public ParamType paramType() {
+        if (this.childList != null && !this.childList.isEmpty()) {
+            return ParamType.FILED_TYPE_DYNAMIC;
         } else if (this.dynamic) {
-            this.type = ParamType.PARAM_TYPE_DYNAMIC;
+            return ParamType.PARAM_TYPE_DYNAMIC;
         } else {
-            this.type = ParamType.PARAM_TYPE;
+            return ParamType.PARAM_TYPE;
         }
     }
 

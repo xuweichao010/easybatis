@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.core.mysql;
 
+import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.interfaces.AbstractSqlSourceGenerator;
 import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
 import com.xwc.open.easybatis.core.interfaces.snippet.DefaultInsertValueSnippet;
@@ -18,7 +19,7 @@ import java.util.stream.Stream;
 public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
 
     public MysqlSqlSourceGenerator() {
-        this.conditionList = Stream.of(new CompareCondition()).collect(Collectors.toList());
+
         this.insertColumnValue = new DefaultInsertValueSnippet();
         this.updateColumnSnippet = new DefaultUpdateColumnSnippet();
         this.updateConditionSnippet = new DefaultUpdateConditionSnippet();
@@ -28,10 +29,11 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
     public String select(MethodMeta methodMetaData) {
         StringBuilder sb = new StringBuilder();
         sb.append("<script>")
-                .append(" SELECT ").append(this.selectColumn(methodMetaData))
+                .append(" SELECT ").append(this.selectColumnSnippet.apply(methodMetaData))
                 .append(" FROM ").append(methodMetaData.getTableMetadata().getTableName());
-        if (!methodMetaData.getParamMetaList().isEmpty() || methodMetaData.getTableMetadata().getLogic() != null) {
-            sb.append(" WHERE ").append(this.queryCondition(methodMetaData));
+        String conditionSnippet = this.selectConditionSnippet.apply(methodMetaData);
+        if (StringUtils.hasText(conditionSnippet)) {
+            sb.append(" WHERE ").append(conditionSnippet);
         }
         sb.append("</script>");
         return sb.toString();

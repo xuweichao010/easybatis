@@ -3,6 +3,7 @@ package com.xwc.open.easybatis.mysql.select;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
+import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 import com.xwc.open.easybatis.core.interfaces.EasyMapper;
 
 /**
@@ -10,7 +11,7 @@ import com.xwc.open.easybatis.core.interfaces.EasyMapper;
  * 时间：2020/12/18
  * 描述：
  */
-public interface BaseSelectMapper extends EasyMapper<BaseSelectEntity, String> {
+public interface BaseSelectMapper extends BaseMapper<BaseSelectEntity, String> {
 
     @SelectSql
     void findAll();
@@ -18,9 +19,9 @@ public interface BaseSelectMapper extends EasyMapper<BaseSelectEntity, String> {
     @SelectSql("id")
     void findAll1();
 
-    @SelectSql
-    @PrimaryKey
-    void selectKey(String key);
+//    @SelectSql
+//    @PrimaryKey
+//    void selectKey(String key);
 
     @SelectSql(dynamic = true)
     void methodGlobalDynamic(String name);
