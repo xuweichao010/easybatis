@@ -1,5 +1,6 @@
-package com.xwc.open.easybatis.core.interfaces;
+package com.xwc.open.easybatis.core.interfaces.snippet;
 
+import com.xwc.open.easybatis.core.interfaces.MyBatisOrSqlTemplate;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;

@@ -2,7 +2,6 @@ package com.xwc.open.easybatis.core.interfaces.condition;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
-import com.xwc.open.easybatis.core.interfaces.QueryCondition;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 
 

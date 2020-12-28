@@ -2,9 +2,9 @@ package com.xwc.open.easybatis.core.mysql;
 
 import com.xwc.open.easybatis.core.interfaces.AbstractSqlSourceGenerator;
 import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
-import com.xwc.open.easybatis.core.interfaces.impl.DefaultInsertValueSnippet;
-import com.xwc.open.easybatis.core.interfaces.impl.DefaultUpdateColumnSnippet;
-import com.xwc.open.easybatis.core.interfaces.impl.DefaultUpdateConditionSnippet;
+import com.xwc.open.easybatis.core.interfaces.snippet.DefaultInsertValueSnippet;
+import com.xwc.open.easybatis.core.interfaces.snippet.DefaultUpdateColumnSnippet;
+import com.xwc.open.easybatis.core.interfaces.snippet.DefaultUpdateConditionSnippet;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 
 import java.util.stream.Collectors;

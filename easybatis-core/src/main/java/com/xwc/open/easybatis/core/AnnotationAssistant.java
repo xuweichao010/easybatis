@@ -127,7 +127,7 @@ public class AnnotationAssistant {
         meta.setDynamic(false);
         meta.setTableMetadata(tableMetadata);
         meta.setMethodName(method.getName());
-        meta.setSqlCommond(SqlCommandType.INSERT);
+        meta.setSqlCommand(SqlCommandType.INSERT);
         meta.setMethod(method);
         meta.setParamMetaList(parseInsertMethodParam(meta));
         return meta;
@@ -138,7 +138,7 @@ public class AnnotationAssistant {
         meta.setDynamic(false);
         meta.setTableMetadata(tableMetadata);
         meta.setMethodName(method.getName());
-        meta.setSqlCommond(SqlCommandType.UPDATE);
+        meta.setSqlCommand(SqlCommandType.UPDATE);
         meta.setMethod(method);
         meta.setParamMetaList(parseUpdateMethodParam(meta));
         List<ParamMeta> list = meta.getParamMetaList().stream().filter(ParamMeta::isList).collect(Collectors.toList());
@@ -226,44 +226,73 @@ public class AnnotationAssistant {
         return entityType.getTypeName().equals("E") || entityType.equals(entityClass);
     }
 
+    private boolean isKeyParam(Type entityType) {
+        return entityType.getTypeName().equals("K");
+    }
+
     public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata, SelectSql selectSql) {
         MethodMeta meta = new MethodMeta();
         meta.setDynamic(selectSql.dynamic());
         meta.setTableMetadata(tableMetadata);
         meta.setMethodName(method.getName());
-        meta.setSqlCommond(SqlCommandType.INSERT);
+        meta.setSqlCommand(SqlCommandType.INSERT);
         meta.setMethod(method);
         meta.setParamMetaList(parseSelectMethodParam(meta));
         return meta;
     }
 
-    @Deprecated
+
+    private List<ParamMeta> parseMethodParam(MethodMeta methodMeta) {
+        Type[] genericParameterTypes = methodMeta.getMethod().getGenericParameterTypes();
+        List<String> paramNames = ParamNameUtil.getParamNames(methodMeta.getMethod());
+        List<ParamMeta> list = new ArrayList<>();
+        for (int i = 0; i < paramNames.size(); i++) {
+            ParamMeta paramMeta = parseParameter(genericParameterTypes[i], paramNames.get(i), methodMeta.getSqlCommand()
+                    , methodMeta.getTableMetadata().getSource());
+            list.add(paramMeta);
+        }
+        return list;
+    }
+
+    private ParamMeta parseParameter(Type type, String paramName, SqlCommandType command, Class<?> entityClass) {
+        ParamMeta paramMeta = ParamMeta.builderEqual(underscoreName(paramName), paramName);
+        //处理接口泛型 泛型的两种情况是 主键或者是实体
+        if (type instanceof TypeVariable) {
+            if (isEntityParam(type, entityClass)) {
+                paramMeta.setEntity(true);
+            }
+            if (isKeyParam(type)) {
+                paramMeta.setPrimaryKey(true);
+            } else {
+                throw new EasyBatisException("泛型类型不匹配");
+            }
+        } else if (type instanceof ParameterizedType) { // 处理接口中的集合类型
+            ParameterizedType genericParameterType = (ParameterizedType) type;
+            if (Collection.class.isAssignableFrom((Class<?>) genericParameterType.getRawType())) {
+                if (!isEntityParam(genericParameterType.getActualTypeArguments()[0], entityClass)) {
+                    throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
+                }
+                return ParamMeta.builderInsert(paramName, true, true);
+            } else {
+                return ParamMeta.builderInsert(paramName, false, false);
+            }
+        } else {
+            if (isEntityParam(type, entityClass)) {
+                return ParamMeta.builderInsert(paramName, true, false);
+            } else {
+                return ParamMeta.builderInsert(paramName, false, false);
+            }
+
+        }
+        return null;
+    }
+
+
     private List<ParamMeta> parseSelectMethodParam(MethodMeta methodMeta) {
         ArrayList<ParamMeta> paramList = new ArrayList<>();
         Parameter[] parameters = methodMeta.getMethod().getParameters();
         List<String> paramNames = ParamNameUtil.getParamNames(methodMeta.getMethod());
-        for (int i = 0; i < paramNames.size(); i++) {
-            boolean customObject = Reflection.isCustomObject(parameters[i].getType());
-            //基础类型且参数只有一个
-            if (parameters.length == 1 && !customObject) {
-                paramList.add(parseParameter(parameters[i], paramNames.get(i), i, methodMeta.isDynamic()));
-            } else if (parameters.length == 1) { // 参数有多个且是自定义类型
-                paramList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, false, methodMeta));
-            } else { // 参数可能是基础加混合类型
-                if (customObject) {
-                    paramList.addAll(parseCustomParameter(parameters[i], paramNames.get(i), i, true, methodMeta));
-                } else {
-                    paramList.add(parseParameter(parameters[i], paramNames.get(i), i, methodMeta.isDynamic()));
-                }
-            }
-        }
-        return paramList;
-    }
 
-    private List<ParamMeta> parseMethodParam(MethodMeta methodMeta) {
-        ArrayList<ParamMeta> paramList = new ArrayList<>();
-        Parameter[] parameters = methodMeta.getMethod().getParameters();
-        List<String> paramNames = ParamNameUtil.getParamNames(methodMeta.getMethod());
         for (int i = 0; i < paramNames.size(); i++) {
             boolean customObject = Reflection.isCustomObject(parameters[i].getType());
             //基础类型且参数只有一个
@@ -296,26 +325,25 @@ public class AnnotationAssistant {
         for (int i = 0; i < fieldList.size(); i++) {
             Field field = fieldList.get(i);
             ParamMeta paramMetaData = createQuery(field.getDeclaredAnnotations(),
-                    field.getName(), index, true, isMulti ? paramName : null, true);
+                    field.getName(),  true, isMulti ? paramName : null, true);
             paramList.add(paramMetaData);
         }
         return paramList;
     }
 
     public ParamMeta parseParameter(Parameter parameter, String paramName, int index, boolean methodGlobalDynamic) {
-        return createQuery(parameter.getDeclaredAnnotations(), paramName, index,
+        return createQuery(parameter.getDeclaredAnnotations(), paramName,
                 Reflection.isCustomObject(parameter.getType()), null, methodGlobalDynamic);
     }
 
     /**
      * @param annotations 查询条件上的注解信息
      * @param paramName   参数名
-     * @param index       参数所在位置
      * @param isCustom    是否是自定义对象
      * @param prefix      参数名 是有需要携带前缀
      * @return ParamMetaData
      */
-    public ParamMeta createQuery(Annotation[] annotations, String paramName, int index, boolean isCustom, String prefix, boolean methodGlobalDynamic) {
+    public ParamMeta createQuery(Annotation[] annotations, String paramName, boolean isCustom, String prefix, boolean methodGlobalDynamic) {
         ParamMeta param = ParamMeta.builder(underscoreName(paramName),
                 StringUtils.hasText(prefix) ? prefix + "." + paramName : paramName,
                 ConditionType.EQUAL, null, isCustom, methodGlobalDynamic);

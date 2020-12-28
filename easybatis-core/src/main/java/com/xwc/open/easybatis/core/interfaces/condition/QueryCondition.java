@@ -1,6 +1,7 @@
-package com.xwc.open.easybatis.core.interfaces;
+package com.xwc.open.easybatis.core.interfaces.condition;
 
 import com.xwc.open.easybatis.core.enums.ParamType;
+import com.xwc.open.easybatis.core.interfaces.MyBatisOrSqlTemplate;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 
 /**

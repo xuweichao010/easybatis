@@ -18,7 +18,7 @@ public class MethodMeta {
     /**
      * SQL操作的类型
      */
-    private SqlCommandType sqlCommond;
+    private SqlCommandType sqlCommand;
 
     private boolean dynamic;
     /**

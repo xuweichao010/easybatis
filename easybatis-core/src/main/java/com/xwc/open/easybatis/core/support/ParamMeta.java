@@ -39,6 +39,8 @@ public class ParamMeta {
 
     private boolean list = false;
 
+    private boolean primaryKey = true;
+
 
     private ParamMeta() {
     }
@@ -69,10 +71,10 @@ public class ParamMeta {
     }
 
     public static ParamMeta builderUpdate(String field, boolean entity, boolean list) {
-        ParamMeta builder = builder(field, field, ConditionType.EQUAL, null, false, false);
+        ParamMeta builder = builder(field, field, ConditionType.NONE, null, false, false);
         builder.setList(list);
         builder.setEntity(entity);
-        builder.setCondition(ConditionType.SET_PARAM);
+        builder.setCondition(ConditionType.NONE);
         return builder;
     }
 

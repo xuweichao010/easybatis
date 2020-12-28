@@ -1,7 +1,7 @@
-package com.xwc.open.easybatis.core.interfaces.impl;
+package com.xwc.open.easybatis.core.interfaces.snippet;
 
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
-import com.xwc.open.easybatis.core.interfaces.InsertValueSnippet;
+import com.xwc.open.easybatis.core.interfaces.snippet.InsertValueSnippet;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;

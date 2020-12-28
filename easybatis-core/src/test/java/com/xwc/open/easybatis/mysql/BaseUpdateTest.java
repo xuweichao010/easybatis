@@ -40,15 +40,13 @@ public class BaseUpdateTest {
 
     @Before
     public void before() throws IOException {
-        String resource = "mybatis.xml";
+        String resource = "mybatis.xml" ;
         InputStream inputStream = Resources.getResourceAsStream(resource);
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.configuration = this.sqlSessionFactory.getConfiguration();
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
         this.annotationAssistant = easybatisConfiguration.getAnnotationAssistant();
         this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(BaseUpdateMapper.class));
-
-
     }
 
     @Test
@@ -61,7 +59,7 @@ public class BaseUpdateTest {
                 " SET id = #{id}, orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
                 " WHERE" +
                 " id = #{id}" +
-                "</script>";
+                "</script>" ;
         Assert.assertEquals(select, targetSql);
     }
 
@@ -75,7 +73,7 @@ public class BaseUpdateTest {
                 " SET id = #{id}, orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
                 " WHERE" +
                 " id = #{id}" +
-                "</script>";
+                "</script>" ;
         Assert.assertEquals(select, targetSql);
     }
 
@@ -86,10 +84,9 @@ public class BaseUpdateTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source FROM t_mysql_sql_source" +
-                " SET id = #{id}, orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
-                " WHERE" +
-                " id = #{id}" +
-                "</script>";
+                " SET id = #{entity.id}, orgCode = #{entity.orgCode}, orgName = #{entity.orgName}, name = #{entity.name}" +
+                " WHERE id = #{entity.id}" +
+                "</script>" ;
         Assert.assertEquals(select, targetSql);
     }
 

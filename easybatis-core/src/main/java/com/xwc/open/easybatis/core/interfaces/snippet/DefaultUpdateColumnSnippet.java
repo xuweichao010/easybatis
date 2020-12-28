@@ -1,9 +1,8 @@
-package com.xwc.open.easybatis.core.interfaces.impl;
+package com.xwc.open.easybatis.core.interfaces.snippet;
 
 import com.xwc.open.easybatis.core.enums.ConditionType;
-import com.xwc.open.easybatis.core.enums.ParamType;
 import com.xwc.open.easybatis.core.interfaces.MyBatisOrSqlTemplate;
-import com.xwc.open.easybatis.core.interfaces.UpdateColumnSnippet;
+import com.xwc.open.easybatis.core.interfaces.snippet.UpdateColumnSnippet;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
@@ -18,20 +17,18 @@ import java.util.stream.Collectors;
  */
 public class DefaultUpdateColumnSnippet implements UpdateColumnSnippet, MyBatisOrSqlTemplate {
     public String apply(MethodMeta methodMeta) {
-
         List<ParamMeta> setParamList = methodMeta.getParamMetaList().stream().filter(paramMeta1 -> paramMeta1.getCondition() == ConditionType.SET_PARAM).collect(Collectors.toList());
         if (setParamList.isEmpty()) {
-            ParamMeta entityMate = methodMeta.getParamMetaList().get(0);
             if (methodMeta.getParamMetaList().size() == 1) {
                 return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, null)).collect(Collectors.joining(", "));
             } else {
+                ParamMeta entityMate = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity).collect(Collectors.toList()).get(0);
                 return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, entityMate.getParamName())).collect(Collectors.joining(", "));
             }
         }
         return null;
 
     }
-
     public String setParam(ColumnMeta columnMeta, String prefix) {
         return columnMeta.getColumn() + " = " + this.mybatisParam(columnMeta.getField(), prefix);
     }

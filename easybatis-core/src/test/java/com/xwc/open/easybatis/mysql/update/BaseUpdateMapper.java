@@ -2,6 +2,7 @@ package com.xwc.open.easybatis.mysql.update;
 
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
+import com.xwc.open.easybatis.core.anno.condition.filter.SetParam;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 import com.xwc.open.easybatis.model.BaseEntity;
 import com.xwc.open.easybatis.mysql.insert.BaseInsertEntity;
@@ -20,5 +21,8 @@ public interface BaseUpdateMapper extends BaseMapper<BaseUpdateEntity, String> {
 
     @UpdateSql
     Object updateEntityMixture(String tableName, BaseUpdateEntity entity);
+
+    @UpdateSql
+    Object updateParam(@SetParam String orgCode, @SetParam String orgName, String id);
 
 }

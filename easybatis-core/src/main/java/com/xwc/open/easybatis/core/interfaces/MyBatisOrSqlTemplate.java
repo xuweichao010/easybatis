@@ -30,7 +30,7 @@ public interface MyBatisOrSqlTemplate {
 
     default String mybatisParam(String fieldName, String prefix) {
         if (prefix != null) {
-            return "#{ " + prefix + "." + fieldName + "}";
+            return "#{" + prefix + "." + fieldName + "}";
         }
         return "#{" + fieldName + "}";
     }
