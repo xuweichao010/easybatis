@@ -22,20 +22,16 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
     protected List<QueryCondition> conditionList = new ArrayList<>();
 
     public String apply(MethodMeta methodMeta) {
-
-        return null;
-    }
-
-    public String queryCondition(MethodMeta metadata) {
-        List<ParamMeta> paramMetaList = new ArrayList<>();
-        if (metadata.hashAnnotationType(PrimaryKey.class)) {
-            IdMeta id = metadata.getTableMetadata().getId();
+        List<ParamMeta> paramMetaList = methodMeta.getParamMetaList();
+        // 处理参数为主键类型的情况
+        if (paramMetaList.size() == 1 && paramMetaList.get(0).isPrimaryKey()) {
+            IdMeta id = methodMeta.getTableMetadata().getId();
             paramMetaList.add(ParamMeta.builderEqual(id.getColumn(), id.getField()));
         } else {
-            paramMetaList.addAll(metadata.getParamMetaList());
+            paramMetaList.addAll(methodMeta.getParamMetaList());
         }
-        if (metadata.getTableMetadata().getLogic() != null) {
-            LoglicColumn logic = metadata.getTableMetadata().getLogic();
+        if (methodMeta.getTableMetadata().getLogic() != null) {
+            LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
             paramMetaList.add(ParamMeta.builderEqual(logic.getColumn(), logic.getField()));
         }
         // 处理方法上的对象参数条件
@@ -46,8 +42,8 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
             return queryCondition.substring("AND".length());
         }
         return queryCondition;
-
     }
+
 
     private String mapCondition(ParamMeta metadata) {
         for (QueryCondition queryCondition : conditionList) {
