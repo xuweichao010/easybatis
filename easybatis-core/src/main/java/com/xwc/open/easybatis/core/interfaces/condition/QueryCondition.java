@@ -11,7 +11,7 @@ import com.xwc.open.easybatis.core.support.ParamMeta;
  */
 public interface QueryCondition extends MyBatisOrSqlTemplate {
 
-    String apply(ParamMeta metaData);
+    String apply(ParamMeta metaData,boolean multi);
 
 
     default String doApply(String conditionParam, String conditionQuery, ParamType type) {

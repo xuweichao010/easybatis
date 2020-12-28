@@ -31,30 +31,34 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
         List<ParamMeta> paramMetaList = methodMeta.getParamMetaList();
         // 处理参数为主键类型的情况
         List<ParamMeta> list = new ArrayList<>();
+        boolean multi = false;
         if (paramMetaList.size() == 1) {
             if (paramMetaList.get(0).isPrimaryKey()) {
                 IdMeta id = methodMeta.getTableMetadata().getId();
                 list.add(ParamMeta.builderEqual(id.getColumn(), id.getField()));
-            } else {
+            } else if (paramMetaList.get(0).isMultiCondition()) {
+                list.addAll(methodMeta.getParamMetaList().get(0).getChildList());
+            }else {
                 list.addAll(methodMeta.getParamMetaList());
             }
         } else if (paramMetaList.size() > 1) {
             paramMetaList.forEach(paramMeta -> {
-                if (paramMeta.getChildList() == null) {
-                    list.add(paramMeta);
-                } else {
+                if (paramMeta.isMultiCondition()) {
                     list.addAll(paramMeta.getChildList());
-
+                } else {
+                    list.add(paramMeta);
                 }
             });
+            multi = true;
         }
         if (methodMeta.getTableMetadata().getLogic() != null) {
             LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
             list.add(ParamMeta.builderEqual(logic.getColumn(), logic.getField()));
         }
         // 处理方法上的对象参数条件
+        boolean finalMulti = multi;
         String queryCondition = list.stream()
-                .map(this::mapCondition)
+                .map(condition -> mapCondition(condition, finalMulti))
                 .filter(StringUtils::hasText).collect(Collectors.joining(" ")).trim();
         if (queryCondition.startsWith("AND")) {
             return queryCondition.substring("AND".length());
@@ -63,9 +67,9 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
     }
 
 
-    private String mapCondition(ParamMeta metadata) {
+    private String mapCondition(ParamMeta metadata, boolean multi) {
         for (QueryCondition queryCondition : conditionList) {
-            String condition = queryCondition.apply(metadata);
+            String condition = queryCondition.apply(metadata,multi);
             if (StringUtils.hasText(condition)) {
                 return condition;
             }

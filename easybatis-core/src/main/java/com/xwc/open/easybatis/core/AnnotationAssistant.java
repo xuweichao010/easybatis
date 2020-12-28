@@ -127,7 +127,7 @@ public class AnnotationAssistant {
         meta.setDynamic(selectSql.dynamic());
         meta.setTableMetadata(tableMetadata);
         meta.setMethodName(method.getName());
-        meta.setSqlCommand(SqlCommandType.INSERT);
+        meta.setSqlCommand(SqlCommandType.SELECT);
         meta.setMethod(method);
         meta.setParamMetaList(parseMethodParam(meta));
         return meta;
@@ -138,7 +138,7 @@ public class AnnotationAssistant {
         List<String> paramNames = ParamNameUtil.getParamNames(methodMeta.getMethod());
         List<ParamMeta> list = new ArrayList<>();
         for (int i = 0; i < paramNames.size(); i++) {
-            ParamMeta paramMeta = parseParameter(parameters[0], paramNames.get(i), methodMeta.getSqlCommand()
+            ParamMeta paramMeta = parseParameter(parameters[i], paramNames.get(i), methodMeta.getSqlCommand()
                     , methodMeta.getTableMetadata().getSource(), methodMeta.isDynamic());
             list.add(paramMeta);
         }
@@ -146,7 +146,6 @@ public class AnnotationAssistant {
     }
 
     private ParamMeta parseParameter(Parameter parameter, String paramName, SqlCommandType command, Class<?> entityClass, boolean dynamic) {
-
         //处理接口泛型 泛型的两种情况是 主键或者是实体
         if (parameter.getParameterizedType() instanceof TypeVariable) {
             ParamMeta paramMeta = ParamMeta.builderEqual(underscoreName(paramName), paramName);
@@ -172,7 +171,7 @@ public class AnnotationAssistant {
         } else {
             if (isEntityParam(parameter.getParameterizedType(), entityClass)) {
                 return ParamMeta.builderInsert(paramName, true, false);
-            } else if (Reflection.isCustomObject((Class<?>) parameter.getParameterizedType()) && command == SqlCommandType.SELECT) {
+            } else if (Reflection.isCustomObject(parameter.getType()) && command == SqlCommandType.SELECT) {
                 return parseCustomParameter((Class<?>) parameter.getParameterizedType(), true, paramName);
             } else {
                 return parseAnnotation(parameter.getAnnotations(), paramName, dynamic);
@@ -223,7 +222,7 @@ public class AnnotationAssistant {
         } else if (queryAnnotation == null) {
             param.setCondition(ConditionType.EQUAL);
         } else {
-            throw new EasyBatisException("未实现的逻辑");
+            return param;
         }
         return param;
     }

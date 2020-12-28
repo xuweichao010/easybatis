@@ -8,30 +8,31 @@ package com.xwc.open.easybatis.core.interfaces;
 public interface MyBatisOrSqlTemplate {
 
     default String dynamicConditionIf(String paramName, String conditionQuery) {
-        return "<if test='" + paramName + "'> " + " AND " + conditionQuery + " </if>";
+        return "<if test='" + paramName + "'> " + " AND " + conditionQuery + " </if>" ;
     }
 
     default String dynamicSetIf(String setParam, String setValue) {
-        return "<if test='" + setParam + "'> " + setValue + " </if>";
+        return "<if test='" + setParam + "'> " + setValue + " </if>" ;
     }
 
     default String dynamicConditionIsNull(String paramName, String conditionQuery) {
-        return "AND (" + mybatisParam(paramName, null) + " IS NULL OR " + conditionQuery + ")";
+        return "AND (" + mybatisParam(paramName, null) + " IS NULL OR " + conditionQuery + ")" ;
     }
 
     default String insertBatchForeach(String fieldList, String paramName) {
         if (paramName == null) {
-            paramName = "list";
+            paramName = "list" ;
         }
         return " <foreach item= 'item'  collection='" + paramName + "' separator=', '> "
                 + fieldList
-                + " </foreach>";
+                + " </foreach>" ;
     }
 
     default String mybatisParam(String fieldName, String prefix) {
-        if (prefix != null) {
-            return "#{" + prefix + "." + fieldName + "}";
-        }
-        return "#{" + fieldName + "}";
+        return "#{" + paramName(fieldName, prefix) + "}" ;
+    }
+
+    default String paramName(String fieldName, String prefix) {
+        return prefix != null ? prefix + "." + fieldName : fieldName;
     }
 }

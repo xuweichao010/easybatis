@@ -66,7 +66,6 @@ public class ParamMeta {
         tar.type = ParamType.FILED_TYPE;
         tar.alias = alias;
         tar.dynamic = dynamic;
-        tar.paramType();
         return tar;
     }
 
@@ -102,7 +101,7 @@ public class ParamMeta {
     }
 
     public ParamType paramType() {
-        if (this.childList != null && !this.childList.isEmpty()) {
+        if (this.hasParent()) {
             return ParamType.FILED_TYPE_DYNAMIC;
         } else if (this.dynamic) {
             return ParamType.PARAM_TYPE_DYNAMIC;
@@ -111,4 +110,11 @@ public class ParamMeta {
         }
     }
 
+    public boolean isMultiCondition() {
+        return this.childList != null && !this.childList.isEmpty();
+    }
+
+    public boolean hasParent() {
+        return this.parentParamName != null;
+    }
 }

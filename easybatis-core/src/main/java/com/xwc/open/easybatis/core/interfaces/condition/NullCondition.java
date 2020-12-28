@@ -22,10 +22,10 @@ public class NullCondition implements QueryCondition {
     }
 
     @Override
-    public String apply(ParamMeta metaData) {
+    public String apply(ParamMeta metaData, boolean multi) {
         if (!conditionTypeSet.contains(metaData.getCondition())) return null;
         String condition = "`" + metaData.getColumnName() + "` " +
-                metaData.getCondition().expression() + " ";
+                metaData.getCondition().expression() + " " ;
         if (StringUtils.hasText(metaData.getAlias())) {
             condition = metaData.getAlias() + "." + condition;
         }
