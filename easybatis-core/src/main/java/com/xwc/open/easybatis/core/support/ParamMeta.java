@@ -1,10 +1,8 @@
 package com.xwc.open.easybatis.core.support;
 
-import com.xwc.open.easybatis.core.anno.condition.filter.SetParam;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.ParamType;
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -116,5 +114,9 @@ public class ParamMeta {
 
     public boolean hasParent() {
         return this.parentParamName != null;
+    }
+
+    public boolean isSetParam() {
+        return this.condition == ConditionType.SET_PARAM;
     }
 }

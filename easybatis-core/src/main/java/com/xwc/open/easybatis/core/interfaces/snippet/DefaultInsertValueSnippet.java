@@ -1,7 +1,6 @@
 package com.xwc.open.easybatis.core.interfaces.snippet;
 
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
-import com.xwc.open.easybatis.core.interfaces.snippet.InsertValueSnippet;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
@@ -18,27 +17,27 @@ public class DefaultInsertValueSnippet implements InsertValueSnippet {
 
     @Override
     public String apply(MethodMeta methodMeta) {
-        StringBuilder fieldSql = new StringBuilder();
+        List<ParamMeta> paramList = methodMeta.getParamMetaList();
         List<ParamMeta> entityList = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity)
                 .collect(Collectors.toList());
+        ParamMeta entityParam = entityList.get(0);
         if (entityList.size() != 1) {
             throw new EasyBatisException("有 " + entityList.size() + " 个实体对象，导致无法创建SQL");
         }
-        ParamMeta entityParam = entityList.get(0);
-        if (methodMeta.getParamMetaList().size() == 1) {
+        // 处理一个参数
+        if (paramList.size() == 1) {
             String valueSnippet = this.insertValueSnippet(methodMeta.insertColumnList(), null);
             if (entityParam.isList()) {
                 return this.insertBatchForeach(valueSnippet, null);
             }
             return valueSnippet;
-        } else if (methodMeta.getParamMetaList().size() > 1) {
+        } else { // 处理多个参数
             if (entityParam.isList()) {
                 return this.insertBatchForeach(this.insertValueSnippet(methodMeta.insertColumnList(), null), entityParam.getParamName());
             } else {
                 return this.insertValueSnippet(methodMeta.insertColumnList(), entityParam.getParamName());
             }
         }
-        return fieldSql.toString();
     }
 
     private String fieldColumn(String field, String prefix) {
@@ -51,6 +50,6 @@ public class DefaultInsertValueSnippet implements InsertValueSnippet {
     }
 
     public String insertValueSnippet(List<ColumnMeta> list, String prefix) {
-        return "(" + list.stream().map(column -> this.fieldColumn(column.getField(), prefix)).collect(Collectors.joining(", ")) + ")";
+        return "(" + list.stream().map(column -> this.fieldColumn(column.getField(), prefix)).collect(Collectors.joining(", ")) + ")" ;
     }
 }
