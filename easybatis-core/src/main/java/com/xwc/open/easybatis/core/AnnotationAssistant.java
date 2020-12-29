@@ -116,10 +116,20 @@ public class AnnotationAssistant {
         } else if (operationAnnotationType instanceof UpdateSql) {
             return parseUpdateMethodMate(method, tableMetadata);
         } else if (operationAnnotationType instanceof DeleteSql) {
-
+            return parseDeleteMethodMate(method, tableMetadata);
         }
 
         return null;
+    }
+
+    private MethodMeta parseDeleteMethodMate(Method method, TableMeta tableMetadata) {
+        MethodMeta meta = new MethodMeta();
+        meta.setTableMetadata(tableMetadata);
+        meta.setMethodName(method.getName());
+        meta.setSqlCommand(SqlCommandType.DELETE);
+        meta.setMethod(method);
+        meta.setParamMetaList(parseMethodParam(meta));
+        return meta;
     }
 
     public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata) {

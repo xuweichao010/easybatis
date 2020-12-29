@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.base;
 
+import com.xwc.open.easybatis.base.delete.BaseDeleteMapper;
 import com.xwc.open.easybatis.base.update.BaseUpdateMapper;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
@@ -45,104 +46,41 @@ public class BaseDeleteTest {
     }
 
     @Test
-    public void update() {
-        Method method = chooseMethod(BaseUpdateMapper.class, "update");
+    public void delete() {
+        Method method = chooseMethod(BaseDeleteMapper.class, "delete");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
-                " UPDATE t_mysql_sql_source" +
-                " SET id = #{id}, orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
-                " WHERE" +
-                " id = #{id}" +
-                "</script>";
-        Assert.assertEquals(select, targetSql);
-    }
-
-    @Test
-    public void updateEntity() {
-        Method method = chooseMethod(BaseUpdateMapper.class, "updateEntity");
-        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
-                " UPDATE t_mysql_sql_source" +
-                " SET id = #{id}, orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
-                " WHERE" +
-                " id = #{id}" +
-                "</script>";
-        Assert.assertEquals(select, targetSql);
-    }
-
-    @Test
-    public void updateEntityMixture() {
-        Method method = chooseMethod(BaseUpdateMapper.class, "updateEntityMixture");
-        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
-                " UPDATE t_mysql_sql_source" +
-                " SET id = #{entity.id}, orgCode = #{entity.orgCode}, orgName = #{entity.orgName}, name = #{entity.name}" +
-                " WHERE id = #{entity.id}" +
-                "</script>";
-        Assert.assertEquals(select, targetSql);
-    }
-
-    @Test
-    public void updateParam() {
-        Method method = chooseMethod(BaseUpdateMapper.class, "updateParam");
-        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
-                " UPDATE t_mysql_sql_source" +
-                " SET orgCode = #{orgCode}, orgName = #{orgName}" +
-                "</script>";
-        Assert.assertEquals(sql, targetSql);
-    }
-
-    @Test
-    public void updateParamCondition() {
-        Method method = chooseMethod(BaseUpdateMapper.class, "updateParamCondition");
-        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
-                " UPDATE t_mysql_sql_source" +
-                " SET orgCode = #{orgCode}, orgName = #{orgName}" +
+        String sql = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
+        String sqlTarget = "<script>" +
+                " DELETE FROM t_mysql_sql_source" +
                 " WHERE `id` = #{id}" +
-                "</script>";
-        Assert.assertEquals(sql, targetSql);
+                "<script>";
+        Assert.assertEquals(sql, sqlTarget);
     }
 
     @Test
-    public void updateEntityDynamic() {
-        Method method = chooseMethod(BaseUpdateMapper.class, "updateEntityDynamic");
+    public void deleteParam() {
+        Method method = chooseMethod(BaseDeleteMapper.class, "deleteParam");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
-                " UPDATE t_mysql_sql_source" +
-                " <set>" +
-                " <if test='id != null'> id = #{id},</if>" +
-                " <if test='orgCode != null'> orgCode = #{orgCode},</if>" +
-                " <if test='orgName != null'> orgName = #{orgName},</if>" +
-                " <if test='name != null'> name = #{name},</if>" +
-                " </set>" +
-                " WHERE id = #{id}</script>";
-        Assert.assertEquals(sql, targetSql);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
+        String sqlTarget = "<script>" +
+                " DELETE FROM t_mysql_sql_source" +
+                " WHERE `orgName` = #{orgName}" +
+                "<script>";
+        Assert.assertEquals(sql, sqlTarget);
     }
 
     @Test
-    public void updateEntityDynamicMixture() {
-        Method method = chooseMethod(BaseUpdateMapper.class, "updateEntityDynamicMixture");
+    public void deleteParamDynamic() {
+        Method method = chooseMethod(BaseDeleteMapper.class, "deleteParamDynamic");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
-                " UPDATE t_mysql_sql_source" +
-                " <set>" +
-                " <if test='id != null'> id = #{entity.id},</if>" +
-                " <if test='orgCode != null'> orgCode = #{entity.orgCode},</if>" +
-                " <if test='orgName != null'> orgName = #{entity.orgName},</if>" +
-                " <if test='name != null'> name = #{entity.name},</if>" +
-                " </set>" +
-                " WHERE id = #{entity.id}</script>";
-       Assert.assertEquals(sql, targetSql);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
+        String sqlTarget = "<script>" +
+                " DELETE FROM t_mysql_sql_source" +
+                " WHERE  (#{orgName} IS NULL OR `orgName` = #{orgName})" +
+                "<script>";
+        Assert.assertEquals(sql, sqlTarget);
     }
+
 
     private Method chooseMethod(Class<?> classType, String methodName) {
         Method[] declaredMethod = classType.getMethods();

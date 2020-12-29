@@ -2,9 +2,6 @@ package com.xwc.open.easybatis.core.mysql;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.interfaces.AbstractSqlSourceGenerator;
-import com.xwc.open.easybatis.core.interfaces.snippet.DefaultInsertValueSnippet;
-import com.xwc.open.easybatis.core.interfaces.snippet.DefaultUpdateColumnSnippet;
-import com.xwc.open.easybatis.core.interfaces.snippet.DefaultUpdateConditionSnippet;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 
 /**
@@ -15,9 +12,7 @@ import com.xwc.open.easybatis.core.support.MethodMeta;
 public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
 
     public MysqlSqlSourceGenerator() {
-        this.insertColumnValue = new DefaultInsertValueSnippet();
-        this.updateColumnSnippet = new DefaultUpdateColumnSnippet();
-        this.updateConditionSnippet = new DefaultUpdateConditionSnippet(this.selectConditionSnippet);
+
     }
 
     @Override
@@ -67,6 +62,12 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
 
     @Override
     public String delete(MethodMeta methodMetaData) {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("<script> DELETE FROM ").append(methodMetaData.getTableMetadata().getTableName());
+        if (methodMetaData.hashCondition()) {
+            sb.append(" WHERE ").append(this.deleteConditionSnippet.apply(methodMetaData));
+        }
+        sb.append("<script>");
+        return sb.toString();
     }
 }
