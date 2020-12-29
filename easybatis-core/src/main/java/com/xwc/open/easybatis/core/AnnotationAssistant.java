@@ -18,8 +18,8 @@ import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
-import com.xwc.open.easybatis.core.support.table.LoglicColumn;
 import com.xwc.open.easybatis.core.support.table.IdMeta;
+import com.xwc.open.easybatis.core.support.table.LoglicColumn;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.ParamNameUtil;
 
@@ -244,44 +244,13 @@ public class AnnotationAssistant {
         meta.setMethodName(method.getName());
         meta.setSqlCommand(SqlCommandType.UPDATE);
         meta.setMethod(method);
-        meta.setParamMetaList(parseUpdateMethodParam(meta));
+        meta.setParamMetaList(parseMethodParam(meta));
         List<ParamMeta> list = meta.getParamMetaList().stream().filter(ParamMeta::isList).collect(Collectors.toList());
         if (!list.isEmpty()) {
             throw new EasyBatisException("无法处理批量跟新数据");
         }
         return meta;
     }
-
-    public List<ParamMeta> parseUpdateMethodParam(MethodMeta meta) {
-        Type[] genericParameterTypes = meta.getMethod().getGenericParameterTypes();
-        List<String> paramNames = ParamNameUtil.getParamNames(meta.getMethod());
-        List<ParamMeta> list = new ArrayList<>();
-        for (int i = 0; i < genericParameterTypes.length; i++) {
-            ParamMeta paramMeta = parseUpdateParam(genericParameterTypes[i], paramNames.get(i), meta.getTableMetadata().getSource());
-            list.add(paramMeta);
-        }
-        return list;
-    }
-
-    private ParamMeta parseUpdateParam(Type type, String paramName, Class<?> entityClass) {
-        //处理接口泛型
-        if (type instanceof TypeVariable) {
-            if (isEntityParam(type, entityClass)) {
-                return ParamMeta.builderUpdate(paramName, true, false);
-            } else {
-                throw new EasyBatisException("泛型类型不匹配");
-            }
-        } else if (type instanceof ParameterizedType) {
-            return ParamMeta.builderUpdate(paramName, false, false);
-        } else {
-            if (isEntityParam(type, entityClass)) {
-                return ParamMeta.builderUpdate(paramName, true, false);
-            } else {
-                return ParamMeta.builderUpdate(paramName, false, false);
-            }
-        }
-    }
-
 
     private boolean isEntityParam(Type entityType, Class<?> entityClass) {
         return entityType.getTypeName().equals("E") || entityType.equals(entityClass);

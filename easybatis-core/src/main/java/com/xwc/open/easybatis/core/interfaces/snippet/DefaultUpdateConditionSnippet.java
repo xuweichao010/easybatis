@@ -2,7 +2,6 @@ package com.xwc.open.easybatis.core.interfaces.snippet;
 
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.interfaces.MyBatisOrSqlTemplate;
-import com.xwc.open.easybatis.core.interfaces.snippet.UpdateConditionSnippet;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.table.IdMeta;
@@ -16,9 +15,16 @@ import java.util.stream.Collectors;
  * 描述：
  */
 public class DefaultUpdateConditionSnippet implements UpdateConditionSnippet, MyBatisOrSqlTemplate {
+    private SelectConditionSnippet selectConditionSnippet;
+
+    public DefaultUpdateConditionSnippet(SelectConditionSnippet selectConditionSnippet) {
+        this.selectConditionSnippet = selectConditionSnippet;
+    }
+
     @Override
     public String apply(MethodMeta methodMeta) {
-        List<ParamMeta> setParamList = methodMeta.getParamMetaList().stream()
+        List<ParamMeta> paramList = methodMeta.getParamMetaList();
+        List<ParamMeta> setParamList = paramList.stream()
                 .filter(paramMeta1 -> paramMeta1.getCondition() == ConditionType.SET_PARAM).collect(Collectors.toList());
         if (setParamList.isEmpty()) {
             ParamMeta paramMeta = null;
@@ -28,9 +34,7 @@ public class DefaultUpdateConditionSnippet implements UpdateConditionSnippet, My
             IdMeta id = methodMeta.getTableMetadata().getId();
             return id.getColumn() + " = " + this.mybatisParam(id.getField(), paramMeta == null ? null : paramMeta.getParamName());
         } else {
-
+            return selectConditionSnippet.apply(methodMeta);
         }
-        return null;
-
     }
 }

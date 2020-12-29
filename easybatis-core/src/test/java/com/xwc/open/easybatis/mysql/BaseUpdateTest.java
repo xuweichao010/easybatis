@@ -2,14 +2,9 @@ package com.xwc.open.easybatis.mysql;
 
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
-import com.xwc.open.easybatis.core.anno.SelectSql;
-import com.xwc.open.easybatis.core.anno.UpdateSql;
-import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
-import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
-import com.xwc.open.easybatis.mysql.select.BaseSelectMapper;
 import com.xwc.open.easybatis.mysql.update.BaseUpdateMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
@@ -40,7 +35,7 @@ public class BaseUpdateTest {
 
     @Before
     public void before() throws IOException {
-        String resource = "mybatis.xml" ;
+        String resource = "mybatis.xml";
         InputStream inputStream = Resources.getResourceAsStream(resource);
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.configuration = this.sqlSessionFactory.getConfiguration();
@@ -59,7 +54,7 @@ public class BaseUpdateTest {
                 " SET id = #{id}, orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
                 " WHERE" +
                 " id = #{id}" +
-                "</script>" ;
+                "</script>";
         Assert.assertEquals(select, targetSql);
     }
 
@@ -73,7 +68,7 @@ public class BaseUpdateTest {
                 " SET id = #{id}, orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
                 " WHERE" +
                 " id = #{id}" +
-                "</script>" ;
+                "</script>";
         Assert.assertEquals(select, targetSql);
     }
 
@@ -86,8 +81,33 @@ public class BaseUpdateTest {
                 " UPDATE t_mysql_sql_source FROM t_mysql_sql_source" +
                 " SET id = #{entity.id}, orgCode = #{entity.orgCode}, orgName = #{entity.orgName}, name = #{entity.name}" +
                 " WHERE id = #{entity.id}" +
-                "</script>" ;
+                "</script>";
         Assert.assertEquals(select, targetSql);
+    }
+
+    @Test
+    public void updateParamCondition() {
+        Method method = chooseMethod(BaseUpdateMapper.class, "updateParamCondition");
+        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String targetSql = "<script>" +
+                " UPDATE t_mysql_sql_source FROM t_mysql_sql_source" +
+                " SET orgCode = #{orgCode}, orgName = #{orgName}" +
+                " WHERE `id` = #{id}" +
+                "</script>";
+        Assert.assertEquals(sql, targetSql);
+    }
+
+    @Test
+    public void updateParam() {
+        Method method = chooseMethod(BaseUpdateMapper.class, "updateParam");
+        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String targetSql = "<script>" +
+                " UPDATE t_mysql_sql_source FROM t_mysql_sql_source" +
+                " SET orgCode = #{orgCode}, orgName = #{orgName}" +
+                "</script>";
+        Assert.assertEquals(sql, targetSql);
     }
 
     private Method chooseMethod(Class<?> classType, String methodName) {

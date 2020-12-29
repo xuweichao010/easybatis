@@ -7,7 +7,9 @@ import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -31,6 +33,11 @@ public class MethodMeta {
      * 参数有的定义信息
      */
     List<ParamMeta> paramMetaList;
+
+    public boolean hashCondition() {
+        return this.paramMetaList.stream().anyMatch(ParamMeta::isCondition);
+    }
+
 
     public <T extends Annotation> T chooseAnnotationType(Class<T> annotationClass) {
         return AnnotationUtils.findAnnotation(this.method, annotationClass);

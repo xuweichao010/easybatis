@@ -1,7 +1,5 @@
 package com.xwc.open.easybatis.core.interfaces.snippet;
 
-import com.xwc.open.easybatis.core.anno.SelectSql;
-import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
 import com.xwc.open.easybatis.core.interfaces.condition.QueryCondition;
@@ -38,7 +36,7 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
                 list.add(ParamMeta.builderEqual(id.getColumn(), id.getField()));
             } else if (paramMetaList.get(0).isMultiCondition()) {
                 list.addAll(methodMeta.getParamMetaList().get(0).getChildList());
-            }else {
+            } else {
                 list.addAll(methodMeta.getParamMetaList());
             }
         } else if (paramMetaList.size() > 1) {
@@ -56,9 +54,12 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
             list.add(ParamMeta.builderEqual(logic.getColumn(), logic.getField()));
         }
         // 处理方法上的对象参数条件
-        boolean finalMulti = multi;
+        return listCondition(list, multi);
+    }
+
+    public String listCondition(List<ParamMeta> list, boolean multi) {
         String queryCondition = list.stream()
-                .map(condition -> mapCondition(condition, finalMulti))
+                .map(condition -> mapCondition(condition, multi))
                 .filter(StringUtils::hasText).collect(Collectors.joining(" ")).trim();
         if (queryCondition.startsWith("AND")) {
             return queryCondition.substring("AND".length());
@@ -69,7 +70,7 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
 
     private String mapCondition(ParamMeta metadata, boolean multi) {
         for (QueryCondition queryCondition : conditionList) {
-            String condition = queryCondition.apply(metadata,multi);
+            String condition = queryCondition.apply(metadata, multi);
             if (StringUtils.hasText(condition)) {
                 return condition;
             }

@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
  */
 public class DefaultUpdateColumnSnippet implements UpdateColumnSnippet, MyBatisOrSqlTemplate {
     public String apply(MethodMeta methodMeta) {
-        List<ParamMeta> setParamList = methodMeta.getParamMetaList().stream().filter(paramMeta1 -> paramMeta1.getCondition() == ConditionType.SET_PARAM).collect(Collectors.toList());
+        List<ParamMeta> paramList = methodMeta.getParamMetaList();
+        List<ParamMeta> setParamList = paramList.stream().filter(paramMeta1 -> paramMeta1.getCondition() == ConditionType.SET_PARAM).collect(Collectors.toList());
         if (setParamList.isEmpty()) {
             if (methodMeta.getParamMetaList().size() == 1) {
                 return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, null)).collect(Collectors.joining(", "));
@@ -25,17 +26,15 @@ public class DefaultUpdateColumnSnippet implements UpdateColumnSnippet, MyBatisO
                 return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, entityMate.getParamName())).collect(Collectors.joining(", "));
             }
         } else {
-            if (methodMeta.getParamMetaList().size() == 1) {
-                return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, null)).collect(Collectors.joining(", "));
-            } else {
-                ParamMeta entityMate = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity).collect(Collectors.toList()).get(0);
-                return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, entityMate.getParamName())).collect(Collectors.joining(", "));
-            }
+            return setParamList.stream().map(param -> this.setParam(param.getColumnName(), param.getColumnName())).collect(Collectors.joining(", "));
         }
-
     }
 
     public String setParam(ColumnMeta columnMeta, String prefix) {
         return columnMeta.getColumn() + " = " + this.mybatisParam(columnMeta.getField(), prefix);
+    }
+
+    public String setParam(String column, String field) {
+        return column + " = " + this.mybatisParam(field, null);
     }
 }
