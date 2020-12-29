@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.mysql.update;
+package com.xwc.open.easybatis.base.update;
 
 import com.xwc.open.easybatis.core.anno.table.Id;
 import com.xwc.open.easybatis.core.anno.table.Table;

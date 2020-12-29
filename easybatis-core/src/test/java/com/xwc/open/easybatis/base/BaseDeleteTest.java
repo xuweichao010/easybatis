@@ -1,11 +1,11 @@
-package com.xwc.open.easybatis.mysql;
+package com.xwc.open.easybatis.base;
 
+import com.xwc.open.easybatis.base.update.BaseUpdateMapper;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
-import com.xwc.open.easybatis.mysql.update.BaseUpdateMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * 时间：2020/12/18
  * 描述：mysql单元测试
  */
-public class BaseUpdateTest {
+public class BaseDeleteTest {
 
 
     SqlSessionFactory sqlSessionFactory;

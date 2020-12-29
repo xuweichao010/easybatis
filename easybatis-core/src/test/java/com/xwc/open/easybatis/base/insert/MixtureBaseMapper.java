@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.mysql.insert;
+package com.xwc.open.easybatis.base.insert;
 
 import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
@@ -6,7 +6,6 @@ import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
-import com.xwc.open.easybatis.core.interfaces.EasyMapper;
 
 import java.util.Collection;
 import java.util.List;

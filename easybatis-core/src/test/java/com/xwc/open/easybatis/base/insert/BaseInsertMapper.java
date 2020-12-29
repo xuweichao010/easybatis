@@ -1,7 +1,6 @@
-package com.xwc.open.easybatis.mysql.insert;
+package com.xwc.open.easybatis.base.insert;
 
 import com.xwc.open.easybatis.core.anno.InsertSql;
-import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 
 import java.util.List;
 

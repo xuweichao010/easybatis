@@ -1,10 +1,8 @@
-package com.xwc.open.easybatis.mysql.select;
+package com.xwc.open.easybatis.base.select;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
-import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
-import com.xwc.open.easybatis.core.interfaces.EasyMapper;
 
 /**
  * 作者：徐卫超 cc

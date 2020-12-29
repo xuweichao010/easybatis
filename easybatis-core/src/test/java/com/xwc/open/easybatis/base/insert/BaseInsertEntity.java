@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.mysql.insert;
+package com.xwc.open.easybatis.base.insert;
 
 import com.xwc.open.easybatis.core.anno.table.Id;
 import com.xwc.open.easybatis.core.anno.table.Table;

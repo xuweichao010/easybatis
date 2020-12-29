@@ -1,11 +1,11 @@
-package com.xwc.open.easybatis.mysql;
+package com.xwc.open.easybatis.base;
 
+import com.xwc.open.easybatis.base.select.BaseSelectMapper;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
-import com.xwc.open.easybatis.mysql.select.BaseSelectMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
