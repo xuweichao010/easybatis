@@ -22,6 +22,8 @@ public interface BaseUpdateMapper extends BaseMapper<BaseUpdateEntity, String> {
     @UpdateSql
     Object updateParam(@SetParam String orgCode, @SetParam String orgName);
 
+    @UpdateSql(dynamic = true)
+    Object updateEntityDynamic(BaseUpdateEntity entity);
 
 
 }

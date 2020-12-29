@@ -86,6 +86,18 @@ public class BaseUpdateTest {
     }
 
     @Test
+    public void updateParam() {
+        Method method = chooseMethod(BaseUpdateMapper.class, "updateParam");
+        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String targetSql = "<script>" +
+                " UPDATE t_mysql_sql_source FROM t_mysql_sql_source" +
+                " SET orgCode = #{orgCode}, orgName = #{orgName}" +
+                "</script>";
+        Assert.assertEquals(sql, targetSql);
+    }
+
+    @Test
     public void updateParamCondition() {
         Method method = chooseMethod(BaseUpdateMapper.class, "updateParamCondition");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
@@ -98,17 +110,7 @@ public class BaseUpdateTest {
         Assert.assertEquals(sql, targetSql);
     }
 
-    @Test
-    public void updateParam() {
-        Method method = chooseMethod(BaseUpdateMapper.class, "updateParam");
-        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
-                " UPDATE t_mysql_sql_source FROM t_mysql_sql_source" +
-                " SET orgCode = #{orgCode}, orgName = #{orgName}" +
-                "</script>";
-        Assert.assertEquals(sql, targetSql);
-    }
+
 
     private Method chooseMethod(Class<?> classType, String methodName) {
         Method[] declaredMethod = classType.getMethods();

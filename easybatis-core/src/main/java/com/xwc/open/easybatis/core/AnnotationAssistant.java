@@ -110,7 +110,7 @@ public class AnnotationAssistant {
         Annotation operationAnnotationType = chooseOperationAnnotationType(method);
         if (operationAnnotationType == null) return null;
         if (operationAnnotationType instanceof SelectSql) {
-            return parseSelectMethodMate(method, tableMetadata, (SelectSql) operationAnnotationType);
+            return parseSelectMethodMate(method, tableMetadata);
         } else if (operationAnnotationType instanceof InsertSql) {
             return parseInsertMethodMate(method, tableMetadata);
         } else if (operationAnnotationType instanceof UpdateSql) {
@@ -122,9 +122,9 @@ public class AnnotationAssistant {
         return null;
     }
 
-    public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata, SelectSql selectSql) {
+    public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata) {
         MethodMeta meta = new MethodMeta();
-        meta.setDynamic(selectSql.dynamic());
+        meta.setDynamic(AnnotationUtils.findAnnotation(method, SelectSql.class).dynamic());
         meta.setTableMetadata(tableMetadata);
         meta.setMethodName(method.getName());
         meta.setSqlCommand(SqlCommandType.SELECT);
@@ -239,7 +239,7 @@ public class AnnotationAssistant {
 
     private MethodMeta parseUpdateMethodMate(Method method, TableMeta tableMetadata) {
         MethodMeta meta = new MethodMeta();
-        meta.setDynamic(false);
+        meta.setDynamic(AnnotationUtils.findAnnotation(method, UpdateSql.class).dynamic());
         meta.setTableMetadata(tableMetadata);
         meta.setMethodName(method.getName());
         meta.setSqlCommand(SqlCommandType.UPDATE);

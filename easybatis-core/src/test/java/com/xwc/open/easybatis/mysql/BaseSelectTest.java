@@ -2,8 +2,6 @@ package com.xwc.open.easybatis.mysql;
 
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
-import com.xwc.open.easybatis.core.anno.SelectSql;
-import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
@@ -51,8 +49,8 @@ public class BaseSelectTest {
     @Test
     public void selectKey() {
         Method method = chooseMethod(BaseSelectMapper.class, "selectKey");
-        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
-                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source WHERE `id` = #{id}</script>", select);
     }
@@ -60,8 +58,8 @@ public class BaseSelectTest {
     @Test
     public void findAll1() {
         Method method = chooseMethod(BaseSelectMapper.class, "findAll1");
-        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
-                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         Assert.assertEquals("<script> SELECT id FROM t_mysql_sql_source</script>", select);
     }
@@ -69,8 +67,8 @@ public class BaseSelectTest {
     @Test
     public void findAll() {
         Method method = chooseMethod(BaseSelectMapper.class, "findAll");
-        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
-                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source</script>", select);
     }
@@ -78,8 +76,8 @@ public class BaseSelectTest {
     @Test
     public void methodGlobalDynamic() {
         Method method = chooseMethod(BaseSelectMapper.class, "methodGlobalDynamic");
-        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
-                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
@@ -91,8 +89,8 @@ public class BaseSelectTest {
     @Test
     public void methodParamDynamic() {
         Method method = chooseMethod(BaseSelectMapper.class, "methodParamDynamic");
-        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
-                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
@@ -104,8 +102,8 @@ public class BaseSelectTest {
     @Test
     public void methodGlobalMultiDynamic() {
         Method method = chooseMethod(BaseSelectMapper.class, "methodGlobalMultiDynamic");
-        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
-                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
@@ -118,8 +116,8 @@ public class BaseSelectTest {
     @Test
     public void methodParamMultiDynamic() {
         Method method = chooseMethod(BaseSelectMapper.class, "methodParamMultiDynamic");
-        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
-                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
@@ -133,8 +131,8 @@ public class BaseSelectTest {
     @Test
     public void methodCustom() {
         Method method = chooseMethod(BaseSelectMapper.class, "methodCustom");
-        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
-                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
@@ -149,8 +147,8 @@ public class BaseSelectTest {
     @Test
     public void methodMultiCustom() {
         Method method = chooseMethod(BaseSelectMapper.class, "methodMultiCustom");
-        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
-                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
@@ -165,8 +163,8 @@ public class BaseSelectTest {
     @Test
     public void methodMixture() {
         Method method = chooseMethod(BaseSelectMapper.class, "methodMixture");
-        MethodMeta methodMeta = annotationAssistant.parseSelectMethodMate(method,
-                tableMeta, AnnotationUtils.findAnnotation(method, SelectSql.class));
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
