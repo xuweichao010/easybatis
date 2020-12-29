@@ -67,24 +67,21 @@ public class ParamMeta {
         return tar;
     }
 
-    public static ParamMeta builderEqual(String column, String field) {
-        return builder(column, field, ConditionType.EQUAL, null, false, false);
+    public static ParamMeta builder(String column, String field) {
+        return builder(column, field, ConditionType.NONE, null, false, false);
     }
 
-    public static ParamMeta builderInsert(String field, boolean entity, boolean list) {
-        ParamMeta builder = builder(field, field, ConditionType.EQUAL, null, false, false);
-        builder.setEntity(entity);
-        builder.setList(list);
-        return builder;
+    public static ParamMeta builder(String column, String field, ConditionType condition) {
+        return builder(column, field, condition, null, false, false);
     }
 
-    public static ParamMeta builderUpdate(String field, boolean entity, boolean list) {
+    public static ParamMeta builder(String field, boolean entity, boolean list) {
         ParamMeta builder = builder(field, field, ConditionType.NONE, null, false, false);
-        builder.setList(list);
         builder.setEntity(entity);
-        builder.setCondition(ConditionType.NONE);
+        builder.setList(list);
         return builder;
     }
+
 
     public void mergeConditionAnnotation(Map<String, Object> map) {
         String value = (String) map.get("value");

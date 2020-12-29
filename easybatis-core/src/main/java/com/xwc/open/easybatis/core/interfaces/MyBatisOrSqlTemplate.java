@@ -8,11 +8,11 @@ package com.xwc.open.easybatis.core.interfaces;
 public interface MyBatisOrSqlTemplate {
 
     default String dynamicConditionIf(String paramName, String conditionQuery) {
-        return "<if test='" + paramName + "'> " + " AND " + conditionQuery + " </if>" ;
+        return "<if test='" + paramName + " != null'> " + " AND " + conditionQuery + " </if>" ;
     }
 
     default String dynamicSetIf(String setParam, String setValue) {
-        return "<if test='" + setParam + "'> " + setValue + " </if>" ;
+        return "<if test='" + setParam + " != null'> " + setValue + ",</if>" ;
     }
 
     default String dynamicConditionIsNull(String paramName, String conditionQuery) {

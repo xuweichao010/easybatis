@@ -74,12 +74,12 @@ public class MethodMeta {
         return list;
     }
 
-    public boolean isDynamic() {
+    public boolean hashDynamic() {
         if (this.sqlCommand == SqlCommandType.SELECT) {
             return dynamic;
         } else if (this.sqlCommand == SqlCommandType.UPDATE) {
             if (dynamic) {
-                if (!this.hashCondition() && this.getParamMetaList().size() == 1 && this.getParamMetaList().get(0).isEntity()) {
+                if (this.getParamMetaList().size() == 1 && this.getParamMetaList().get(0).isEntity()) {
                     return true;
                 } else {
                     throw new EasyBatisException("只为实体对象构建动态更新语句");

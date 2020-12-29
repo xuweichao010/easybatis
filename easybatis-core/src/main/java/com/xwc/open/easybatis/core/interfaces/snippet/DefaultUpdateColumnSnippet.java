@@ -20,7 +20,13 @@ public class DefaultUpdateColumnSnippet implements UpdateColumnSnippet, MyBatisO
         List<ParamMeta> setParamList = paramList.stream().filter(paramMeta1 -> paramMeta1.getCondition() == ConditionType.SET_PARAM).collect(Collectors.toList());
         if (setParamList.isEmpty()) {
             if (methodMeta.getParamMetaList().size() == 1) {
-                return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, null)).collect(Collectors.joining(", "));
+                if (!methodMeta.hashDynamic()) {
+                    return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, null)).collect(Collectors.joining(", "));
+                } else {
+                    return methodMeta.updateColumnList().stream().map(param ->
+                            this.dynamicSetIf(param.getField(), this.setParam(param, null))
+                    ).collect(Collectors.joining(" "));
+                }
             } else {
                 ParamMeta entityMate = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity).collect(Collectors.toList()).get(0);
                 return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, entityMate.getParamName())).collect(Collectors.joining(", "));

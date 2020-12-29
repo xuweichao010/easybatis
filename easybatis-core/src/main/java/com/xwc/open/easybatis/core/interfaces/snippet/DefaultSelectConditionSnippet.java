@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.core.interfaces.snippet;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
+import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
 import com.xwc.open.easybatis.core.interfaces.condition.QueryCondition;
 import com.xwc.open.easybatis.core.support.MethodMeta;
@@ -33,7 +34,7 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
         if (paramMetaList.size() == 1) {
             if (paramMetaList.get(0).isPrimaryKey()) {
                 IdMeta id = methodMeta.getTableMetadata().getId();
-                list.add(ParamMeta.builderEqual(id.getColumn(), id.getField()));
+                list.add(ParamMeta.builder(id.getColumn(), id.getField(), ConditionType.EQUAL));
             } else if (paramMetaList.get(0).isMultiCondition()) {
                 list.addAll(methodMeta.getParamMetaList().get(0).getChildList());
             } else {
@@ -51,7 +52,7 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
         }
         if (methodMeta.getTableMetadata().getLogic() != null) {
             LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
-            list.add(ParamMeta.builderEqual(logic.getColumn(), logic.getField()));
+            list.add(ParamMeta.builder(logic.getColumn(), logic.getField()));
         }
         // 处理方法上的对象参数条件
         return listCondition(list, multi);

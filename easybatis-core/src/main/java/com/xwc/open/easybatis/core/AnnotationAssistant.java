@@ -148,7 +148,7 @@ public class AnnotationAssistant {
     private ParamMeta parseParameter(Parameter parameter, String paramName, SqlCommandType command, Class<?> entityClass, boolean dynamic) {
         //处理接口泛型 泛型的两种情况是 主键或者是实体
         if (parameter.getParameterizedType() instanceof TypeVariable) {
-            ParamMeta paramMeta = ParamMeta.builderEqual(underscoreName(paramName), paramName);
+            ParamMeta paramMeta = ParamMeta.builder(underscoreName(paramName), paramName);
             if (isEntityParam(parameter.getParameterizedType(), entityClass)) {
                 paramMeta.setEntity(true);
             } else if (isKeyParam(parameter.getParameterizedType())) {
@@ -163,13 +163,13 @@ public class AnnotationAssistant {
                 if (!isEntityParam(parameterizedType.getActualTypeArguments()[0], entityClass)) {
                     throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
                 }
-                return ParamMeta.builderInsert(paramName, true, true);
+                return ParamMeta.builder(paramName, true, true);
             } else {
-                return ParamMeta.builderInsert(paramName, false, false);
+                return ParamMeta.builder(paramName, false, false);
             }
         } else {
             if (isEntityParam(parameter.getParameterizedType(), entityClass)) {
-                return ParamMeta.builderInsert(paramName, true, false);
+                return ParamMeta.builder(paramName, true, false);
             } else if (Reflection.isCustomObject(parameter.getType()) && command == SqlCommandType.SELECT) {
                 return parseCustomParameter((Class<?>) parameter.getParameterizedType(), paramName);
             } else {
