@@ -97,7 +97,7 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
                 }
                 try {
                     Annotation annotation = annotationAssistant.chooseOperationAnnotationType(method);
-                    if(annotation != null){
+                    if (annotation != null) {
                         // 解析方法
                         parseStatement(method);
                     }
@@ -589,7 +589,6 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
     private SqlSource buildSqlSource(Annotation annotation, Class<?> parameterType, LanguageDriver languageDriver,
                                      Method method) {
         if (annotation instanceof SelectSql) {
-            //TODO 创建SQL
             return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.select(annotationAssistant.parseMethodMate(method, tableMeta))}, parameterType, languageDriver);
         } else if (annotation instanceof UpdateSql) {
             return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.update(annotationAssistant.parseMethodMate(method, tableMeta))}, parameterType, languageDriver);

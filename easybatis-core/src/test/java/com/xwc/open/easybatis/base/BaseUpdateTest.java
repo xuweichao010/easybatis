@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
  */
 public class BaseUpdateTest {
 
-
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
     EasybatisConfiguration easybatisConfiguration;
