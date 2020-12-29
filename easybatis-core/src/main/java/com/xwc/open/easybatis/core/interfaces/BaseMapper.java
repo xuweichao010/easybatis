@@ -4,7 +4,6 @@ import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
-import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
 
 import java.util.Collection;
 
@@ -18,7 +17,6 @@ import java.util.Collection;
 public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 
     @SelectSql
-    @PrimaryKey
     E selectKey(K id);
 
     @UpdateSql

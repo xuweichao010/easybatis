@@ -17,10 +17,6 @@ public interface BaseSelectMapper extends BaseMapper<BaseSelectEntity, String> {
     @SelectSql("id")
     void findAll1();
 
-//    @SelectSql
-//    @PrimaryKey
-//    void selectKey(String key);
-
     @SelectSql(dynamic = true)
     void methodGlobalDynamic(String name);
 

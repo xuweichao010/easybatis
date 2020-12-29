@@ -12,7 +12,6 @@ import com.xwc.open.easybatis.core.support.MethodMeta;
 public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
 
     public MysqlSqlSourceGenerator() {
-
     }
 
     @Override
