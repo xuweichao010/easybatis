@@ -25,5 +25,8 @@ public interface BaseUpdateMapper extends BaseMapper<BaseUpdateEntity, String> {
     @UpdateSql(dynamic = true)
     Object updateEntityDynamic(BaseUpdateEntity entity);
 
+    @UpdateSql(dynamic = true)
+    Object updateEntityDynamicMixture(String tableName, BaseUpdateEntity entity);
+
 
 }

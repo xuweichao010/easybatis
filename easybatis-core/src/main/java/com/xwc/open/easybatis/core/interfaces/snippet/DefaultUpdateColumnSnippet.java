@@ -19,17 +19,13 @@ public class DefaultUpdateColumnSnippet implements UpdateColumnSnippet, MyBatisO
         List<ParamMeta> paramList = methodMeta.getParamMetaList();
         List<ParamMeta> setParamList = paramList.stream().filter(paramMeta1 -> paramMeta1.getCondition() == ConditionType.SET_PARAM).collect(Collectors.toList());
         if (setParamList.isEmpty()) {
-            if (methodMeta.getParamMetaList().size() == 1) {
-                if (!methodMeta.hashDynamic()) {
-                    return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, null)).collect(Collectors.joining(", "));
-                } else {
-                    return methodMeta.updateColumnList().stream().map(param ->
-                            this.dynamicSetIf(param.getField(), this.setParam(param, null))
-                    ).collect(Collectors.joining(" "));
-                }
+            String prefix = methodMeta.getParamMetaList().size() > 1 ? methodMeta.entityParam().getParamName() : null;
+            if (!methodMeta.hasDynamic()) {
+                return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, prefix)).collect(Collectors.joining(", "));
             } else {
-                ParamMeta entityMate = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity).collect(Collectors.toList()).get(0);
-                return methodMeta.updateColumnList().stream().map(param -> this.setParam(param, entityMate.getParamName())).collect(Collectors.joining(", "));
+                return methodMeta.updateColumnList().stream().map(param ->
+                        this.dynamicSetIf(param.getField(), this.setParam(param, prefix))
+                ).collect(Collectors.joining(" "));
             }
         } else {
             return setParamList.stream().map(param -> this.setParam(param.getColumnName(), param.getColumnName())).collect(Collectors.joining(", "));

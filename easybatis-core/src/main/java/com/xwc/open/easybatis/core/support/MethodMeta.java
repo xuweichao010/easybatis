@@ -35,10 +35,6 @@ public class MethodMeta {
      */
     List<ParamMeta> paramMetaList;
 
-    public boolean hashCondition() {
-        return this.paramMetaList.stream().anyMatch(ParamMeta::isCondition);
-    }
-
 
     public <T extends Annotation> T chooseAnnotationType(Class<T> annotationClass) {
         return AnnotationUtils.findAnnotation(this.method, annotationClass);
@@ -74,12 +70,12 @@ public class MethodMeta {
         return list;
     }
 
-    public boolean hashDynamic() {
+    public boolean hasDynamic() {
         if (this.sqlCommand == SqlCommandType.SELECT) {
             return dynamic;
         } else if (this.sqlCommand == SqlCommandType.UPDATE) {
             if (dynamic) {
-                if (this.getParamMetaList().size() == 1 && this.getParamMetaList().get(0).isEntity()) {
+                if (!hasSetParam() && entityParam() != null) {
                     return true;
                 } else {
                     throw new EasyBatisException("只为实体对象构建动态更新语句");
@@ -90,5 +86,24 @@ public class MethodMeta {
         } else {
             return false;
         }
+    }
+
+    public ParamMeta entityParam() {
+        List<ParamMeta> collect = this.paramMetaList.stream().filter(ParamMeta::isEntity).collect(Collectors.toList());
+        if (collect.size() == 1) {
+            return collect.get(0);
+        } else if (collect.size() > 1) {
+            throw new EasyBatisException("无法处理方法上的两个实体对象");
+        } else {
+            return null;
+        }
+    }
+
+    public boolean hasSetParam() {
+        return this.paramMetaList.stream().anyMatch(ParamMeta::isSetParam);
+    }
+
+    public boolean hashCondition() {
+        return this.paramMetaList.stream().anyMatch(ParamMeta::isCondition);
     }
 }

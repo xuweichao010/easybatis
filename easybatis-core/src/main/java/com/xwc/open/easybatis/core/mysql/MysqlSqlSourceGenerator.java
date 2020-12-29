@@ -53,7 +53,7 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         StringBuilder sb = new StringBuilder();
         sb.append("<script>")
                 .append(" UPDATE ").append(methodMetaData.getTableMetadata().getTableName());
-        if (methodMetaData.hashDynamic()) {
+        if (methodMetaData.hasDynamic()) {
             sb.append(" <set> ").append(this.updateColumnSnippet.apply(methodMetaData)).append(" </set>");
         } else {
             sb.append(" SET ").append(this.updateColumnSnippet.apply(methodMetaData));
