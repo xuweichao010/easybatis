@@ -117,6 +117,10 @@ public class ParamMeta {
         return this.condition == ConditionType.SET_PARAM;
     }
 
+    public boolean isIgnore() {
+        return this.condition == ConditionType.IGNORE;
+    }
+
     public boolean isCondition() {
         if (isMultiCondition()) {
             for (ParamMeta paramMeta : this.childList) {
@@ -129,4 +133,6 @@ public class ParamMeta {
             return this.condition != ConditionType.SET_PARAM;
         }
     }
+
+
 }

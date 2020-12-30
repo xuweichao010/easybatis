@@ -210,7 +210,12 @@ public class AnnotationAssistant {
      * @return ParamMetaData
      */
     public ParamMeta parseAnnotation(Annotation[] annotations, String paramName, boolean methodGlobalDynamic) {
+        Annotation ignore = chooseAnnotationType(annotations, Ignore.class);
         ParamMeta param = ParamMeta.builder(underscoreName(paramName), paramName, methodGlobalDynamic);
+        if (ignore != null) {
+            param.setCondition(ConditionType.IGNORE);
+            return param;
+        }
         Annotation queryAnnotation = chooseQueryAnnotationType(annotations);
         if (queryAnnotation != null) {
             Map<String, Object> map = AnnotationUtils.getAnnotationAttributes(queryAnnotation);
@@ -329,6 +334,18 @@ public class AnnotationAssistant {
     private Annotation chooseSetParamAnnotationType(Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             if (SetParam.class.equals(annotation.annotationType())) {
+                return annotation;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 判断注解数组中是否有查询条件注解
+     */
+    private <T> Annotation chooseAnnotationType(Annotation[] annotations, Class<T> annotationClass) {
+        for (Annotation annotation : annotations) {
+            if (annotationClass.equals(annotation.annotationType())) {
                 return annotation;
             }
         }

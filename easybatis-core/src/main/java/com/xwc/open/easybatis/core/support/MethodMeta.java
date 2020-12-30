@@ -99,6 +99,15 @@ public class MethodMeta {
         }
     }
 
+    public ParamMeta keyParam() {
+        List<ParamMeta> collect = this.paramMetaList.stream().filter(ParamMeta::isPrimaryKey).collect(Collectors.toList());
+        if (collect.size() == 1) {
+            return collect.get(0);
+        }  else {
+            return null;
+        }
+    }
+
     public boolean hasSetParam() {
         return this.paramMetaList.stream().anyMatch(ParamMeta::isSetParam);
     }

@@ -35,7 +35,7 @@ public class BaseSelectTest {
 
     @Before
     public void before() throws IOException {
-        String resource = "mybatis.xml" ;
+        String resource = "mybatis.xml";
         InputStream inputStream = Resources.getResourceAsStream(resource);
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.configuration = this.sqlSessionFactory.getConfiguration();
@@ -54,6 +54,16 @@ public class BaseSelectTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source WHERE `id` = #{id}</script>", select);
     }
+
+    @Test
+    public void selectTableKey() {
+        Method method = chooseMethod(BaseSelectMapper.class, "selectTableKey");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source WHERE `id` = #{id}</script>", select);
+    }
+
 
     @Test
     public void findAll1() {
@@ -82,9 +92,10 @@ public class BaseSelectTest {
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_mysql_sql_source WHERE  (#{name} IS NULL OR `name` = #{name})" +
-                "</script>" ;
+                "</script>";
         Assert.assertEquals(select, targetSql);
     }
+
 
     @Test
     public void methodParamDynamic() {
@@ -95,7 +106,7 @@ public class BaseSelectTest {
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE  (#{name} IS NULL OR `name` = #{name})" +
-                "</script>" ;
+                "</script>";
         Assert.assertEquals(select, targetSql);
     }
 
@@ -109,7 +120,7 @@ public class BaseSelectTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE  (#{name} IS NULL OR `name` = #{name})" +
                 " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
-                "</script>" ;
+                "</script>";
         Assert.assertEquals(select, targetSql);
     }
 
@@ -123,7 +134,7 @@ public class BaseSelectTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE  (#{name} IS NULL OR `name` = #{name})" +
                 " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
-                "</script>" ;
+                "</script>";
         Assert.assertEquals(select, targetSql);
     }
 
@@ -138,7 +149,7 @@ public class BaseSelectTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " WHERE <if test='id != null'>  AND `id` = #{id} </if>" +
                 " <if test='orgCode != null'>  AND `orgCode` = #{orgCode} </if>" +
-                "</script>" ;
+                "</script>";
         Assert.assertEquals(select, targetSql);
 
     }
@@ -156,7 +167,7 @@ public class BaseSelectTest {
                 " <if test='one.orgCode != null'>  AND `orgCode` = #{one.orgCode} </if>" +
                 " <if test='two.orgName != null'>  AND `orgName` = #{two.orgName} </if>" +
                 " <if test='two.name != null'>  AND `name` = #{two.name} </if>" +
-                "</script>" ;
+                "</script>";
         Assert.assertEquals(select, targetSql);
     }
 
@@ -172,7 +183,7 @@ public class BaseSelectTest {
                 " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
                 " <if test='two.orgName != null'>  AND `orgName` = #{two.orgName} </if>" +
                 " <if test='two.name != null'>  AND `name` = #{two.name} </if>" +
-                "</script>" ;
+                "</script>";
         Assert.assertEquals(select, targetSql);
     }
 

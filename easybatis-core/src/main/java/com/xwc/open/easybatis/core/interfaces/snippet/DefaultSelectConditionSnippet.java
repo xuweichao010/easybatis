@@ -28,11 +28,12 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
 
     public String apply(MethodMeta methodMeta) {
         List<ParamMeta> paramMetaList = methodMeta.getParamMetaList();
+        List<ParamMeta> queryList = paramMetaList.stream().filter(paramMeta->!paramMeta.isIgnore()).collect(Collectors.toList());
         // 处理参数为主键类型的情况
         List<ParamMeta> list = new ArrayList<>();
-        boolean multi = false;
-        if (paramMetaList.size() == 1) {
-            if (paramMetaList.get(0).isPrimaryKey()) {
+        boolean multi = paramMetaList.size() != queryList.size();
+        if (queryList.size() == 1) {
+            if (methodMeta.keyParam() != null) {
                 IdMeta id = methodMeta.getTableMetadata().getId();
                 list.add(ParamMeta.builder(id.getColumn(), id.getField(), ConditionType.EQUAL));
             } else if (paramMetaList.get(0).isMultiCondition()) {

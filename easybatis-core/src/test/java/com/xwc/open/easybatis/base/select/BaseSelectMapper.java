@@ -2,14 +2,13 @@ package com.xwc.open.easybatis.base.select;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
-import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 
 /**
  * 作者：徐卫超 cc
  * 时间：2020/12/18
  * 描述：
  */
-public interface BaseSelectMapper extends BaseMapper<BaseSelectEntity, String> {
+public interface BaseSelectMapper extends BaseTableMapper<BaseSelectEntity, String> {
 
     @SelectSql
     void findAll();

@@ -1,7 +1,9 @@
 package com.xwc.open.easybatis.mybatis;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
-import com.xwc.open.easybatis.model.User;
+import com.xwc.open.easybatis.mybatis.base.MybatisTableUserMapper;
+import com.xwc.open.easybatis.mybatis.base.MybatisUser;
+import com.xwc.open.easybatis.mybatis.base.MybatisUserMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -23,6 +25,8 @@ public class SimpleMybatis {
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
     EasybatisConfiguration easybatisConfiguration;
+    MybatisTableUserMapper mybatisTableUserMapper;
+    MybatisUserMapper mybatisUserMapper;
 
 
     @Before
@@ -33,13 +37,15 @@ public class SimpleMybatis {
         this.configuration = this.sqlSessionFactory.getConfiguration();
         this.configuration.setMapUnderscoreToCamelCase(true);
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
-        easybatisConfiguration.addMapper(UserMapper.class);
+        easybatisConfiguration.addMapper(MybatisTableUserMapper.class);
+        easybatisConfiguration.addMapper(MybatisUserMapper.class);
+        mybatisTableUserMapper = sqlSessionFactory.openSession().getMapper(MybatisTableUserMapper.class);
+        mybatisUserMapper = sqlSessionFactory.openSession().getMapper(MybatisUserMapper.class);
     }
 
     @Test
-    public void testConnect() {
-        UserMapper mapper = sqlSessionFactory.openSession().getMapper(UserMapper.class);
-        User user2 = mapper.get("37bd0225cc94400db744aac8dee8a001");
-        System.out.println(user2);
+    public void sele() {
+        MybatisUser mybatisUser = mybatisUserMapper.selectKey("37bd0225cc94400db744aac8dee8a001");
+       // mybatisTableUserMapper.selectKey()
     }
 }
