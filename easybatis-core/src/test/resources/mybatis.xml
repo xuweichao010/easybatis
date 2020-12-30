@@ -5,6 +5,7 @@
 <configuration>
     <settings>
         <setting name="useActualParamName" value="true"/>
+        <setting name="logImpl" value="Log4J"/>
     </settings>
     <environments default="development">
         <environment id="development">

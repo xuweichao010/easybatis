@@ -2,8 +2,9 @@ package com.xwc.open.easybatis.mybatis.base;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.table.Ignore;
-import com.xwc.open.easybatis.model.User;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * 作者：徐卫超 cc
@@ -13,6 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface MybatisTableUserMapper extends MyBatisBaseTableMapper<MybatisTableUser, String> {
 
-    @SelectSql
-    User get(@Ignore String tableName, String id);
+    @SelectSql(dynamic = true)
+    List<MybatisTableUser> methodGlobalDynamic(@Ignore String tableName, String orgName, String orgCode);
 }
