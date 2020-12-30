@@ -7,6 +7,7 @@ import com.xwc.open.easybatis.mybatis.base.MybatisUser;
 import com.xwc.open.easybatis.mybatis.base.MybatisUserMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Assert;
@@ -16,6 +17,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -24,7 +27,7 @@ import java.util.UUID;
  * 时间：2020/12/17
  * 描述：简单的mysql测试
  */
-public class SimpleMybatis {
+public class BaseMapperTest {
 
 
     SqlSessionFactory sqlSessionFactory;
@@ -32,6 +35,7 @@ public class SimpleMybatis {
     EasybatisConfiguration easybatisConfiguration;
     MybatisTableUserMapper mybatisTableUserMapper;
     MybatisUserMapper mybatisUserMapper;
+    SqlSession sqlSession;
 
 
     @Before
@@ -44,9 +48,11 @@ public class SimpleMybatis {
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
         easybatisConfiguration.addMapper(MybatisTableUserMapper.class);
         easybatisConfiguration.addMapper(MybatisUserMapper.class);
-        mybatisTableUserMapper = sqlSessionFactory.openSession().getMapper(MybatisTableUserMapper.class);
-        mybatisUserMapper = sqlSessionFactory.openSession().getMapper(MybatisUserMapper.class);
+        sqlSession = sqlSessionFactory.openSession(true);
+        mybatisTableUserMapper = sqlSession.getMapper(MybatisTableUserMapper.class);
+        mybatisUserMapper = sqlSession.getMapper(MybatisUserMapper.class);
     }
+
 
     @Test
     public void selectKey() {
@@ -57,7 +63,7 @@ public class SimpleMybatis {
     }
 
 
-    //@Test
+    @Test
     public void insert() {
         MybatisUser mybatisUser = genderMybatisUser();
         MybatisTableUser mybatisTableUser = genderMybatisTableUser();
@@ -69,10 +75,66 @@ public class SimpleMybatis {
             Assert.fail();
         }
         mybatisUser = mybatisUserMapper.selectKey(mybatisUser.getId());
+        System.out.println(mybatisUser);
         Assert.assertNotNull(mybatisUser);
         mybatisTableUser = mybatisTableUserMapper.selectKey("t_user", mybatisTableUser.getId());
+        System.out.println(mybatisTableUser);
         Assert.assertNotNull(mybatisTableUser);
+    }
 
+    @Test
+    public void insertBatch() {
+        List<MybatisUser> mybatisUserList = Arrays.asList(genderMybatisUser(), genderMybatisUser(), genderMybatisUser());
+        List<MybatisTableUser> mybatisTableUser = Arrays.asList(genderMybatisTableUser(), genderMybatisTableUser(), genderMybatisTableUser());
+        try {
+            mybatisUserMapper.insertBatch(mybatisUserList);
+            mybatisTableUserMapper.insertBatch("t_user", mybatisTableUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+
+    @Test
+    public void update() {
+        MybatisUser mybatisUser = genderMybatisUser();
+        MybatisTableUser mybatisTableUser = genderMybatisTableUser();
+        try {
+            mybatisUserMapper.insert(mybatisUser);
+            mybatisUser.setName("testName");
+            mybatisUserMapper.update(mybatisUser);
+            mybatisTableUserMapper.insert("t_user", mybatisTableUser);
+            mybatisTableUser.setName("testName");
+            mybatisTableUserMapper.update("t_user", mybatisTableUser);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        mybatisUser = mybatisUserMapper.selectKey(mybatisUser.getId());
+        Assert.assertEquals("testName", mybatisUser.getName());
+        mybatisTableUser = mybatisTableUserMapper.selectKey("t_user", mybatisTableUser.getId());
+        Assert.assertEquals("testName", mybatisTableUser.getName());
+        Assert.assertNotNull(mybatisTableUser);
+    }
+
+
+    @Test
+    public void delete() {
+        MybatisUser mybatisUser = genderMybatisUser();
+        MybatisTableUser mybatisTableUser = genderMybatisTableUser();
+        try {
+            mybatisUserMapper.insert(mybatisUser);
+            mybatisTableUserMapper.insert("t_user", mybatisTableUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        Integer delete = mybatisUserMapper.delete(mybatisUser.getId());
+        Assert.assertEquals(delete, Integer.valueOf(1));
+        delete = mybatisTableUserMapper.delete("t_user", mybatisTableUser.getId());
+        Assert.assertEquals(delete, Integer.valueOf(1));
     }
 
     public String uuid() {

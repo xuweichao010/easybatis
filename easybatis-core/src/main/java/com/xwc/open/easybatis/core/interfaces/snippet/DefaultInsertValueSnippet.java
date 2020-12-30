@@ -21,19 +21,19 @@ public class DefaultInsertValueSnippet implements InsertValueSnippet {
         List<ParamMeta> entityList = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity)
                 .collect(Collectors.toList());
         ParamMeta entityParam = entityList.get(0);
-        if (entityList.size() != 1) {
+        if (methodMeta.entityParam() == null) {
             throw new EasyBatisException("有 " + entityList.size() + " 个实体对象，导致无法创建SQL");
         }
         // 处理一个参数
         if (paramList.size() == 1) {
-            String valueSnippet = this.insertValueSnippet(methodMeta.insertColumnList(), null);
+            String valueSnippet = this.insertValueSnippet(methodMeta.insertColumnList(), entityParam.isList()?"item":null);
             if (entityParam.isList()) {
                 return this.insertBatchForeach(valueSnippet, null);
             }
             return valueSnippet;
         } else { // 处理多个参数
             if (entityParam.isList()) {
-                return this.insertBatchForeach(this.insertValueSnippet(methodMeta.insertColumnList(), null), entityParam.getParamName());
+                return this.insertBatchForeach(this.insertValueSnippet(methodMeta.insertColumnList(), "item"), entityParam.getParamName());
             } else {
                 return this.insertValueSnippet(methodMeta.insertColumnList(), entityParam.getParamName());
             }
@@ -50,6 +50,6 @@ public class DefaultInsertValueSnippet implements InsertValueSnippet {
     }
 
     public String insertValueSnippet(List<ColumnMeta> list, String prefix) {
-        return "(" + list.stream().map(column -> this.fieldColumn(column.getField(), prefix)).collect(Collectors.joining(", ")) + ")" ;
+        return "(" + list.stream().map(column -> this.fieldColumn(column.getField(), prefix)).collect(Collectors.joining(", ")) + ")";
     }
 }

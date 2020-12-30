@@ -652,14 +652,14 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             if (annotation instanceof SelectSql) {
                 databaseId = ((SelectSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.SELECT;
-            } else if (annotation instanceof Update) {
+            } else if (annotation instanceof UpdateSql) {
                 databaseId = ((UpdateSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.UPDATE;
-            } else if (annotation instanceof Insert) {
+            } else if (annotation instanceof InsertSql) {
                 databaseId = ((InsertSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.INSERT;
-            } else if (annotation instanceof Delete) {
-                databaseId = ((InsertSql) annotation).databaseId();
+            } else if (annotation instanceof DeleteSql) {
+                databaseId = ((DeleteSql) annotation).databaseId();
                 if (tableMeta.getLogic() != null) {
                     sqlCommandType = SqlCommandType.UPDATE;
                 } else {

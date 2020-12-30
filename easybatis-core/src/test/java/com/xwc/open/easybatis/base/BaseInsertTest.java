@@ -49,14 +49,14 @@ public class BaseInsertTest {
         Method method = chooseMethod(BaseInsertMapper.class, "insert");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
                 " VALUES" +
                 " (#{id}, #{orgCode}, #{orgName}, #{name})" +
                 " </script>";
-        Assert.assertEquals(select, sqlTarget);
+        Assert.assertEquals(sql, sqlTarget);
     }
 
     @Test
@@ -64,14 +64,14 @@ public class BaseInsertTest {
         Method method = chooseMethod(BaseInsertMapper.class, "insertEntity");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
                 " VALUES" +
                 " (#{id}, #{orgCode}, #{orgName}, #{name})" +
                 " </script>";
-        Assert.assertEquals(select, sqlTarget);
+        Assert.assertEquals(sql, sqlTarget);
     }
 
     @Test
@@ -79,13 +79,13 @@ public class BaseInsertTest {
         Method method = chooseMethod(BaseInsertMapper.class, "insertMulti");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source (`id`, `orgCode`, `orgName`, `name`)" +
                 " VALUES" +
                 " (#{entity.id}, #{entity.orgCode}, #{entity.orgName}, #{entity.name})" +
                 " </script>";
-        Assert.assertEquals(select, sqlTarget);
+        Assert.assertEquals(sql, sqlTarget);
     }
 
     @Test
@@ -93,16 +93,16 @@ public class BaseInsertTest {
         Method method = chooseMethod(BaseInsertMapper.class, "insertBatch");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
                 " VALUES " +
                 " <foreach item= 'item'  collection='list' separator=', '>" +
-                " (#{id}, #{orgCode}, #{orgName}, #{name})" +
+                " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.name})" +
                 " </foreach>" +
                 " </script>";
-        Assert.assertEquals(sqlTarget, select);
+        Assert.assertEquals(sqlTarget, sql);
     }
 
     @Test
@@ -110,16 +110,16 @@ public class BaseInsertTest {
         Method method = chooseMethod(BaseInsertMapper.class, "insertBatchEntity");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
                 " VALUES " +
                 " <foreach item= 'item'  collection='list' separator=', '>" +
-                " (#{id}, #{orgCode}, #{orgName}, #{name})" +
+                " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.name})" +
                 " </foreach>" +
                 " </script>";
-        Assert.assertEquals(sqlTarget, select);
+        Assert.assertEquals(sqlTarget, sql);
     }
 
     @Test
@@ -127,16 +127,16 @@ public class BaseInsertTest {
         Method method = chooseMethod(BaseInsertMapper.class, "insertBatchMixture");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
                 " VALUES " +
                 " <foreach item= 'item'  collection='listParam' separator=', '>" +
-                " (#{id}, #{orgCode}, #{orgName}, #{name})" +
+                " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.name})" +
                 " </foreach>" +
                 " </script>";
-        Assert.assertEquals(sqlTarget, select);
+        Assert.assertEquals(sqlTarget, sql);
     }
 
     @Test
@@ -144,16 +144,16 @@ public class BaseInsertTest {
         Method method = chooseMethod(BaseInsertMapper.class, "insertBatchEntityMixture");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
                 " VALUES " +
                 " <foreach item= 'item'  collection='listParam' separator=', '>" +
-                " (#{id}, #{orgCode}, #{orgName}, #{name})" +
+                " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.name})" +
                 " </foreach>" +
                 " </script>";
-        Assert.assertEquals(sqlTarget, select);
+        Assert.assertEquals(sqlTarget, sql);
     }
 
 
