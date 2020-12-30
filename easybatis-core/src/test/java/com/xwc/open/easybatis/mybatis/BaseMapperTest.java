@@ -37,6 +37,8 @@ public class BaseMapperTest {
     MybatisUserMapper mybatisUserMapper;
     SqlSession sqlSession;
 
+    int TEST_TAG = -1;
+
 
     @Before
     public void before() throws IOException {
@@ -51,6 +53,8 @@ public class BaseMapperTest {
         sqlSession = sqlSessionFactory.openSession(true);
         mybatisTableUserMapper = sqlSession.getMapper(MybatisTableUserMapper.class);
         mybatisUserMapper = sqlSession.getMapper(MybatisUserMapper.class);
+        mybatisTableUserMapper.clearTest("t_user", TEST_TAG);
+        mybatisUserMapper.clearTest(TEST_TAG);
     }
 
 
@@ -150,7 +154,7 @@ public class BaseMapperTest {
         tar.setName(uuid().substring(0, 6));
         tar.setOrgCode("200");
         tar.setOrgName("总公司");
-        tar.setValid(random.nextInt(2));
+        tar.setValid(TEST_TAG);
         return tar;
     }
 
@@ -163,7 +167,7 @@ public class BaseMapperTest {
         tar.setName(uuid().substring(0, 6));
         tar.setOrgCode("200");
         tar.setOrgName("总公司");
-        tar.setValid(random.nextInt(2));
+        tar.setValid(TEST_TAG);
         return tar;
     }
 

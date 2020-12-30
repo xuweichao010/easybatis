@@ -1,7 +1,10 @@
 package com.xwc.open.easybatis.mybatis.base;
 
+import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
+import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
+import com.xwc.open.easybatis.core.anno.condition.filter.SetParam;
 import com.xwc.open.easybatis.core.anno.table.Ignore;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -19,7 +22,7 @@ public interface MybatisTableUserMapper extends MyBatisBaseTableMapper<MybatisTa
     List<MybatisTableUser> methodGlobalDynamic(@Ignore String tableName, String orgName, String orgCode);
 
     @SelectSql
-    List<MybatisTableUser> methodParamDynamic(@Ignore String tableName, @Equal(dynamic = true) String name, @Equal(dynamic = true) String orgCode);
+    List<MybatisTableUser> methodParamDynamic(@Ignore String tableName, @Equal(dynamic = true) String orgName, @Equal(dynamic = true) String orgCode);
 
     @SelectSql
     List<MybatisTableUser> methodCustom(@Ignore String tableName, MybatisUserOne mybatisUserOne);
@@ -30,4 +33,13 @@ public interface MybatisTableUserMapper extends MyBatisBaseTableMapper<MybatisTa
     @SelectSql
     List<MybatisTableUser> methodMixture(@Ignore String tableName, @Equal(dynamic = true) String name, @Equal String orgCode, MybatisUserTwo two);
 
+    @DeleteSql
+    Integer clearTest(@Ignore String tableName, int valid);
+
+
+    @UpdateSql
+    Integer updateParamCondition(@Ignore String tableName, @SetParam Integer job, @SetParam Integer age, String id);
+
+    @UpdateSql
+    Integer updateParam(@Ignore String tableName, @SetParam Integer job, @SetParam Integer age);
 }

@@ -1,7 +1,10 @@
 package com.xwc.open.easybatis.mybatis.base;
 
+import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
+import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
+import com.xwc.open.easybatis.core.anno.condition.filter.SetParam;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 import com.xwc.open.easybatis.model.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -23,7 +26,7 @@ public interface MybatisUserMapper extends BaseMapper<MybatisUser, String> {
     List<MybatisUser> methodGlobalDynamic(String orgName, String orgCode);
 
     @SelectSql
-    List<MybatisUser> methodParamDynamic(@Equal(dynamic = true) String name, @Equal(dynamic = true) String orgCode);
+    List<MybatisUser> methodParamDynamic(@Equal(dynamic = true) String orgName, @Equal(dynamic = true) String orgCode);
 
     @SelectSql
     List<MybatisUser> methodCustom(MybatisUserOne one);
@@ -34,4 +37,15 @@ public interface MybatisUserMapper extends BaseMapper<MybatisUser, String> {
 
     @SelectSql
     List<MybatisUser> methodMixture(@Equal(dynamic = true) String name, @Equal String orgCode, MybatisUserTwo two);
+
+    @DeleteSql
+    Integer clearTest(int valid);
+
+
+    @UpdateSql
+    Integer updateParamCondition(@SetParam Integer job, @SetParam Integer age, String id);
+
+    @UpdateSql
+    Integer updateParam(@SetParam Integer job, @SetParam Integer age);
+
 }

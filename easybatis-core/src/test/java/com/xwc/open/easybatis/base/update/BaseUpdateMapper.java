@@ -2,6 +2,7 @@ package com.xwc.open.easybatis.base.update;
 
 import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.SetParam;
+import com.xwc.open.easybatis.core.anno.table.Ignore;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 
 /**
@@ -14,7 +15,7 @@ public interface BaseUpdateMapper extends BaseMapper<BaseUpdateEntity, String> {
     Object updateEntity(BaseUpdateEntity entity);
 
     @UpdateSql
-    Object updateEntityMixture(String tableName, BaseUpdateEntity entity);
+    Object updateEntityMixture(@Ignore String tableName, BaseUpdateEntity entity);
 
     @UpdateSql
     Object updateParamCondition(@SetParam String orgCode, @SetParam String orgName, String id);
@@ -26,7 +27,7 @@ public interface BaseUpdateMapper extends BaseMapper<BaseUpdateEntity, String> {
     Object updateEntityDynamic(BaseUpdateEntity entity);
 
     @UpdateSql(dynamic = true)
-    Object updateEntityDynamicMixture(String tableName, BaseUpdateEntity entity);
+    Object updateEntityDynamicMixture(@Ignore String tableName, BaseUpdateEntity entity);
 
 
 }

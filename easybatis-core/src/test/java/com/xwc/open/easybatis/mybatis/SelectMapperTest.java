@@ -23,12 +23,14 @@ import java.util.List;
 public class SelectMapperTest {
 
 
+
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
     EasybatisConfiguration easybatisConfiguration;
     MybatisTableUserMapper mybatisTableUserMapper;
     MybatisUserMapper mybatisUserMapper;
     SqlSession sqlSession;
+    int TEST_TAG = -1;
 
 
     @Before
@@ -44,6 +46,8 @@ public class SelectMapperTest {
         sqlSession = sqlSessionFactory.openSession(true);
         mybatisTableUserMapper = sqlSession.getMapper(MybatisTableUserMapper.class);
         mybatisUserMapper = sqlSession.getMapper(MybatisUserMapper.class);
+        mybatisTableUserMapper.clearTest("t_user", TEST_TAG);
+        mybatisUserMapper.clearTest(TEST_TAG);
     }
 
 
@@ -61,14 +65,18 @@ public class SelectMapperTest {
 
     @Test
     public void methodParamDynamic() {
-        List<MybatisUser> userList = mybatisUserMapper.methodParamDynamic("上海分公司1", "200003");
+        List<MybatisUser> userList = mybatisUserMapper.methodParamDynamic("总公司", "200");
+        List<MybatisTableUser> tableUserList = mybatisTableUserMapper.methodParamDynamic("t_user", "总公司", "200");
+        validate(userList,tableUserList);
         userList = mybatisUserMapper.methodParamDynamic(null, null);
-        userList = mybatisUserMapper.methodParamDynamic(null, "200003");
-        userList = mybatisUserMapper.methodParamDynamic("上海分公司1", null);
-        List<MybatisTableUser> tableUserList = mybatisTableUserMapper.methodParamDynamic("t_user", "总公司", "200003");
         tableUserList = mybatisTableUserMapper.methodParamDynamic("t_user", null, null);
-        tableUserList = mybatisTableUserMapper.methodParamDynamic("t_user", null, "200003");
-        tableUserList = mybatisTableUserMapper.methodParamDynamic("t_user", "上海分公司1", null);
+        validate(userList,tableUserList);
+        userList = mybatisUserMapper.methodParamDynamic(null, "200");
+        tableUserList = mybatisTableUserMapper.methodParamDynamic("t_user", null, "200");
+        validate(userList,tableUserList);
+        userList = mybatisUserMapper.methodParamDynamic("总公司", null);
+        tableUserList = mybatisTableUserMapper.methodParamDynamic("t_user", "总公司", null);
+        validate(userList,tableUserList);
     }
 
     @Test
@@ -76,19 +84,19 @@ public class SelectMapperTest {
         MybatisUserOne filter = new MybatisUserOne();
         List<MybatisUser> userList = mybatisUserMapper.methodCustom(filter);
         List<MybatisTableUser> tableUserList = mybatisTableUserMapper.methodCustom("t_user", filter);
-        methodMultiCustomValidate(userList, tableUserList);
+        validate(userList, tableUserList);
         filter.setOrgCode("200");
         userList = mybatisUserMapper.methodCustom(filter);
         tableUserList = mybatisTableUserMapper.methodCustom("t_user", filter);
-        methodMultiCustomValidate(userList, tableUserList);
+        validate(userList, tableUserList);
         filter.setOrgName("总公司");
         userList = mybatisUserMapper.methodCustom(filter);
         tableUserList = mybatisTableUserMapper.methodCustom("t_user", filter);
-        methodMultiCustomValidate(userList, tableUserList);
+        validate(userList, tableUserList);
         filter.setId("37bd0225cc94400db744aac8dee8a001");
         userList = mybatisUserMapper.methodCustom(filter);
         tableUserList = mybatisTableUserMapper.methodCustom("t_user", filter);
-        methodMultiCustomValidate(userList, tableUserList);
+        validate(userList, tableUserList);
     }
 
     @Test
@@ -97,22 +105,22 @@ public class SelectMapperTest {
         MybatisUserTwo filter1 = new MybatisUserTwo();
         List<MybatisUser> userList = mybatisUserMapper.methodMultiCustom(filter, filter1);
         List<MybatisTableUser> tableUserList = mybatisTableUserMapper.methodMultiCustom("t_user", filter, filter1);
-        methodMultiCustomValidate(userList, tableUserList);
+        validate(userList, tableUserList);
         filter.setOrgCode("200");
         filter1.setJob(1);
         userList = mybatisUserMapper.methodMultiCustom(filter, filter1);
         tableUserList = mybatisTableUserMapper.methodMultiCustom("t_user", filter, filter1);
-        methodMultiCustomValidate(userList, tableUserList);
+        validate(userList, tableUserList);
         filter.setOrgName("总公司");
         filter1.setValid(1);
         userList = mybatisUserMapper.methodMultiCustom(filter, filter1);
         tableUserList = mybatisTableUserMapper.methodMultiCustom("t_user", filter, filter1);
-        methodMultiCustomValidate(userList, tableUserList);
+        validate(userList, tableUserList);
         filter.setId("37bd0225cc94400db744aac8dee8a001");
         filter1.setName("曹操");
         userList = mybatisUserMapper.methodMultiCustom(filter, filter1);
         tableUserList = mybatisTableUserMapper.methodMultiCustom("t_user", filter, filter1);
-        methodMultiCustomValidate(userList, tableUserList);
+        validate(userList, tableUserList);
     }
 
     @Test
@@ -120,19 +128,19 @@ public class SelectMapperTest {
         MybatisUserTwo filter = new MybatisUserTwo();
         List<MybatisUser> userList = mybatisUserMapper.methodMixture(null, "200", filter);
         List<MybatisTableUser> tableUserList = mybatisTableUserMapper.methodMixture("t_user", null, "200", filter);
-        methodMultiCustomValidate(userList, tableUserList);
+        validate(userList, tableUserList);
         filter.setValid(1);
         userList = mybatisUserMapper.methodMixture(null, "200", filter);
         tableUserList = mybatisTableUserMapper.methodMixture("t_user", null, "200", filter);
-        methodMultiCustomValidate(userList, tableUserList);
+        validate(userList, tableUserList);
         filter.setAge(50);
         userList = mybatisUserMapper.methodMixture("曹操", "200", filter);
         tableUserList = mybatisTableUserMapper.methodMixture("t_user", "曹操", "200", filter);
-        methodMultiCustomValidate(userList, tableUserList);
+        validate(userList, tableUserList);
     }
 
 
-    private void methodMultiCustomValidate(List<MybatisUser> userList, List<MybatisTableUser> tableUserList) {
+    private void validate(List<MybatisUser> userList, List<MybatisTableUser> tableUserList) {
         Assert.assertTrue(userList.stream().anyMatch(item -> "曹操".equals(item.getName())));
         Assert.assertTrue(tableUserList.stream().anyMatch(item -> "曹操".equals(item.getName())));
     }
