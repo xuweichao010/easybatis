@@ -53,7 +53,7 @@ public class BaseDeleteTest {
         String sqlTarget = "<script>" +
                 " DELETE FROM t_mysql_sql_source" +
                 " WHERE `id` = #{id}" +
-                "<script>";
+                "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
 
@@ -65,7 +65,7 @@ public class BaseDeleteTest {
         String sqlTarget = "<script>" +
                 " DELETE FROM t_mysql_sql_source" +
                 " WHERE `orgName` = #{orgName}" +
-                "<script>";
+                "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
 
@@ -77,7 +77,7 @@ public class BaseDeleteTest {
         String sqlTarget = "<script>" +
                 " DELETE FROM t_mysql_sql_source" +
                 " WHERE  (#{orgName} IS NULL OR `orgName` = #{orgName})" +
-                "<script>";
+                "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
 

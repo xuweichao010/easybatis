@@ -19,7 +19,7 @@ import java.util.Collection;
 public interface BaseTableMapper<E, K> extends EasyMapper<E, K> {
 
     @SelectSql
-    E selectKey(String tableName, K id);
+    E selectKey(K id);
 
     @SelectSql
     E selectTableKey(@Ignore String name, K id);

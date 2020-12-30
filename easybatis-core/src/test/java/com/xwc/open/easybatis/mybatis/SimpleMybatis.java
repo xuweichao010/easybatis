@@ -57,7 +57,7 @@ public class SimpleMybatis {
     }
 
 
-    @Test
+    //@Test
     public void insert() {
         MybatisUser mybatisUser = genderMybatisUser();
         MybatisTableUser mybatisTableUser = genderMybatisTableUser();
