@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.mybatis.base;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
+import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 import com.xwc.open.easybatis.model.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,9 +22,10 @@ public interface MybatisUserMapper extends BaseMapper<MybatisUser, String> {
     @SelectSql(dynamic = true)
     List<MybatisUser> methodGlobalDynamic(String orgName, String orgCode);
 
-//    @SelectSql
-//    void methodParamDynamic(@Equal(dynamic = true) String name);
-//
+    @SelectSql
+    List<MybatisUser> methodParamDynamic(@Equal(dynamic = true) String name, @Equal(dynamic = true) String orgCode);
+
+
 //    @SelectSql(dynamic = true)
 //    void methodGlobalMultiDynamic(String name, String orgCode);
 //
