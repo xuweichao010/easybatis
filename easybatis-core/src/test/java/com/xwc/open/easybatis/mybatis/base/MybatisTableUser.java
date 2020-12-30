@@ -11,7 +11,7 @@ import lombok.Data;
  * 描述：用户信息表
  */
 @Data
-@Table("${table}")
+@Table("${tableName}")
 public class MybatisTableUser {
 
     private static final long serialVersionUID = 1L;
@@ -19,7 +19,7 @@ public class MybatisTableUser {
     /**
      * 用户id
      */
-    @Id(type = IdType.UUID)
+    @Id(type = IdType.CUSTOM)
     private String id;
 
     /**

@@ -19,7 +19,7 @@ public class MybatisUser {
     /**
      * 用户id
      */
-    @Id(type = IdType.UUID)
+    @Id(type = IdType.CUSTOM)
     private String id;
 
     /**

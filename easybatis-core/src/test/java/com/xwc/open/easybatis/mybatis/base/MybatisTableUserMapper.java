@@ -2,7 +2,6 @@ package com.xwc.open.easybatis.mybatis.base;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.table.Ignore;
-import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 import com.xwc.open.easybatis.model.User;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  * 描述：用户数据读取
  */
 @Mapper
-public interface MybatisTableUserMapper extends BaseMapper<MybatisTableUser, String> {
+public interface MybatisTableUserMapper extends MyBatisBaseTableMapper<MybatisTableUser, String> {
 
     @SelectSql
     User get(@Ignore String tableName, String id);

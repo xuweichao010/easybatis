@@ -20,15 +20,15 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
     E selectKey(K id);
 
     @UpdateSql
-    Long update(E entity);
+    Integer update(E entity);
 
     @InsertSql
-    Long insert(E entity);
+    Integer insert(E entity);
 
     @InsertSql
-    Long insertBatch(Collection<E> list);
+    Integer insertBatch(Collection<E> list);
 
     @DeleteSql
-    Long delete(K id);
+    Integer delete(K id);
 
 }
