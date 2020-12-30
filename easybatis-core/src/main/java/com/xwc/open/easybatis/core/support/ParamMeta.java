@@ -1,12 +1,11 @@
 package com.xwc.open.easybatis.core.support;
 
-import com.xwc.open.easybatis.core.anno.condition.filter.SetParam;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.ParamType;
-import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,6 +20,7 @@ public class ParamMeta {
     /**
      * 属于自定义对象还是java对象 true 是自定义对象  false为非自定义对象
      */
+    @Deprecated
     private ParamType type;
 
     private String paramName;
@@ -29,18 +29,30 @@ public class ParamMeta {
 
     private ConditionType condition;
 
+    private String parentParamName;
+
     private String alias;
 
     private boolean dynamic = false;
-
-    private boolean custom = false;
 
     private boolean entity = false;
 
     private boolean list = false;
 
+    private boolean primaryKey = false;
+
+    private List<ParamMeta> childList;
 
     private ParamMeta() {
+    }
+
+    public static ParamMeta builder(String columnName, String paramName, boolean dynamic) {
+        ParamMeta tar = new ParamMeta();
+        tar.columnName = columnName;
+        tar.paramName = paramName;
+        tar.dynamic = dynamic;
+        tar.condition = ConditionType.NONE;
+        return tar;
     }
 
 
@@ -51,30 +63,25 @@ public class ParamMeta {
         tar.condition = condition;
         tar.type = ParamType.FILED_TYPE;
         tar.alias = alias;
-        tar.custom = custom;
         tar.dynamic = dynamic;
-        tar.paramType();
         return tar;
     }
 
-    public static ParamMeta builderEqual(String column, String field) {
-        return builder(column, field, ConditionType.EQUAL, null, false, false);
+    public static ParamMeta builder(String column, String field) {
+        return builder(column, field, ConditionType.NONE, null, false, false);
     }
 
-    public static ParamMeta builderInsert(String field, boolean entity, boolean list) {
-        ParamMeta builder = builder(field, field, ConditionType.EQUAL, null, false, false);
+    public static ParamMeta builder(String column, String field, ConditionType condition) {
+        return builder(column, field, condition, null, false, false);
+    }
+
+    public static ParamMeta builder(String field, boolean entity, boolean list) {
+        ParamMeta builder = builder(field, field, ConditionType.NONE, null, false, false);
         builder.setEntity(entity);
         builder.setList(list);
         return builder;
     }
 
-    public static ParamMeta builderUpdate(String field, boolean entity, boolean list) {
-        ParamMeta builder = builder(field, field, ConditionType.EQUAL, null, false, false);
-        builder.setList(list);
-        builder.setEntity(entity);
-        builder.setCondition(ConditionType.SET_PARAM);
-        return builder;
-    }
 
     public void mergeConditionAnnotation(Map<String, Object> map) {
         String value = (String) map.get("value");
@@ -88,14 +95,46 @@ public class ParamMeta {
         ;
     }
 
-    public void paramType() {
-        if (this.custom) {
-            this.type = ParamType.FILED_TYPE_DYNAMIC;
+    public ParamType paramType() {
+        if (this.hasParent()) {
+            return ParamType.FILED_TYPE_DYNAMIC;
         } else if (this.dynamic) {
-            this.type = ParamType.PARAM_TYPE_DYNAMIC;
+            return ParamType.PARAM_TYPE_DYNAMIC;
         } else {
-            this.type = ParamType.PARAM_TYPE;
+            return ParamType.PARAM_TYPE;
         }
     }
 
+    public boolean isMultiCondition() {
+        return this.childList != null && !this.childList.isEmpty();
+    }
+
+    public boolean hasParent() {
+        return this.parentParamName != null;
+    }
+
+    public boolean isSetParam() {
+        return this.condition == ConditionType.SET_PARAM;
+    }
+
+    public boolean isIgnore() {
+        return this.condition == ConditionType.IGNORE;
+    }
+
+    public boolean isCondition() {
+        if (isMultiCondition()) {
+            for (ParamMeta paramMeta : this.childList) {
+                if (paramMeta.isParamCondition()) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return isParamCondition();
+        }
+    }
+
+    public boolean isParamCondition() {
+        return this.condition != ConditionType.NONE && this.condition != ConditionType.IGNORE && this.condition != ConditionType.SET_PARAM;
+    }
 }

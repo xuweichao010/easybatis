@@ -1,13 +1,16 @@
 package com.xwc.open.easybatis.core.support;
 
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
+import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import lombok.Data;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -18,7 +21,7 @@ public class MethodMeta {
     /**
      * SQL操作的类型
      */
-    private SqlCommandType sqlCommond;
+    private SqlCommandType sqlCommand;
 
     private boolean dynamic;
     /**
@@ -31,6 +34,7 @@ public class MethodMeta {
      * 参数有的定义信息
      */
     List<ParamMeta> paramMetaList;
+
 
     public <T extends Annotation> T chooseAnnotationType(Class<T> annotationClass) {
         return AnnotationUtils.findAnnotation(this.method, annotationClass);
@@ -64,5 +68,56 @@ public class MethodMeta {
         list.addAll(tableMetadata.getAuditorList());
         list.add(tableMetadata.getLogic());
         return list;
+    }
+
+    /**
+     * 获取方法是否是一个完整的动态语句
+     *
+     * @return
+     */
+    public boolean hasDynamic() {
+        if (this.sqlCommand == SqlCommandType.SELECT) {
+            return (dynamic || this.paramMetaList.stream().anyMatch(ParamMeta::isMultiCondition)) && this.paramMetaList.stream().noneMatch(ParamMeta::isParamCondition);
+        } else if (this.sqlCommand == SqlCommandType.UPDATE) {
+            if (dynamic) {
+                if (!hasSetParam() && entityParam() != null) {
+                    return true;
+                } else {
+                    throw new EasyBatisException("只为实体对象构建动态更新语句");
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public ParamMeta entityParam() {
+        List<ParamMeta> collect = this.paramMetaList.stream().filter(ParamMeta::isEntity).collect(Collectors.toList());
+        if (collect.size() == 1) {
+            return collect.get(0);
+        } else if (collect.size() > 1) {
+            throw new EasyBatisException("无法处理方法上的两个实体对象");
+        } else {
+            return null;
+        }
+    }
+
+    public ParamMeta keyParam() {
+        List<ParamMeta> collect = this.paramMetaList.stream().filter(ParamMeta::isPrimaryKey).collect(Collectors.toList());
+        if (collect.size() == 1) {
+            return collect.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public boolean hasSetParam() {
+        return this.paramMetaList.stream().anyMatch(ParamMeta::isSetParam);
+    }
+
+    public boolean hashCondition() {
+        return this.paramMetaList.stream().anyMatch(ParamMeta::isCondition);
     }
 }

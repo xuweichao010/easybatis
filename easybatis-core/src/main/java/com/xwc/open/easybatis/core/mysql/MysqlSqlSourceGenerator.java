@@ -1,14 +1,8 @@
 package com.xwc.open.easybatis.core.mysql;
 
+import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.interfaces.AbstractSqlSourceGenerator;
-import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
-import com.xwc.open.easybatis.core.interfaces.impl.DefaultInsertValueSnippet;
-import com.xwc.open.easybatis.core.interfaces.impl.DefaultUpdateColumnSnippet;
-import com.xwc.open.easybatis.core.interfaces.impl.DefaultUpdateConditionSnippet;
 import com.xwc.open.easybatis.core.support.MethodMeta;
-
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 创建人：徐卫超 CC
@@ -18,20 +12,21 @@ import java.util.stream.Stream;
 public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
 
     public MysqlSqlSourceGenerator() {
-        this.conditionList = Stream.of(new CompareCondition()).collect(Collectors.toList());
-        this.insertColumnValue = new DefaultInsertValueSnippet();
-        this.updateColumnSnippet = new DefaultUpdateColumnSnippet();
-        this.updateConditionSnippet = new DefaultUpdateConditionSnippet();
     }
 
     @Override
     public String select(MethodMeta methodMetaData) {
         StringBuilder sb = new StringBuilder();
         sb.append("<script>")
-                .append(" SELECT ").append(this.selectColumn(methodMetaData))
+                .append(" SELECT ").append(this.selectColumnSnippet.apply(methodMetaData))
                 .append(" FROM ").append(methodMetaData.getTableMetadata().getTableName());
-        if (!methodMetaData.getParamMetaList().isEmpty() || methodMetaData.getTableMetadata().getLogic() != null) {
-            sb.append(" WHERE ").append(this.queryCondition(methodMetaData));
+        String conditionSnippet = this.selectConditionSnippet.apply(methodMetaData);
+        if (StringUtils.hasText(conditionSnippet)) {
+            if (methodMetaData.hasDynamic()) {
+                sb.append(" <where> ").append(conditionSnippet).append(" </where>");
+            } else {
+                sb.append(" WHERE ").append(conditionSnippet);
+            }
         }
         sb.append("</script>");
         return sb.toString();
@@ -55,16 +50,27 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
     public String update(MethodMeta methodMetaData) {
         StringBuilder sb = new StringBuilder();
         sb.append("<script>")
-                .append(" UPDATE ").append(methodMetaData.getTableMetadata().getTableName())
-                .append(" FROM ").append(methodMetaData.getTableMetadata().getTableName())
-                .append(methodMetaData.isDynamic() ? " " : " SET ").append(this.updateColumnSnippet.apply(methodMetaData))
-                .append(" WHERE ").append(this.updateConditionSnippet.apply(methodMetaData));
+                .append(" UPDATE ").append(methodMetaData.getTableMetadata().getTableName());
+        if (methodMetaData.hasDynamic()) {
+            sb.append(" <set> ").append(this.updateColumnSnippet.apply(methodMetaData)).append(" </set>");
+        } else {
+            sb.append(" SET ").append(this.updateColumnSnippet.apply(methodMetaData));
+        }
+        if (methodMetaData.hashCondition() || methodMetaData.entityParam() != null) {
+            sb.append(" WHERE ").append(this.updateConditionSnippet.apply(methodMetaData));
+        }
         sb.append("</script>");
         return sb.toString();
     }
 
     @Override
     public String delete(MethodMeta methodMetaData) {
-        return null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("<script> DELETE FROM ").append(methodMetaData.getTableMetadata().getTableName());
+        if (methodMetaData.hashCondition()) {
+            sb.append(" WHERE ").append(this.deleteConditionSnippet.apply(methodMetaData));
+        }
+        sb.append("</script>");
+        return sb.toString();
     }
 }

@@ -8,11 +8,16 @@ package com.xwc.open.easybatis.core.interfaces;
 public interface MyBatisOrSqlTemplate {
 
     default String dynamicConditionIf(String paramName, String conditionQuery) {
-        return "<if test='" + paramName + "'> " + " AND " + conditionQuery + " </if>";
+        return "<if test='" + paramName + " != null'> " + andCondition(conditionQuery) + " </if>";
     }
 
+    default String andCondition(String conditionQuery) {
+        return " AND " + conditionQuery;
+    }
+
+
     default String dynamicSetIf(String setParam, String setValue) {
-        return "<if test='" + setParam + "'> " + setValue + " </if>";
+        return "<if test='" + setParam + " != null'> " + setValue + ",</if>";
     }
 
     default String dynamicConditionIsNull(String paramName, String conditionQuery) {
@@ -29,9 +34,10 @@ public interface MyBatisOrSqlTemplate {
     }
 
     default String mybatisParam(String fieldName, String prefix) {
-        if (prefix != null) {
-            return "#{ " + prefix + "." + fieldName + "}";
-        }
-        return "#{" + fieldName + "}";
+        return "#{" + paramName(fieldName, prefix) + "}";
+    }
+
+    default String paramName(String fieldName, String prefix) {
+        return prefix != null ? prefix + "." + fieldName : fieldName;
     }
 }

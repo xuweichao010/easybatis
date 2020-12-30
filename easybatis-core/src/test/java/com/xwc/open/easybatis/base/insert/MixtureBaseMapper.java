@@ -1,11 +1,14 @@
-package com.xwc.open.easybatis.core.interfaces;
+package com.xwc.open.easybatis.base.insert;
 
 import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
+import com.xwc.open.easybatis.core.anno.condition.PrimaryKey;
+import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 创建人：徐卫超
@@ -14,9 +17,10 @@ import java.util.Collection;
  * 功能：
  */
 @SuppressWarnings("unused")
-public interface BaseMapper<E, K> extends EasyMapper<E, K> {
+public interface MixtureBaseMapper<E, K> extends BaseMapper<E, K> {
 
     @SelectSql
+    @PrimaryKey
     E selectKey(K id);
 
     @UpdateSql
@@ -30,5 +34,8 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 
     @DeleteSql
     Integer delete(K id);
+
+    @InsertSql
+    Long insertBatchMixture(String tableName, List<E> listParam);
 
 }

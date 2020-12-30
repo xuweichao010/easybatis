@@ -1,9 +1,11 @@
-package com.xwc.open.easybatis.core.interfaces;
+package com.xwc.open.easybatis.base.select;
 
 import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
+import com.xwc.open.easybatis.core.anno.table.Ignore;
+import com.xwc.open.easybatis.core.interfaces.EasyMapper;
 
 import java.util.Collection;
 
@@ -14,21 +16,24 @@ import java.util.Collection;
  * 功能：
  */
 @SuppressWarnings("unused")
-public interface BaseMapper<E, K> extends EasyMapper<E, K> {
+public interface BaseTableMapper<E, K> extends EasyMapper<E, K> {
 
     @SelectSql
     E selectKey(K id);
 
+    @SelectSql
+    E selectTableKey(@Ignore String name, K id);
+
     @UpdateSql
-    Integer update(E entity);
+    Long update(E entity);
 
     @InsertSql
-    Integer insert(E entity);
+    Long insert(E entity);
 
     @InsertSql
-    Integer insertBatch(Collection<E> list);
+    Long insertBatch(Collection<E> list);
 
     @DeleteSql
-    Integer delete(K id);
+    Long delete(K id);
 
 }

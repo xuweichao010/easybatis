@@ -2,8 +2,6 @@ package com.xwc.open.easybatis.core.interfaces.condition;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
-import com.xwc.open.easybatis.core.enums.ParamType;
-import com.xwc.open.easybatis.core.interfaces.QueryCondition;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 
 import java.util.HashSet;
@@ -24,15 +22,13 @@ public class NullCondition implements QueryCondition {
     }
 
     @Override
-    public String apply(ParamMeta metaData) {
+    public String apply(ParamMeta metaData, boolean multi) {
         if (!conditionTypeSet.contains(metaData.getCondition())) return null;
         String condition = "`" + metaData.getColumnName() + "` " +
-                metaData.getCondition().expression() + " ";
+                metaData.getCondition().expression() + " " ;
         if (StringUtils.hasText(metaData.getAlias())) {
             condition = metaData.getAlias() + "." + condition;
         }
         return doApply(metaData.getParamName(), condition, metaData.getType());
     }
-
-
 }

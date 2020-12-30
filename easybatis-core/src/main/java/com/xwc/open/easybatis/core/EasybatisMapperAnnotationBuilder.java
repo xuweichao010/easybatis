@@ -1,26 +1,5 @@
 package com.xwc.open.easybatis.core;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
@@ -28,24 +7,9 @@ import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.interfaces.SqlSourceGenerator;
 import com.xwc.open.easybatis.core.support.TableMeta;
-import org.apache.ibatis.annotations.Arg;
-import org.apache.ibatis.annotations.CacheNamespace;
-import org.apache.ibatis.annotations.CacheNamespaceRef;
-import org.apache.ibatis.annotations.Case;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Lang;
-import org.apache.ibatis.annotations.MapKey;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Options.FlushCachePolicy;
-import org.apache.ibatis.annotations.Property;
-import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.SelectKey;
-import org.apache.ibatis.annotations.TypeDiscriminator;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.Options.FlushCachePolicy;
 import org.apache.ibatis.binding.MapperMethod.ParamMap;
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.builder.CacheRefResolver;
@@ -61,15 +25,7 @@ import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.mapping.Discriminator;
-import org.apache.ibatis.mapping.FetchType;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ResultFlag;
-import org.apache.ibatis.mapping.ResultMapping;
-import org.apache.ibatis.mapping.ResultSetType;
-import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.mapping.SqlSource;
-import org.apache.ibatis.mapping.StatementType;
+import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.parsing.PropertyParser;
 import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.scripting.LanguageDriver;
@@ -79,6 +35,14 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Clinton Begin
@@ -127,13 +91,16 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
                     continue;
                 }
                 // 对结果的映射处理
-                if (getAnnotationWrapper(method, false, SelectSql.class).isPresent() && tableMeta.isResult()) {
+                if (getAnnotationWrapper(method, false, SelectSql.class).isPresent() && !tableMeta.isResult()) {
                     //  TODO 用于处理返回结果 后期处理
                     parseResultMap(method);
                 }
                 try {
-                    // 解析方法
-                    parseStatement(method);
+                    Annotation annotation = annotationAssistant.chooseOperationAnnotationType(method);
+                    if (annotation != null) {
+                        // 解析方法
+                        parseStatement(method);
+                    }
                 } catch (IncompleteElementException e) {
                     configuration.addIncompleteMethod(new MethodResolver(this, method));
                 }
@@ -622,7 +589,6 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
     private SqlSource buildSqlSource(Annotation annotation, Class<?> parameterType, LanguageDriver languageDriver,
                                      Method method) {
         if (annotation instanceof SelectSql) {
-            //TODO 创建SQL
             return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.select(annotationAssistant.parseMethodMate(method, tableMeta))}, parameterType, languageDriver);
         } else if (annotation instanceof UpdateSql) {
             return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.update(annotationAssistant.parseMethodMate(method, tableMeta))}, parameterType, languageDriver);
@@ -686,14 +652,14 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             if (annotation instanceof SelectSql) {
                 databaseId = ((SelectSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.SELECT;
-            } else if (annotation instanceof Update) {
+            } else if (annotation instanceof UpdateSql) {
                 databaseId = ((UpdateSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.UPDATE;
-            } else if (annotation instanceof Insert) {
+            } else if (annotation instanceof InsertSql) {
                 databaseId = ((InsertSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.INSERT;
-            } else if (annotation instanceof Delete) {
-                databaseId = ((InsertSql) annotation).databaseId();
+            } else if (annotation instanceof DeleteSql) {
+                databaseId = ((DeleteSql) annotation).databaseId();
                 if (tableMeta.getLogic() != null) {
                     sqlCommandType = SqlCommandType.UPDATE;
                 } else {

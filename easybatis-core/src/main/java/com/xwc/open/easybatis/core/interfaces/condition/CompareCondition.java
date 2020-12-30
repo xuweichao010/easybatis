@@ -2,7 +2,6 @@ package com.xwc.open.easybatis.core.interfaces.condition;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
-import com.xwc.open.easybatis.core.interfaces.QueryCondition;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 
 
@@ -20,13 +19,10 @@ public class CompareCondition implements QueryCondition {
             ConditionType.GTQ, ConditionType.LT, ConditionType.LTQ).collect(Collectors.toSet());
 
     @Override
-    public String apply(ParamMeta metaData) {
+    public String apply(ParamMeta metaData, boolean multi) {
         if (!conditionTypeSet.contains(metaData.getCondition())) return null;
-        String condition = "`" + metaData.getColumnName() + "` " +
-                metaData.getCondition().expression() +
-                " #{" + metaData.getParamName() + "}";
-        if (StringUtils.hasText(metaData.getAlias())) condition = metaData.getAlias() + "." + condition;
-        return doApply(metaData.getParamName(), condition, metaData.getType());
+        String prefix = multi && metaData.hasParent() ? metaData.getParentParamName() : null;
+        String condition = "`" + metaData.getColumnName() + "` " + metaData.getCondition().expression() + " " + this.mybatisParam(metaData.getParamName(), prefix);
+        return doApply(paramName(metaData.getParamName(), prefix), condition, metaData.paramType());
     }
-
 }
