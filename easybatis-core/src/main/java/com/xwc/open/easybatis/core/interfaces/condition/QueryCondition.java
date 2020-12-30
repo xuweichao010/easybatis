@@ -11,12 +11,12 @@ import com.xwc.open.easybatis.core.support.ParamMeta;
  */
 public interface QueryCondition extends MyBatisOrSqlTemplate {
 
-    String apply(ParamMeta metaData,boolean multi);
+    String apply(ParamMeta metaData, boolean multi);
 
 
     default String doApply(String conditionParam, String conditionQuery, ParamType type) {
         if (type == ParamType.FILED_TYPE || type == ParamType.PARAM_TYPE) {
-            return conditionQuery;
+            return "AND" + conditionQuery;
         } else if (type == ParamType.FILED_TYPE_DYNAMIC) {
             return dynamicConditionIf(conditionParam, conditionQuery);
         } else if (type == ParamType.PARAM_TYPE_DYNAMIC) {

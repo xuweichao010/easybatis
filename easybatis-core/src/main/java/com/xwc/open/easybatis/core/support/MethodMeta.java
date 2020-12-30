@@ -70,9 +70,14 @@ public class MethodMeta {
         return list;
     }
 
+    /**
+     * 获取方法是否是一个完整的动态语句
+     *
+     * @return
+     */
     public boolean hasDynamic() {
         if (this.sqlCommand == SqlCommandType.SELECT) {
-            return dynamic || this.paramMetaList.stream().anyMatch(ParamMeta::isMultiCondition);
+            return (dynamic || this.paramMetaList.stream().anyMatch(ParamMeta::isMultiCondition)) && this.paramMetaList.stream().noneMatch(ParamMeta::isParamCondition);
         } else if (this.sqlCommand == SqlCommandType.UPDATE) {
             if (dynamic) {
                 if (!hasSetParam() && entityParam() != null) {
@@ -103,7 +108,7 @@ public class MethodMeta {
         List<ParamMeta> collect = this.paramMetaList.stream().filter(ParamMeta::isPrimaryKey).collect(Collectors.toList());
         if (collect.size() == 1) {
             return collect.get(0);
-        }  else {
+        } else {
             return null;
         }
     }

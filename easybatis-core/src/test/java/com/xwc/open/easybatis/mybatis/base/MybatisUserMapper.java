@@ -29,10 +29,9 @@ public interface MybatisUserMapper extends BaseMapper<MybatisUser, String> {
     List<MybatisUser> methodCustom(MybatisUserOne one);
 
 
-
     @SelectSql
     List<MybatisUser> methodMultiCustom(MybatisUserOne one, MybatisUserTwo two);
-//
-//    @SelectSql
-//    void methodMixture(@Equal String name, @Equal(dynamic = true) String orgCode, BaseSelectFilterTwo two);
+
+    @SelectSql
+    List<MybatisUser> methodMixture(@Equal(dynamic = true) String name, @Equal String orgCode, MybatisUserTwo two);
 }

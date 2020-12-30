@@ -56,7 +56,7 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         } else {
             sb.append(" SET ").append(this.updateColumnSnippet.apply(methodMetaData));
         }
-        if (methodMetaData.hashCondition()) {
+        if (methodMetaData.hashCondition() || methodMetaData.entityParam() != null) {
             sb.append(" WHERE ").append(this.updateConditionSnippet.apply(methodMetaData));
         }
         sb.append("</script>");

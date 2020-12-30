@@ -163,6 +163,7 @@ public class AnnotationAssistant {
                 paramMeta.setEntity(true);
             } else if (isKeyParam(parameter.getParameterizedType())) {
                 paramMeta.setPrimaryKey(true);
+                paramMeta.setCondition(ConditionType.EQUAL);
             } else {
                 throw new EasyBatisException("泛型类型不匹配");
             }

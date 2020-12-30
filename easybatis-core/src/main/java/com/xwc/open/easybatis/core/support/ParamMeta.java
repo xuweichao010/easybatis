@@ -124,15 +124,17 @@ public class ParamMeta {
     public boolean isCondition() {
         if (isMultiCondition()) {
             for (ParamMeta paramMeta : this.childList) {
-                if (paramMeta.condition != ConditionType.SET_PARAM) {
+                if (paramMeta.isParamCondition()) {
                     return true;
                 }
             }
             return false;
         } else {
-            return this.condition != ConditionType.SET_PARAM;
+            return isParamCondition();
         }
     }
 
-
+    public boolean isParamCondition() {
+        return this.condition != ConditionType.NONE && this.condition != ConditionType.IGNORE && this.condition != ConditionType.SET_PARAM;
+    }
 }

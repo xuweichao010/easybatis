@@ -91,8 +91,7 @@ public class BaseSelectTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
-                " FROM t_mysql_sql_source <where>  (#{name} IS NULL OR `name` = #{name})" +
-                " </where>" +
+                " FROM t_mysql_sql_source WHERE  (#{name} IS NULL OR `name` = #{name})" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
     }
@@ -119,9 +118,8 @@ public class BaseSelectTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
-                " <where>  (#{name} IS NULL OR `name` = #{name})" +
+                " WHERE  (#{name} IS NULL OR `name` = #{name})" +
                 " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
-                " </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
     }
@@ -183,11 +181,10 @@ public class BaseSelectTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
-                " <where> `name` = #{name}" +
+                " WHERE `name` = #{name}" +
                 " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
                 " <if test='two.orgName != null'>  AND `orgName` = #{two.orgName} </if>" +
                 " <if test='two.name != null'>  AND `name` = #{two.name} </if>" +
-                " </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
     }
