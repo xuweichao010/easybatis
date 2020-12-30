@@ -1,10 +1,13 @@
 package com.xwc.open.easybatis.mybatis.base;
 
+import lombok.Data;
+
 /**
  * 作者：徐卫超 cc
  * 时间：2020/12/30
  * 描述：查询条件
  */
+@Data
 public class MybatisUserTwo {
 
     /**

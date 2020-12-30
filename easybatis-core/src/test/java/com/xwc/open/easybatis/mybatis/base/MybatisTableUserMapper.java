@@ -23,4 +23,8 @@ public interface MybatisTableUserMapper extends MyBatisBaseTableMapper<MybatisTa
 
     @SelectSql
     List<MybatisTableUser> methodCustom(@Ignore String tableName, MybatisUserOne mybatisUserOne);
+
+    @SelectSql
+    List<MybatisTableUser> methodMultiCustom(@Ignore String tableName, MybatisUserOne one, MybatisUserTwo two);
+
 }
