@@ -20,4 +20,7 @@ public interface MybatisTableUserMapper extends MyBatisBaseTableMapper<MybatisTa
 
     @SelectSql
     List<MybatisTableUser> methodParamDynamic(@Ignore String tableName, @Equal(dynamic = true) String name, @Equal(dynamic = true) String orgCode);
+
+    @SelectSql
+    List<MybatisTableUser> methodCustom(@Ignore String tableName, MybatisUserOne mybatisUserOne);
 }

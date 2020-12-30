@@ -22,7 +22,11 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
                 .append(" FROM ").append(methodMetaData.getTableMetadata().getTableName());
         String conditionSnippet = this.selectConditionSnippet.apply(methodMetaData);
         if (StringUtils.hasText(conditionSnippet)) {
-            sb.append(" WHERE ").append(conditionSnippet);
+            if (methodMetaData.hasDynamic()) {
+                sb.append(" <where> ").append(conditionSnippet).append(" </where>");
+            } else {
+                sb.append(" WHERE ").append(conditionSnippet);
+            }
         }
         sb.append("</script>");
         return sb.toString();

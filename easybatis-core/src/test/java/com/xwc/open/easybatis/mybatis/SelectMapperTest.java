@@ -1,10 +1,7 @@
 package com.xwc.open.easybatis.mybatis;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
-import com.xwc.open.easybatis.mybatis.base.MybatisTableUser;
-import com.xwc.open.easybatis.mybatis.base.MybatisTableUserMapper;
-import com.xwc.open.easybatis.mybatis.base.MybatisUser;
-import com.xwc.open.easybatis.mybatis.base.MybatisUserMapper;
+import com.xwc.open.easybatis.mybatis.base.*;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -62,7 +59,7 @@ public class SelectMapperTest {
     }
 
     @Test
-    public void methodParamDynamic(){
+    public void methodParamDynamic() {
         List<MybatisUser> userList = mybatisUserMapper.methodParamDynamic("上海分公司1", "200003");
         userList = mybatisUserMapper.methodParamDynamic(null, null);
         userList = mybatisUserMapper.methodParamDynamic(null, "200003");
@@ -71,10 +68,24 @@ public class SelectMapperTest {
         tableUserList = mybatisTableUserMapper.methodParamDynamic("t_user", null, null);
         tableUserList = mybatisTableUserMapper.methodParamDynamic("t_user", null, "200003");
         tableUserList = mybatisTableUserMapper.methodParamDynamic("t_user", "上海分公司1", null);
-
     }
 
+    @Test
+    public void methodCustom() {
+        MybatisUserOne filter = new MybatisUserOne();
+        List<MybatisUser> userList = mybatisUserMapper.methodCustom(filter);
+        List<MybatisTableUser> tableUserList = mybatisTableUserMapper.methodCustom("t_user", filter);
+        filter.setOrgCode("200");
+        userList = mybatisUserMapper.methodCustom(filter);
+        tableUserList = mybatisTableUserMapper.methodCustom("t_user", filter);
+        filter.setOrgName("总公司");
+        userList = mybatisUserMapper.methodCustom(filter);
+        tableUserList = mybatisTableUserMapper.methodCustom("t_user", filter);
+        filter.setId("37bd0225cc94400db744aac8dee8a001");
+        userList = mybatisUserMapper.methodCustom(filter);
+        tableUserList = mybatisTableUserMapper.methodCustom("t_user", filter);
 
+    }
 
 
 }

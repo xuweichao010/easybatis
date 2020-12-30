@@ -72,7 +72,7 @@ public class MethodMeta {
 
     public boolean hasDynamic() {
         if (this.sqlCommand == SqlCommandType.SELECT) {
-            return dynamic;
+            return dynamic || this.paramMetaList.stream().anyMatch(ParamMeta::isMultiCondition);
         } else if (this.sqlCommand == SqlCommandType.UPDATE) {
             if (dynamic) {
                 if (!hasSetParam() && entityParam() != null) {
