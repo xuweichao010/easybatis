@@ -140,6 +140,37 @@ public class CompareConditionTest {
         Assert.assertEquals(sqlTarget, sql);
     }
 
+
+    @Test
+    public void greaterThanAnnotation() {
+        Method method = chooseMethod(ConditionMapper.class, "greaterThanAnnotation");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `age` <![CDATA[>]]> #{age}</script>";
+        System.out.println(sql);
+    }
+
+    @Test
+    public void greaterThanAnnotationDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "greaterThanAnnotationDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{age} IS NULL OR `age` <![CDATA[>]]> #{age})</script>";
+        System.out.println(sql);
+    }
+
+    @Test
+    public void greaterThanAnnotationCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "greaterThanAnnotationCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "";
+        System.out.println(sql);
+    }
+
     @Test
     public void XX() {
         Method method = chooseMethod(ConditionMapper.class, "notEqual");
