@@ -33,7 +33,7 @@ public class DeleteMapperTest {
     MybatisTableUserMapper mybatisTableUserMapper;
     MybatisUserMapper mybatisUserMapper;
     SqlSession sqlSession;
-    int TEST_TAG = -9;
+    int TEST_TAG = 200;
     MybatisTableUser mybatisTableUser = genderMybatisTableUser();
     MybatisUser mybatisUser = genderMybatisUser();
 
@@ -65,56 +65,6 @@ public class DeleteMapperTest {
         Assert.assertEquals(mybatisUserCount, Integer.valueOf(1));
     }
 
-    @Test
-    public void updateActivate() {
-        MybatisUser mybatisUserActivate = new MybatisUser();
-        mybatisUserActivate.setId(mybatisUser.getId());
-        mybatisUserActivate.setJob(1);
-        mybatisUserMapper.updateActivate(mybatisUserActivate);
-        MybatisUser mybatisUser = mybatisUserMapper.selectKey(this.mybatisUser.getId());
-        Assert.assertEquals(mybatisUser.getJob(), mybatisUserActivate.getJob());
-        MybatisTableUser mybatisTableUserActivate = new MybatisTableUser();
-        mybatisTableUserActivate.setJob(1);
-        mybatisTableUserActivate.setId(mybatisTableUser.getId());
-        mybatisTableUserMapper.updateActivate("t_user", mybatisTableUserActivate);
-        MybatisTableUser mybatisTableUser = mybatisTableUserMapper.selectKey("t_user", this.mybatisTableUser.getId());
-        Assert.assertEquals(mybatisTableUser.getJob(), mybatisTableUserActivate.getJob());
-    }
-
-
-    @Test
-    public void updateParam() {
-        SqlSession sqlSession = sqlSessionFactory.openSession(false);
-        MybatisTableUserMapper mybatisTableUserMapper = sqlSession.getMapper(MybatisTableUserMapper.class);
-        MybatisUserMapper mybatisUserMapper = sqlSession.getMapper(MybatisUserMapper.class);
-        mybatisUserMapper.updateParam(5, 3);
-        mybatisTableUserMapper.updateParam("t_user", 5, 3);
-        MybatisUser mybatisUser = mybatisUserMapper.selectKey(this.mybatisUser.getId());
-        Assert.assertEquals(Integer.valueOf(5), mybatisUser.getJob());
-        Assert.assertEquals(Integer.valueOf(3), mybatisUser.getAge());
-
-        MybatisTableUser mybatisTableUser = mybatisTableUserMapper.selectKey("t_user", this.mybatisTableUser.getId());
-        Assert.assertEquals(Integer.valueOf(5), mybatisTableUser.getJob());
-        Assert.assertEquals(Integer.valueOf(3), mybatisTableUser.getAge());
-    }
-
-    @Test
-    public void updateParamCondition() {
-        mybatisUserMapper.updateParamCondition(4, 2, mybatisUser.getId());
-        mybatisTableUserMapper.updateParamCondition("t_user", 4, 2, mybatisTableUser.getId());
-        MybatisUser mybatisUser = mybatisUserMapper.selectKey(this.mybatisUser.getId());
-        Assert.assertEquals(Integer.valueOf(4), mybatisUser.getJob());
-        Assert.assertEquals(Integer.valueOf(2), mybatisUser.getAge());
-        MybatisTableUser mybatisTableUser = mybatisTableUserMapper.selectKey("t_user", this.mybatisTableUser.getId());
-        Assert.assertEquals(Integer.valueOf(4), mybatisTableUser.getJob());
-        Assert.assertEquals(Integer.valueOf(2), mybatisTableUser.getAge());
-    }
-
-
-    @Test
-    public void updateEntityDynamicMixture() {
-
-    }
 
     private MybatisUser genderMybatisUser() {
         Random random = new Random();

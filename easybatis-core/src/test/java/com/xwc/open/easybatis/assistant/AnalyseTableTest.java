@@ -4,8 +4,8 @@ package com.xwc.open.easybatis.assistant;
 import com.xwc.open.easybatis.assistant.table.TableColumn;
 import com.xwc.open.easybatis.assistant.table.TableNotValue;
 import com.xwc.open.easybatis.assistant.table.TableValue;
-import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
+import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
@@ -65,7 +65,7 @@ public class AnalyseTableTest {
                 Assert.assertTrue(id.isInsertIgnore());
             }else {
                 Assert.assertFalse(id.isSelectIgnore());
-                Assert.assertFalse(id.isUpdateIgnore());
+                Assert.assertTrue(id.isUpdateIgnore());
                 Assert.assertFalse(id.isInsertIgnore());
             }
         }

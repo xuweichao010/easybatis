@@ -30,7 +30,7 @@ public class SelectMapperTest {
     MybatisTableUserMapper mybatisTableUserMapper;
     MybatisUserMapper mybatisUserMapper;
     SqlSession sqlSession;
-    int TEST_TAG = -1;
+    int TEST_TAG = 300;
 
 
     @Before

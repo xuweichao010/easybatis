@@ -37,7 +37,7 @@ public class BaseMapperTest {
     MybatisUserMapper mybatisUserMapper;
     SqlSession sqlSession;
 
-    int TEST_TAG = -1;
+    int TEST_TAG = 100;
 
 
     @Before
