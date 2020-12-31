@@ -42,4 +42,7 @@ public interface MybatisTableUserMapper extends MyBatisBaseTableMapper<MybatisTa
 
     @UpdateSql
     Integer updateParam(@Ignore String tableName, @SetParam Integer job, @SetParam Integer age);
+
+    @DeleteSql
+    Integer deleteParam(@Ignore String tableName, String name, Integer age);
 }

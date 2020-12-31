@@ -37,4 +37,6 @@ public interface MyBatisBaseTableMapper<E, K> extends EasyMapper<E, K> {
     @DeleteSql
     Integer delete(@Ignore String tableName, K id);
 
+
+
 }
