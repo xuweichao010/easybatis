@@ -3,6 +3,7 @@ package com.xwc.open.easybatis.core.interfaces.snippet;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
+import com.xwc.open.easybatis.core.interfaces.condition.NullCondition;
 import com.xwc.open.easybatis.core.interfaces.condition.QueryCondition;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
@@ -23,12 +24,12 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
     protected List<QueryCondition> conditionList = new ArrayList<>();
 
     public DefaultSelectConditionSnippet() {
-        this.conditionList = Stream.of(new CompareCondition()).collect(Collectors.toList());
+        this.conditionList = Stream.of(new CompareCondition(), new NullCondition()).collect(Collectors.toList());
     }
 
     public String apply(MethodMeta methodMeta) {
         List<ParamMeta> paramMetaList = methodMeta.getParamMetaList();
-        List<ParamMeta> queryList = paramMetaList.stream().filter(paramMeta->!paramMeta.isIgnore()).collect(Collectors.toList());
+        List<ParamMeta> queryList = paramMetaList.stream().filter(paramMeta -> !paramMeta.isIgnore()).collect(Collectors.toList());
         // 处理参数为主键类型的情况
         List<ParamMeta> list = new ArrayList<>();
         boolean multi = paramMetaList.size() != queryList.size();

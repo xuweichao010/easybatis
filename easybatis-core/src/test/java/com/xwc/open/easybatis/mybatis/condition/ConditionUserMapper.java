@@ -1,9 +1,7 @@
 package com.xwc.open.easybatis.mybatis.condition;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
-import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
-import com.xwc.open.easybatis.core.anno.condition.filter.GreaterThan;
-import com.xwc.open.easybatis.core.anno.condition.filter.NotEqual;
+import com.xwc.open.easybatis.core.anno.condition.filter.*;
 import com.xwc.open.easybatis.core.interfaces.EasyMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -48,5 +46,32 @@ public interface ConditionUserMapper extends EasyMapper<ConditionUser, String> {
 
     @SelectSql
     List<ConditionUser> greaterThanAnnotationCustom(@GreaterThan("age") Integer customAge);
+
+    @SelectSql
+    List<ConditionUser> lessThanAnnotation(@LessThan Integer age);
+
+    @SelectSql
+    List<ConditionUser> lessThanAnnotationDynamic(@LessThan(dynamic = true) Integer age);
+
+    @SelectSql
+    List<ConditionUser> lessThanAnnotationCustom(@LessThan("age") Integer customAge);
+
+    @SelectSql
+    List<ConditionUser> greaterThanEqualAnnotation(@GreaterThanEqual Integer age);
+
+    @SelectSql
+    List<ConditionUser> greaterThanEqualAnnotationDynamic(@GreaterThanEqual(dynamic = true) Integer age);
+
+    @SelectSql
+    List<ConditionUser> greaterThanEqualAnnotationCustom(@GreaterThanEqual("age") Integer customAge);
+
+    @SelectSql
+    List<ConditionUser> lessThanEqualAnnotation(@LessThanEqual Integer age);
+
+    @SelectSql
+    List<ConditionUser> lessThanEqualAnnotationDynamic(@LessThanEqual(dynamic = true) Integer age);
+
+    @SelectSql
+    List<ConditionUser> lessThanEqualAnnotationCustom(@LessThanEqual("age") Integer customAge);
 
 }

@@ -1,9 +1,7 @@
 package com.xwc.open.easybatis.core.interfaces.condition;
 
-import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.support.ParamMeta;
-
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,7 +13,7 @@ import java.util.stream.Stream;
  * 备注： 比较类型的
  */
 public class CompareCondition implements QueryCondition {
-    private final Set<ConditionType> conditionTypeSet = Stream.of(ConditionType.EQUAL, ConditionType.NOT_EQUEL, ConditionType.GT,
+    private final Set<ConditionType> conditionTypeSet = Stream.of(ConditionType.EQUAL, ConditionType.NOT_EQUAL, ConditionType.GT,
             ConditionType.GTQ, ConditionType.LT, ConditionType.LTQ).collect(Collectors.toSet());
 
     @Override

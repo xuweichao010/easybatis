@@ -1,9 +1,7 @@
 package com.xwc.open.easybatis.mybatis.condition;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
-import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
-import com.xwc.open.easybatis.core.anno.condition.filter.GreaterThan;
-import com.xwc.open.easybatis.core.anno.condition.filter.NotEqual;
+import com.xwc.open.easybatis.core.anno.condition.filter.*;
 import com.xwc.open.easybatis.core.anno.table.Ignore;
 import com.xwc.open.easybatis.core.interfaces.EasyMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -52,5 +50,32 @@ public interface ConditionTableUserMapper extends EasyMapper<ConditionTableUser,
 
     @SelectSql
     List<ConditionTableUser> greaterThanAnnotationCustom(@Ignore String tableName, @GreaterThan("age") Integer customAge);
+
+    @SelectSql
+    List<ConditionTableUser> lessThanAnnotation(@Ignore String tableName, @LessThan Integer age);
+
+    @SelectSql
+    List<ConditionTableUser> lessThanAnnotationDynamic(@Ignore String tableName, @LessThan(dynamic = true) Integer age);
+
+    @SelectSql
+    List<ConditionTableUser> lessThanAnnotationCustom(@Ignore String tableName, @LessThan("age") Integer customAge);
+
+    @SelectSql
+    List<ConditionTableUser> greaterThanEqualAnnotation(@Ignore String tableName, @GreaterThanEqual Integer age);
+
+    @SelectSql
+    List<ConditionTableUser> greaterThanEqualAnnotationDynamic(@Ignore String tableName, @GreaterThanEqual(dynamic = true) Integer age);
+
+    @SelectSql
+    List<ConditionTableUser> greaterThanEqualAnnotationCustom(@Ignore String tableName, @GreaterThanEqual("age") Integer customAge);
+
+    @SelectSql
+    List<ConditionTableUser> lessThanEqualAnnotation(@Ignore String tableName, @LessThanEqual Integer age);
+
+    @SelectSql
+    List<ConditionTableUser> lessThanEqualAnnotationDynamic(@Ignore String tableName, @LessThanEqual(dynamic = true) Integer age);
+
+    @SelectSql
+    List<ConditionTableUser> lessThanEqualAnnotationCustom(@Ignore String tableName, @LessThanEqual("age") Integer customAge);
 
 }

@@ -114,8 +114,59 @@ public class ConditionMapperTest {
         validate(conditionUserList, conditionTableUserList, true);
     }
 
+    @Test
+    public void lessThan() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.lessThanAnnotation(51);
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.lessThanAnnotation("t_user", 51);
+        validate(conditionUserList, conditionTableUserList, true);
 
+        conditionUserList = conditionUserMapper.lessThanAnnotationDynamic(51);
+        conditionTableUserList = conditionTableUserMapper.lessThanAnnotationDynamic("t_user", 51);
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.lessThanAnnotationDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.lessThanAnnotationDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
 
+        conditionUserList = conditionUserMapper.lessThanAnnotationCustom(51);
+        conditionTableUserList = conditionTableUserMapper.lessThanAnnotationCustom("t_user", 51);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
+
+    @Test
+    public void greaterThanEqual() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.greaterThanEqualAnnotation(50);
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.greaterThanEqualAnnotation("t_user", 50);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.greaterThanEqualAnnotationDynamic(50);
+        conditionTableUserList = conditionTableUserMapper.greaterThanEqualAnnotationDynamic("t_user", 50);
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.greaterThanEqualAnnotationDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.greaterThanEqualAnnotationDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.greaterThanEqualAnnotationCustom(50);
+        conditionTableUserList = conditionTableUserMapper.greaterThanEqualAnnotationCustom("t_user", 50);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
+
+    @Test
+    public void lessThanEqual() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.lessThanEqualAnnotation(50);
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.lessThanEqualAnnotation("t_user", 50);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.lessThanEqualAnnotationDynamic(50);
+        conditionTableUserList = conditionTableUserMapper.lessThanEqualAnnotationDynamic("t_user", 50);
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.lessThanEqualAnnotationDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.lessThanEqualAnnotationDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.lessThanEqualAnnotationCustom(50);
+        conditionTableUserList = conditionTableUserMapper.lessThanEqualAnnotationCustom("t_user", 50);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
 
 
 //    @Test

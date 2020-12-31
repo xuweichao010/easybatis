@@ -2,7 +2,6 @@ package com.xwc.open.easybatis.core.anno.condition.filter;
 
 import com.xwc.open.easybatis.core.enums.ConditionType;
 
-
 import java.lang.annotation.*;
 
 /**
@@ -14,7 +13,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Condition(type = ConditionType.NOT_EQUEL)
+@Condition(type = ConditionType.NOT_EQUAL)
 public @interface NotEqual {
 
     /**
