@@ -3,6 +3,7 @@ package com.xwc.open.easybatis.mysql.condition;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
 import com.xwc.open.easybatis.core.anno.condition.filter.GreaterThan;
+import com.xwc.open.easybatis.core.anno.condition.filter.LessThan;
 import com.xwc.open.easybatis.core.anno.condition.filter.NotEqual;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 
@@ -45,4 +46,13 @@ public interface ConditionMapper extends BaseMapper<ConditionEntity, String> {
 
     @SelectSql
     void greaterThanAnnotationCustom(@GreaterThan("custom_age") Integer age);
+
+    @SelectSql
+    void lessThanAnnotation(@LessThan Integer age);
+
+    @SelectSql
+    void lessThanAnnotationDynamic(@LessThan(dynamic = true) Integer age);
+
+    @SelectSql
+    void lessThanAnnotationCustom(@LessThan("age") Integer customAge);
 }

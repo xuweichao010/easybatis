@@ -148,7 +148,7 @@ public class CompareConditionTest {
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `age` <![CDATA[>]]> #{age}</script>";
-        System.out.println(sql);
+        Assert.assertEquals(sqlTarget, sql);
     }
 
     @Test
@@ -158,7 +158,7 @@ public class CompareConditionTest {
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{age} IS NULL OR `age` <![CDATA[>]]> #{age})</script>";
-        System.out.println(sql);
+        Assert.assertEquals(sqlTarget, sql);
     }
 
     @Test
@@ -167,11 +167,42 @@ public class CompareConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "";
-        System.out.println(sql);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `custom_age` <![CDATA[>]]> #{age}</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+
+    @Test
+    public void lessThanAnnotation() {
+        Method method = chooseMethod(ConditionMapper.class, "lessThanAnnotation");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `age` <![CDATA[<]]> #{age}</script>";
+        Assert.assertEquals(sqlTarget, sql);
     }
 
     @Test
+    public void lessThanAnnotationDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "lessThanAnnotationDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{age} IS NULL OR `age` <![CDATA[<]]> #{age})</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void lessThanAnnotationCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "lessThanAnnotationCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `age` <![CDATA[<]]> #{customAge}</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+
     public void XX() {
         Method method = chooseMethod(ConditionMapper.class, "notEqual");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,

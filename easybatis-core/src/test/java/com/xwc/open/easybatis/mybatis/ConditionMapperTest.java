@@ -114,6 +114,24 @@ public class ConditionMapperTest {
         validate(conditionUserList, conditionTableUserList, true);
     }
 
+//    @Test
+//    public void greaterThan() {
+//        List<ConditionUser> conditionUserList = conditionUserMapper.greaterThanAnnotation(49);
+//        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.greaterThanAnnotation("t_user", 49);
+//        validate(conditionUserList, conditionTableUserList, true);
+//
+//        conditionUserList = conditionUserMapper.greaterThanAnnotationDynamic(49);
+//        conditionTableUserList = conditionTableUserMapper.greaterThanAnnotationDynamic("t_user", 49);
+//        validate(conditionUserList, conditionTableUserList, true);
+//        conditionUserList = conditionUserMapper.greaterThanAnnotationDynamic(null);
+//        conditionTableUserList = conditionTableUserMapper.greaterThanAnnotationDynamic("t_user", null);
+//        validate(conditionUserList, conditionTableUserList, true);
+//
+//        conditionUserList = conditionUserMapper.greaterThanAnnotationCustom(49);
+//        conditionTableUserList = conditionTableUserMapper.greaterThanAnnotationCustom("t_user", 49);
+//        validate(conditionUserList, conditionTableUserList, true);
+//    }
+
 
     private void validate(List<ConditionUser> userList, List<ConditionTableUser> tableUserList, boolean has) {
         if (has) {
