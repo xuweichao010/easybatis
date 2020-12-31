@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.mysql.condition;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
+import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 
 /**
@@ -12,4 +13,16 @@ public interface ConditionMapper extends BaseMapper<ConditionEntity, String> {
 
     @SelectSql
     void defaultEqual(String name);
+
+    @SelectSql(dynamic = true)
+    void defaultEqualDynamic(String name);
+
+    @SelectSql
+    void equalAnnotation(@Equal String name);
+
+    @SelectSql
+    void equalAnnotationDynamic(@Equal(dynamic = true) String name);
+
+    @SelectSql
+    void equalAnnotationCustomColumn(@Equal("custom_name") String name);
 }

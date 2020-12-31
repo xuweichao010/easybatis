@@ -87,18 +87,22 @@ public class UpateMapperTest {
     }
 
 
-//    @Test
-//    public void updateParam() {
-//        mybatisUserMapper.updateParam(5, 3);
-//        mybatisTableUserMapper.updateParam("t_user", 5, 3);
-//        MybatisUser mybatisUser = mybatisUserMapper.selectKey(this.mybatisUser.getId());
-//        Assert.assertEquals(Integer.valueOf(5), mybatisUser.getJob());
-//        Assert.assertEquals(Integer.valueOf(3), mybatisUser.getAge());
-//
-//        MybatisTableUser mybatisTableUser = mybatisTableUserMapper.selectKey("t_user", this.mybatisTableUser.getId());
-//        Assert.assertEquals(Integer.valueOf(5), mybatisTableUser.getJob());
-//        Assert.assertEquals(Integer.valueOf(3), mybatisTableUser.getAge());
-//    }
+    @Test
+    public void updateParam() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(false);
+        MybatisTableUserMapper mybatisTableUserMapper = sqlSession.getMapper(MybatisTableUserMapper.class);
+        MybatisUserMapper mybatisUserMapper = sqlSession.getMapper(MybatisUserMapper.class);
+        mybatisUserMapper.updateParam(5, 3);
+        mybatisTableUserMapper.updateParam("t_user", 5, 3);
+        MybatisUser mybatisUser = mybatisUserMapper.selectKey(this.mybatisUser.getId());
+        Assert.assertEquals(Integer.valueOf(5), mybatisUser.getJob());
+        Assert.assertEquals(Integer.valueOf(3), mybatisUser.getAge());
+
+        MybatisTableUser mybatisTableUser = mybatisTableUserMapper.selectKey("t_user", this.mybatisTableUser.getId());
+        Assert.assertEquals(Integer.valueOf(5), mybatisTableUser.getJob());
+        Assert.assertEquals(Integer.valueOf(3), mybatisTableUser.getAge());
+        sqlSession.rollback();
+    }
 
     @Test
     public void updateParamCondition() {
@@ -111,7 +115,6 @@ public class UpateMapperTest {
         Assert.assertEquals(Integer.valueOf(4), mybatisTableUser.getJob());
         Assert.assertEquals(Integer.valueOf(2), mybatisTableUser.getAge());
     }
-
 
 
     private MybatisUser genderMybatisUser() {

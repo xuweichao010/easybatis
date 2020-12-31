@@ -10,7 +10,9 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,14 +43,69 @@ public class CompareConditionTest {
         this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(ConditionMapper.class));
     }
 
-   // @Test
+    @Test
     public void defaultEqual() {
         Method method = chooseMethod(ConditionMapper.class, "defaultEqual");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
-        System.out.println(sql);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " WHERE `name` = #{name}" +
+                "</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
 
+    @Test
+    public void defaultEqualDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "defaultEqualDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " WHERE  (#{name} IS NULL OR `name` = #{name})" +
+                "</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void equalAnnotation() {
+        Method method = chooseMethod(ConditionMapper.class, "equalAnnotation");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " WHERE `name` = #{name}" +
+                "</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void equalAnnotationDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "equalAnnotationDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " WHERE  (#{name} IS NULL OR `name` = #{name})" +
+                "</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void equalAnnotationCustomColumn() {
+        Method method = chooseMethod(ConditionMapper.class, "equalAnnotationCustomColumn");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " WHERE `custom_name` = #{name}" +
+                "</script>";
+        Assert.assertEquals(sqlTarget, sql);
     }
 
 
