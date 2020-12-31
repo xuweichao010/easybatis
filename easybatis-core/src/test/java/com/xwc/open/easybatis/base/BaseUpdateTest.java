@@ -50,7 +50,7 @@ public class BaseUpdateTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source" +
-                " SET id = #{id}, orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
+                " SET orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
                 " WHERE" +
                 " id = #{id}" +
                 "</script>";
@@ -64,7 +64,7 @@ public class BaseUpdateTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source" +
-                " SET id = #{id}, orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
+                " SET orgCode = #{orgCode}, orgName = #{orgName}, name = #{name}" +
                 " WHERE" +
                 " id = #{id}" +
                 "</script>";
@@ -78,7 +78,7 @@ public class BaseUpdateTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source" +
-                " SET id = #{entity.id}, orgCode = #{entity.orgCode}, orgName = #{entity.orgName}, name = #{entity.name}" +
+                " SET orgCode = #{entity.orgCode}, orgName = #{entity.orgName}, name = #{entity.name}" +
                 " WHERE id = #{entity.id}" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
@@ -117,7 +117,6 @@ public class BaseUpdateTest {
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source" +
                 " <set>" +
-                " <if test='id != null'> id = #{id},</if>" +
                 " <if test='orgCode != null'> orgCode = #{orgCode},</if>" +
                 " <if test='orgName != null'> orgName = #{orgName},</if>" +
                 " <if test='name != null'> name = #{name},</if>" +
@@ -134,10 +133,9 @@ public class BaseUpdateTest {
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source" +
                 " <set>" +
-                " <if test='id != null'> id = #{entity.id},</if>" +
-                " <if test='orgCode != null'> orgCode = #{entity.orgCode},</if>" +
-                " <if test='orgName != null'> orgName = #{entity.orgName},</if>" +
-                " <if test='name != null'> name = #{entity.name},</if>" +
+                " <if test='entity.orgCode != null'> orgCode = #{entity.orgCode},</if>" +
+                " <if test='entity.orgName != null'> orgName = #{entity.orgName},</if>" +
+                " <if test='entity.name != null'> name = #{entity.name},</if>" +
                 " </set>" +
                 " WHERE id = #{entity.id}</script>";
        Assert.assertEquals(sql, targetSql);

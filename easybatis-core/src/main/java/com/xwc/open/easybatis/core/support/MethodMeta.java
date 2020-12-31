@@ -45,12 +45,7 @@ public class MethodMeta {
     }
 
     public List<ColumnMeta> selectColumnList() {
-        ArrayList<ColumnMeta> list = new ArrayList<>();
-        list.add(tableMetadata.getId());
-        list.addAll(tableMetadata.getColumnMetaList());
-        list.addAll(tableMetadata.getAuditorList());
-        list.add(tableMetadata.getLogic());
-        return list.stream().filter(Objects::nonNull).filter(column -> !column.isSelectIgnore()).collect(Collectors.toList());
+        return column().stream().filter(Objects::nonNull).filter(column -> !column.isSelectIgnore()).collect(Collectors.toList());
     }
 
     public List<ColumnMeta> insertColumnList() {

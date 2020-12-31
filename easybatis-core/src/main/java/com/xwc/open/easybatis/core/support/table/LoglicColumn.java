@@ -19,6 +19,7 @@ public class LoglicColumn extends ColumnMeta {
         this.invalid = loglic.invalid();
         this.setUpdateIgnore(true);
         this.setInsertIgnore(false);
+        this.setSelectIgnore(true);
         this.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(loglic));
     }
 

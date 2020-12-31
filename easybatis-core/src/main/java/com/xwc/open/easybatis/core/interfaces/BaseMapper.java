@@ -22,6 +22,9 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
     @UpdateSql
     Integer update(E entity);
 
+    @UpdateSql(dynamic = true)
+    Integer updateActivate(E entity);
+
     @InsertSql
     Integer insert(E entity);
 

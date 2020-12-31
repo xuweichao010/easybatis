@@ -25,6 +25,9 @@ public interface MyBatisBaseTableMapper<E, K> extends EasyMapper<E, K> {
     @UpdateSql
     Integer update(@Ignore String tableName, E entity);
 
+    @UpdateSql(dynamic = true)
+    Integer updateActivate(@Ignore String tableName, E entity);
+
     @InsertSql
     Integer insert(@Ignore String tableName, E entity);
 
