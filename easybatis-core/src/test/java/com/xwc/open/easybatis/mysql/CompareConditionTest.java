@@ -108,6 +108,49 @@ public class CompareConditionTest {
         Assert.assertEquals(sqlTarget, sql);
     }
 
+    @Test
+    public void notEqualAnnotation() {
+        Method method = chooseMethod(ConditionMapper.class, "notEqualAnnotation");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " WHERE `name` != #{name}</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void notEqualAnnotationDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "notEqualAnnotationDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{name} IS NULL OR `name` != #{name})</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void notEqualAnnotationCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "notEqualAnnotationCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `custom_name` != #{name}</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void XX() {
+        Method method = chooseMethod(ConditionMapper.class, "notEqual");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "";
+        System.out.println(sql);
+        // Assert.assertEquals(sqlTarget, sql);
+    }
+
 
     private Method chooseMethod(Class<?> classType, String methodName) {
         Method[] declaredMethod = classType.getMethods();
