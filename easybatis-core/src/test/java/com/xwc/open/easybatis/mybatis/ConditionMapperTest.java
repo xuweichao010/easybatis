@@ -51,32 +51,78 @@ public class ConditionMapperTest {
 
     @Test
     public void equal() {
+
         List<ConditionUser> conditionUserList = conditionUserMapper.defaultEqual("曹操");
         List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.defaultEqual("t_user", "曹操");
-        validate(conditionUserList, conditionTableUserList);
+        validate(conditionUserList, conditionTableUserList, true);
         conditionUserList = conditionUserMapper.defaultEqualDynamic("曹操");
         conditionTableUserList = conditionTableUserMapper.defaultEqualDynamic("t_user", "曹操");
-        validate(conditionUserList, conditionTableUserList);
+        validate(conditionUserList, conditionTableUserList, true);
+
         conditionUserList = conditionUserMapper.defaultEqualDynamic(null);
         conditionTableUserList = conditionTableUserMapper.defaultEqualDynamic("t_user", null);
-        validate(conditionUserList, conditionTableUserList);
+        validate(conditionUserList, conditionTableUserList, true);
         conditionUserList = conditionUserMapper.equalAnnotation("曹操");
         conditionTableUserList = conditionTableUserMapper.equalAnnotation("t_user", "曹操");
-        validate(conditionUserList, conditionTableUserList);
+        validate(conditionUserList, conditionTableUserList, true);
+
         conditionUserList = conditionUserMapper.equalAnnotationDynamic("曹操");
         conditionTableUserList = conditionTableUserMapper.equalAnnotationDynamic("t_user", "曹操");
-        validate(conditionUserList, conditionTableUserList);
+        validate(conditionUserList, conditionTableUserList, true);
         conditionUserList = conditionUserMapper.equalAnnotationDynamic(null);
         conditionTableUserList = conditionTableUserMapper.equalAnnotationDynamic("t_user", null);
-        validate(conditionUserList, conditionTableUserList);
+        validate(conditionUserList, conditionTableUserList, true);
+
         conditionUserList = conditionUserMapper.equalAnnotationCustomColumn("曹操");
         conditionTableUserList = conditionTableUserMapper.equalAnnotationCustomColumn("t_user", "曹操");
-        validate(conditionUserList, conditionTableUserList);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
+
+    @Test
+    public void notEqual() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.notEqualAnnotation("曹操");
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.notEqualAnnotation("t_user", "曹操");
+        validate(conditionUserList, conditionTableUserList, false);
+
+        conditionUserList = conditionUserMapper.notEqualAnnotationDynamic("曹操");
+        conditionTableUserList = conditionTableUserMapper.notEqualAnnotationDynamic("t_user", "曹操");
+        validate(conditionUserList, conditionTableUserList, false);
+        conditionUserList = conditionUserMapper.notEqualAnnotationDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.notEqualAnnotationDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.notEqualAnnotationCustom("曹操");
+        conditionTableUserList = conditionTableUserMapper.notEqualAnnotationCustom("t_user", "曹操");
+        validate(conditionUserList, conditionTableUserList, false);
+    }
+
+    @Test
+    public void greaterThan() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.greaterThanAnnotation(49);
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.greaterThanAnnotation("t_user", 49);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.greaterThanAnnotationDynamic(49);
+        conditionTableUserList = conditionTableUserMapper.greaterThanAnnotationDynamic("t_user", 49);
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.greaterThanAnnotationDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.greaterThanAnnotationDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.greaterThanAnnotationCustom(49);
+        conditionTableUserList = conditionTableUserMapper.greaterThanAnnotationCustom("t_user", 49);
+        validate(conditionUserList, conditionTableUserList, true);
     }
 
 
-    private void validate(List<ConditionUser> userList, List<ConditionTableUser> tableUserList) {
-        Assert.assertTrue(userList.stream().anyMatch(item -> "曹操".equals(item.getName())));
-        Assert.assertTrue(tableUserList.stream().anyMatch(item -> "曹操".equals(item.getName())));
+    private void validate(List<ConditionUser> userList, List<ConditionTableUser> tableUserList, boolean has) {
+        if (has) {
+            Assert.assertTrue(userList.stream().anyMatch(item -> "曹操".equals(item.getName())));
+            Assert.assertTrue(tableUserList.stream().anyMatch(item -> "曹操".equals(item.getName())));
+        } else {
+            Assert.assertTrue(userList.stream().noneMatch(item -> "曹操".equals(item.getName())));
+            Assert.assertTrue(tableUserList.stream().noneMatch(item -> "曹操".equals(item.getName())));
+        }
+
     }
 }

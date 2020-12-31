@@ -42,7 +42,7 @@ public interface ConditionTableUserMapper extends EasyMapper<ConditionTableUser,
     List<ConditionTableUser> notEqualAnnotationDynamic(@Ignore String tableName, @NotEqual(dynamic = true) String name);
 
     @SelectSql
-    List<ConditionTableUser> notEqualAnnotationCustom(@Ignore String tableName, @NotEqual("custom_name") String name);
+    List<ConditionTableUser> notEqualAnnotationCustom(@Ignore String tableName, @NotEqual("name") String customName);
 
     @SelectSql
     List<ConditionTableUser> greaterThanAnnotation(@Ignore String tableName, @GreaterThan Integer age);
@@ -51,6 +51,6 @@ public interface ConditionTableUserMapper extends EasyMapper<ConditionTableUser,
     List<ConditionTableUser> greaterThanAnnotationDynamic(@Ignore String tableName, @GreaterThan(dynamic = true) Integer age);
 
     @SelectSql
-    List<ConditionTableUser> greaterThanAnnotationCustom(@Ignore String tableName, @GreaterThan("custom_age") Integer age);
+    List<ConditionTableUser> greaterThanAnnotationCustom(@Ignore String tableName, @GreaterThan("age") Integer customAge);
 
 }
