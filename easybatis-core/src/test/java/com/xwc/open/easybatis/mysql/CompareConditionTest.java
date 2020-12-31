@@ -202,6 +202,66 @@ public class CompareConditionTest {
         Assert.assertEquals(sqlTarget, sql);
     }
 
+    @Test
+    public void greaterThanEqualAnnotation() {
+        Method method = chooseMethod(ConditionMapper.class, "greaterThanEqualAnnotation");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `age` <![CDATA[>=]]> #{age}</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void greaterThanEqualAnnotationDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "greaterThanEqualAnnotationDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{age} IS NULL OR `age` <![CDATA[>=]]> #{age})</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void greaterThanEqualAnnotationCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "greaterThanEqualAnnotationCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `age` <![CDATA[>=]]> #{customAge}</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void lessThanEqualAnnotation() {
+        Method method = chooseMethod(ConditionMapper.class, "lessThanEqualAnnotation");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `age` <![CDATA[<=]]> #{age}</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void lessThanEqualAnnotationDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "lessThanEqualAnnotationDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{age} IS NULL OR `age` <![CDATA[<=]]> #{age})</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void lessThanEqualAnnotationCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "lessThanEqualAnnotationCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `age` <![CDATA[<=]]> #{customAge}</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
 
     public void XX() {
         Method method = chooseMethod(ConditionMapper.class, "notEqual");
