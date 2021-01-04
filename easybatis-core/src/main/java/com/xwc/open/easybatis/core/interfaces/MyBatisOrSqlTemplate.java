@@ -40,7 +40,7 @@ public interface MyBatisOrSqlTemplate {
         if (paramName == null) {
             paramName = "list";
         }
-        return " <foreach item= 'item'  collection='" + paramName + "' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>";
+        return " <foreach item= 'item'  collection='" + paramName + "' open='(' separator=', ' close=')'>#{item}</foreach>";
     }
 
 

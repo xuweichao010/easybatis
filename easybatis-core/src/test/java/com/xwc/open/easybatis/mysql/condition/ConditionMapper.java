@@ -4,6 +4,8 @@ import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.*;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 
+import java.util.List;
+
 /**
  * 作者：徐卫超 cc
  * 时间：2020/12/31
@@ -144,20 +146,20 @@ public interface ConditionMapper extends BaseMapper<ConditionEntity, String> {
     void notRightLikeCustom(@NotRightLike(value = "name", dynamic = true) String customName);
 
     @SelectSql
-    void in(@In(value = "name") String name);
+    void in(@In(value = "name") List<String> name);
 
     @SelectSql
-    void inDynamic(@In(value = "name", dynamic = true) String name);
+    void inDynamic(@In(value = "name", dynamic = true) List<String> name);
 
     @SelectSql
-    void inCustom(@In(value = "name", dynamic = true) String customName);
+    void inCustom(@In(value = "name", dynamic = true) List<String> customName);
 
     @SelectSql
-    void notIn(@NotIn(value = "name") String name);
+    void notIn(@NotIn(value = "name") List<String> name);
 
     @SelectSql
-    void notInDynamic(@NotIn(value = "name", dynamic = true) String name);
+    void notInDynamic(@NotIn(value = "name", dynamic = true) List<String> name);
 
     @SelectSql
-    void notInCustom(@NotIn(value = "name", dynamic = true) String customName);
+    void notInCustom(@NotIn(value = "name", dynamic = true) List<String> customName);
 }

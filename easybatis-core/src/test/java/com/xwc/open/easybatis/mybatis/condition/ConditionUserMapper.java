@@ -4,6 +4,7 @@ import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.*;
 import com.xwc.open.easybatis.core.interfaces.EasyMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -145,5 +146,29 @@ public interface ConditionUserMapper extends EasyMapper<ConditionUser, String> {
 
     @SelectSql
     List<ConditionUser> notRightLikeCustom(@NotRightLike(value = "name", dynamic = true) String customName);
+
+    @SelectSql
+    List<ConditionUser> in(@In(value = "name") List<String> name);
+
+    //@SelectSql
+    @Select("<script> SELECT `id`, `org_code`, `org_name`, `name` FROM t_user WHERE" +
+            " <if  test='name != null'>" +
+            " name IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach>" +
+            " </if>" +
+            "</script>")
+    List<ConditionUser> inDynamic(@In(value = "name", dynamic = true) List<String> name);
+
+
+    @SelectSql
+    List<ConditionUser> inCustom(@In(value = "name", dynamic = true) List<String> customName);
+
+    @SelectSql
+    List<ConditionUser> notIn(@NotIn(value = "name") List<String> name);
+
+    @SelectSql
+    List<ConditionUser> notInDynamic(@NotIn(value = "name", dynamic = true) List<String> name);
+
+    @SelectSql
+    List<ConditionUser> notInCustom(@NotIn(value = "name", dynamic = true) List<String> customName);
 
 }

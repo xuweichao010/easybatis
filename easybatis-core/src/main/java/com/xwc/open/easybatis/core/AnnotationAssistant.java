@@ -171,7 +171,9 @@ public class AnnotationAssistant {
         } else if (parameter.getParameterizedType() instanceof ParameterizedType) { // 处理接口中的集合类型
             ParameterizedType parameterizedType = (ParameterizedType) parameter.getParameterizedType();
             if (Collection.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())) {
-                if (!isEntityParam(parameterizedType.getActualTypeArguments()[0], entityClass)) {
+                if (command == SqlCommandType.SELECT) {
+                    return parseAnnotation(parameter.getAnnotations(), paramName, dynamic);
+                } else if (!isEntityParam(parameterizedType.getActualTypeArguments()[0], entityClass)) {
                     throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
                 }
                 return ParamMeta.builder(paramName, true, true);

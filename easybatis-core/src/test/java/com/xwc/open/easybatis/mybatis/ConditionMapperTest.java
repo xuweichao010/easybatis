@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -336,6 +337,23 @@ public class ConditionMapperTest {
         conditionUserList = conditionUserMapper.notLikeCustom(null);
         conditionTableUserList = conditionTableUserMapper.notLikeCustom("t_user", null);
         validate(conditionUserList, conditionTableUserList, true);
+    }
+
+    @Test
+    public void in() {
+        List<String> nameList = Collections.singletonList("曹操");
+        List<ConditionUser> conditionUserList = conditionUserMapper.in(nameList);
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.in("t_user", nameList);
+        validate(conditionUserList, conditionTableUserList, true);
+
+
+        conditionUserList = conditionUserMapper.inDynamic(nameList);
+//        conditionTableUserList = conditionTableUserMapper.inDynamic("t_user", nameList);
+//        validate(conditionUserList, conditionTableUserList, true);
+//        conditionUserList = conditionUserMapper.inDynamic(null);
+//        conditionTableUserList = conditionTableUserMapper.inDynamic("t_user", null);
+//        validate(conditionUserList, conditionTableUserList, true);
+
     }
 
 
