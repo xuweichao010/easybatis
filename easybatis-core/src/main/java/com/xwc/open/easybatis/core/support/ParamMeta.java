@@ -30,6 +30,8 @@ public class ParamMeta {
 
     private String alias;
 
+    private String group;
+
     private boolean dynamic = false;
 
     private boolean entity = false;
@@ -87,8 +89,10 @@ public class ParamMeta {
         this.alias = (String) map.get("alias");
         Boolean dynamic = (Boolean) map.get("dynamic");
         this.dynamic = this.dynamic || dynamic;
-        this.paramType();
-        ;
+        String group = (String) map.get("group");
+        if (StringUtils.hasText(group)) {
+            this.group = group;
+        }
     }
 
     public ParamType paramType() {

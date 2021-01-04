@@ -1,5 +1,8 @@
 package com.xwc.open.easybatis.core.interfaces;
 
+import com.xwc.open.easybatis.core.commons.StringUtils;
+import com.xwc.open.easybatis.core.support.ParamMeta;
+
 /**
  * 作者：徐卫超 cc
  * 时间：2020/12/24
@@ -33,11 +36,19 @@ public interface MyBatisOrSqlTemplate {
                 + " </foreach>";
     }
 
+
     default String mybatisParam(String fieldName, String prefix) {
         return "#{" + paramName(fieldName, prefix) + "}";
     }
 
     default String paramName(String fieldName, String prefix) {
         return prefix != null ? prefix + "." + fieldName : fieldName;
+    }
+
+    default String columnName(ParamMeta paramMeta, boolean multi) {
+        if (StringUtils.hasText(paramMeta.getAlias())) {
+            return paramMeta.getAlias() + ".`" + paramMeta.getColumnName() + "`";
+        }
+        return "`" + paramMeta.getColumnName() + "`";
     }
 }

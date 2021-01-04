@@ -20,7 +20,7 @@ public class CompareCondition implements QueryCondition {
     public String apply(ParamMeta metaData, boolean multi) {
         if (!conditionTypeSet.contains(metaData.getCondition())) return null;
         String prefix = multi && metaData.hasParent() ? metaData.getParentParamName() : null;
-        String condition = "`" + metaData.getColumnName() + "` " + metaData.getCondition().expression() + " " + this.mybatisParam(metaData.getParamName(), prefix);
+        String condition = this.columnName(metaData, multi) + " " + metaData.getCondition().expression() + " " + this.mybatisParam(metaData.getParamName(), prefix);
         return doApply(paramName(metaData.getParamName(), prefix), condition, metaData.paramType());
     }
 }

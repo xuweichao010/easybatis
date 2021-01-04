@@ -88,4 +88,31 @@ public interface ConditionMapper extends BaseMapper<ConditionEntity, String> {
 
     @SelectSql
     void isNotNullAnnotationCustom(@IsNotNull(value = "name", dynamic = true) Boolean customName);
+
+    @SelectSql
+    void like(@Like String name);
+
+    @SelectSql
+    void likeDynamic(@Like(dynamic = true) String name);
+
+    @SelectSql
+    void likeCustom(@Like(value = "name", dynamic = true) String customName);
+
+    @SelectSql
+    void leftLike(@LeftLike String name);
+
+    @SelectSql
+    void leftLikeDynamic(@LeftLike(dynamic = true) String name);
+
+    @SelectSql
+    void leftLikeCustom(@LeftLike(value = "name", dynamic = true) String customName);
+
+    @SelectSql
+    void rightLike(@RightLike String name);
+
+    @SelectSql
+    void rightLikeDynamic(@RightLike(dynamic = true) String name);
+
+    @SelectSql
+    void rightLikeCustom(@RightLike(value = "name", dynamic = true) String customName);
 }
