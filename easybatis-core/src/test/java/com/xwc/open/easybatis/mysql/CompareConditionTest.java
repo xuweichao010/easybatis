@@ -543,7 +543,7 @@ public class CompareConditionTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_condition" +
                 " WHERE" +
-                " name IN <foreach item= 'item'  collection='list' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>" +
+                " name NOT IN <foreach item= 'item'  collection='list' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>" +
                 "</script>";
         System.out.println(sql);
         Assert.assertEquals(sql, sqlTarget);
@@ -556,7 +556,7 @@ public class CompareConditionTest {
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
-                " WHERE  (#{name} IS NULL OR name IN" +
+                " WHERE  (#{name} IS NULL OR name NOT IN" +
                 " <foreach item= 'item'  collection='list' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>)</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
@@ -569,7 +569,7 @@ public class CompareConditionTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String sqlTarget = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
-                " WHERE  (#{customName} IS NULL OR name IN <foreach item= 'item'  collection='list' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>)</script>";
+                " WHERE  (#{customName} IS NULL OR name NOT IN <foreach item= 'item'  collection='list' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>)</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
 

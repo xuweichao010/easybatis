@@ -22,9 +22,9 @@ public class InCondition implements QueryCondition {
         String paramName;
         if (multi) {
             paramName = this.paramName(metaData.getParamName(), metaData.hasParent() ? metaData.getParentParamName() : null);
-            condition = metaData.getColumnName() + " IN" + this.inForeach(paramName);
+            condition = metaData.getColumnName() + " " + metaData.getCondition().expression() + this.inForeach(paramName);
         } else {
-            condition = metaData.getColumnName() + " IN" + this.inForeach(null);
+            condition = metaData.getColumnName() + " " + metaData.getCondition().expression() + this.inForeach(null);
             paramName = metaData.getParamName();
         }
         return doApply(paramName, condition, metaData.paramType());
