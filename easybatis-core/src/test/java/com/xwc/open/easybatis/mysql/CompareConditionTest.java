@@ -290,8 +290,6 @@ public class CompareConditionTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{customName} IS NULL OR `name` IS NULL )</script>";
         Assert.assertEquals(sqlTarget, sql);
-
-
     }
 
     @Test

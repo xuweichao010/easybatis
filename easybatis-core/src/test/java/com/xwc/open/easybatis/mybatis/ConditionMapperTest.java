@@ -210,6 +210,70 @@ public class ConditionMapperTest {
         validate(conditionUserList, conditionTableUserList, true);
     }
 
+    @Test
+    public void like() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.like("曹");
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.like("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.likeDynamic("曹");
+        conditionTableUserList = conditionTableUserMapper.likeDynamic("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.likeDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.likeDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.likeCustom("曹");
+        conditionTableUserList = conditionTableUserMapper.likeCustom("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.likeCustom(null);
+        conditionTableUserList = conditionTableUserMapper.likeCustom("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
+
+    @Test
+    public void leftLike() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.leftLike("操");
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.leftLike("t_user", "操");
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.leftLikeDynamic("操");
+        conditionTableUserList = conditionTableUserMapper.leftLikeDynamic("t_user", "操");
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.leftLikeDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.leftLikeDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.leftLikeCustom("操");
+        conditionTableUserList = conditionTableUserMapper.leftLikeCustom("t_user", "操");
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.leftLikeCustom(null);
+        conditionTableUserList = conditionTableUserMapper.leftLikeCustom("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
+
+    @Test
+    public void rightLike() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.rightLike("曹");
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.rightLike("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.rightLikeDynamic("曹");
+        conditionTableUserList = conditionTableUserMapper.rightLikeDynamic("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.rightLikeDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.rightLikeDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.rightLikeCustom("曹");
+        conditionTableUserList = conditionTableUserMapper.rightLikeCustom("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.rightLikeCustom(null);
+        conditionTableUserList = conditionTableUserMapper.rightLikeCustom("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+    }
+
 
 //    @Test
 //    public void greaterThan() {

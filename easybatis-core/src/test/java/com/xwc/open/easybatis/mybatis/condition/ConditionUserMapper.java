@@ -92,4 +92,31 @@ public interface ConditionUserMapper extends EasyMapper<ConditionUser, String> {
     @SelectSql
     List<ConditionUser> isNotNullAnnotationCustom(@IsNotNull(value = "name", dynamic = true) Boolean customName);
 
+    @SelectSql
+    List<ConditionUser> like(@Like String name);
+
+    @SelectSql
+    List<ConditionUser> likeDynamic(@Like(dynamic = true) String name);
+
+    @SelectSql
+    List<ConditionUser> likeCustom(@Like(value = "name", dynamic = true) String customName);
+
+    @SelectSql
+    List<ConditionUser> leftLike(@LeftLike String name);
+
+    @SelectSql
+    List<ConditionUser> leftLikeDynamic(@LeftLike(dynamic = true) String name);
+
+    @SelectSql
+    List<ConditionUser> leftLikeCustom(@LeftLike(value = "name", dynamic = true) String customName);
+
+    @SelectSql
+    List<ConditionUser> rightLike(@RightLike String name);
+
+    @SelectSql
+    List<ConditionUser> rightLikeDynamic(@RightLike(dynamic = true) String name);
+
+    @SelectSql
+    List<ConditionUser> rightLikeCustom(@RightLike(value = "name", dynamic = true) String customName);
+
 }
