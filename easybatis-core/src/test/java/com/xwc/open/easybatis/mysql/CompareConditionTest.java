@@ -228,7 +228,7 @@ public class CompareConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` <where> <if test='age != null'>  AND `age` <![CDATA[>=]]> #{age} </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> `age` <![CDATA[>=]]> #{customAge} </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
