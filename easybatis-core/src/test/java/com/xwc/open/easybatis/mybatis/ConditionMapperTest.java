@@ -274,7 +274,6 @@ public class ConditionMapperTest {
 
     }
 
-
 //    @Test
 //    public void greaterThan() {
 //        List<ConditionUser> conditionUserList = conditionUserMapper.greaterThanAnnotation(49);

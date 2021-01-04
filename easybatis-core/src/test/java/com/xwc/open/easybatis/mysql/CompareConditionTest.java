@@ -404,15 +404,94 @@ public class CompareConditionTest {
         Assert.assertEquals(sqlTarget, sql);
     }
 
-
-    public void XX() {
-        Method method = chooseMethod(ConditionMapper.class, "notEqual");
+    @Test
+    public void notLike() {
+        Method method = chooseMethod(ConditionMapper.class, "notLike");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "";
-        System.out.println(sql);
-        // Assert.assertEquals(sqlTarget, sql);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `name` NOT LIKE CONCAT('%',#{name},'%')</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void notLikeDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "notLikeDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{name} IS NULL OR `name` NOT LIKE CONCAT('%',#{name},'%'))</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void notLikeCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "notLikeCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{customName} IS NULL OR `name` NOT LIKE CONCAT('%',#{customName},'%'))</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void notLeftLike() {
+        Method method = chooseMethod(ConditionMapper.class, "notLeftLike");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `name` NOT LIKE CONCAT('%',#{name})</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void notLeftLikeDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "notLeftLikeDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{name} IS NULL OR `name` NOT LIKE CONCAT('%',#{name},'%'))</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void notLeftLikeCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "notLeftLikeCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{customName} IS NULL OR `name` NOT LIKE CONCAT('%',#{customName},'%'))</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void notRightLike() {
+        Method method = chooseMethod(ConditionMapper.class, "notRightLike");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `name` NOT LIKE CONCAT(#{name},'%')</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void notRightLikeDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "notRightLikeDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{name} IS NULL OR `name` NOT LIKE CONCAT(#{name},'%'))</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void notRightLikeCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "notRightLikeCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{customName} IS NULL OR `name` NOT LIKE CONCAT(#{customName},'%'))</script>";
+        Assert.assertEquals(sqlTarget, sql);
     }
 
 

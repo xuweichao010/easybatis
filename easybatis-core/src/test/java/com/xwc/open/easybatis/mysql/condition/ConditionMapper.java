@@ -115,4 +115,31 @@ public interface ConditionMapper extends BaseMapper<ConditionEntity, String> {
 
     @SelectSql
     void rightLikeCustom(@RightLike(value = "name", dynamic = true) String customName);
+
+    @SelectSql
+    void notLike(@NotLike String name);
+
+    @SelectSql
+    void notLikeDynamic(@NotLike(dynamic = true) String name);
+
+    @SelectSql
+    void notLikeCustom(@NotLike(value = "name", dynamic = true) String customName);
+
+    @SelectSql
+    void notLeftLike(@NotLeftLike String name);
+
+    @SelectSql
+    void notLeftLikeDynamic(@NotLeftLike(dynamic = true) String name);
+
+    @SelectSql
+    void notLeftLikeCustom(@NotLeftLike(value = "name", dynamic = true) String customName);
+
+    @SelectSql
+    void notRightLike(@NotRightLike String name);
+
+    @SelectSql
+    void notRightLikeDynamic(@NotRightLike(dynamic = true) String name);
+
+    @SelectSql
+    void notRightLikeCustom(@NotRightLike(value = "name", dynamic = true) String customName);
 }

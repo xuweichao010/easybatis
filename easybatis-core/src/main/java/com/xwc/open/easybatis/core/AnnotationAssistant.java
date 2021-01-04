@@ -49,7 +49,7 @@ public class AnnotationAssistant {
             .of(SelectSql.class, InsertSql.class, UpdateSql.class, DeleteSql.class).collect(Collectors.toSet());
     private static final Set<Class<? extends Annotation>> queryAnnoSet = Stream
             .of(Equal.class, NotEqual.class, IsNull.class, IsNotNull.class, In.class, NotIn.class,
-                    Like.class, RightLike.class, LeftLike.class, GreaterThan.class, GreaterThanEqual.class, LessThan.class
+                    Like.class, RightLike.class, LeftLike.class, NotLike.class, NotLeftLike.class, NotRightLike.class, GreaterThan.class, GreaterThanEqual.class, LessThan.class
                     , LessThanEqual.class, Start.class, Offset.class, OrderBy.class)
             .collect(Collectors.toSet());
 
