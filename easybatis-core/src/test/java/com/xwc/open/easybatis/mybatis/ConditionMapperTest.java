@@ -252,6 +252,7 @@ public class ConditionMapperTest {
         validate(conditionUserList, conditionTableUserList, true);
     }
 
+
     @Test
     public void rightLike() {
         List<ConditionUser> conditionUserList = conditionUserMapper.rightLike("曹");
@@ -273,6 +274,70 @@ public class ConditionMapperTest {
         validate(conditionUserList, conditionTableUserList, true);
 
     }
+
+    @Test
+    public void notLike() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.notLike("曹");
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.notLike("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, false);
+
+        conditionUserList = conditionUserMapper.notLikeDynamic("曹");
+        conditionTableUserList = conditionTableUserMapper.notLikeDynamic("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, false);
+        conditionUserList = conditionUserMapper.likeDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.likeDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.notLikeCustom("曹");
+        conditionTableUserList = conditionTableUserMapper.notLikeCustom("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, false);
+        conditionUserList = conditionUserMapper.notLikeCustom(null);
+        conditionTableUserList = conditionTableUserMapper.notLikeCustom("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
+
+    @Test
+    public void notLeftLike() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.notLike("操");
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.notLike("t_user", "操");
+        validate(conditionUserList, conditionTableUserList, false);
+
+        conditionUserList = conditionUserMapper.notLikeDynamic("操");
+        conditionTableUserList = conditionTableUserMapper.notLikeDynamic("t_user", "操");
+        validate(conditionUserList, conditionTableUserList, false);
+        conditionUserList = conditionUserMapper.likeDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.likeDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.notLikeCustom("操");
+        conditionTableUserList = conditionTableUserMapper.notLikeCustom("t_user", "操");
+        validate(conditionUserList, conditionTableUserList, false);
+        conditionUserList = conditionUserMapper.notLikeCustom(null);
+        conditionTableUserList = conditionTableUserMapper.notLikeCustom("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
+
+    @Test
+    public void notRightLike() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.notLike("曹");
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.notLike("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, false);
+
+        conditionUserList = conditionUserMapper.notLikeDynamic("曹");
+        conditionTableUserList = conditionTableUserMapper.notLikeDynamic("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, false);
+        conditionUserList = conditionUserMapper.likeDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.likeDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.notLikeCustom("曹");
+        conditionTableUserList = conditionTableUserMapper.notLikeCustom("t_user", "曹");
+        validate(conditionUserList, conditionTableUserList, false);
+        conditionUserList = conditionUserMapper.notLikeCustom(null);
+        conditionTableUserList = conditionTableUserMapper.notLikeCustom("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
+
 
 //    @Test
 //    public void greaterThan() {
@@ -301,6 +366,5 @@ public class ConditionMapperTest {
             Assert.assertTrue(userList.stream().noneMatch(item -> "曹操".equals(item.getName())));
             Assert.assertTrue(tableUserList.stream().noneMatch(item -> "曹操".equals(item.getName())));
         }
-
     }
 }
