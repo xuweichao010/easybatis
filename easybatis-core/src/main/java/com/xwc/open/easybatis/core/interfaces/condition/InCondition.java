@@ -17,6 +17,16 @@ public class InCondition implements QueryCondition {
 
     @Override
     public String apply(ParamMeta metaData, boolean multi) {
-        return null;
+        if (!conditionTypeSet.contains(metaData.getCondition())) return null;
+        String condition;
+        String paramName;
+        if (multi) {
+            paramName = this.paramName(metaData.getParamName(), metaData.hasParent() ? metaData.getParentParamName() : null);
+            condition = metaData.getColumnName() + " IN" + this.inForeach(paramName);
+        } else {
+            condition = metaData.getColumnName() + " IN" + this.inForeach(null);
+            paramName = metaData.getParamName();
+        }
+        return doApply(paramName, condition, metaData.paramType());
     }
 }

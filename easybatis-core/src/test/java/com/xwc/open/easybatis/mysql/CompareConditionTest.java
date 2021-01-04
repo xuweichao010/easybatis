@@ -494,6 +494,85 @@ public class CompareConditionTest {
         Assert.assertEquals(sqlTarget, sql);
     }
 
+    @Test
+    public void in() {
+        Method method = chooseMethod(ConditionMapper.class, "in");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name`" +
+                " FROM t_condition" +
+                " WHERE" +
+                " name IN <foreach item= 'item'  collection='list' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>" +
+                "</script>";
+        Assert.assertEquals(sql, sqlTarget);
+    }
+
+    @Test
+    public void inDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "inDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " WHERE  (#{name} IS NULL OR name IN" +
+                " <foreach item= 'item'  collection='list' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>)</script>";
+        Assert.assertEquals(sql, sqlTarget);
+    }
+
+    @Test
+    public void inCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "inCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " WHERE  (#{customName} IS NULL OR name IN <foreach item= 'item'  collection='list' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>)</script>";
+        Assert.assertEquals(sql, sqlTarget);
+    }
+
+    @Test
+    public void notIn() {
+        Method method = chooseMethod(ConditionMapper.class, "notIn");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name`" +
+                " FROM t_condition" +
+                " WHERE" +
+                " name IN <foreach item= 'item'  collection='list' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>" +
+                "</script>";
+        System.out.println(sql);
+        Assert.assertEquals(sql, sqlTarget);
+    }
+
+    @Test
+    public void notInDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "notInDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " WHERE  (#{name} IS NULL OR name IN" +
+                " <foreach item= 'item'  collection='list' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>)</script>";
+        Assert.assertEquals(sql, sqlTarget);
+    }
+
+    @Test
+    public void notInCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "notInCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " WHERE  (#{customName} IS NULL OR name IN <foreach item= 'item'  collection='list' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>)</script>";
+        Assert.assertEquals(sql, sqlTarget);
+    }
+
 
     private Method chooseMethod(Class<?> classType, String methodName) {
         Method[] declaredMethod = classType.getMethods();

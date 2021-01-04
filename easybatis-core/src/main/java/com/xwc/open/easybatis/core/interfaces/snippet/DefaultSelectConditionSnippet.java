@@ -2,10 +2,7 @@ package com.xwc.open.easybatis.core.interfaces.snippet;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
-import com.xwc.open.easybatis.core.interfaces.condition.CompareCondition;
-import com.xwc.open.easybatis.core.interfaces.condition.LikeCondition;
-import com.xwc.open.easybatis.core.interfaces.condition.NullCondition;
-import com.xwc.open.easybatis.core.interfaces.condition.QueryCondition;
+import com.xwc.open.easybatis.core.interfaces.condition.*;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 import com.xwc.open.easybatis.core.support.table.IdMeta;
@@ -25,7 +22,7 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
     protected List<QueryCondition> conditionList;
 
     public DefaultSelectConditionSnippet() {
-        this.conditionList = Stream.of(new CompareCondition(), new NullCondition(), new LikeCondition()).collect(Collectors.toList());
+        this.conditionList = Stream.of(new CompareCondition(), new NullCondition(), new LikeCondition(), new InCondition()).collect(Collectors.toList());
     }
 
     public String apply(MethodMeta methodMeta) {

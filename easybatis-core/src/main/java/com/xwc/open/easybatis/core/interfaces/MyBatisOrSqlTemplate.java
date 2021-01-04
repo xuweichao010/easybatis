@@ -36,6 +36,13 @@ public interface MyBatisOrSqlTemplate {
                 + " </foreach>";
     }
 
+    default String inForeach(String paramName) {
+        if (paramName == null) {
+            paramName = "list";
+        }
+        return " <foreach item= 'item'  collection='" + paramName + "' separator=', ' open='(' separator=',' close=')'>#{item}</foreach>";
+    }
+
 
     default String mybatisParam(String fieldName, String prefix) {
         return "#{" + paramName(fieldName, prefix) + "}";

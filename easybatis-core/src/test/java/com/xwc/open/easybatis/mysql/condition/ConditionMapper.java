@@ -142,4 +142,22 @@ public interface ConditionMapper extends BaseMapper<ConditionEntity, String> {
 
     @SelectSql
     void notRightLikeCustom(@NotRightLike(value = "name", dynamic = true) String customName);
+
+    @SelectSql
+    void in(@In(value = "name") String name);
+
+    @SelectSql
+    void inDynamic(@In(value = "name", dynamic = true) String name);
+
+    @SelectSql
+    void inCustom(@In(value = "name", dynamic = true) String customName);
+
+    @SelectSql
+    void notIn(@NotIn(value = "name") String name);
+
+    @SelectSql
+    void notInDynamic(@NotIn(value = "name", dynamic = true) String name);
+
+    @SelectSql
+    void notInCustom(@NotIn(value = "name", dynamic = true) String customName);
 }
