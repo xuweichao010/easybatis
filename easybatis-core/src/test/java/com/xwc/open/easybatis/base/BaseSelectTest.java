@@ -52,7 +52,7 @@ public class BaseSelectTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source WHERE `id` = #{id}</script>", select);
+        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source <where> `id` = #{id} </where></script>", select);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class BaseSelectTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source WHERE `id` = #{id}</script>", select);
+        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source <where> `id` = #{id} </where></script>", select);
     }
 
 
@@ -91,7 +91,7 @@ public class BaseSelectTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
-                " FROM t_mysql_sql_source WHERE  (#{name} IS NULL OR `name` = #{name})" +
+                " FROM t_mysql_sql_source <where> <if test='name != null'>  AND `name` = #{name} </if> </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
     }
@@ -105,7 +105,7 @@ public class BaseSelectTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
-                " WHERE  (#{name} IS NULL OR `name` = #{name})" +
+                " <where> <if test='name != null'>  AND `name` = #{name} </if> </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
     }
@@ -118,8 +118,10 @@ public class BaseSelectTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
-                " WHERE  (#{name} IS NULL OR `name` = #{name})" +
-                " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
+                " <where>" +
+                " <if test='name != null'>  AND `name` = #{name} </if>" +
+                " <if test='orgCode != null'>  AND `orgCode` = #{orgCode} </if>" +
+                " </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
     }
@@ -132,8 +134,10 @@ public class BaseSelectTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
-                " WHERE  (#{name} IS NULL OR `name` = #{name})" +
-                " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
+                " <where>" +
+                " <if test='name != null'>  AND `name` = #{name} </if>" +
+                " <if test='orgCode != null'>  AND `orgCode` = #{orgCode} </if>" +
+                " </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
     }
@@ -181,10 +185,11 @@ public class BaseSelectTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
-                " WHERE `name` = #{name}" +
-                " AND (#{orgCode} IS NULL OR `orgCode` = #{orgCode})" +
+                " <where> <if test='true'>  AND `name` = #{name} </if>" +
+                " <if test='orgCode != null'>  AND `orgCode` = #{orgCode} </if>" +
                 " <if test='two.orgName != null'>  AND `orgName` = #{two.orgName} </if>" +
                 " <if test='two.name != null'>  AND `name` = #{two.name} </if>" +
+                " </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
     }

@@ -41,11 +41,13 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
                 list.addAll(methodMeta.getParamMetaList());
             }
         } else if (paramMetaList.size() > 1) {
+            boolean b = methodMeta.hasDynamic();
             paramMetaList.forEach(paramMeta -> {
                 if (paramMeta.isMultiCondition()) {
                     list.addAll(paramMeta.getChildList());
                 } else {
                     list.add(paramMeta);
+                    paramMeta.paramType();
                 }
             });
             multi = true;
@@ -54,7 +56,6 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
             LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
             list.add(ParamMeta.builder(logic.getColumn(), logic.getField()));
         }
-        // 处理方法上的对象参数条件
         return listCondition(list, multi);
     }
 

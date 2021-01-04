@@ -2,7 +2,7 @@ package com.xwc.open.easybatis.core.support;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
-import com.xwc.open.easybatis.core.enums.ParamType;
+import com.xwc.open.easybatis.core.enums.DynamicType;
 import lombok.Data;
 
 import java.util.List;
@@ -32,7 +32,8 @@ public class ParamMeta {
 
     private String group;
 
-    private boolean dynamic = false;
+
+    private DynamicType dynamicType = DynamicType.NO_DYNAMIC;
 
     private boolean entity = false;
 
@@ -49,7 +50,7 @@ public class ParamMeta {
         ParamMeta tar = new ParamMeta();
         tar.columnName = columnName;
         tar.paramName = paramName;
-        tar.dynamic = dynamic;
+        tar.dynamicType = dynamic ? DynamicType.DYNAMIC : DynamicType.NO_DYNAMIC;
         tar.condition = ConditionType.NONE;
         return tar;
     }
@@ -61,7 +62,7 @@ public class ParamMeta {
         tar.paramName = paramName;
         tar.condition = condition;
         tar.alias = alias;
-        tar.dynamic = dynamic;
+        tar.dynamicType = dynamic ? DynamicType.DYNAMIC : DynamicType.NO_DYNAMIC;
         return tar;
     }
 
@@ -87,22 +88,20 @@ public class ParamMeta {
             this.columnName = value;
         }
         this.alias = (String) map.get("alias");
-        Boolean dynamic = (Boolean) map.get("dynamic");
-        this.dynamic = this.dynamic || dynamic;
+        if (dynamicType == DynamicType.NO_DYNAMIC) {
+            Boolean dynamic = (Boolean) map.get("dynamic");
+            if (dynamic != null && dynamic) {
+                this.dynamicType = DynamicType.DYNAMIC;
+            }
+        }
         String group = (String) map.get("group");
         if (StringUtils.hasText(group)) {
             this.group = group;
         }
     }
 
-    public ParamType paramType() {
-        if (this.hasParent()) {
-            return ParamType.FILED_TYPE_DYNAMIC;
-        } else if (this.dynamic) {
-            return ParamType.PARAM_TYPE_DYNAMIC;
-        } else {
-            return ParamType.PARAM_TYPE;
-        }
+    public DynamicType paramType() {
+        return dynamicType;
     }
 
     public boolean isMultiCondition() {
@@ -136,5 +135,9 @@ public class ParamMeta {
 
     public boolean isParamCondition() {
         return this.condition != ConditionType.NONE && this.condition != ConditionType.IGNORE && this.condition != ConditionType.SET_PARAM;
+    }
+
+    public static boolean isDynamic(ParamMeta paramMeta) {
+        return paramMeta.dynamicType == DynamicType.DYNAMIC;
     }
 }

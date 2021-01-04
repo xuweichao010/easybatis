@@ -12,6 +12,7 @@ import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
+import com.xwc.open.easybatis.core.enums.DynamicType;
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.support.MethodMeta;
@@ -140,6 +141,12 @@ public class AnnotationAssistant {
         meta.setSqlCommand(SqlCommandType.SELECT);
         meta.setMethod(method);
         meta.setParamMetaList(parseMethodParam(meta));
+        boolean hasDynamic = meta.hasDynamic();
+        if (hasDynamic) meta.getParamMetaList().forEach(paramMeta -> {
+            if (paramMeta.getDynamicType() == DynamicType.NO_DYNAMIC) {
+                paramMeta.setDynamicType(DynamicType.GUISE_DYNAMIC);
+            }
+        });
         return meta;
     }
 
@@ -201,7 +208,7 @@ public class AnnotationAssistant {
                     field.getName(), true);
             paramMetaData.setParentParamName(param.getParamName());
             paramList.add(paramMetaData);
-            param.setDynamic(true);
+            param.setDynamicType(DynamicType.DYNAMIC);
         }
         param.setChildList(paramList);
         return param;

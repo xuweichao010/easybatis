@@ -33,10 +33,10 @@ public class DefaultUpdateColumnSnippet implements UpdateColumnSnippet, MyBatisO
     }
 
     public String setParam(ColumnMeta columnMeta, String prefix) {
-        return columnMeta.getColumn() + " = " + this.mybatisParam(columnMeta.getField(), prefix);
+        return "`" + columnMeta.getColumn() + "` = " + this.mybatisParam(columnMeta.getField(), prefix);
     }
 
     public String setParam(String column, String field) {
-        return column + " = " + this.mybatisParam(field, null);
+        return "`" + column + "` = " + this.mybatisParam(field, null);
     }
 }

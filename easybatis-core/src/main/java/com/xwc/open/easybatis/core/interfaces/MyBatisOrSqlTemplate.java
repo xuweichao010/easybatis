@@ -14,6 +14,10 @@ public interface MyBatisOrSqlTemplate {
         return "<if test='" + paramName + " != null'> " + andCondition(conditionQuery) + " </if>";
     }
 
+    default String guiseDynamicConditionIf(String conditionQuery) {
+        return "<if test='true'> " + andCondition(conditionQuery) + " </if>";
+    }
+
     default String andCondition(String conditionQuery) {
         return " AND " + conditionQuery;
     }

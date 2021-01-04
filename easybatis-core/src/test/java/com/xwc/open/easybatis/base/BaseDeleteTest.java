@@ -52,7 +52,7 @@ public class BaseDeleteTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
         String sqlTarget = "<script>" +
                 " DELETE FROM t_mysql_sql_source" +
-                " WHERE `id` = #{id}" +
+                " <where> `id` = #{id} </where>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
@@ -64,7 +64,7 @@ public class BaseDeleteTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
         String sqlTarget = "<script>" +
                 " DELETE FROM t_mysql_sql_source" +
-                " WHERE `orgName` = #{orgName}" +
+                " <where> `orgName` = #{orgName} </where>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
@@ -76,7 +76,7 @@ public class BaseDeleteTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
         String sqlTarget = "<script>" +
                 " DELETE FROM t_mysql_sql_source" +
-                " WHERE  (#{orgName} IS NULL OR `orgName` = #{orgName})" +
+                " <where> <if test='orgName != null'>  AND `orgName` = #{orgName} </if> </where>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }

@@ -340,8 +340,9 @@ public class ConditionMapperTest {
     }
 
     @Test
-    public void test1(){
-        conditionUserMapper.test1("曹操",null);
+    public void test1() {
+        conditionUserMapper.test1("曹操", null);
+        conditionUserMapper.test2(null, "曹操");
     }
 
     @Test

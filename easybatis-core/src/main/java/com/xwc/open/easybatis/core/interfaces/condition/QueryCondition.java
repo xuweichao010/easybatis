@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.core.interfaces.condition;
 
-import com.xwc.open.easybatis.core.enums.ParamType;
+import com.xwc.open.easybatis.core.enums.DynamicType;
+import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.interfaces.MyBatisOrSqlTemplate;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 
@@ -14,17 +15,18 @@ public interface QueryCondition extends MyBatisOrSqlTemplate {
     String apply(ParamMeta metaData, boolean multi);
 
 
-    default String doApply(String conditionParam, String conditionQuery, ParamType type) {
-        if (type == ParamType.FILED_TYPE || type == ParamType.PARAM_TYPE) {
+    default String doApply(String conditionParam, String conditionQuery, DynamicType type) {
+        if (type == DynamicType.NO_DYNAMIC) {
             return "AND" + conditionQuery;
-        } else if (type == ParamType.FILED_TYPE_DYNAMIC) {
+        } else if (type == DynamicType.DYNAMIC) {
             return dynamicConditionIf(conditionParam, conditionQuery);
-        } else if (type == ParamType.PARAM_TYPE_DYNAMIC) {
-            return dynamicConditionIf(conditionParam, conditionQuery);
+        } else if (type == DynamicType.GUISE_DYNAMIC) {
+            return guiseDynamicConditionIf( conditionQuery);
         } else {
-            return null;
+            throw new EasyBatisException("无法支持的动态语句");
         }
     }
+
 
 
 

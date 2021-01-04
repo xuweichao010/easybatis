@@ -32,7 +32,7 @@ public class DefaultUpdateConditionSnippet implements UpdateConditionSnippet, My
                 paramMeta = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity).collect(Collectors.toList()).get(0);
             }
             IdMeta id = methodMeta.getTableMetadata().getId();
-            return id.getColumn() + " = " + this.mybatisParam(id.getField(), paramMeta == null ? null : paramMeta.getParamName());
+            return "`"+id.getColumn() + "` = " + this.mybatisParam(id.getField(), paramMeta == null ? null : paramMeta.getParamName());
         } else {
             return selectConditionSnippet.apply(methodMeta);
         }

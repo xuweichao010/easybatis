@@ -22,11 +22,7 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
                 .append(" FROM ").append(methodMetaData.getTableMetadata().getTableName());
         String conditionSnippet = this.selectConditionSnippet.apply(methodMetaData);
         if (StringUtils.hasText(conditionSnippet)) {
-            if (methodMetaData.hasDynamic()) {
-                sb.append(" <where> ").append(conditionSnippet).append(" </where>");
-            } else {
-                sb.append(" WHERE ").append(conditionSnippet);
-            }
+            sb.append(" <where> ").append(conditionSnippet).append(" </where>");
         }
         sb.append("</script>");
         return sb.toString();
@@ -56,8 +52,9 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         } else {
             sb.append(" SET ").append(this.updateColumnSnippet.apply(methodMetaData));
         }
-        if (methodMetaData.hashCondition() || methodMetaData.entityParam() != null) {
-            sb.append(" WHERE ").append(this.updateConditionSnippet.apply(methodMetaData));
+        String conditionSnippet = this.updateConditionSnippet.apply(methodMetaData);
+        if (StringUtils.hasText(conditionSnippet)) {
+            sb.append(" <where> ").append(conditionSnippet).append(" </where>");
         }
         sb.append("</script>");
         return sb.toString();
@@ -67,8 +64,9 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
     public String delete(MethodMeta methodMetaData) {
         StringBuilder sb = new StringBuilder();
         sb.append("<script> DELETE FROM ").append(methodMetaData.getTableMetadata().getTableName());
-        if (methodMetaData.hashCondition()) {
-            sb.append(" WHERE ").append(this.deleteConditionSnippet.apply(methodMetaData));
+        String conditionSnippet = this.deleteConditionSnippet.apply(methodMetaData);
+        if (StringUtils.hasText(conditionSnippet)) {
+            sb.append(" <where> ").append(conditionSnippet).append(" </where>");
         }
         sb.append("</script>");
         return sb.toString();
