@@ -20,9 +20,6 @@ public class ParamMeta {
     /**
      * 属于自定义对象还是java对象 true 是自定义对象  false为非自定义对象
      */
-    @Deprecated
-    private ParamType type;
-
     private String paramName;
 
     private String columnName;
@@ -61,7 +58,6 @@ public class ParamMeta {
         tar.columnName = columnName;
         tar.paramName = paramName;
         tar.condition = condition;
-        tar.type = ParamType.FILED_TYPE;
         tar.alias = alias;
         tar.dynamic = dynamic;
         return tar;

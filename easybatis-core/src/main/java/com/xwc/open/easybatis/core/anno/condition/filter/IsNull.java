@@ -2,7 +2,6 @@ package com.xwc.open.easybatis.core.anno.condition.filter;
 
 import com.xwc.open.easybatis.core.enums.ConditionType;
 
-
 import java.lang.annotation.*;
 
 /**
@@ -16,13 +15,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Condition(type = ConditionType.IS_NULL)
 public @interface IsNull {
-
-    /**
-     * 查询条件排序
-     *
-     * @return
-     */
-    int index() default 99;
 
     /**
      * 属性和数据表之间的列关系

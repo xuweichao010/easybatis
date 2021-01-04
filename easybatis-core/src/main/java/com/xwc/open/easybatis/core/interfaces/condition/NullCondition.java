@@ -4,8 +4,9 @@ import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.support.ParamMeta;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 创建人：徐卫超 CC
@@ -13,22 +14,16 @@ import java.util.Set;
  * 备注：
  */
 public class NullCondition implements QueryCondition {
-    private Set<ConditionType> conditionTypeSet;
-
-    public NullCondition() {
-        this.conditionTypeSet = new HashSet<>();
-        conditionTypeSet.add(ConditionType.IS_NULL);
-        conditionTypeSet.add(ConditionType.NOT_NULL);
-    }
+    private final Set<ConditionType> conditionTypeSet = Stream.of(ConditionType.IS_NULL, ConditionType.NOT_NULL).collect(Collectors.toSet());
 
     @Override
     public String apply(ParamMeta metaData, boolean multi) {
         if (!conditionTypeSet.contains(metaData.getCondition())) return null;
         String condition = "`" + metaData.getColumnName() + "` " +
-                metaData.getCondition().expression() + " " ;
+                metaData.getCondition().expression() + " ";
         if (StringUtils.hasText(metaData.getAlias())) {
             condition = metaData.getAlias() + "." + condition;
         }
-        return doApply(metaData.getParamName(), condition, metaData.getType());
+        return doApply(metaData.getParamName(), condition, metaData.paramType());
     }
 }

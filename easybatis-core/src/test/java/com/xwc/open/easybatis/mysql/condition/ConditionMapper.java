@@ -70,4 +70,22 @@ public interface ConditionMapper extends BaseMapper<ConditionEntity, String> {
 
     @SelectSql
     void lessThanEqualAnnotationCustom(@LessThanEqual("age") Integer customAge);
+
+    @SelectSql
+    void isNullAnnotation(@IsNull Boolean name);
+
+    @SelectSql
+    void isNullAnnotationDynamic(@IsNull(dynamic = true) Boolean name);
+
+    @SelectSql
+    void isNullAnnotationCustom(@IsNull(value = "name", dynamic = true) Boolean customName);
+
+    @SelectSql
+    void isNotNullAnnotation(@IsNotNull Boolean name);
+
+    @SelectSql
+    void isNotNullAnnotationDynamic(@IsNotNull(dynamic = true) Boolean name);
+
+    @SelectSql
+    void isNotNullAnnotationCustom(@IsNotNull(value = "name", dynamic = true) Boolean customName);
 }

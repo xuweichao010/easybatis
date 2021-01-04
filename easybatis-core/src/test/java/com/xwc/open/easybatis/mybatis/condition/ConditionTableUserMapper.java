@@ -78,4 +78,22 @@ public interface ConditionTableUserMapper extends EasyMapper<ConditionTableUser,
     @SelectSql
     List<ConditionTableUser> lessThanEqualAnnotationCustom(@Ignore String tableName, @LessThanEqual("age") Integer customAge);
 
+    @SelectSql
+    List<ConditionTableUser> isNullAnnotation(@Ignore String tableName, @IsNull Boolean name);
+
+    @SelectSql
+    List<ConditionTableUser> isNullAnnotationDynamic(@Ignore String tableName, @IsNull(dynamic = true) Boolean name);
+
+    @SelectSql
+    List<ConditionTableUser> isNullAnnotationCustom(@Ignore String tableName, @IsNull(value = "name", dynamic = true) Boolean customName);
+
+    @SelectSql
+    List<ConditionTableUser> isNotNullAnnotation(@Ignore String tableName, @IsNotNull Boolean name);
+
+    @SelectSql
+    List<ConditionTableUser> isNotNullAnnotationDynamic(@Ignore String tableName, @IsNotNull(dynamic = true) Boolean name);
+
+    @SelectSql
+    List<ConditionTableUser> isNotNullAnnotationCustom(@Ignore String tableName, @IsNotNull(value = "name", dynamic = true) Boolean customName);
+
 }

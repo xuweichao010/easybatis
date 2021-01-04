@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  * 描述：更新语句更新条件SQL片段构建
  */
 public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
-    protected List<QueryCondition> conditionList = new ArrayList<>();
+    protected List<QueryCondition> conditionList;
 
     public DefaultSelectConditionSnippet() {
         this.conditionList = Stream.of(new CompareCondition(), new NullCondition()).collect(Collectors.toList());

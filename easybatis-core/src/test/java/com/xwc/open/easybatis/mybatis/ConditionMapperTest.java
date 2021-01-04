@@ -168,6 +168,48 @@ public class ConditionMapperTest {
         validate(conditionUserList, conditionTableUserList, true);
     }
 
+    @Test
+    public void isNull() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.isNullAnnotation(true);
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.isNullAnnotation("t_user", true);
+        validate(conditionUserList, conditionTableUserList, false);
+
+        conditionUserList = conditionUserMapper.isNullAnnotationDynamic(true);
+        conditionTableUserList = conditionTableUserMapper.isNullAnnotationDynamic("t_user", true);
+        validate(conditionUserList, conditionTableUserList, false);
+        conditionUserList = conditionUserMapper.isNullAnnotationDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.isNullAnnotationDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.isNullAnnotationCustom(true);
+        conditionTableUserList = conditionTableUserMapper.isNullAnnotationCustom("t_user", true);
+        validate(conditionUserList, conditionTableUserList, false);
+        conditionUserList = conditionUserMapper.isNullAnnotationCustom(null);
+        conditionTableUserList = conditionTableUserMapper.isNullAnnotationCustom("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
+
+    @Test
+    public void isNotNull() {
+        List<ConditionUser> conditionUserList = conditionUserMapper.isNotNullAnnotation(true);
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.isNotNullAnnotation("t_user", true);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.isNotNullAnnotationDynamic(true);
+        conditionTableUserList = conditionTableUserMapper.isNotNullAnnotationDynamic("t_user", true);
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.isNotNullAnnotationDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.isNotNullAnnotationDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.isNotNullAnnotationCustom(true);
+        conditionTableUserList = conditionTableUserMapper.isNotNullAnnotationCustom("t_user", true);
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.isNotNullAnnotationCustom(null);
+        conditionTableUserList = conditionTableUserMapper.isNotNullAnnotationCustom("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
+
 
 //    @Test
 //    public void greaterThan() {

@@ -48,7 +48,7 @@ public class AnnotationAssistant {
     private final static Set<Class<? extends Annotation>> operationAnnoSet = Stream
             .of(SelectSql.class, InsertSql.class, UpdateSql.class, DeleteSql.class).collect(Collectors.toSet());
     private static final Set<Class<? extends Annotation>> queryAnnoSet = Stream
-            .of(Equal.class, NotEqual.class, IsNull.class, NotNull.class, In.class, NotIn.class,
+            .of(Equal.class, NotEqual.class, IsNull.class, IsNotNull.class, In.class, NotIn.class,
                     Like.class, RightLike.class, LeftLike.class, GreaterThan.class, GreaterThanEqual.class, LessThan.class
                     , LessThanEqual.class, Start.class, Offset.class, OrderBy.class)
             .collect(Collectors.toSet());

@@ -262,6 +262,59 @@ public class CompareConditionTest {
         Assert.assertEquals(sqlTarget, sql);
     }
 
+    @Test
+    public void isNullAnnotation() {
+        Method method = chooseMethod(ConditionMapper.class, "isNullAnnotation");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE `name` IS NULL</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void isNullAnnotationDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "isNullAnnotationDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{name} IS NULL OR `name` IS NULL )</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void isNullAnnotationCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "isNullAnnotationCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{customName} IS NULL OR `name` IS NULL )</script>";
+        Assert.assertEquals(sqlTarget, sql);
+
+
+    }
+
+    @Test
+    public void isNotNullAnnotationDynamic() {
+        Method method = chooseMethod(ConditionMapper.class, "isNotNullAnnotationDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{name} IS NULL OR `name` IS NOT NULL )</script>";
+        System.out.println(sql);
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void isNotNullAnnotationCustom() {
+        Method method = chooseMethod(ConditionMapper.class, "isNotNullAnnotationCustom");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition WHERE  (#{customName} IS NULL OR `name` IS NOT NULL )</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
 
     public void XX() {
         Method method = chooseMethod(ConditionMapper.class, "notEqual");
