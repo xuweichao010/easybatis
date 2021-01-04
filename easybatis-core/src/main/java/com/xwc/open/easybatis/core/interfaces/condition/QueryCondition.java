@@ -20,7 +20,7 @@ public interface QueryCondition extends MyBatisOrSqlTemplate {
         } else if (type == ParamType.FILED_TYPE_DYNAMIC) {
             return dynamicConditionIf(conditionParam, conditionQuery);
         } else if (type == ParamType.PARAM_TYPE_DYNAMIC) {
-            return dynamicConditionIsNull(conditionParam, conditionQuery);
+            return dynamicConditionIf(conditionParam, conditionQuery);
         } else {
             return null;
         }

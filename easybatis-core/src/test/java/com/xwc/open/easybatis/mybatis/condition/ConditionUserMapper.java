@@ -158,6 +158,12 @@ public interface ConditionUserMapper extends EasyMapper<ConditionUser, String> {
             "</script>")
     List<ConditionUser> inDynamic(@In(value = "name", dynamic = true) List<String> name);
 
+    @Select("<script> SELECT `id`, `org_code`, `org_name`, `name` FROM t_user <where>" +
+            " <if  test='name != null'> AND name = #{name} </if>" +
+            " <if  test='age != null'> AND age = #{age} </if>" +
+            "</where>" +
+            "</script>")
+    List<ConditionUser> test1(String name, Integer age);
 
     @SelectSql
     List<ConditionUser> inCustom(@In(value = "name", dynamic = true) List<String> customName);
@@ -170,5 +176,6 @@ public interface ConditionUserMapper extends EasyMapper<ConditionUser, String> {
 
     @SelectSql
     List<ConditionUser> notInCustom(@NotIn(value = "name", dynamic = true) List<String> customName);
+
 
 }

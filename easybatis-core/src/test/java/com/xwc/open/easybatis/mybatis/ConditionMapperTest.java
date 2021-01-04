@@ -340,6 +340,11 @@ public class ConditionMapperTest {
     }
 
     @Test
+    public void test1(){
+        conditionUserMapper.test1("曹操",null);
+    }
+
+    @Test
     public void in() {
         List<String> nameList = Collections.singletonList("曹操");
         List<ConditionUser> conditionUserList = conditionUserMapper.in(nameList);
