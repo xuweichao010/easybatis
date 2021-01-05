@@ -35,8 +35,6 @@ public interface OtherMapper extends BaseMapper<OtherEntity, String> {
     @Distinct
     List<OtherEntity> distinctCustomCondition(String name, String age);
 
-
-
     @Distinct
     @Count
     @SelectSql("id")
