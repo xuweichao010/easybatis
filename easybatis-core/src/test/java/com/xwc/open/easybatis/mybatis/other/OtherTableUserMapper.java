@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.mybatis.group;
+package com.xwc.open.easybatis.mybatis.other;
 
 import com.xwc.open.easybatis.core.interfaces.EasyMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -11,6 +11,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @SuppressWarnings("unused")
 @Mapper
-public interface GroupTableUserMapper extends EasyMapper<GroupTableUser, String> {
+public interface OtherTableUserMapper extends EasyMapper<OtherTableUser, String> {
 
 }

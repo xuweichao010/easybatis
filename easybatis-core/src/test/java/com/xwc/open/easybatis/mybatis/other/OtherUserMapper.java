@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.mybatis.group;
+package com.xwc.open.easybatis.mybatis.other;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.interfaces.EasyMapper;
@@ -12,7 +12,7 @@ import java.util.List;
  * 描述：用户数据读取
  */
 @Mapper
-public interface GroupUserMapper extends EasyMapper<GroupUser, String> {
+public interface OtherUserMapper extends EasyMapper<OtherUser, String> {
 
     @SelectSql("job")
     List<Integer> groupJob();

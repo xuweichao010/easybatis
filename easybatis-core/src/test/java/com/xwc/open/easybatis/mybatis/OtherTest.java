@@ -1,14 +1,15 @@
 package com.xwc.open.easybatis.mybatis;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
-import com.xwc.open.easybatis.mybatis.condition.ConditionTableUserMapper;
-import com.xwc.open.easybatis.mybatis.condition.ConditionUserMapper;
+import com.xwc.open.easybatis.mybatis.other.OtherTableUserMapper;
+import com.xwc.open.easybatis.mybatis.other.OtherUserMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,12 +19,12 @@ import java.io.InputStream;
  * 时间：2021/1/5
  * 描述：分组测试
  */
-public class GroupByTest {
+public class OtherTest {
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
     EasybatisConfiguration easybatisConfiguration;
-    ConditionTableUserMapper conditionTableUserMapper;
-    ConditionUserMapper conditionUserMapper;
+    OtherTableUserMapper otherTableUserMapper;
+    OtherUserMapper otherUserMapper;
     SqlSession sqlSession;
 
 
@@ -35,11 +36,30 @@ public class GroupByTest {
         this.configuration = this.sqlSessionFactory.getConfiguration();
         this.configuration.setMapUnderscoreToCamelCase(true);
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
-        easybatisConfiguration.addMapper(ConditionTableUserMapper.class);
-        easybatisConfiguration.addMapper(ConditionUserMapper.class);
+        easybatisConfiguration.addMapper(OtherTableUserMapper.class);
+        easybatisConfiguration.addMapper(OtherUserMapper.class);
         sqlSession = sqlSessionFactory.openSession(true);
-        conditionTableUserMapper = sqlSession.getMapper(ConditionTableUserMapper.class);
-        conditionUserMapper = sqlSession.getMapper(ConditionUserMapper.class);
+        otherUserMapper = sqlSession.getMapper(OtherUserMapper.class);
+        otherTableUserMapper = sqlSession.getMapper(OtherTableUserMapper.class);
     }
 
+    @Test
+    public void Count() {
+
+    }
+
+    @Test
+    public void page() {
+
+    }
+
+    @Test
+    public void distinct() {
+
+    }
+
+    @Test
+    public void orderBy() {
+
+    }
 }

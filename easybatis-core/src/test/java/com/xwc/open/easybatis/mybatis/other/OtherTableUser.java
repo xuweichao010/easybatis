@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.mybatis.group;
+package com.xwc.open.easybatis.mybatis.other;
 
 import com.xwc.open.easybatis.core.anno.table.Id;
 import com.xwc.open.easybatis.core.anno.table.Table;
@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @Table("${tableName}")
-public class GroupTableUser {
+public class OtherTableUser {
 
     private static final long serialVersionUID = 1L;
 
