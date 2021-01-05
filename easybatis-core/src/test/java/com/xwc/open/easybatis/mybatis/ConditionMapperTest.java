@@ -299,50 +299,44 @@ public class ConditionMapperTest {
 
     @Test
     public void notLeftLike() {
-        List<ConditionUser> conditionUserList = conditionUserMapper.notLike("操");
-        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.notLike("t_user", "操");
+        List<ConditionUser> conditionUserList = conditionUserMapper.notLeftLike("操");
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.notLeftLike("t_user", "操");
         validate(conditionUserList, conditionTableUserList, false);
 
-        conditionUserList = conditionUserMapper.notLikeDynamic("操");
-        conditionTableUserList = conditionTableUserMapper.notLikeDynamic("t_user", "操");
+        conditionUserList = conditionUserMapper.notLeftLikeDynamic("操");
+        conditionTableUserList = conditionTableUserMapper.notLeftLikeDynamic("t_user", "操");
         validate(conditionUserList, conditionTableUserList, false);
-        conditionUserList = conditionUserMapper.likeDynamic(null);
-        conditionTableUserList = conditionTableUserMapper.likeDynamic("t_user", null);
+        conditionUserList = conditionUserMapper.notLeftLikeDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.notLeftLikeDynamic("t_user", null);
         validate(conditionUserList, conditionTableUserList, true);
 
-        conditionUserList = conditionUserMapper.notLikeCustom("操");
-        conditionTableUserList = conditionTableUserMapper.notLikeCustom("t_user", "操");
+        conditionUserList = conditionUserMapper.notLeftLikeCustom("操");
+        conditionTableUserList = conditionTableUserMapper.notLeftLikeCustom("t_user", "操");
         validate(conditionUserList, conditionTableUserList, false);
         conditionUserList = conditionUserMapper.notLikeCustom(null);
-        conditionTableUserList = conditionTableUserMapper.notLikeCustom("t_user", null);
+        conditionTableUserList = conditionTableUserMapper.notLeftLikeCustom("t_user", null);
         validate(conditionUserList, conditionTableUserList, true);
     }
 
     @Test
     public void notRightLike() {
-        List<ConditionUser> conditionUserList = conditionUserMapper.notLike("曹");
-        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.notLike("t_user", "曹");
+        List<ConditionUser> conditionUserList = conditionUserMapper.notRightLike("曹");
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.notRightLike("t_user", "曹");
         validate(conditionUserList, conditionTableUserList, false);
 
-        conditionUserList = conditionUserMapper.notLikeDynamic("曹");
-        conditionTableUserList = conditionTableUserMapper.notLikeDynamic("t_user", "曹");
+        conditionUserList = conditionUserMapper.notRightLikeDynamic("曹");
+        conditionTableUserList = conditionTableUserMapper.notRightLikeDynamic("t_user", "曹");
         validate(conditionUserList, conditionTableUserList, false);
-        conditionUserList = conditionUserMapper.likeDynamic(null);
-        conditionTableUserList = conditionTableUserMapper.likeDynamic("t_user", null);
+        conditionUserList = conditionUserMapper.notRightLikeDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.notRightLikeDynamic("t_user", null);
         validate(conditionUserList, conditionTableUserList, true);
 
-        conditionUserList = conditionUserMapper.notLikeCustom("曹");
-        conditionTableUserList = conditionTableUserMapper.notLikeCustom("t_user", "曹");
+        conditionUserList = conditionUserMapper.notRightLikeCustom("曹");
+        conditionTableUserList = conditionTableUserMapper.notRightLikeCustom("t_user", "曹");
         validate(conditionUserList, conditionTableUserList, false);
-        conditionUserList = conditionUserMapper.notLikeCustom(null);
-        conditionTableUserList = conditionTableUserMapper.notLikeCustom("t_user", null);
+        conditionUserList = conditionUserMapper.notRightLikeCustom(null);
+        conditionTableUserList = conditionTableUserMapper.notRightLikeCustom("t_user", null);
         validate(conditionUserList, conditionTableUserList, true);
-    }
-
-    @Test
-    public void test1() {
-        conditionUserMapper.test1("曹操", null);
-        conditionUserMapper.test2(null, "曹操");
     }
 
     @Test
@@ -352,14 +346,41 @@ public class ConditionMapperTest {
         List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.in("t_user", nameList);
         validate(conditionUserList, conditionTableUserList, true);
 
-
         conditionUserList = conditionUserMapper.inDynamic(nameList);
-//        conditionTableUserList = conditionTableUserMapper.inDynamic("t_user", nameList);
-//        validate(conditionUserList, conditionTableUserList, true);
-//        conditionUserList = conditionUserMapper.inDynamic(null);
-//        conditionTableUserList = conditionTableUserMapper.inDynamic("t_user", null);
-//        validate(conditionUserList, conditionTableUserList, true);
+        conditionTableUserList = conditionTableUserMapper.inDynamic("t_user", nameList);
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.inDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.inDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
 
+        conditionUserList = conditionUserMapper.inCustom(nameList);
+        conditionTableUserList = conditionTableUserMapper.inCustom("t_user", nameList);
+        validate(conditionUserList, conditionTableUserList, true);
+        conditionUserList = conditionUserMapper.inCustom(null);
+        conditionTableUserList = conditionTableUserMapper.inCustom("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+    }
+
+    @Test
+    public void notIn() {
+        List<String> nameList = Collections.singletonList("曹操");
+        List<ConditionUser> conditionUserList = conditionUserMapper.notIn(nameList);
+        List<ConditionTableUser> conditionTableUserList = conditionTableUserMapper.notIn("t_user", nameList);
+        validate(conditionUserList, conditionTableUserList, false);
+
+        conditionUserList = conditionUserMapper.notInDynamic(nameList);
+        conditionTableUserList = conditionTableUserMapper.notInDynamic("t_user", nameList);
+        validate(conditionUserList, conditionTableUserList, false);
+        conditionUserList = conditionUserMapper.inDynamic(null);
+        conditionTableUserList = conditionTableUserMapper.inDynamic("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
+
+        conditionUserList = conditionUserMapper.notInCustom(nameList);
+        conditionTableUserList = conditionTableUserMapper.notInCustom("t_user", nameList);
+        validate(conditionUserList, conditionTableUserList, false);
+        conditionUserList = conditionUserMapper.inCustom(null);
+        conditionTableUserList = conditionTableUserMapper.inCustom("t_user", null);
+        validate(conditionUserList, conditionTableUserList, true);
     }
 
 

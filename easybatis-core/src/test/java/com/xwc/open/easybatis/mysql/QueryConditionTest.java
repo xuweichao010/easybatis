@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * 时间：2020/12/31
  * 描述：比较查询单元测试
  */
-public class CompareConditionTest {
+public class QueryConditionTest {
 
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
