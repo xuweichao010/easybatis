@@ -10,12 +10,21 @@ import com.xwc.open.easybatis.core.support.ParamMeta;
  */
 public interface MyBatisOrSqlTemplate {
 
-    default String dynamicConditionIf(String paramName, String conditionQuery) {
+    default String dynamicAndConditionIf(String paramName, String conditionQuery) {
         return "<if test='" + paramName + " != null'> " + andCondition(conditionQuery) + " </if>";
     }
 
-    default String guiseDynamicConditionIf(String conditionQuery) {
+    default String dynamicConditionIf(String paramName, String conditionQuery) {
+        return "<if test='" + paramName + " != null'> " + conditionQuery + " </if>";
+    }
+
+
+    default String guiseDynamicAndConditionIf(String conditionQuery) {
         return "<if test='true'> " + andCondition(conditionQuery) + " </if>";
+    }
+
+    default String guiseDynamicConditionIf(String conditionQuery) {
+        return "<if test='true'> " + conditionQuery + " </if>";
     }
 
     default String andCondition(String conditionQuery) {
@@ -56,7 +65,7 @@ public interface MyBatisOrSqlTemplate {
         return prefix != null ? prefix + "." + fieldName : fieldName;
     }
 
-    default String columnName(ParamMeta paramMeta, boolean multi) {
+    default String columnName(ParamMeta paramMeta) {
         if (StringUtils.hasText(paramMeta.getAlias())) {
             return paramMeta.getAlias() + ".`" + paramMeta.getColumnName() + "`";
         }

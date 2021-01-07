@@ -37,7 +37,6 @@ public interface MybatisUserMapper extends BaseMapper<MybatisUser, String> {
     @DeleteSql
     Integer clearTest(int valid);
 
-
     @UpdateSql
     Integer updateParamCondition(@SetParam Integer job, @SetParam Integer age, String id);
 

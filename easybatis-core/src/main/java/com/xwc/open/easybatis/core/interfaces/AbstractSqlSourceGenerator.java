@@ -18,6 +18,8 @@ public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
     protected UpdateColumnSnippet updateColumnSnippet;
     protected UpdateConditionSnippet updateConditionSnippet;
     protected DeleteConditionSnippet deleteConditionSnippet;
+    protected OrderBySnippet orderBySnippet;
+    protected PageSnippet pageSnippet;
 
     public AbstractSqlSourceGenerator() {
         this.selectColumnSnippet = new DefaultSelectColumnSnippet();
@@ -26,6 +28,8 @@ public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
         this.insertColumnValue = new DefaultInsertValueSnippet();
         this.updateColumnSnippet = new DefaultUpdateColumnSnippet();
         this.updateConditionSnippet = new DefaultUpdateConditionSnippet(this.selectConditionSnippet);
+        this.orderBySnippet = new DefaultOrderBySnippet();
+        this.pageSnippet = new DefaultPageSnippet();
     }
 
     public String insertColumn(MethodMeta methodMeta) {

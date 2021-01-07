@@ -24,6 +24,10 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         if (StringUtils.hasText(conditionSnippet)) {
             sb.append(" <where> ").append(conditionSnippet).append(" </where>");
         }
+        String orderSnippet = this.orderBySnippet.apply(methodMetaData);
+        if (StringUtils.hasText(orderSnippet)) {
+            sb.append(" <trim prefix='ORDER BY' suffixOverrides=', '> ").append(orderSnippet).append("</trim>");
+        }
         sb.append("</script>");
         return sb.toString();
     }

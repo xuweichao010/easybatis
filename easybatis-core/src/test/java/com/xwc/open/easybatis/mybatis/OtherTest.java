@@ -2,6 +2,7 @@ package com.xwc.open.easybatis.mybatis;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.mybatis.other.OtherTableUserMapper;
+import com.xwc.open.easybatis.mybatis.other.OtherUser;
 import com.xwc.open.easybatis.mybatis.other.OtherUserMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
@@ -13,6 +14,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * 作者：徐卫超 cc
@@ -44,6 +46,12 @@ public class OtherTest {
     }
 
     @Test
+    public void orderBy() {
+        List<OtherUser> otherUsers = otherUserMapper.orderBy(null);
+        System.out.println(otherUsers);
+    }
+
+    @Test
     public void Count() {
 
     }
@@ -58,8 +66,5 @@ public class OtherTest {
 
     }
 
-    @Test
-    public void orderBy() {
 
-    }
 }

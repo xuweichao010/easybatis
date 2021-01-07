@@ -3,6 +3,7 @@ package com.xwc.open.easybatis.mysql.other;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.Count;
 import com.xwc.open.easybatis.core.anno.condition.Distinct;
+import com.xwc.open.easybatis.core.anno.condition.filter.ASC;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
 
 import java.util.List;
@@ -39,5 +40,9 @@ public interface OtherMapper extends BaseMapper<OtherEntity, String> {
     @Count
     @SelectSql("id")
     List<OtherEntity> distinctCountCondition(String name, String age);
+
+
+    @SelectSql("id")
+    List<OtherEntity> orderBy(String name, @ASC("name") Boolean names);
 
 }

@@ -108,13 +108,18 @@ public class OtherTest {
 
 
     @Test
-    public void page() {
+    public void orderBy() {
+
+        Method method = chooseMethod(OtherMapper.class, "orderBy");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        System.out.println(sql);
 
     }
 
-
     @Test
-    public void orderBy() {
+    public void page() {
 
     }
 

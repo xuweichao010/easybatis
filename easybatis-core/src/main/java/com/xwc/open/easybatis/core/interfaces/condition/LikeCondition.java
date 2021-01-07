@@ -23,7 +23,7 @@ public class LikeCondition implements QueryCondition {
     public String apply(ParamMeta metaData, boolean multi) {
         if (!conditionTypeSet.contains(metaData.getCondition())) return null;
         String prefix = multi && metaData.hasParent() ? metaData.getParentParamName() : null;
-        String columnName = this.columnName(metaData, multi);
+        String columnName = this.columnName(metaData);
         return doApply(this.paramName(metaData.getParamName(), prefix), condition(this.mybatisParam(metaData.getParamName(), prefix), columnName, metaData.getCondition()), metaData.paramType());
     }
 

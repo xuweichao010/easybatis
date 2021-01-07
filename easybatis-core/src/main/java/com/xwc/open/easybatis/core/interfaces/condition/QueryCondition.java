@@ -19,9 +19,9 @@ public interface QueryCondition extends MyBatisOrSqlTemplate {
         if (type == DynamicType.NO_DYNAMIC) {
             return "AND" + conditionQuery;
         } else if (type == DynamicType.DYNAMIC) {
-            return dynamicConditionIf(conditionParam, conditionQuery);
+            return dynamicAndConditionIf(conditionParam, conditionQuery);
         } else if (type == DynamicType.GUISE_DYNAMIC) {
-            return guiseDynamicConditionIf( conditionQuery);
+            return guiseDynamicAndConditionIf( conditionQuery);
         } else {
             throw new EasyBatisException("无法支持的动态语句");
         }

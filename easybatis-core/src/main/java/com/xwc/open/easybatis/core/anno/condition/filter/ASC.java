@@ -13,8 +13,8 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Condition(type = ConditionType.ORDER_BY)
-public @interface OrderBy {
+@Condition(type = ConditionType.ORDER_BY_ASC)
+public @interface ASC {
     /**
      * 属性和数据表之间的列关系
      *
@@ -23,11 +23,15 @@ public @interface OrderBy {
     String value() default "";
 
 
+    boolean dynamic() default false;
+
     /**
-     * 是否是动态语句
+     * 条件别名
+     * 在JOIN条件中使用
      *
      * @return
      */
-    boolean dynamic() default false;
-
+    String alias() default "";
 }
+
+

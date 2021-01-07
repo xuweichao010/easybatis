@@ -51,7 +51,7 @@ public class AnnotationAssistant {
     private static final Set<Class<? extends Annotation>> queryAnnoSet = Stream
             .of(Equal.class, NotEqual.class, IsNull.class, IsNotNull.class, In.class, NotIn.class,
                     Like.class, RightLike.class, LeftLike.class, NotLike.class, NotLeftLike.class, NotRightLike.class, GreaterThan.class, GreaterThanEqual.class, LessThan.class
-                    , LessThanEqual.class, Start.class, Offset.class, OrderBy.class)
+                    , LessThanEqual.class, Start.class, Offset.class, ASC.class,DESC.class)
             .collect(Collectors.toSet());
 
     public String tableName(Class<?> entityType) {
