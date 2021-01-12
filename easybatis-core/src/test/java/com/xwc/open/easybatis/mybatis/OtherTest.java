@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.mybatis;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
+import com.xwc.open.easybatis.mybatis.other.OtherTableUser;
 import com.xwc.open.easybatis.mybatis.other.OtherTableUserMapper;
 import com.xwc.open.easybatis.mybatis.other.OtherUser;
 import com.xwc.open.easybatis.mybatis.other.OtherUserMapper;
@@ -9,6 +10,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,15 +49,18 @@ public class OtherTest {
 
     @Test
     public void orderBy() {
-        List<OtherUser> otherUsers = otherUserMapper.orderBy(null);
-        System.out.println(otherUsers);
+        validateOrderDesc0(otherUserMapper.orderByDesc(null));
+        validateOrderDesc(otherTableUserMapper.orderByDesc("t_user", null));
+        validateOrderAsc0(otherUserMapper.orderByAsc(null));
+        validateOrderAsc(otherTableUserMapper.orderByAsc("t_user", null));
     }
 
     @Test
-    public void Count() {
+    public void count() {
         Integer count = otherUserMapper.count();
-        System.out.println(count);
+        Assert.assertEquals(count, Integer.valueOf(31));
     }
+
 
     @Test
     public void page() {
@@ -65,7 +70,51 @@ public class OtherTest {
     @Test
     public void distinct() {
         List<Integer> integers = otherUserMapper.distinctAge();
-        System.out.println(integers);
+        Integer count = otherUserMapper.count();
+        if (integers.size() == count) {
+            Assert.fail();
+        }
+    }
+
+
+    private void validateOrderDesc0(List<OtherUser> list) {
+        for (int i = 0; i < list.size(); i++) {
+            OtherUser before = list.get(i - 1 < 0 ? 0 : i);
+            OtherUser current = list.get(i);
+            if (before.getAge() < current.getAge()) {
+                Assert.fail();
+            }
+        }
+    }
+
+    private void validateOrderAsc0(List<OtherUser> list) {
+        for (int i = 0; i < list.size(); i++) {
+            OtherUser before = list.get(i - 1 < 0 ? 0 : i);
+            OtherUser current = list.get(i);
+            if (before.getAge() > current.getAge()) {
+                Assert.fail();
+            }
+        }
+    }
+
+    private void validateOrderDesc(List<OtherTableUser> list) {
+        for (int i = 0; i < list.size(); i++) {
+            OtherTableUser before = list.get(i - 1 < 0 ? 0 : i);
+            OtherTableUser current = list.get(i);
+            if (before.getAge() < current.getAge()) {
+                Assert.fail();
+            }
+        }
+    }
+
+    private void validateOrderAsc(List<OtherTableUser> list) {
+        for (int i = 0; i < list.size(); i++) {
+            OtherTableUser before = list.get(i - 1 < 0 ? 0 : i);
+            OtherTableUser current = list.get(i);
+            if (before.getAge() > current.getAge()) {
+                Assert.fail();
+            }
+        }
     }
 
 

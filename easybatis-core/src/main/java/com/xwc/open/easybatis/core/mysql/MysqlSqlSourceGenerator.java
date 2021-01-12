@@ -28,6 +28,10 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         if (StringUtils.hasText(orderSnippet)) {
             sb.append(" <trim prefix='ORDER BY' suffixOverrides=', '> ").append(orderSnippet).append("</trim>");
         }
+        String page = this.pageSnippet.apply(methodMetaData);
+        if (StringUtils.hasText(page)) {
+            sb.append(" LIMIT ").append(page);
+        }
         sb.append("</script>");
         return sb.toString();
     }

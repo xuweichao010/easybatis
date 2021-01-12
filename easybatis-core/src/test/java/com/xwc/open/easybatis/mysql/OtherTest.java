@@ -113,13 +113,27 @@ public class OtherTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        System.out.println(sql);
-
+        String sqlTarget = "<script>" +
+                " SELECT id FROM t_condition" +
+                " <where> `name` = #{name} </where>" +
+                " <trim prefix='ORDER BY' suffixOverrides=', '>" +
+                " <if test='true'> `name` ASC </if>" +
+                "</trim><" +
+                "/script>";
+        Assert.assertEquals(sql, sqlTarget);
     }
 
     @Test
     public void page() {
-
+        Method method = chooseMethod(OtherMapper.class, "limit");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " LIMIT #{start}, #{offset}" +
+                "</script>";
+        Assert.assertEquals(sql, sqlTarget);
     }
 
 

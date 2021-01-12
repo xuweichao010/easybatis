@@ -36,10 +36,6 @@ public interface MyBatisOrSqlTemplate {
         return "<if test='" + setParam + " != null'> " + setValue + ",</if>";
     }
 
-    default String dynamicConditionIsNull(String paramName, String conditionQuery) {
-        return "AND (" + mybatisParam(paramName, null) + " IS NULL OR " + conditionQuery + ")";
-    }
-
     default String insertBatchForeach(String fieldList, String paramName) {
         if (paramName == null) {
             paramName = "list";
