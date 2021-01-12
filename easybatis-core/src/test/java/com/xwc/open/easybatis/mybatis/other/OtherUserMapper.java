@@ -1,6 +1,8 @@
 package com.xwc.open.easybatis.mybatis.other;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
+import com.xwc.open.easybatis.core.anno.condition.Count;
+import com.xwc.open.easybatis.core.anno.condition.Distinct;
 import com.xwc.open.easybatis.core.anno.condition.filter.DESC;
 import com.xwc.open.easybatis.core.interfaces.EasyMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -20,4 +22,12 @@ public interface OtherUserMapper extends EasyMapper<OtherUser, String> {
 
     @SelectSql
     List<OtherUser> orderBy(@DESC Boolean age);
+
+    @SelectSql
+    @Count
+    Integer count();
+
+    @SelectSql(" age ")
+    @Distinct
+    List<Integer> distinctAge();
 }

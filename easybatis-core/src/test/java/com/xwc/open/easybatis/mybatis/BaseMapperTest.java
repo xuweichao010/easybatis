@@ -10,6 +10,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +53,11 @@ public class BaseMapperTest {
         sqlSession = sqlSessionFactory.openSession(true);
         mybatisTableUserMapper = sqlSession.getMapper(MybatisTableUserMapper.class);
         mybatisUserMapper = sqlSession.getMapper(MybatisUserMapper.class);
+
+    }
+
+    @After
+    public void  after(){
         mybatisTableUserMapper.clearTest("t_user", TEST_TAG);
         mybatisUserMapper.clearTest(TEST_TAG);
     }

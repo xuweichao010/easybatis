@@ -53,7 +53,8 @@ public class OtherTest {
 
     @Test
     public void Count() {
-
+        Integer count = otherUserMapper.count();
+        System.out.println(count);
     }
 
     @Test
@@ -63,7 +64,8 @@ public class OtherTest {
 
     @Test
     public void distinct() {
-
+        List<Integer> integers = otherUserMapper.distinctAge();
+        System.out.println(integers);
     }
 
 

@@ -109,7 +109,6 @@ public class OtherTest {
 
     @Test
     public void orderBy() {
-
         Method method = chooseMethod(OtherMapper.class, "orderBy");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
