@@ -4,6 +4,7 @@ import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.Count;
 import com.xwc.open.easybatis.core.anno.condition.Distinct;
 import com.xwc.open.easybatis.core.anno.condition.filter.ASC;
+import com.xwc.open.easybatis.core.anno.condition.filter.DESC;
 import com.xwc.open.easybatis.core.anno.condition.filter.Offset;
 import com.xwc.open.easybatis.core.anno.condition.filter.Start;
 import com.xwc.open.easybatis.core.interfaces.BaseMapper;
@@ -46,6 +47,21 @@ public interface OtherMapper extends BaseMapper<OtherEntity, String> {
 
     @SelectSql("id")
     List<OtherEntity> orderBy(String name, @ASC("name") Boolean names);
+
+    @SelectSql("id")
+    List<OtherEntity> orderByMulti(String name, @ASC("name") Boolean age, @DESC Boolean job);
+
+    @SelectSql(dynamic = true)
+    List<OtherEntity> orderByMethodDynamic(String name, @ASC Boolean age);
+
+    @SelectSql(dynamic = true)
+    List<OtherEntity> orderByMethodDynamicMulti(String name, @ASC Boolean age, @DESC Boolean job);
+
+    @SelectSql
+    List<OtherEntity> orderByParamDynamic(String name, @ASC(dynamic = true) Boolean age);
+
+    @SelectSql(dynamic = true)
+    List<OtherEntity> orderByParamDynamicMulti(String name, @ASC(dynamic = true) Boolean age, @DESC(dynamic = true) Boolean job);
 
     @SelectSql
     List<OtherEntity> limit(@Start Integer start, @Offset Integer offset);

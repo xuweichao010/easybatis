@@ -101,7 +101,6 @@ public class OtherTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        System.out.println(sql);
         String sqlTarget = "<script> SELECT COUNT(DISTINCT(id)) FROM t_condition <where> `name` = #{name} AND`age` = #{age} </where></script>";
         Assert.assertEquals(sql, sqlTarget);
     }
@@ -117,11 +116,107 @@ public class OtherTest {
                 " SELECT id FROM t_condition" +
                 " <where> `name` = #{name} </where>" +
                 " <trim prefix='ORDER BY' suffixOverrides=', '>" +
-                " <if test='true'> `name` ASC </if>" +
+                " <if test='true'> `name` ASC, </if>" +
                 "</trim><" +
                 "/script>";
         Assert.assertEquals(sql, sqlTarget);
     }
+
+    @Test
+    public void orderByMulti() {
+        Method method = chooseMethod(OtherMapper.class, "orderByMulti");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT id FROM t_condition" +
+                " <where> `name` = #{name} </where>" +
+                " <trim prefix='ORDER BY' suffixOverrides=', '>" +
+                " <if test='true'> `name` ASC, </if>" +
+                "<if test='true'> `job` DESC, </if>" +
+                "</trim>" +
+                "</script>";
+        Assert.assertEquals(sql, sqlTarget);
+    }
+
+    @Test
+    public void orderByMethodDynamic() {
+        Method method = chooseMethod(OtherMapper.class, "orderByMethodDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name`" +
+                " FROM t_condition" +
+                " <where>" +
+                " <if test='name != null'>  AND `name` = #{name} </if>" +
+                " </where>" +
+                " <trim prefix='ORDER BY' suffixOverrides=', '>" +
+                " <if test='age != null'> `age` ASC,</if>" +
+                "</trim>" +
+                "</script>";
+        Assert.assertEquals(sql, sqlTarget);
+    }
+
+    @Test
+    public void orderByMethodDynamicMulti() {
+        Method method = chooseMethod(OtherMapper.class, "orderByMethodDynamicMulti");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name`" +
+                " FROM t_condition" +
+                " <where>" +
+                " <if test='name != null'>  AND `name` = #{name} </if>" +
+                " </where>" +
+                " <trim prefix='ORDER BY' suffixOverrides=', '>" +
+                " <if test='age != null'> `age` ASC,</if>" +
+                "<if test='job != null'> `job` DESC,</if>" +
+                "</trim>" +
+                "</script>";
+        Assert.assertEquals(sql, sqlTarget);
+    }
+
+    @Test
+    public void orderByParamDynamic() {
+        Method method = chooseMethod(OtherMapper.class, "orderByParamDynamic");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name`" +
+                " FROM t_condition" +
+                " <where>" +
+                " <if test='true'>  AND `name` = #{name} </if>" +
+                " </where>" +
+                " <trim prefix='ORDER BY' suffixOverrides=', '>" +
+                " <if test='age != null'> `age` ASC,</if>" +
+                "</trim>" +
+                "</script>";
+        Assert.assertEquals(sql, sqlTarget);
+    }
+
+    @Test
+    public void orderByParamDynamicMulti() {
+        Method method = chooseMethod(OtherMapper.class, "orderByParamDynamicMulti");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String sqlTarget = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " <where>" +
+                " <if test='name != null'>  AND `name` = #{name} </if>" +
+                " </where>" +
+                " <trim prefix='ORDER BY' suffixOverrides=', '>" +
+                " <if test='age != null'> `age` ASC,</if>" +
+                "<if test='job != null'> `job` DESC,</if>" +
+                "</trim>" +
+                "</script>";
+        Assert.assertEquals(sql, sqlTarget);
+    }
+
+
 
     @Test
     public void page() {

@@ -25,4 +25,19 @@ public interface OtherTableUserMapper extends EasyMapper<OtherTableUser, String>
     @SelectSql
     List<OtherTableUser> orderByAsc(@Ignore String tableName, @ASC Boolean age);
 
+    @SelectSql
+    List<OtherTableUser> orderByMultiDesc(@Ignore String tableName, @DESC Boolean age, @ASC Boolean job);
+
+    @SelectSql(dynamic = true)
+    List<OtherTableUser> orderByMethodDynamic(@Ignore String tableName, @ASC Boolean age);
+
+    @SelectSql(dynamic = true)
+    List<OtherTableUser> orderByMethodDynamicMulti(@Ignore String tableName, @ASC Boolean age, @DESC Boolean job);
+
+    @SelectSql
+    List<OtherTableUser> orderByParamDynamic(@Ignore String tableName, @ASC(dynamic = true) Boolean age);
+
+    @SelectSql(dynamic = true)
+    List<OtherTableUser> orderByParamDynamicMulti(@Ignore String tableName, @ASC(dynamic = true) Boolean age, @DESC(dynamic = true) Boolean job);
+
 }

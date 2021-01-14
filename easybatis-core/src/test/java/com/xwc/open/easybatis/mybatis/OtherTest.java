@@ -17,6 +17,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 作者：徐卫超 cc
@@ -49,10 +50,44 @@ public class OtherTest {
 
     @Test
     public void orderBy() {
-        validateOrderDesc0(otherUserMapper.orderByDesc(null));
-        validateOrderDesc(otherTableUserMapper.orderByDesc("t_user", null));
-        validateOrderAsc0(otherUserMapper.orderByAsc(null));
-        validateOrderAsc(otherTableUserMapper.orderByAsc("t_user", null));
+        Assert.assertTrue(validateDesc(otherUserMapper.orderByDesc(null).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateDesc(otherTableUserMapper.orderByDesc("t_user", null).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+
+        Assert.assertTrue(validateAsc(otherUserMapper.orderByAsc(null).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherTableUserMapper.orderByAsc("t_user", null).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+
+        Assert.assertTrue(validateDesc(otherUserMapper.orderByMultiDesc(null, null).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateDesc(otherTableUserMapper.orderByMultiDesc("t_user", null, null).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+
+        Assert.assertFalse(validateAsc(otherUserMapper.orderByMethodDynamic(null).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertFalse(validateAsc(otherTableUserMapper.orderByMethodDynamic("t_user", null).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherUserMapper.orderByMethodDynamic(true).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherTableUserMapper.orderByMethodDynamic("t_user", true).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+
+        Assert.assertFalse(validateAsc(otherUserMapper.orderByMethodDynamicMulti(null, null).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertFalse(validateAsc(otherTableUserMapper.orderByMethodDynamicMulti("t_user", null, null).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherUserMapper.orderByMethodDynamicMulti(true, true).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherTableUserMapper.orderByMethodDynamicMulti("t_user", true, true).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherUserMapper.orderByMethodDynamicMulti(true, null).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherTableUserMapper.orderByMethodDynamicMulti("t_user", true, null).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateDesc(otherUserMapper.orderByMethodDynamicMulti(null, true).stream().map(OtherUser::getJob).collect(Collectors.toList())));
+        Assert.assertTrue(validateDesc(otherTableUserMapper.orderByMethodDynamicMulti("t_user", null, true).stream().map(OtherTableUser::getJob).collect(Collectors.toList())));
+
+        Assert.assertFalse(validateAsc(otherUserMapper.orderByParamDynamic(null).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertFalse(validateAsc(otherTableUserMapper.orderByParamDynamic("t_user", null).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherUserMapper.orderByParamDynamic(true).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherTableUserMapper.orderByParamDynamic("t_user", true).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+
+        Assert.assertFalse(validateAsc(otherUserMapper.orderByParamDynamicMulti(null, null).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertFalse(validateAsc(otherTableUserMapper.orderByParamDynamicMulti("t_user", null, null).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherUserMapper.orderByParamDynamicMulti(true, true).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherTableUserMapper.orderByParamDynamicMulti("t_user", true, true).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherUserMapper.orderByParamDynamicMulti(true, null).stream().map(OtherUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateAsc(otherTableUserMapper.orderByParamDynamicMulti("t_user", true, null).stream().map(OtherTableUser::getAge).collect(Collectors.toList())));
+        Assert.assertTrue(validateDesc(otherUserMapper.orderByParamDynamicMulti(null, true).stream().map(OtherUser::getJob).collect(Collectors.toList())));
+        Assert.assertTrue(validateDesc(otherTableUserMapper.orderByParamDynamicMulti("t_user", null, true).stream().map(OtherTableUser::getJob).collect(Collectors.toList())));
+
+
     }
 
     @Test
@@ -76,45 +111,26 @@ public class OtherTest {
         }
     }
 
-
-    private void validateOrderDesc0(List<OtherUser> list) {
+    private boolean validateDesc(List<Integer> list) {
         for (int i = 0; i < list.size(); i++) {
-            OtherUser before = list.get(i - 1 < 0 ? 0 : i);
-            OtherUser current = list.get(i);
-            if (before.getAge() < current.getAge()) {
-                Assert.fail();
+            Integer before = list.get(Math.max(i - 1, 0));
+            Integer current = list.get(i);
+            if (before < current) {
+                return false;
             }
         }
+        return true;
     }
 
-    private void validateOrderAsc0(List<OtherUser> list) {
+    private boolean validateAsc(List<Integer> list) {
         for (int i = 0; i < list.size(); i++) {
-            OtherUser before = list.get(i - 1 < 0 ? 0 : i);
-            OtherUser current = list.get(i);
-            if (before.getAge() > current.getAge()) {
-                Assert.fail();
+            Integer before = list.get(Math.max(i - 1, 0));
+            Integer current = list.get(i);
+            if (before > current) {
+                return false;
             }
         }
-    }
-
-    private void validateOrderDesc(List<OtherTableUser> list) {
-        for (int i = 0; i < list.size(); i++) {
-            OtherTableUser before = list.get(i - 1 < 0 ? 0 : i);
-            OtherTableUser current = list.get(i);
-            if (before.getAge() < current.getAge()) {
-                Assert.fail();
-            }
-        }
-    }
-
-    private void validateOrderAsc(List<OtherTableUser> list) {
-        for (int i = 0; i < list.size(); i++) {
-            OtherTableUser before = list.get(i - 1 < 0 ? 0 : i);
-            OtherTableUser current = list.get(i);
-            if (before.getAge() > current.getAge()) {
-                Assert.fail();
-            }
-        }
+        return true;
     }
 
 

@@ -44,7 +44,7 @@ public class DefaultOrderBySnippet implements OrderBySnippet, MyBatisOrSqlTempla
                 String condition = this.columnName(orderCondition) + " " + orderCondition.getCondition().expression();
                 String orderBy;
                 if (orderCondition.getDynamicType() == DynamicType.DYNAMIC) {
-                    orderBy = this.dynamicConditionIf(this.paramName(orderCondition.getParamName(), prefix), condition);
+                    orderBy = this.dynamicSetIf(this.paramName(orderCondition.getParamName(), prefix), condition);
                 } else {
                     orderBy = this.guiseDynamicConditionIf(condition);
                 }

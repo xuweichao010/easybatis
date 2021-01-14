@@ -24,7 +24,7 @@ public interface MyBatisOrSqlTemplate {
     }
 
     default String guiseDynamicConditionIf(String conditionQuery) {
-        return "<if test='true'> " + conditionQuery + " </if>";
+        return "<if test='true'> " + conditionQuery + ", </if>";
     }
 
     default String andCondition(String conditionQuery) {
