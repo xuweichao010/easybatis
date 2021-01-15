@@ -1,9 +1,10 @@
-package com.xwc.open.easybatis.core.support.snippet;
+package com.xwc.open.easybatis.core.mysql.snippet;
 
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
 import com.xwc.open.easybatis.core.model.table.ColumnMeta;
+import com.xwc.open.easybatis.core.support.snippet.InsertValueSnippet;
 
 import java.util.List;
 import java.util.stream.Collectors;

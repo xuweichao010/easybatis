@@ -1,9 +1,8 @@
-package com.xwc.open.easybatis.core.support.condition;
+package com.xwc.open.easybatis.core.support;
 
 import com.xwc.open.easybatis.core.enums.DynamicType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.ParamMeta;
-import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
 
 /**
  * 创建人：徐卫超 CC

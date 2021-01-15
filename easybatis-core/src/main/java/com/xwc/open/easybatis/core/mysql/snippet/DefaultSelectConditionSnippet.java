@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.core.support.snippet;
+package com.xwc.open.easybatis.core.mysql.snippet;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
@@ -6,7 +6,12 @@ import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
 import com.xwc.open.easybatis.core.model.table.IdMeta;
 import com.xwc.open.easybatis.core.model.table.LoglicColumn;
-import com.xwc.open.easybatis.core.support.condition.*;
+import com.xwc.open.easybatis.core.mysql.condition.CompareCondition;
+import com.xwc.open.easybatis.core.mysql.condition.InCondition;
+import com.xwc.open.easybatis.core.mysql.condition.LikeCondition;
+import com.xwc.open.easybatis.core.mysql.condition.NullCondition;
+import com.xwc.open.easybatis.core.support.QueryCondition;
+import com.xwc.open.easybatis.core.support.snippet.SelectConditionSnippet;
 
 import java.util.ArrayList;
 import java.util.List;

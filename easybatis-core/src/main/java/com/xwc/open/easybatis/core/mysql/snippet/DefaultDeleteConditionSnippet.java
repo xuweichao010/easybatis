@@ -1,6 +1,8 @@
-package com.xwc.open.easybatis.core.support.snippet;
+package com.xwc.open.easybatis.core.mysql.snippet;
 
 import com.xwc.open.easybatis.core.model.MethodMeta;
+import com.xwc.open.easybatis.core.support.snippet.DeleteConditionSnippet;
+import com.xwc.open.easybatis.core.support.snippet.SelectConditionSnippet;
 
 /**
  * 作者：徐卫超 cc

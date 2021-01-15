@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.core.support.snippet;
+package com.xwc.open.easybatis.core.mysql.snippet;
 
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.DynamicType;
@@ -6,6 +6,7 @@ import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
 import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
+import com.xwc.open.easybatis.core.support.snippet.OrderBySnippet;
 
 import java.util.ArrayList;
 import java.util.List;

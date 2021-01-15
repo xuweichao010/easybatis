@@ -2,6 +2,7 @@ package com.xwc.open.easybatis.core.mysql;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.model.MethodMeta;
+import com.xwc.open.easybatis.core.mysql.snippet.*;
 import com.xwc.open.easybatis.core.support.AbstractSqlSourceGenerator;
 
 /**
@@ -12,6 +13,14 @@ import com.xwc.open.easybatis.core.support.AbstractSqlSourceGenerator;
 public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
 
     public MysqlSqlSourceGenerator() {
+        this.selectColumnSnippet = new DefaultSelectColumnSnippet();
+        this.selectConditionSnippet = new DefaultSelectConditionSnippet();
+        this.deleteConditionSnippet = new DefaultDeleteConditionSnippet(selectConditionSnippet);
+        this.insertColumnValue = new DefaultInsertValueSnippet();
+        this.updateColumnSnippet = new DefaultUpdateColumnSnippet();
+        this.updateConditionSnippet = new DefaultUpdateConditionSnippet(this.selectConditionSnippet);
+        this.orderBySnippet = new DefaultOrderBySnippet();
+        this.pageSnippet = new DefaultPageSnippet();
     }
 
     @Override

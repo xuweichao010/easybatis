@@ -1,8 +1,9 @@
-package com.xwc.open.easybatis.core.support.condition;
+package com.xwc.open.easybatis.core.mysql.condition;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.support.QueryCondition;
 
 import java.util.Set;
 import java.util.stream.Collectors;

@@ -1,10 +1,11 @@
-package com.xwc.open.easybatis.core.support.snippet;
+package com.xwc.open.easybatis.core.mysql.snippet;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.Count;
 import com.xwc.open.easybatis.core.anno.condition.Distinct;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.model.MethodMeta;
+import com.xwc.open.easybatis.core.support.snippet.SelectColumnSnippet;
 
 import java.util.stream.Collectors;
 
