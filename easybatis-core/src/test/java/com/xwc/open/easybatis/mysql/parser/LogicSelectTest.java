@@ -51,9 +51,56 @@ public class LogicSelectTest {
         Method method = chooseMethod(LogicSelectMapper.class, "selectKey");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName` FROM t_user <where>  `id` = #{id} AND `valid` = #{valid} </where></script>", select);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName` FROM t_user <where> `id` = #{id} AND `valid` = #{valid} </where></script>", sql);
     }
+
+    @Test
+    public void update() {
+        Method method = chooseMethod(LogicSelectMapper.class, "update");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
+        Assert.assertEquals("<script> UPDATE t_user SET `orgCode` = #{orgCode}, `orgName` = #{orgName} <where> `id` = #{id} AND `valid` = #{valid} </where></script>", sql);
+    }
+
+    @Test
+    public void updateActivate() {
+        Method method = chooseMethod(LogicSelectMapper.class, "updateActivate");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
+        String sqlTarget = "<script>" +
+                " UPDATE t_user" +
+                " <set>" +
+                " <if test='orgCode != null'> `orgCode` = #{orgCode},</if>" +
+                " <if test='orgName != null'> `orgName` = #{orgName},</if>" +
+                " </set>" +
+                " <where> `id` = #{id} AND `valid` = #{valid} </where>" +
+                "</script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void insert() {
+        Method method = chooseMethod(LogicSelectMapper.class, "insert");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sqlTarget = "<script> INSERT INTO t_user (`id`, `orgCode`, `orgName`, `valid`) VALUES (#{id}, #{orgCode}, #{orgName}, #{valid}) </script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
+    @Test
+    public void insertBatch() {
+        Method method = chooseMethod(LogicSelectMapper.class, "insertBatch");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String sqlTarget = "<script> INSERT INTO t_user (`id`, `orgCode`, `orgName`, `valid`) VALUES  <foreach item= 'item'  collection='list' separator=', '> (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.valid}) </foreach> </script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
+
 
 
     private Method chooseMethod(Class<?> classType, String methodName) {

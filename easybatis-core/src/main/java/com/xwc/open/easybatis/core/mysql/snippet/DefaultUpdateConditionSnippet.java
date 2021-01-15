@@ -4,6 +4,7 @@ import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
 import com.xwc.open.easybatis.core.model.table.IdMeta;
+import com.xwc.open.easybatis.core.model.table.LoglicColumn;
 import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
 import com.xwc.open.easybatis.core.support.snippet.SelectConditionSnippet;
 import com.xwc.open.easybatis.core.support.snippet.UpdateConditionSnippet;
@@ -29,12 +30,18 @@ public class DefaultUpdateConditionSnippet implements UpdateConditionSnippet, My
         List<ParamMeta> setParamList = paramList.stream()
                 .filter(paramMeta1 -> paramMeta1.getCondition() == ConditionType.SET_PARAM).collect(Collectors.toList());
         if (setParamList.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
             ParamMeta paramMeta = null;
             if (methodMeta.getParamMetaList().size() > 1) {
                 paramMeta = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity).collect(Collectors.toList()).get(0);
             }
             IdMeta id = methodMeta.getTableMetadata().getId();
-            return " `"+id.getColumn() + "` = " + this.mybatisParam(id.getField(), paramMeta == null ? null : paramMeta.getParamName());
+            sb.append(" `" + id.getColumn() + "` = " + this.mybatisParam(id.getField(), paramMeta == null ? null : paramMeta.getParamName()));
+            LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
+            if (logic != null) {
+                sb.append(" AND `" + logic.getColumn() + "` = " + this.mybatisParam(logic.getField(), null));
+            }
+            return sb.toString();
         } else {
             return selectConditionSnippet.apply(methodMeta);
         }
