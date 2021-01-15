@@ -2,12 +2,12 @@ package com.xwc.open.easybatis.assistant;
 
 
 import com.xwc.open.easybatis.assistant.method.MethodTestUserMapper;
+import com.xwc.open.easybatis.assistant.model.User;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.support.MethodMeta;
 import com.xwc.open.easybatis.core.support.TableMeta;
-import com.xwc.open.easybatis.model.User;
 import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
 import org.junit.Before;

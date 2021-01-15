@@ -1,9 +1,9 @@
 package com.xwc.open.easybatis.assistant.method;
 
+import com.xwc.open.easybatis.assistant.model.User;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.IsNull;
 import com.xwc.open.easybatis.core.interfaces.EasyMapper;
-import com.xwc.open.easybatis.model.User;
 
 /**
  * 作者：徐卫超 cc
