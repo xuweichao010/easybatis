@@ -3,7 +3,7 @@ package com.xwc.open.easybatis.mysql.base.update;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.SetParam;
 import com.xwc.open.easybatis.core.anno.table.Ignore;
-import com.xwc.open.easybatis.core.interfaces.BaseMapper;
+import com.xwc.open.easybatis.core.support.BaseMapper;
 
 /**
  * 作者：徐卫超 cc

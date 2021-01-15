@@ -1,8 +1,8 @@
 package com.xwc.open.easybatis.core.mysql;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
-import com.xwc.open.easybatis.core.interfaces.AbstractSqlSourceGenerator;
-import com.xwc.open.easybatis.core.support.MethodMeta;
+import com.xwc.open.easybatis.core.model.MethodMeta;
+import com.xwc.open.easybatis.core.support.AbstractSqlSourceGenerator;
 
 /**
  * 创建人：徐卫超 CC

@@ -15,12 +15,12 @@ import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.DynamicType;
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
-import com.xwc.open.easybatis.core.support.MethodMeta;
-import com.xwc.open.easybatis.core.support.ParamMeta;
-import com.xwc.open.easybatis.core.support.TableMeta;
-import com.xwc.open.easybatis.core.support.table.ColumnMeta;
-import com.xwc.open.easybatis.core.support.table.IdMeta;
-import com.xwc.open.easybatis.core.support.table.LoglicColumn;
+import com.xwc.open.easybatis.core.model.MethodMeta;
+import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.model.TableMeta;
+import com.xwc.open.easybatis.core.model.table.ColumnMeta;
+import com.xwc.open.easybatis.core.model.table.IdMeta;
+import com.xwc.open.easybatis.core.model.table.LoglicColumn;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.ParamNameUtil;
 

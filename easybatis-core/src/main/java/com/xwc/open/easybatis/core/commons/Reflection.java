@@ -1,8 +1,7 @@
 package com.xwc.open.easybatis.core.commons;
 
 
-import com.xwc.open.easybatis.core.interfaces.BaseMapper;
-import com.xwc.open.easybatis.core.interfaces.EasyMapper;
+import com.xwc.open.easybatis.core.support.EasyMapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

@@ -7,7 +7,7 @@ import com.xwc.open.easybatis.core.anno.condition.filter.ASC;
 import com.xwc.open.easybatis.core.anno.condition.filter.DESC;
 import com.xwc.open.easybatis.core.anno.condition.filter.Offset;
 import com.xwc.open.easybatis.core.anno.condition.filter.Start;
-import com.xwc.open.easybatis.core.interfaces.BaseMapper;
+import com.xwc.open.easybatis.core.support.BaseMapper;
 
 import java.util.List;
 

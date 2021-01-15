@@ -2,7 +2,7 @@ package com.xwc.open.easybatis.mysql.mybatis.condition;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.*;
-import com.xwc.open.easybatis.core.interfaces.EasyMapper;
+import com.xwc.open.easybatis.core.support.EasyMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

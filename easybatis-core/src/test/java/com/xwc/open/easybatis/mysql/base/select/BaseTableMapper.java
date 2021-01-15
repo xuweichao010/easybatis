@@ -5,7 +5,7 @@ import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.anno.table.Ignore;
-import com.xwc.open.easybatis.core.interfaces.EasyMapper;
+import com.xwc.open.easybatis.core.support.EasyMapper;
 
 import java.util.Collection;
 

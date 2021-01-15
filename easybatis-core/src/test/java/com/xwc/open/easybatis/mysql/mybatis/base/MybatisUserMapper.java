@@ -5,7 +5,7 @@ import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
 import com.xwc.open.easybatis.core.anno.condition.filter.SetParam;
-import com.xwc.open.easybatis.core.interfaces.BaseMapper;
+import com.xwc.open.easybatis.core.support.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
