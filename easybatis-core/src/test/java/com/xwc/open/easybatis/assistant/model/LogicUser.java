@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.assistant.model;
 
 import com.xwc.open.easybatis.core.anno.table.Id;
+import com.xwc.open.easybatis.core.anno.table.Loglic;
 import com.xwc.open.easybatis.core.anno.table.Table;
 import com.xwc.open.easybatis.core.enums.IdType;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.Data;
  */
 @Table("t_user")
 @Data
-public class User {
+public class LogicUser {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,6 +51,7 @@ public class User {
     /**
      * 是否有效 0:有效 1:无效
      */
+    @Loglic(valid = 1, invalid = 0)
     private Integer valid;
 
 }

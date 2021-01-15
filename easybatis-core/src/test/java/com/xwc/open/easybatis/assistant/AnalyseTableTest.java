@@ -1,15 +1,17 @@
 package com.xwc.open.easybatis.assistant;
 
 
-import com.xwc.open.easybatis.assistant.table.TableColumn;
-import com.xwc.open.easybatis.assistant.table.TableNotValue;
-import com.xwc.open.easybatis.assistant.table.TableValue;
+import com.xwc.open.easybatis.assistant.model.LogicUser;
+import com.xwc.open.easybatis.assistant.model.TableColumn;
+import com.xwc.open.easybatis.assistant.model.TableNotValue;
+import com.xwc.open.easybatis.assistant.model.TableValue;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.support.TableMeta;
 import com.xwc.open.easybatis.core.support.table.ColumnMeta;
 import com.xwc.open.easybatis.core.support.table.IdMeta;
+import com.xwc.open.easybatis.core.support.table.LoglicColumn;
 import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
@@ -63,7 +65,7 @@ public class AnalyseTableTest {
                 Assert.assertFalse(id.isSelectIgnore());
                 Assert.assertFalse(id.isUpdateIgnore());
                 Assert.assertTrue(id.isInsertIgnore());
-            }else {
+            } else {
                 Assert.assertFalse(id.isSelectIgnore());
                 Assert.assertTrue(id.isUpdateIgnore());
                 Assert.assertFalse(id.isInsertIgnore());
@@ -82,6 +84,17 @@ public class AnalyseTableTest {
                 Assert.fail();
             }
         }
+    }
+
+
+    @Test
+    public void parseEntityLogicColumn() {
+        TableMeta tableMetadata = annotationAssistant.parseEntityMate(LogicUser.class);
+        if (tableMetadata.getColumnMetaList().isEmpty()) {
+            Assert.fail();
+        }
+        LoglicColumn logic = tableMetadata.getLogic();
+        Assert.assertNotNull(logic);
     }
 
 }
