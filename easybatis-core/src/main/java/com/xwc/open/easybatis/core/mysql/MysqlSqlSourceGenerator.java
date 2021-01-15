@@ -31,11 +31,11 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
                 .append(" FROM ").append(methodMetaData.getTableMetadata().getTableName());
         String conditionSnippet = this.selectConditionSnippet.apply(methodMetaData);
         if (StringUtils.hasText(conditionSnippet)) {
-            sb.append(" <where> ").append(conditionSnippet).append(" </where>");
+            sb.append(" <where>").append(conditionSnippet).append(" </where>");
         }
         String orderSnippet = this.orderBySnippet.apply(methodMetaData);
         if (StringUtils.hasText(orderSnippet)) {
-            sb.append(" <trim prefix='ORDER BY' suffixOverrides=', '> ").append(orderSnippet).append("</trim>");
+            sb.append(" <trim prefix='ORDER BY' suffixOverrides=', '> ").append(orderSnippet).append(" </trim>");
         }
         String page = this.pageSnippet.apply(methodMetaData);
         if (StringUtils.hasText(page)) {
@@ -71,7 +71,7 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         }
         String conditionSnippet = this.updateConditionSnippet.apply(methodMetaData);
         if (StringUtils.hasText(conditionSnippet)) {
-            sb.append(" <where> ").append(conditionSnippet).append(" </where>");
+            sb.append(" <where>").append(conditionSnippet).append(" </where>");
         }
         sb.append("</script>");
         return sb.toString();
@@ -83,7 +83,7 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         sb.append("<script> DELETE FROM ").append(methodMetaData.getTableMetadata().getTableName());
         String conditionSnippet = this.deleteConditionSnippet.apply(methodMetaData);
         if (StringUtils.hasText(conditionSnippet)) {
-            sb.append(" <where> ").append(conditionSnippet).append(" </where>");
+            sb.append(" <where>").append(conditionSnippet).append(" </where>");
         }
         sb.append("</script>");
         return sb.toString();

@@ -16,7 +16,7 @@ public interface QueryCondition extends MyBatisOrSqlTemplate {
 
     default String doApply(String conditionParam, String conditionQuery, DynamicType type) {
         if (type == DynamicType.NO_DYNAMIC) {
-            return "AND" + conditionQuery;
+            return "AND " + conditionQuery;
         } else if (type == DynamicType.DYNAMIC) {
             return dynamicAndConditionIf(conditionParam, conditionQuery);
         } else if (type == DynamicType.GUISE_DYNAMIC) {

@@ -59,7 +59,7 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
         }
         if (methodMeta.getTableMetadata().getLogic() != null) {
             LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
-            list.add(ParamMeta.builder(logic.getColumn(), logic.getField()));
+            list.add(ParamMeta.builder(logic.getColumn(), logic.getField(), ConditionType.EQUAL));
         }
         return listCondition(list, multi);
     }
@@ -67,7 +67,7 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
     public String listCondition(List<ParamMeta> list, boolean multi) {
         String queryCondition = list.stream()
                 .map(condition -> mapCondition(condition, multi))
-                .filter(StringUtils::hasText).collect(Collectors.joining(" ")).trim();
+                .filter(StringUtils::hasText).collect(Collectors.joining()).trim();
         if (queryCondition.startsWith("AND")) {
             return queryCondition.substring("AND".length());
         }
