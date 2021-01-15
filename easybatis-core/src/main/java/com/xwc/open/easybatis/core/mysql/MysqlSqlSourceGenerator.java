@@ -35,7 +35,7 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         }
         String orderSnippet = this.orderBySnippet.apply(methodMetaData);
         if (StringUtils.hasText(orderSnippet)) {
-            sb.append(" <trim prefix='ORDER BY' suffixOverrides=', '> ").append(orderSnippet).append(" </trim>");
+            sb.append(" <trim prefix='ORDER BY' suffixOverrides=', '>").append(orderSnippet).append(" </trim>");
         }
         String page = this.pageSnippet.apply(methodMetaData);
         if (StringUtils.hasText(page)) {
@@ -65,7 +65,7 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         sb.append("<script>")
                 .append(" UPDATE ").append(methodMetaData.getTableMetadata().getTableName());
         if (methodMetaData.hasDynamic()) {
-            sb.append(" <set> ").append(this.updateColumnSnippet.apply(methodMetaData)).append(" </set>");
+            sb.append(" <set>").append(this.updateColumnSnippet.apply(methodMetaData)).append(" </set>");
         } else {
             sb.append(" SET ").append(this.updateColumnSnippet.apply(methodMetaData));
         }

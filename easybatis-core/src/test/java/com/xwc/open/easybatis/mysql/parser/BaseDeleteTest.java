@@ -76,7 +76,7 @@ public class BaseDeleteTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
         String sqlTarget = "<script>" +
                 " DELETE FROM t_mysql_sql_source" +
-                " <where> <if test='orgName != null'>  AND `orgName` = #{orgName} </if> </where>" +
+                " <where> <if test='orgName != null'> AND `orgName` = #{orgName} </if> </where>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }

@@ -61,7 +61,7 @@ public class OtherTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT COUNT(*) FROM t_condition <where> `name` = #{name} AND`age` = #{age} </where></script>";
+        String sqlTarget = "<script> SELECT COUNT(*) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
         Assert.assertEquals(sql, sqlTarget);
     }
 
@@ -81,7 +81,7 @@ public class OtherTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT DISTINCT(`id`, `orgCode`, `orgName`, `name`) FROM t_condition <where> `name` = #{name} AND`age` = #{age} </where></script>";
+        String sqlTarget = "<script> SELECT DISTINCT(`id`, `orgCode`, `orgName`, `name`) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
         Assert.assertEquals(sql, sqlTarget);
     }
 
@@ -91,7 +91,7 @@ public class OtherTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT DISTINCT(id) FROM t_condition <where> `name` = #{name} AND`age` = #{age} </where></script>";
+        String sqlTarget = "<script> SELECT DISTINCT(id) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
         Assert.assertEquals(sql, sqlTarget);
     }
 
@@ -101,7 +101,7 @@ public class OtherTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT COUNT(DISTINCT(id)) FROM t_condition <where> `name` = #{name} AND`age` = #{age} </where></script>";
+        String sqlTarget = "<script> SELECT COUNT(DISTINCT(id)) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
         Assert.assertEquals(sql, sqlTarget);
     }
 
@@ -117,8 +117,8 @@ public class OtherTest {
                 " <where> `name` = #{name} </where>" +
                 " <trim prefix='ORDER BY' suffixOverrides=', '>" +
                 " <if test='true'> `name` ASC, </if>" +
-                "</trim><" +
-                "/script>";
+                " </trim>" +
+                "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
 
@@ -133,8 +133,8 @@ public class OtherTest {
                 " <where> `name` = #{name} </where>" +
                 " <trim prefix='ORDER BY' suffixOverrides=', '>" +
                 " <if test='true'> `name` ASC, </if>" +
-                "<if test='true'> `job` DESC, </if>" +
-                "</trim>" +
+                " <if test='true'> `job` DESC, </if>" +
+                " </trim>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
@@ -149,11 +149,11 @@ public class OtherTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_condition" +
                 " <where>" +
-                " <if test='name != null'>  AND `name` = #{name} </if>" +
+                " <if test='name != null'> AND `name` = #{name} </if>" +
                 " </where>" +
                 " <trim prefix='ORDER BY' suffixOverrides=', '>" +
                 " <if test='age != null'> `age` ASC,</if>" +
-                "</trim>" +
+                " </trim>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
@@ -168,12 +168,12 @@ public class OtherTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_condition" +
                 " <where>" +
-                " <if test='name != null'>  AND `name` = #{name} </if>" +
+                " <if test='name != null'> AND `name` = #{name} </if>" +
                 " </where>" +
                 " <trim prefix='ORDER BY' suffixOverrides=', '>" +
                 " <if test='age != null'> `age` ASC,</if>" +
-                "<if test='job != null'> `job` DESC,</if>" +
-                "</trim>" +
+                " <if test='job != null'> `job` DESC,</if>" +
+                " </trim>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
@@ -188,11 +188,11 @@ public class OtherTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_condition" +
                 " <where>" +
-                " <if test='true'>  AND `name` = #{name} </if>" +
+                " <if test='true'> AND `name` = #{name} </if>" +
                 " </where>" +
                 " <trim prefix='ORDER BY' suffixOverrides=', '>" +
                 " <if test='age != null'> `age` ASC,</if>" +
-                "</trim>" +
+                " </trim>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }
@@ -206,12 +206,12 @@ public class OtherTest {
         String sqlTarget = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
                 " <where>" +
-                " <if test='name != null'>  AND `name` = #{name} </if>" +
+                " <if test='name != null'> AND `name` = #{name} </if>" +
                 " </where>" +
                 " <trim prefix='ORDER BY' suffixOverrides=', '>" +
                 " <if test='age != null'> `age` ASC,</if>" +
-                "<if test='job != null'> `job` DESC,</if>" +
-                "</trim>" +
+                " <if test='job != null'> `job` DESC,</if>" +
+                " </trim>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
     }

@@ -46,7 +46,6 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
                 list.addAll(methodMeta.getParamMetaList());
             }
         } else if (paramMetaList.size() > 1) {
-            boolean b = methodMeta.hasDynamic();
             paramMetaList.forEach(paramMeta -> {
                 if (paramMeta.isMultiCondition()) {
                     list.addAll(paramMeta.getChildList());
@@ -67,9 +66,9 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
     public String listCondition(List<ParamMeta> list, boolean multi) {
         String queryCondition = list.stream()
                 .map(condition -> mapCondition(condition, multi))
-                .filter(StringUtils::hasText).collect(Collectors.joining()).trim();
-        if (queryCondition.startsWith("AND")) {
-            return queryCondition.substring("AND".length());
+                .filter(StringUtils::hasText).collect(Collectors.joining());
+        if (queryCondition.startsWith(" AND")) {
+            return queryCondition.substring(" AND".length());
         }
         return queryCondition;
     }

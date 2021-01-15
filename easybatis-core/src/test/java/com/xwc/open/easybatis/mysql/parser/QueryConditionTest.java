@@ -64,7 +64,7 @@ public class QueryConditionTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String sqlTarget = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
-                " <where> <if test='name != null'>  AND `name` = #{name} </if> </where>" +
+                " <where> <if test='name != null'> AND `name` = #{name} </if> </where>" +
                 "</script>";
         Assert.assertEquals(sqlTarget, sql);
     }
@@ -90,7 +90,7 @@ public class QueryConditionTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String sqlTarget = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
-                " <where> <if test='name != null'>  AND `name` = #{name} </if> </where>" +
+                " <where> <if test='name != null'> AND `name` = #{name} </if> </where>" +
                 "</script>";
         Assert.assertEquals(sqlTarget, sql);
     }
@@ -126,7 +126,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'>  AND `name` != #{name} </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'> AND `name` != #{name} </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -157,7 +157,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='age != null'>  AND `age` <![CDATA[>]]> #{age} </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='age != null'> AND `age` <![CDATA[>]]> #{age} </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -188,7 +188,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='age != null'>  AND `age` <![CDATA[<]]> #{age} </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='age != null'> AND `age` <![CDATA[<]]> #{age} </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -218,7 +218,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='age != null'>  AND `age` <![CDATA[>=]]> #{age} </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='age != null'> AND `age` <![CDATA[>=]]> #{age} </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -248,7 +248,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='age != null'>  AND `age` <![CDATA[<=]]> #{age} </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='age != null'> AND `age` <![CDATA[<=]]> #{age} </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -278,7 +278,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'>  AND `name` IS NULL  </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'> AND `name` IS NULL </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -288,7 +288,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'>  AND `name` IS NULL  </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'> AND `name` IS NULL </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -298,7 +298,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'>  AND `name` IS NOT NULL  </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'> AND `name` IS NOT NULL </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -308,7 +308,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'>  AND `name` IS NOT NULL  </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'> AND `name` IS NOT NULL </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -328,7 +328,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'>  AND `name` LIKE CONCAT('%',#{name},'%') </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'> AND `name` LIKE CONCAT('%',#{name},'%') </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -338,7 +338,11 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'>  AND `name` LIKE CONCAT('%',#{customName},'%') </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
+                " <where>" +
+                " <if test='customName != null'> AND `name` LIKE CONCAT('%',#{customName},'%') </if>" +
+                " </where>" +
+                "</script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -359,7 +363,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'>  AND `name` LIKE CONCAT('%',#{name}) </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'> AND `name` LIKE CONCAT('%',#{name}) </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -369,7 +373,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'>  AND `name` LIKE CONCAT('%',#{customName}) </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'> AND `name` LIKE CONCAT('%',#{customName}) </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -390,7 +394,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'>  AND `name` LIKE CONCAT(#{name},'%') </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'> AND `name` LIKE CONCAT(#{name},'%') </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -400,7 +404,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'>  AND `name` LIKE CONCAT(#{customName},'%') </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'> AND `name` LIKE CONCAT(#{customName},'%') </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -420,7 +424,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'>  AND `name` NOT LIKE CONCAT('%',#{name},'%') </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'> AND `name` NOT LIKE CONCAT('%',#{name},'%') </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -430,7 +434,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'>  AND `name` NOT LIKE CONCAT('%',#{customName},'%') </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'> AND `name` NOT LIKE CONCAT('%',#{customName},'%') </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -450,7 +454,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'>  AND `name` NOT LIKE CONCAT('%',#{name}) </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'> AND `name` NOT LIKE CONCAT('%',#{name}) </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -460,7 +464,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'>  AND `name` NOT LIKE CONCAT('%',#{customName}) </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'> AND `name` NOT LIKE CONCAT('%',#{customName}) </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -480,7 +484,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'>  AND `name` NOT LIKE CONCAT(#{name},'%') </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='name != null'> AND `name` NOT LIKE CONCAT(#{name},'%') </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -490,7 +494,7 @@ public class QueryConditionTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'>  AND `name` NOT LIKE CONCAT(#{customName},'%') </if> </where></script>";
+        String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition <where> <if test='customName != null'> AND `name` NOT LIKE CONCAT(#{customName},'%') </if> </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -518,7 +522,7 @@ public class QueryConditionTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
                 " <where> " +
-                "<if test='name != null'>  AND name IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
+                "<if test='name != null'> AND name IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
         System.out.println(sql);
@@ -534,7 +538,7 @@ public class QueryConditionTest {
         String sqlTarget = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
                 " <where>" +
-                " <if test='customName != null'>  AND name IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
+                " <if test='customName != null'> AND name IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
@@ -565,7 +569,7 @@ public class QueryConditionTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
                 " <where>" +
-                " <if test='name != null'>  AND name NOT IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
+                " <if test='name != null'> AND name NOT IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
@@ -580,7 +584,7 @@ public class QueryConditionTest {
         String sqlTarget = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
                 " <where>" +
-                " <if test='customName != null'>  AND name NOT IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
+                " <if test='customName != null'> AND name NOT IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);

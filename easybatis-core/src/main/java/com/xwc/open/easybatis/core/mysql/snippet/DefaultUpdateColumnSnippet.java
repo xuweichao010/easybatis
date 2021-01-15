@@ -26,7 +26,7 @@ public class DefaultUpdateColumnSnippet implements UpdateColumnSnippet, MyBatisO
             } else {
                 return methodMeta.updateColumnList().stream().map(param ->
                         this.dynamicSetIf(paramName(param.getField(), prefix), this.setParam(param, prefix))
-                ).collect(Collectors.joining(" "));
+                ).collect(Collectors.joining());
             }
         } else {
             return setParamList.stream().map(param -> this.setParam(param.getColumnName(), param.getColumnName())).collect(Collectors.joining(", "));
