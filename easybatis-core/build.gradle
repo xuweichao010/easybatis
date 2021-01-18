@@ -1,7 +1,7 @@
 plugins {
     id 'java'
 }
-sourceCompatibility = '11'
+sourceCompatibility = '8'
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
