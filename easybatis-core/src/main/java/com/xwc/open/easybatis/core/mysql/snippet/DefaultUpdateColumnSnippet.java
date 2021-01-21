@@ -5,7 +5,7 @@ import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
 import com.xwc.open.easybatis.core.model.table.ColumnMeta;
 import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
-import com.xwc.open.easybatis.core.support.snippet.UpdateColumnSnippet;
+import com.xwc.open.easybatis.core.support.snippet.UpdateSetSnippet;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * 时间：2020/12/25
  * 描述：更新语句更新列片段SQL构建
  */
-public class DefaultUpdateColumnSnippet implements UpdateColumnSnippet, MyBatisOrSqlTemplate {
+public class DefaultUpdateColumnSnippet implements UpdateSetSnippet, MyBatisOrSqlTemplate {
     public String apply(MethodMeta methodMeta) {
         List<ParamMeta> paramList = methodMeta.getParamMetaList();
         List<ParamMeta> setParamList = paramList.stream().filter(paramMeta1 -> paramMeta1.getCondition() == ConditionType.SET_PARAM).collect(Collectors.toList());

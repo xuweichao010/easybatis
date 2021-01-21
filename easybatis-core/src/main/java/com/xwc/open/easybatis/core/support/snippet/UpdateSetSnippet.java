@@ -7,6 +7,6 @@ import com.xwc.open.easybatis.core.model.MethodMeta;
  * 时间：2020/12/25
  * 描述：更新语句更新列片段SQL构建
  */
-public interface UpdateColumnSnippet {
+public interface UpdateSetSnippet {
     String apply(MethodMeta methodMeta);
 }

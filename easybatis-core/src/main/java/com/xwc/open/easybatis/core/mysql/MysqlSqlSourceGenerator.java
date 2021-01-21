@@ -15,12 +15,13 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
     public MysqlSqlSourceGenerator() {
         this.selectColumnSnippet = new DefaultSelectColumnSnippet();
         this.selectConditionSnippet = new DefaultSelectConditionSnippet();
-        this.deleteConditionSnippet = new DefaultDeleteConditionSnippet(selectConditionSnippet);
+        this.deleteConditionSnippet = new MySqlDeleteConditionSnippet(selectConditionSnippet);
         this.insertColumnValue = new DefaultInsertValueSnippet();
         this.updateColumnSnippet = new DefaultUpdateColumnSnippet();
         this.updateConditionSnippet = new DefaultUpdateConditionSnippet(this.selectConditionSnippet);
         this.orderBySnippet = new DefaultOrderBySnippet();
         this.pageSnippet = new DefaultPageSnippet();
+        this.deleteLogicSnippet = new MySqlDeleteLogicSnippet();
     }
 
     @Override
@@ -79,6 +80,29 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
 
     @Override
     public String delete(MethodMeta methodMetaData) {
+        // 处理逻辑删除的情况
+        if (methodMetaData.getTableMetadata().getLogic() == null) {
+            return doDelete(methodMetaData);
+        } else {
+            return doLogicDelete(methodMetaData);
+        }
+
+    }
+
+    private String doLogicDelete(MethodMeta methodMetaData) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<script>")
+                .append(" UPDATE ").append(methodMetaData.getTableMetadata().getTableName())
+                .append(" SET ").append(this.deleteLogicSnippet.apply(methodMetaData));
+        String conditionSnippet = this.deleteConditionSnippet.apply(methodMetaData);
+        if (StringUtils.hasText(conditionSnippet)) {
+            sb.append(" <where>").append(conditionSnippet).append(" </where>");
+        }
+        sb.append("</script>");
+        return sb.toString();
+    }
+
+    private String doDelete(MethodMeta methodMetaData) {
         StringBuilder sb = new StringBuilder();
         sb.append("<script> DELETE FROM ").append(methodMetaData.getTableMetadata().getTableName());
         String conditionSnippet = this.deleteConditionSnippet.apply(methodMetaData);

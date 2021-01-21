@@ -5,7 +5,7 @@ import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.TableMeta;
-import com.xwc.open.easybatis.mysql.parser.logic.LogicSelectMapper;
+import com.xwc.open.easybatis.mysql.parser.logic.LogicBaseMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * 时间：2020/12/18
  * 描述：mysql单元测试
  */
-public class LogicSelectTest {
+public class LogicBaseTest {
 
 
     SqlSessionFactory sqlSessionFactory;
@@ -41,14 +41,14 @@ public class LogicSelectTest {
         this.configuration = this.sqlSessionFactory.getConfiguration();
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
         this.annotationAssistant = easybatisConfiguration.getAnnotationAssistant();
-        this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(LogicSelectMapper.class));
+        this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(LogicBaseMapper.class));
 
 
     }
 
     @Test
     public void selectKey() {
-        Method method = chooseMethod(LogicSelectMapper.class, "selectKey");
+        Method method = chooseMethod(LogicBaseMapper.class, "selectKey");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
@@ -57,7 +57,7 @@ public class LogicSelectTest {
 
     @Test
     public void update() {
-        Method method = chooseMethod(LogicSelectMapper.class, "update");
+        Method method = chooseMethod(LogicBaseMapper.class, "update");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
@@ -66,7 +66,7 @@ public class LogicSelectTest {
 
     @Test
     public void updateActivate() {
-        Method method = chooseMethod(LogicSelectMapper.class, "updateActivate");
+        Method method = chooseMethod(LogicBaseMapper.class, "updateActivate");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
@@ -83,7 +83,7 @@ public class LogicSelectTest {
 
     @Test
     public void insert() {
-        Method method = chooseMethod(LogicSelectMapper.class, "insert");
+        Method method = chooseMethod(LogicBaseMapper.class, "insert");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
@@ -93,7 +93,7 @@ public class LogicSelectTest {
 
     @Test
     public void insertBatch() {
-        Method method = chooseMethod(LogicSelectMapper.class, "insertBatch");
+        Method method = chooseMethod(LogicBaseMapper.class, "insertBatch");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
@@ -101,6 +101,15 @@ public class LogicSelectTest {
         Assert.assertEquals(sqlTarget, sql);
     }
 
+    @Test
+    public void delete() {
+        Method method = chooseMethod(LogicBaseMapper.class, "delete");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().delete(methodMeta);
+        String sqlTarget = "<script> INSERT INTO t_user (`id`, `orgCode`, `orgName`, `valid`) VALUES  <foreach item= 'item'  collection='list' separator=', '> (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.valid}) </foreach> </script>";
+        Assert.assertEquals(sqlTarget, sql);
+    }
 
 
     private Method chooseMethod(Class<?> classType, String methodName) {

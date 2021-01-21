@@ -24,11 +24,5 @@ public @interface Start {
      */
     String value() default "";
 
-    /**
-     * 条件别名
-     * 在JOIN条件中使用
-     *
-     * @return
-     */
-    String alias() default "";
+
 }

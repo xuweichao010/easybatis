@@ -16,12 +16,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Condition(type = ConditionType.OFFSET)
 public @interface Offset {
-    /**
-     * 查询条件排序
-     *
-     * @return
-     */
-    int index() default 99;
 
     /**
      * 属性和数据表之间的列关系
@@ -29,19 +23,4 @@ public @interface Offset {
      * @return
      */
     String value() default "";
-
-    /**
-     * 条件别名
-     * 在JOIN条件中使用
-     *
-     * @return
-     */
-    String alias() default "";
-
-    /**
-     * query对象查询查询时dynamic 自动为true
-     *
-     * @return
-     */
-    boolean dynamic() default false;
 }

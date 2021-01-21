@@ -15,11 +15,13 @@ public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
     protected SelectColumnSnippet selectColumnSnippet;
     protected SelectConditionSnippet selectConditionSnippet;
     protected InsertValueSnippet insertColumnValue;
-    protected UpdateColumnSnippet updateColumnSnippet;
+    protected UpdateSetSnippet updateColumnSnippet;
     protected UpdateConditionSnippet updateConditionSnippet;
     protected DeleteConditionSnippet deleteConditionSnippet;
+    protected DeleteSetLogicSnippet deleteLogicSnippet;
     protected OrderBySnippet orderBySnippet;
     protected PageSnippet pageSnippet;
+
 
     public AbstractSqlSourceGenerator() {
     }
