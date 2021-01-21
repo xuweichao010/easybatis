@@ -75,4 +75,7 @@ public class TableMeta {
     }
 
 
+    public boolean isSource(Class<?> aClass) {
+        return this.source.getName().equals(aClass.getName());
+    }
 }

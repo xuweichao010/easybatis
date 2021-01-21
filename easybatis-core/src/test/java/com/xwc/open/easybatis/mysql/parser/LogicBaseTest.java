@@ -107,7 +107,8 @@ public class LogicBaseTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().delete(methodMeta);
-        String sqlTarget = "<script> INSERT INTO t_user (`id`, `orgCode`, `orgName`, `valid`) VALUES  <foreach item= 'item'  collection='list' separator=', '> (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.valid}) </foreach> </script>";
+        System.out.println(sql);
+        String sqlTarget = "<script> UPDATE t_user SET valid = 0 <where> `id` = #{id} AND `valid` = #{valid} </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 

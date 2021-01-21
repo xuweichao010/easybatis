@@ -119,7 +119,6 @@ public class AnnotationAssistant {
         } else if (operationAnnotationType instanceof DeleteSql) {
             return parseDeleteMethodMate(method, tableMetadata);
         }
-
         return null;
     }
 

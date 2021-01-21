@@ -5,6 +5,7 @@ import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.commons.Reflection;
+import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.TableMeta;
 import com.xwc.open.easybatis.core.support.SqlSourceGenerator;
 import org.apache.ibatis.annotations.*;
@@ -588,16 +589,16 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
 
     private SqlSource buildSqlSource(Annotation annotation, Class<?> parameterType, LanguageDriver languageDriver,
                                      Method method) {
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method, tableMeta);
+        easybatisConfiguration.addMethodMeta(type.getName() + "." + method.getName(), methodMeta);
         if (annotation instanceof SelectSql) {
-            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.select(annotationAssistant.parseMethodMate(method, tableMeta))}, parameterType, languageDriver);
+            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.select(methodMeta)}, parameterType, languageDriver);
         } else if (annotation instanceof UpdateSql) {
-            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.update(annotationAssistant.parseMethodMate(method, tableMeta))}, parameterType, languageDriver);
+            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.update(methodMeta)}, parameterType, languageDriver);
         } else if (annotation instanceof InsertSql) {
-            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.insert(annotationAssistant.parseMethodMate(method, tableMeta))}, parameterType, languageDriver);
+            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.insert(methodMeta)}, parameterType, languageDriver);
         } else if (annotation instanceof DeleteSql) {
-            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.delete(annotationAssistant.parseMethodMate(method, tableMeta))}, parameterType, languageDriver);
-        } else if (annotation instanceof SelectKey) {
-            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.select(annotationAssistant.parseMethodMate(method, tableMeta))}, parameterType, languageDriver);
+            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.delete(methodMeta)}, parameterType, languageDriver);
         }
         return new ProviderSqlSource(assistant.getConfiguration(), annotation, type, method);
     }
