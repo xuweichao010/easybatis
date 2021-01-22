@@ -61,7 +61,10 @@ public class LogicBaseTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
-        Assert.assertEquals("<script> UPDATE t_user SET `orgCode` = #{orgCode}, `orgName` = #{orgName} <where> `id` = #{id} AND `valid` = #{valid} </where></script>", sql);
+        Assert.assertEquals("<script>" +
+                " UPDATE t_user SET `orgCode` = #{entity.orgCode}, `orgName` = #{entity.orgName}" +
+                " <where> `id` = #{entity.id} AND `valid` = #{valid} </where>" +
+                "</script>", sql);
     }
 
     @Test
@@ -73,10 +76,10 @@ public class LogicBaseTest {
         String sqlTarget = "<script>" +
                 " UPDATE t_user" +
                 " <set>" +
-                " <if test='orgCode != null'> `orgCode` = #{orgCode},</if>" +
-                " <if test='orgName != null'> `orgName` = #{orgName},</if>" +
+                " <if test='entity.orgCode != null'> `orgCode` = #{entity.orgCode},</if>" +
+                " <if test='entity.orgName != null'> `orgName` = #{entity.orgName},</if>" +
                 " </set>" +
-                " <where> `id` = #{id} AND `valid` = #{valid} </where>" +
+                " <where> `id` = #{entity.id} AND `valid` = #{valid} </where>" +
                 "</script>";
         Assert.assertEquals(sqlTarget, sql);
     }

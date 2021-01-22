@@ -56,10 +56,6 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
             });
             multi = true;
         }
-        if (methodMeta.getTableMetadata().getLogic() != null) {
-            LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
-            list.add(ParamMeta.builder(logic.getColumn(), logic.getField(), ConditionType.EQUAL));
-        }
         return listCondition(list, multi);
     }
 

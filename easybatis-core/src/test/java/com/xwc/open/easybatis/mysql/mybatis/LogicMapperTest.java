@@ -7,10 +7,7 @@ import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.mysql.mybatis.base.MybatisTableUser;
 import com.xwc.open.easybatis.mysql.mybatis.base.MybatisUser;
-import com.xwc.open.easybatis.mysql.mybatis.logic.LogicTableUser;
-import com.xwc.open.easybatis.mysql.mybatis.logic.LogicTableUserMapper;
-import com.xwc.open.easybatis.mysql.mybatis.logic.LogicUser;
-import com.xwc.open.easybatis.mysql.mybatis.logic.LogicUserMapper;
+import com.xwc.open.easybatis.mysql.mybatis.logic.*;
 import com.xwc.open.easybatis.mysql.mybatis.other.OtherTableUser;
 import com.xwc.open.easybatis.mysql.mybatis.other.OtherTableUserMapper;
 import com.xwc.open.easybatis.mysql.mybatis.other.OtherUser;
@@ -60,21 +57,21 @@ public class LogicMapperTest {
         sqlSession = sqlSessionFactory.openSession(true);
         logicUserMapper = sqlSession.getMapper(LogicUserMapper.class);
         logicTableUserMapper = sqlSession.getMapper(LogicTableUserMapper.class);
-        LogicTableUser logicTableUser = genderLogicTableUser();
-        this.logicTableUserId = uuid();
-        logicTableUser.setId(logicTableUserId);
-        logicTableUserMapper.insert("t_user", logicTableUser);
-        LogicUser logicUser = genderLogicUser();
-        this.logicUserId = uuid();
-        logicUser.setId(logicUserId);
-        logicUserMapper.insert(logicUser);
+//        LogicTableUser logicTableUser = genderLogicTableUser();
+//        this.logicTableUserId = uuid();
+//        logicTableUser.setId(logicTableUserId);
+//        logicTableUserMapper.insert("t_user", logicTableUser);
+//        LogicUser logicUser = genderLogicUser();
+//        this.logicUserId = uuid();
+//        logicUser.setId(logicUserId);
+//        logicUserMapper.insert(logicUser);
     }
 
-    @After
-    public void after() {
-        logicUserMapper.deleteByValid(LogicUser.LOGIC_VALID);
-        logicUserMapper.deleteByValid(LogicUser.LOGIC_INVALID);
-    }
+//    @After
+//    public void after() {
+//        logicUserMapper.deleteByValid(LogicUser.LOGIC_VALID);
+//        logicUserMapper.deleteByValid(LogicUser.LOGIC_INVALID);
+//    }
 
     @Test
     public void insert() {
@@ -103,10 +100,26 @@ public class LogicMapperTest {
 
     @Test
     public void selectKey() {
-        logicUserMapper.selectKey("450ba958f9e247509188473ff27cd726");
-        LogicUser logicUser = logicUserMapper.selectKey1("450ba958f9e247509188473ff27cd726", 100);
+        logicUserMapper.selectKey("a06f5ce0b3f04163890b9943292fa4da");
+        logicTableUserMapper.selectKey("t_user", "a06f5ce0b3f04163890b9943292fa4da");
     }
 
+    @Test
+    public void selectCustom() {
+        UserFilter filter = new UserFilter();
+        filter.setOrgCode("200");
+        logicUserMapper.list(filter);
+    }
+
+    @Test
+    public void update() {
+        String newName = uuid().substring(0, 6) + "新增";
+        LogicUser logicUser = logicUserMapper.selectKey("a06f5ce0b3f04163890b9943292fa4da");
+        logicUser.setName(newName);
+        logicUserMapper.update(logicUser);
+        // LogicTableUser logicTableUser = logicTableUserMapper.selectKey("t_user", "a06f5ce0b3f04163890b9943292fa4da");
+
+    }
 
 
 //    @SelectSql

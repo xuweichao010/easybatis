@@ -51,7 +51,7 @@ public class AnnotationAssistant {
     private static final Set<Class<? extends Annotation>> queryAnnoSet = Stream
             .of(Equal.class, NotEqual.class, IsNull.class, IsNotNull.class, In.class, NotIn.class,
                     Like.class, RightLike.class, LeftLike.class, NotLike.class, NotLeftLike.class, NotRightLike.class, GreaterThan.class, GreaterThanEqual.class, LessThan.class
-                    , LessThanEqual.class, Start.class, Offset.class, ASC.class,DESC.class)
+                    , LessThanEqual.class, Start.class, Offset.class, ASC.class, DESC.class)
             .collect(Collectors.toSet());
 
     public String tableName(Class<?> entityType) {
@@ -157,6 +157,12 @@ public class AnnotationAssistant {
             ParamMeta paramMeta = parseParameter(parameters[i], paramNames.get(i), methodMeta.getSqlCommand()
                     , methodMeta.getTableMetadata().getSource(), methodMeta.isDynamic());
             list.add(paramMeta);
+        }
+        LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
+        if (logic != null && (methodMeta.getSqlCommand() != SqlCommandType.INSERT)) {
+            ParamMeta logicParamMeta = ParamMeta.builder(logic.getColumn(), logic.getField(), ConditionType.EQUAL, null, false, false);
+            logicParamMeta.setSimulate(true);
+            list.add(logicParamMeta);
         }
         return list;
     }

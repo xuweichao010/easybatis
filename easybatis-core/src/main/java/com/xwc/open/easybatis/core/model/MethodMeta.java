@@ -108,8 +108,17 @@ public class MethodMeta {
         }
     }
 
+    public ParamMeta singleParam() {
+        List<ParamMeta> collect = this.getParamMetaList().stream().filter(paramMeta -> !paramMeta.isSimulate()).collect(Collectors.toList());
+        if (collect.size() == 1) {
+            return collect.get(0);
+        }
+        return null;
+    }
+
     public boolean hasSetParam() {
         return this.paramMetaList.stream().anyMatch(ParamMeta::isSetParam);
     }
+
 
 }

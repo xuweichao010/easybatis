@@ -27,4 +27,7 @@ public interface LogicUserMapper extends BaseMapper<LogicUser, String> {
 
     @Select(" SELECT `id`, `org_code`, `org_name`, `name`, `age`, `job` FROM t_user WHERE `id` = #{id} AND `valid` = #{valid} ")
     LogicUser selectKey1(String id, Integer valid);
+
+    @SelectSql
+    List<LogicUser> list(UserFilter filter);
 }

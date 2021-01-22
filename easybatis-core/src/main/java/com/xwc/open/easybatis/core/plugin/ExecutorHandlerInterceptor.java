@@ -1,7 +1,9 @@
 package com.xwc.open.easybatis.core.plugin;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
+import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
+import com.xwc.open.easybatis.core.model.ParamMeta;
 import com.xwc.open.easybatis.core.model.TableMeta;
 import com.xwc.open.easybatis.core.model.table.ColumnMeta;
 import com.xwc.open.easybatis.core.model.table.IdMeta;
@@ -118,14 +120,22 @@ public class ExecutorHandlerInterceptor implements Interceptor {
         list.add(parameterMapping);
     }
 
+    @SuppressWarnings("all")
     private Object doInterceptSelect(MethodMeta methodMeta, Object value, MappedStatement ms) {
-        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> paramMap;
         TableMeta tableMetadata = methodMeta.getTableMetadata();
-        if (methodMeta.keyParam() != null) {
-            IdMeta id = tableMetadata.getId();
-            paramMap.put(id.getField(), value);
+        if (value instanceof Map) {
+            paramMap = (Map<String, Object>) value;
+        } else {
+            paramMap = new HashMap<>();
+            ParamMeta paramMeta = methodMeta.singleParam();
+            if (methodMeta.keyParam() != null) {
+                IdMeta id = tableMetadata.getId();
+                paramMap.put(id.getField(), value);
+            } else if (paramMeta != null) {
+                paramMap.put(paramMeta.getParamName(), value);
+            }
         }
-        //List<ParameterMapping> parameterMappings = ms.getSqlSource().getBoundSql(paramMap).getParameterMappings();
         invokeParam(tableMetadata, paramMap, null);
         if (paramMap.size() == 1) {
             return paramMap.values().iterator().next();

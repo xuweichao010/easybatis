@@ -32,7 +32,6 @@ public class ParamMeta {
 
     private String group;
 
-
     private DynamicType dynamicType = DynamicType.NO_DYNAMIC;
 
     private boolean entity = false;
@@ -43,7 +42,13 @@ public class ParamMeta {
 
     private List<ParamMeta> childList;
 
+    /**
+     * 伪装成一个参数 用于逻辑删除和审计功能
+     */
+    private boolean simulate = false;
+
     private ParamMeta() {
+
     }
 
     public static ParamMeta builder(String columnName, String paramName, boolean dynamic) {
