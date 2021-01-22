@@ -57,7 +57,7 @@ public class BaseSelectTest {
 
     @Test
     public void selectTableKey() {
-        Method method = chooseMethod(BaseSelectMapper.class, "selectTableKey");
+        Method method = chooseMethod(BaseSelectMapper.class, "selectKey");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);

@@ -15,7 +15,6 @@ import java.util.Collection;
  * 业务：
  * 功能：
  */
-@SuppressWarnings("unused")
 public interface MyBatisBaseTableMapper<E, K> extends EasyMapper<E, K> {
 
     @SelectSql

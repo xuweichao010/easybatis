@@ -86,7 +86,6 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         } else {
             return doLogicDelete(methodMetaData);
         }
-
     }
 
     private String doLogicDelete(MethodMeta methodMetaData) {

@@ -6,6 +6,7 @@ import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.Equal;
 import com.xwc.open.easybatis.core.anno.condition.filter.SetParam;
 import com.xwc.open.easybatis.core.anno.table.Ignore;
+import com.xwc.open.easybatis.core.support.BaseTableMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
  * 描述：用户数据读取
  */
 @Mapper
-public interface MybatisTableUserMapper extends MyBatisBaseTableMapper<MybatisTableUser, String> {
+public interface MybatisTableUserMapper extends BaseTableMapper<MybatisTableUser, String> {
 
     @SelectSql(dynamic = true)
     List<MybatisTableUser> methodGlobalDynamic(@Ignore String tableName, String orgName, String orgCode);

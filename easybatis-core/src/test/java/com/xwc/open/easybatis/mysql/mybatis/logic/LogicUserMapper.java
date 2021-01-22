@@ -8,7 +8,9 @@ import com.xwc.open.easybatis.core.anno.condition.filter.DESC;
 import com.xwc.open.easybatis.core.support.BaseMapper;
 import com.xwc.open.easybatis.core.support.EasyMapper;
 import com.xwc.open.easybatis.mysql.mybatis.other.OtherUser;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -20,7 +22,9 @@ import java.util.List;
 @Mapper
 public interface LogicUserMapper extends BaseMapper<LogicUser, String> {
 
+    @Delete("DELETE FROM t_user WHERE valid = #{valid}")
+    int deleteByValid(Integer valid);
 
-
-
+    @Select(" SELECT `id`, `org_code`, `org_name`, `name`, `age`, `job` FROM t_user WHERE `id` = #{id} AND `valid` = #{valid} ")
+    LogicUser selectKey1(String id, Integer valid);
 }

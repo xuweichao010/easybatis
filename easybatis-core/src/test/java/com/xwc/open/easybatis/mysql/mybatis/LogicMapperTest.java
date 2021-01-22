@@ -21,6 +21,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +43,8 @@ public class LogicMapperTest {
     LogicTableUserMapper logicTableUserMapper;
     LogicUserMapper logicUserMapper;
     SqlSession sqlSession;
+    String logicTableUserId;
+    String logicUserId;
 
 
     @Before
@@ -57,12 +60,21 @@ public class LogicMapperTest {
         sqlSession = sqlSessionFactory.openSession(true);
         logicUserMapper = sqlSession.getMapper(LogicUserMapper.class);
         logicTableUserMapper = sqlSession.getMapper(LogicTableUserMapper.class);
+//        LogicTableUser logicTableUser = genderLogicTableUser();
+//        this.logicTableUserId = uuid();
+//        logicTableUser.setId(logicTableUserId);
+//        logicTableUserMapper.insert("t_user", logicTableUser);
+//        LogicUser logicUser = genderLogicUser();
+//        this.logicUserId = uuid();
+//        logicUser.setId(logicUserId);
+//        logicUserMapper.insert(logicUser);
     }
 
-    @Before
-    public void init() {
-
-    }
+//    @After
+//    public void after() {
+//        logicUserMapper.deleteByValid(LogicUser.LOGIC_VALID);
+//        logicUserMapper.deleteByValid(LogicUser.LOGIC_INVALID);
+//    }
 
     @Test
     public void insert() {
@@ -88,9 +100,14 @@ public class LogicMapperTest {
         }
     }
 
-//    public void selectKey() {
-//        logicUserMapper.selectKey()
-//    }
+
+    @Test
+    public void selectKey() {
+        logicUserMapper.selectKey("450ba958f9e247509188473ff27cd726");
+        LogicUser logicUser = logicUserMapper.selectKey1("450ba958f9e247509188473ff27cd726", 100);
+    }
+
+
 
 //    @SelectSql
 //    E selectKey(K id);

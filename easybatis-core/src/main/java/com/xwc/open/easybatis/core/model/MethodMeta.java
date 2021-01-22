@@ -112,7 +112,4 @@ public class MethodMeta {
         return this.paramMetaList.stream().anyMatch(ParamMeta::isSetParam);
     }
 
-    public boolean hashCondition() {
-        return this.paramMetaList.stream().anyMatch(ParamMeta::isCondition);
-    }
 }
