@@ -40,8 +40,8 @@ public class LogicMapperTest {
     LogicTableUserMapper logicTableUserMapper;
     LogicUserMapper logicUserMapper;
     SqlSession sqlSession;
-    String logicTableUserId;
-    String logicUserId;
+    LogicTableUser logicTableUser;
+    LogicUser logicUser;
 
 
     @Before
@@ -57,21 +57,17 @@ public class LogicMapperTest {
         sqlSession = sqlSessionFactory.openSession(true);
         logicUserMapper = sqlSession.getMapper(LogicUserMapper.class);
         logicTableUserMapper = sqlSession.getMapper(LogicTableUserMapper.class);
-//        LogicTableUser logicTableUser = genderLogicTableUser();
-//        this.logicTableUserId = uuid();
-//        logicTableUser.setId(logicTableUserId);
-//        logicTableUserMapper.insert("t_user", logicTableUser);
-//        LogicUser logicUser = genderLogicUser();
-//        this.logicUserId = uuid();
-//        logicUser.setId(logicUserId);
-//        logicUserMapper.insert(logicUser);
+        this.logicTableUser = genderLogicTableUser();
+        logicTableUserMapper.insert("t_user", logicTableUser);
+        this.logicUser = genderLogicUser();
+        logicUserMapper.insert(logicUser);
     }
 
-//    @After
-//    public void after() {
-//        logicUserMapper.deleteByValid(LogicUser.LOGIC_VALID);
-//        logicUserMapper.deleteByValid(LogicUser.LOGIC_INVALID);
-//    }
+    @After
+    public void after() {
+        logicUserMapper.deleteByValid(LogicUser.LOGIC_VALID);
+        logicUserMapper.deleteByValid(LogicUser.LOGIC_INVALID);
+    }
 
     @Test
     public void insert() {
@@ -100,8 +96,8 @@ public class LogicMapperTest {
 
     @Test
     public void selectKey() {
-        logicUserMapper.selectKey("a06f5ce0b3f04163890b9943292fa4da");
-        logicTableUserMapper.selectKey("t_user", "a06f5ce0b3f04163890b9943292fa4da");
+        logicUserMapper.selectKey(this.logicUser.getId());
+        logicTableUserMapper.selectKey("t_user", this.logicUser.getId());
     }
 
     @Test
@@ -113,32 +109,13 @@ public class LogicMapperTest {
 
     @Test
     public void update() {
-        String newName = uuid().substring(0, 6) + "新增";
-        LogicUser logicUser = logicUserMapper.selectKey("a06f5ce0b3f04163890b9943292fa4da");
-        logicUser.setName(newName);
+        logicUser.setName(uuid().substring(0, 6) + "修改");
         logicUserMapper.update(logicUser);
-        // LogicTableUser logicTableUser = logicTableUserMapper.selectKey("t_user", "a06f5ce0b3f04163890b9943292fa4da");
-
+        LogicUser updateLogicUser = logicUserMapper.selectKey(this.logicUser.getId());
+        Assert.assertEquals(updateLogicUser.getName(), logicUser.getName());
+        LogicTableUser t_user = logicTableUserMapper.selectKey("t_user", this.logicTableUser.getId());
     }
 
-
-//    @SelectSql
-//    E selectKey(K id);
-//
-//    @UpdateSql
-//    Integer update(E entity);
-//
-//    @UpdateSql(dynamic = true)
-//    Integer updateActivate(E entity);
-//
-//    @InsertSql
-//    Integer insert(E entity);
-//
-//    @InsertSql
-//    Integer insertBatch(Collection<E> list);
-//
-//    @DeleteSql
-//    Integer delete(K id);
 
     private LogicUser genderLogicUser() {
         Random random = new Random();

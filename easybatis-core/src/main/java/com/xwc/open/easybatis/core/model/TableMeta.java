@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.core.model;
 
+import com.xwc.open.easybatis.core.enums.AuditorType;
 import com.xwc.open.easybatis.core.model.table.AuditorColumn;
 import com.xwc.open.easybatis.core.model.table.ColumnMeta;
 import com.xwc.open.easybatis.core.model.table.IdMeta;
@@ -8,6 +9,8 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 创建人：徐卫超
@@ -39,7 +42,7 @@ public class TableMeta {
     /**
      * 审计信息
      */
-    private List<AuditorColumn> auditorList = new ArrayList<>(6);
+    private Map<AuditorType, AuditorColumn> auditorMap = new ConcurrentHashMap<>(6);
 
     /**
      * 逻辑字段
@@ -54,9 +57,9 @@ public class TableMeta {
         setResult(id.isResult());
     }
 
-    public void setLogic(LoglicColumn loglic) {
-        this.logic = loglic;
-        setResult(loglic.isResult());
+    public void setLogic(LoglicColumn logic) {
+        this.logic = logic;
+        setResult(logic.isResult());
     }
 
     public void setResult(boolean result) {
@@ -64,7 +67,7 @@ public class TableMeta {
     }
 
     public void addAuditor(AuditorColumn auditor) {
-        this.auditorList.add(auditor);
+        this.auditorMap.put(auditor.getType(), auditor);
         this.setResult(auditor.isResult());
     }
 

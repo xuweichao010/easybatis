@@ -43,7 +43,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
         MethodMeta methodMeta = easybatisConfiguration.getMethodMeta(ms.getId());
-        if (methodMeta == null) {
+        if (methodMeta == null || !methodMeta.hashEnhance()) {
             return invocation.proceed();
         }
         Object easybatisValue = doIntercept(methodMeta, args[1], ms);
@@ -56,8 +56,55 @@ public class ExecutorHandlerInterceptor implements Interceptor {
             return doInterceptSelect(methodMeta, value, ms);
         } else if (methodMeta.getSqlCommand() == SqlCommandType.INSERT) {
             return doInterceptInsert(methodMeta, value);
+        } else if (methodMeta.getSqlCommand() == SqlCommandType.UPDATE) {
+            return doInterceptUpdate(methodMeta, value);
         }
-        return null;
+        return value;
+    }
+
+    @SuppressWarnings("all")
+    private Object doInterceptSelect(MethodMeta methodMeta, Object value, MappedStatement ms) {
+        Map<String, Object> paramMap;
+        TableMeta tableMetadata = methodMeta.getTableMetadata();
+        if (value instanceof Map) {
+            paramMap = (Map<String, Object>) value;
+        } else {
+            paramMap = new HashMap<>();
+            ParamMeta paramMeta = methodMeta.singleParam();
+            if (methodMeta.keyParam() != null) {
+                IdMeta id = tableMetadata.getId();
+                paramMap.put(id.getField(), value);
+            } else if (paramMeta != null) {
+                paramMap.put(paramMeta.getParamName(), value);
+            }
+        }
+        invokeParam(tableMetadata, paramMap);
+        if (paramMap.size() == 1) {
+            return paramMap.values().iterator().next();
+        }
+        return paramMap;
+    }
+
+    private Object doInterceptUpdate(MethodMeta methodMeta, Object value) {
+        Map<String, Object> paramMap;
+        TableMeta tableMetadata = methodMeta.getTableMetadata();
+        if (value instanceof Map) {
+            paramMap = (Map<String, Object>) value;
+        } else {
+            paramMap = new HashMap<>();
+            ParamMeta paramMeta = methodMeta.singleParam();
+            if (methodMeta.keyParam() != null) {
+                IdMeta id = tableMetadata.getId();
+                paramMap.put(id.getField(), value);
+            } else if (paramMeta != null) {
+                paramMap.put(paramMeta.getParamName(), value);
+            }
+        }
+        invokeParam(tableMetadata, paramMap);
+        if (paramMap.size() == 1) {
+            return paramMap.values().iterator().next();
+        }
+        return paramMap;
     }
 
     private Object doInterceptInsert(MethodMeta methodMeta, Object value) {
@@ -103,45 +150,15 @@ public class ExecutorHandlerInterceptor implements Interceptor {
         }
     }
 
-    private void invokeParam(TableMeta tableMetadata, Map<String, Object> paramMap, List<ParameterMapping> list) {
+    private void invokeParam(TableMeta tableMetadata, Map<String, Object> paramMap) {
         LoglicColumn logic = tableMetadata.getLogic();
         if (logic != null) {
             paramMap.put(logic.getField(), logic.getValid());
-            //invokeMapping(logic, list);
         }
     }
 
-    private void invokeMapping(ColumnMeta columnMeta, List<ParameterMapping> list) {
-        ParameterMapping parameterMapping = new ParameterMapping.Builder(
-                easybatisConfiguration.getMybatisConfiguration(),
-                columnMeta.getField(),
-                columnMeta.getSource().getType()
-        ).build();
-        list.add(parameterMapping);
-    }
 
-    @SuppressWarnings("all")
-    private Object doInterceptSelect(MethodMeta methodMeta, Object value, MappedStatement ms) {
-        Map<String, Object> paramMap;
-        TableMeta tableMetadata = methodMeta.getTableMetadata();
-        if (value instanceof Map) {
-            paramMap = (Map<String, Object>) value;
-        } else {
-            paramMap = new HashMap<>();
-            ParamMeta paramMeta = methodMeta.singleParam();
-            if (methodMeta.keyParam() != null) {
-                IdMeta id = tableMetadata.getId();
-                paramMap.put(id.getField(), value);
-            } else if (paramMeta != null) {
-                paramMap.put(paramMeta.getParamName(), value);
-            }
-        }
-        invokeParam(tableMetadata, paramMap, null);
-        if (paramMap.size() == 1) {
-            return paramMap.values().iterator().next();
-        }
-        return paramMap;
-    }
+
 
     @Override
     public Object plugin(Object target) {

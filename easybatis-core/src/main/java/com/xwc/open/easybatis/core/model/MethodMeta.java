@@ -60,7 +60,7 @@ public class MethodMeta {
         ArrayList<ColumnMeta> list = new ArrayList<>();
         list.add(tableMetadata.getId());
         list.addAll(tableMetadata.getColumnMetaList());
-        list.addAll(tableMetadata.getAuditorList());
+        list.addAll(tableMetadata.getAuditorMap().values());
         list.add(tableMetadata.getLogic());
         return list;
     }
@@ -121,4 +121,7 @@ public class MethodMeta {
     }
 
 
+    public boolean hashEnhance() {
+        return this.tableMetadata.getLogic() != null || !this.tableMetadata.getAuditorMap().isEmpty();
+    }
 }
