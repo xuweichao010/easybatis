@@ -60,21 +60,21 @@ public class LogicMapperTest {
         sqlSession = sqlSessionFactory.openSession(true);
         logicUserMapper = sqlSession.getMapper(LogicUserMapper.class);
         logicTableUserMapper = sqlSession.getMapper(LogicTableUserMapper.class);
-//        LogicTableUser logicTableUser = genderLogicTableUser();
-//        this.logicTableUserId = uuid();
-//        logicTableUser.setId(logicTableUserId);
-//        logicTableUserMapper.insert("t_user", logicTableUser);
-//        LogicUser logicUser = genderLogicUser();
-//        this.logicUserId = uuid();
-//        logicUser.setId(logicUserId);
-//        logicUserMapper.insert(logicUser);
+        LogicTableUser logicTableUser = genderLogicTableUser();
+        this.logicTableUserId = uuid();
+        logicTableUser.setId(logicTableUserId);
+        logicTableUserMapper.insert("t_user", logicTableUser);
+        LogicUser logicUser = genderLogicUser();
+        this.logicUserId = uuid();
+        logicUser.setId(logicUserId);
+        logicUserMapper.insert(logicUser);
     }
 
-//    @After
-//    public void after() {
-//        logicUserMapper.deleteByValid(LogicUser.LOGIC_VALID);
-//        logicUserMapper.deleteByValid(LogicUser.LOGIC_INVALID);
-//    }
+    @After
+    public void after() {
+        logicUserMapper.deleteByValid(LogicUser.LOGIC_VALID);
+        logicUserMapper.deleteByValid(LogicUser.LOGIC_INVALID);
+    }
 
     @Test
     public void insert() {
