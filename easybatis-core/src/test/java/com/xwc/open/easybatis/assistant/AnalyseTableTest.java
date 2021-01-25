@@ -1,14 +1,14 @@
 package com.xwc.open.easybatis.assistant;
 
 
-import com.xwc.open.easybatis.assistant.model.LogicUser;
-import com.xwc.open.easybatis.assistant.model.TableColumn;
-import com.xwc.open.easybatis.assistant.model.TableNotValue;
-import com.xwc.open.easybatis.assistant.model.TableValue;
+import com.xwc.open.easybatis.assistant.model.*;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
+import com.xwc.open.easybatis.core.anno.auditor.Auditor;
+import com.xwc.open.easybatis.core.enums.AuditorType;
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.model.TableMeta;
+import com.xwc.open.easybatis.core.model.table.AuditorColumn;
 import com.xwc.open.easybatis.core.model.table.ColumnMeta;
 import com.xwc.open.easybatis.core.model.table.IdMeta;
 import com.xwc.open.easybatis.core.model.table.LoglicColumn;
@@ -16,6 +16,8 @@ import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Map;
 
 
 /**
@@ -95,6 +97,20 @@ public class AnalyseTableTest {
         }
         LoglicColumn logic = tableMetadata.getLogic();
         Assert.assertNotNull(logic);
+    }
+
+    @Test
+    public void parseEntityAuditColumn() {
+        TableMeta tableMetadata = annotationAssistant.parseEntityMate(AuditUser.class);
+        if (tableMetadata.getColumnMetaList().isEmpty()) {
+            Assert.fail();
+        }
+        Map<AuditorType, AuditorColumn> auditorMap = tableMetadata.getAuditorMap();
+        Assert.assertNotNull(auditorMap);
+        AuditorColumn auditorColumn = auditorMap.get(AuditorType.UPDATE_NAME);
+        Assert.assertNotNull(auditorColumn);
+        Assert.assertEquals(auditorColumn.getColumn(),"update_name01");
+        Assert.assertFalse(auditorColumn.isSelectIgnore());
     }
 
 }

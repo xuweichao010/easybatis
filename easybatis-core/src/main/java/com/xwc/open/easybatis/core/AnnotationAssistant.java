@@ -18,6 +18,7 @@ import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
 import com.xwc.open.easybatis.core.model.TableMeta;
+import com.xwc.open.easybatis.core.model.table.AuditorColumn;
 import com.xwc.open.easybatis.core.model.table.ColumnMeta;
 import com.xwc.open.easybatis.core.model.table.IdMeta;
 import com.xwc.open.easybatis.core.model.table.LoglicColumn;
@@ -89,8 +90,10 @@ public class AnnotationAssistant {
                 table.setLogic(new LoglicColumn(columnMeta, loglic));
                 continue;
             } else if (columnMeta.hashAnnotationType(Auditor.class)) {
-//                columnMeta.chooseAnnotationType(Auditor.class);
-//                table.addAuditor(new AuditorColumn(columnMeta, Auditor));
+                AnnotationUtils.AnnotationMate mate = AnnotationUtils.findAnnotationMate(field, Auditor.class);
+                columnMeta.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(mate.getImplAnnotation()));
+                table.addAuditor(new AuditorColumn(columnMeta, ((Auditor) mate.getAnnotation()).type()));
+
                 continue;
             } else if (columnMeta.hashAnnotationType(Column.class)) {
                 Column column = columnMeta.chooseAnnotationType(Column.class);

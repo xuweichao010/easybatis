@@ -1,5 +1,9 @@
 package com.xwc.open.easybatis.assistant.model;
 
+import com.xwc.open.easybatis.core.anno.auditor.*;
+import com.xwc.open.easybatis.core.anno.table.Table;
+import lombok.Data;
+
 import java.util.Date;
 
 /**
@@ -7,36 +11,43 @@ import java.util.Date;
  * 时间：2020/12/17
  * 描述：通用数据体
  */
+@Data
 public class BaseEntity {
 
     /**
      * 创建时间
      */
+    @CreateTime
     private Date createTime;
 
     /**
      * 创建用户id
      */
+    @CreateId
     private String createId;
 
     /**
      * 创建用户名
      */
+    @CreateName
     private String createName;
 
     /**
      * 创建时间
      */
+    @UpdateTime
     private Date updateTime;
 
     /**
      * 更新用户id
      */
+    @UpdateId
     private String updateId;
 
     /**
      * 更新用户名
      */
+    @UpdateName
     private String updateName;
 
     public Date getCreateTime() {
