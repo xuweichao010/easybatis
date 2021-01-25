@@ -3,9 +3,10 @@ package com.xwc.open.easybatis.core.mysql.snippet;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.table.LoglicColumn;
+import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
 import com.xwc.open.easybatis.core.support.snippet.DeleteSetLogicSnippet;
 
-public class MySqlDeleteLogicSnippet implements DeleteSetLogicSnippet {
+public class MySqlDeleteLogicSnippet implements DeleteSetLogicSnippet, MyBatisOrSqlTemplate {
     @Override
     public String apply(MethodMeta methodMeta) {
         StringBuffer sb = new StringBuffer();
@@ -13,7 +14,7 @@ public class MySqlDeleteLogicSnippet implements DeleteSetLogicSnippet {
         if (logic == null) {
             throw new EasyBatisException("无法进行逻辑删除");
         } else {
-            sb.append(logic.getColumn()).append(" = ").append(logic.getInvalid());
+            sb.append(logic.getColumn()).append(" = ").append(this.mybatisParam("invalid", null));
         }
         return sb.toString();
     }

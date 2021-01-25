@@ -111,7 +111,7 @@ public class LogicBaseTest {
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().delete(methodMeta);
         System.out.println(sql);
-        String sqlTarget = "<script> UPDATE t_user SET valid = 0 <where> `id` = #{id} AND `valid` = #{valid} </where></script>";
+        String sqlTarget = "<script> UPDATE t_user SET valid = #{invalid} <where> `id` = #{id} AND `valid` = #{valid} </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 

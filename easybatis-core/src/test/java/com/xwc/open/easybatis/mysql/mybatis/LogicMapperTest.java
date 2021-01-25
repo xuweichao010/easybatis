@@ -113,7 +113,17 @@ public class LogicMapperTest {
         logicUserMapper.update(logicUser);
         LogicUser updateLogicUser = logicUserMapper.selectKey(this.logicUser.getId());
         Assert.assertEquals(updateLogicUser.getName(), logicUser.getName());
-        LogicTableUser t_user = logicTableUserMapper.selectKey("t_user", this.logicTableUser.getId());
+
+        logicTableUser.setName(uuid().substring(0, 6) + "修改");
+        logicTableUserMapper.update("t_user", logicTableUser);
+        LogicTableUser updateTableLogicUser = logicTableUserMapper.selectKey("t_user", this.logicTableUser.getId());
+        Assert.assertEquals(updateTableLogicUser.getName(), logicTableUser.getName());
+
+    }
+
+    @Test
+    public void delete() {
+        logicUserMapper.delete(logicUser.getId());
     }
 
 

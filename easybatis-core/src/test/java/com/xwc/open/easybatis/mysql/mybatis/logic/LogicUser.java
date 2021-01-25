@@ -53,7 +53,7 @@ public class LogicUser {
     /**
      * 是否有效 0:有效 1:无效
      */
-    @Loglic(invalid = LOGIC_INVALID, valid = LOGIC_VALID)
+    @Loglic(invalid = LOGIC_INVALID, valid = LOGIC_VALID, selectIgnore = false)
     private Integer valid;
 
 

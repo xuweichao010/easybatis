@@ -58,8 +58,32 @@ public class ExecutorHandlerInterceptor implements Interceptor {
             return doInterceptInsert(methodMeta, value);
         } else if (methodMeta.getSqlCommand() == SqlCommandType.UPDATE) {
             return doInterceptUpdate(methodMeta, value);
+        } else if (methodMeta.getSqlCommand() == SqlCommandType.DELETE) {
+            return doInterceptDelete(methodMeta, value);
         }
         return value;
+    }
+
+    private Object doInterceptDelete(MethodMeta methodMeta, Object value) {
+        Map<String, Object> paramMap;
+        TableMeta tableMetadata = methodMeta.getTableMetadata();
+        if (value instanceof Map) {
+            paramMap = (Map<String, Object>) value;
+        } else {
+            paramMap = new HashMap<>();
+            ParamMeta paramMeta = methodMeta.singleParam();
+            if (methodMeta.keyParam() != null) {
+                IdMeta id = tableMetadata.getId();
+                paramMap.put(id.getField(), value);
+            } else if (paramMeta != null) {
+                paramMap.put(paramMeta.getParamName(), value);
+            }
+        }
+        invokeParam(tableMetadata, paramMap, methodMeta.getSqlCommand());
+        if (paramMap.size() == 1) {
+            return paramMap.values().iterator().next();
+        }
+        return paramMap;
     }
 
     @SuppressWarnings("all")
@@ -78,7 +102,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
                 paramMap.put(paramMeta.getParamName(), value);
             }
         }
-        invokeParam(tableMetadata, paramMap);
+        invokeParam(tableMetadata, paramMap, methodMeta.getSqlCommand());
         if (paramMap.size() == 1) {
             return paramMap.values().iterator().next();
         }
@@ -100,7 +124,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
                 paramMap.put(paramMeta.getParamName(), value);
             }
         }
-        invokeParam(tableMetadata, paramMap);
+        invokeParam(tableMetadata, paramMap, methodMeta.getSqlCommand());
         if (paramMap.size() == 1) {
             return paramMap.values().iterator().next();
         }
@@ -150,14 +174,15 @@ public class ExecutorHandlerInterceptor implements Interceptor {
         }
     }
 
-    private void invokeParam(TableMeta tableMetadata, Map<String, Object> paramMap) {
+    private void invokeParam(TableMeta tableMetadata, Map<String, Object> paramMap, SqlCommandType sqlCommandType) {
         LoglicColumn logic = tableMetadata.getLogic();
         if (logic != null) {
             paramMap.put(logic.getField(), logic.getValid());
+            if (sqlCommandType == SqlCommandType.DELETE) {
+                paramMap.put("invalid", logic.getInvalid());
+            }
         }
     }
-
-
 
 
     @Override
