@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.utlis;
 
 import com.xwc.open.easybatis.core.anno.auditor.Auditor;
+import com.xwc.open.easybatis.core.anno.auditor.CreateId;
 import com.xwc.open.easybatis.core.anno.auditor.UpdateId;
 import com.xwc.open.easybatis.core.anno.table.Column;
 import com.xwc.open.easybatis.core.anno.table.Table;
@@ -56,7 +57,17 @@ public class AnnotationUtilsTest {
                 Assert.assertNotNull(value);
             }
         }
+    }
 
+    @Test
+    public void findAnnotationMate() {
+        Field[] fields = AnnotationUtilsObject.class.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getName().equals("createUserId")) {
+                AnnotationUtils.AnnotationMate annotationMate = AnnotationUtils.findAnnotationMate(field, Auditor.class);
+                System.out.println(annotationMate);
+            }
+        }
     }
 
 
@@ -67,5 +78,8 @@ public class AnnotationUtilsTest {
 
         @UpdateId("update_user_id")
         private Long updateId;
+
+        @CreateId
+        private Long createUserId;
     }
 }
