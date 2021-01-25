@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * 时间：2021/1/5
  * 描述：分组测试
  */
-public class OtherTest {
+public class OtherMapperTest {
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
     EasybatisConfiguration easybatisConfiguration;

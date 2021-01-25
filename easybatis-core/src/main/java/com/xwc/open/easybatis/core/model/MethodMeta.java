@@ -9,6 +9,7 @@ import org.apache.ibatis.mapping.SqlCommandType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -60,7 +61,7 @@ public class MethodMeta {
         ArrayList<ColumnMeta> list = new ArrayList<>();
         list.add(tableMetadata.getId());
         list.addAll(tableMetadata.getColumnMetaList());
-        list.addAll(tableMetadata.getAuditorMap().values());
+        list.addAll(tableMetadata.getAuditorMap().values().stream().sorted(Comparator.comparingInt(s -> s.getType().ordinal())).collect(Collectors.toList()));
         list.add(tableMetadata.getLogic());
         return list;
     }

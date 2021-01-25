@@ -11,6 +11,7 @@ import com.xwc.open.easybatis.core.anno.table.*;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.commons.StringUtils;
+import com.xwc.open.easybatis.core.enums.AuditorType;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.DynamicType;
 import com.xwc.open.easybatis.core.enums.IdType;
@@ -163,9 +164,21 @@ public class AnnotationAssistant {
         }
         LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
         if (logic != null && (methodMeta.getSqlCommand() != SqlCommandType.INSERT)) {
-            ParamMeta logicParamMeta = ParamMeta.builder(logic.getColumn(), logic.getField(), ConditionType.EQUAL, null, false, false);
+            ParamMeta logicParamMeta = ParamMeta.builder(logic.getColumn(), logic.getField(), ConditionType.EQUAL,
+                    null, false, false);
             logicParamMeta.setSimulate(true);
             list.add(logicParamMeta);
+        }
+        if (list.stream().map(ParamMeta::isSetParam).count() != 0 && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
+            methodMeta.getTableMetadata().getAuditorMap().values().stream()
+                    .filter(item -> item.getType().command() == SqlCommandType.UPDATE)
+                    .sorted(Comparator.comparing(s1 -> s1.getType().ordinal()))
+                    .forEach(item -> {
+                        ParamMeta setParam = ParamMeta.builder(item.getColumn(), item.getField(), ConditionType.SET_PARAM,
+                                null, false, false);
+                        setParam.setSimulate(true);
+                        list.add(setParam);
+                    });
         }
         return list;
     }

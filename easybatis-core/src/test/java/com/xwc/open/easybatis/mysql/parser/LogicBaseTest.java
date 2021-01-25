@@ -42,8 +42,6 @@ public class LogicBaseTest {
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
         this.annotationAssistant = easybatisConfiguration.getAnnotationAssistant();
         this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(LogicBaseMapper.class));
-
-
     }
 
     @Test
