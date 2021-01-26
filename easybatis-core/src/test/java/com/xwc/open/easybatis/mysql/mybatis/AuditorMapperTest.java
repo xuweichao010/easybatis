@@ -15,6 +15,8 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,20 +46,39 @@ public class AuditorMapperTest {
         this.configuration = this.sqlSessionFactory.getConfiguration();
         this.configuration.setMapUnderscoreToCamelCase(true);
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
-        easybatisConfiguration.addMapper(LogicUserMapper.class);
-        easybatisConfiguration.addMapper(LogicTableUserMapper.class);
+        easybatisConfiguration.addMapper(AuditorUserMapper.class);
+        easybatisConfiguration.addMapper(AuditorTableUserMapper.class);
         sqlSession = sqlSessionFactory.openSession(true);
         auditorUserMapper = sqlSession.getMapper(AuditorUserMapper.class);
         auditorTableUserMapper = sqlSession.getMapper(AuditorTableUserMapper.class);
+        this.auditorTableUser = genderAuditorTableUser();
+        auditorTableUserMapper.insert("t_user", auditorTableUser);
+        this.auditorUser = genderAuditorUser();
+        auditorUserMapper.insert(auditorUser);
+    }
 
+    @After
+    public void after() {
+        auditorUserMapper.deleteByValid(VALID);
     }
 
     @Test
     public void insert() {
-        this.auditorTableUser = genderAuditorTableUser();
+        AuditorTableUser auditorTableUser = genderAuditorTableUser();
         auditorTableUserMapper.insert("t_user", auditorTableUser);
-//        this.auditorUser = genderAuditorUser();
-//        auditorUserMapper.insert(auditorUser);
+        AuditorUser auditorUser = genderAuditorUser();
+        auditorUserMapper.insert(auditorUser);
+    }
+
+    @Test
+    public void selectKey() {
+        AuditorTableUser auditorTableUser = auditorTableUserMapper.selectKey("t_user", this.auditorTableUser.getId());
+        Assert.assertNotNull(auditorTableUser);
+        Assert.assertNotNull(auditorTableUser.getUpdateName());
+
+        AuditorUser auditorUser = auditorUserMapper.selectKey(this.auditorUser.getId());
+        Assert.assertNotNull(auditorUser);
+        Assert.assertNotNull(auditorUser.getUpdateName());
     }
 
 

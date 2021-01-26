@@ -169,7 +169,7 @@ public class AnnotationAssistant {
             logicParamMeta.setSimulate(true);
             list.add(logicParamMeta);
         }
-        if (list.stream().map(ParamMeta::isSetParam).count() != 0 && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
+        if (list.stream().filter(ParamMeta::isSetParam).count() != 0 && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
             methodMeta.getTableMetadata().getAuditorMap().values().stream()
                     .filter(item -> item.getType().command() == SqlCommandType.UPDATE)
                     .sorted(Comparator.comparing(s1 -> s1.getType().ordinal()))
