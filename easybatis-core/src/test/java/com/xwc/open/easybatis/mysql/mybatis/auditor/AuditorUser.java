@@ -2,6 +2,7 @@ package com.xwc.open.easybatis.mysql.mybatis.auditor;
 
 import com.xwc.open.easybatis.core.anno.auditor.*;
 import com.xwc.open.easybatis.core.anno.table.Id;
+import com.xwc.open.easybatis.core.anno.table.Loglic;
 import com.xwc.open.easybatis.core.anno.table.Table;
 import com.xwc.open.easybatis.core.enums.IdType;
 import lombok.Data;
@@ -42,6 +43,11 @@ public class AuditorUser {
      * 职位 1-总监 2-经理 1-主管 3-销售 4-行政 5-技术员 6-财务
      */
     private Integer job;
+
+    /**
+     * 是否有效 0:有效 1:无效
+     */
+    private Integer valid;
 
     /**
      * 创建时间

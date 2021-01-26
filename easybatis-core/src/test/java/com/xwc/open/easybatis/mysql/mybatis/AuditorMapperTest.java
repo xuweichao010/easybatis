@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.mysql.mybatis;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
+import com.xwc.open.easybatis.core.anno.auditor.Auditor;
 import com.xwc.open.easybatis.mysql.mybatis.auditor.AuditorTableUser;
 import com.xwc.open.easybatis.mysql.mybatis.auditor.AuditorTableUserMapper;
 import com.xwc.open.easybatis.mysql.mybatis.auditor.AuditorUser;
@@ -15,6 +16,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +33,7 @@ public class AuditorMapperTest {
     SqlSession sqlSession;
     AuditorTableUser auditorTableUser;
     AuditorUser auditorUser;
+    private final int VALID = 44;
 
 
     @Before
@@ -46,10 +49,15 @@ public class AuditorMapperTest {
         sqlSession = sqlSessionFactory.openSession(true);
         auditorUserMapper = sqlSession.getMapper(AuditorUserMapper.class);
         auditorTableUserMapper = sqlSession.getMapper(AuditorTableUserMapper.class);
+
+    }
+
+    @Test
+    public void insert() {
         this.auditorTableUser = genderAuditorTableUser();
         auditorTableUserMapper.insert("t_user", auditorTableUser);
-        this.auditorUser = genderAuditorUser();
-        auditorUserMapper.insert(auditorUser);
+//        this.auditorUser = genderAuditorUser();
+//        auditorUserMapper.insert(auditorUser);
     }
 
 
@@ -62,6 +70,7 @@ public class AuditorMapperTest {
         tar.setName(uuid().substring(0, 6));
         tar.setOrgCode("200");
         tar.setOrgName("总公司");
+        tar.setValid(VALID);
         return tar;
     }
 
@@ -78,6 +87,7 @@ public class AuditorMapperTest {
         tar.setName(uuid().substring(0, 6));
         tar.setOrgCode("200");
         tar.setOrgName("总公司");
+        tar.setValid(VALID);
         return tar;
     }
 }

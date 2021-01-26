@@ -1,13 +1,16 @@
 package com.xwc.open.easybatis.core.plugin;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
+import com.xwc.open.easybatis.core.enums.AuditorType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
 import com.xwc.open.easybatis.core.model.TableMeta;
+import com.xwc.open.easybatis.core.model.table.AuditorColumn;
 import com.xwc.open.easybatis.core.model.table.ColumnMeta;
 import com.xwc.open.easybatis.core.model.table.IdMeta;
 import com.xwc.open.easybatis.core.model.table.LoglicColumn;
+import com.xwc.open.easybatis.core.support.AuditorContext;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -33,9 +36,11 @@ public class ExecutorHandlerInterceptor implements Interceptor {
     private static final String PARAM_OBJECT = "parameterHandler.parameterObject";
     private static final String MAPPED_STATEMENT = "parameterHandler.mappedStatement";
     private final EasybatisConfiguration easybatisConfiguration;
+    private final AuditorContext auditorContext;
 
     public ExecutorHandlerInterceptor(EasybatisConfiguration easybatisConfiguration) {
         this.easybatisConfiguration = easybatisConfiguration;
+        this.auditorContext = easybatisConfiguration.getAuditorContext();
     }
 
     @Override
@@ -135,7 +140,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
         TableMeta tableMetadata = methodMeta.getTableMetadata();
         if (value instanceof List) {
             ((List<?>) value).forEach(item -> {
-                invokeObject(item, tableMetadata);
+                invokeObject(item, tableMetadata, methodMeta.getSqlCommand());
             });
         } else if (value instanceof Map) {
             Map<String, Object> map = (Map) value;
@@ -145,14 +150,14 @@ public class ExecutorHandlerInterceptor implements Interceptor {
                 }
                 if (mapValue instanceof List) {
                     ((List<?>) mapValue).forEach(item -> {
-                        invokeObject(item, tableMetadata);
+                        invokeObject(item, tableMetadata, methodMeta.getSqlCommand());
                     });
                 } else {
-                    invokeObject(mapValue, tableMetadata);
+                    invokeObject(mapValue, tableMetadata, methodMeta.getSqlCommand());
                 }
             });
         } else {
-            invokeObject(value, tableMetadata);
+            invokeObject(value, tableMetadata, methodMeta.getSqlCommand());
         }
         return value;
     }
@@ -165,21 +170,68 @@ public class ExecutorHandlerInterceptor implements Interceptor {
         }
     }
 
-    private void invokeObject(Object node, TableMeta tableMetadata) {
+    private void invokeObject(Object node, TableMeta tableMetadata, SqlCommandType command) {
+        SqlCommandType realCommand = command;
         if (tableMetadata.isSource(node.getClass())) {
             LoglicColumn logic = tableMetadata.getLogic();
             if (logic != null) {
                 invokeMethod(node, logic.getSetter(), logic.getValid());
+                if (realCommand == SqlCommandType.DELETE) {
+                    realCommand = SqlCommandType.UPDATE;
+                }
+            }
+            if (!tableMetadata.getAuditorMap().isEmpty() && (realCommand == SqlCommandType.INSERT
+                    || realCommand == SqlCommandType.UPDATE)) {
+                for (AuditorColumn item : tableMetadata.getAuditorMap().values()) {
+                    if (SqlCommandType.INSERT == realCommand) {
+                        if (item.getType() == AuditorType.CREATE_ID) {
+                            invokeMethod(node, item.getSetter(), auditorContext.id());
+                        } else if (item.getType() == AuditorType.CREATE_NAME) {
+                            invokeMethod(node, item.getSetter(), auditorContext.name());
+                        } else if (item.getType() == AuditorType.CREATE_TIME) {
+                            invokeMethod(node, item.getSetter(), auditorContext.time());
+                        }
+                    }
+                    if (item.getType() == AuditorType.UPDATE_ID) {
+                        invokeMethod(node, item.getSetter(), auditorContext.id());
+                    } else if (item.getType() == AuditorType.UPDATE_NAME) {
+                        invokeMethod(node, item.getSetter(), auditorContext.name());
+                    } else if (item.getType() == AuditorType.UPDATE_TIME) {
+                        invokeMethod(node, item.getSetter(), auditorContext.time());
+                    }
+                }
             }
         }
     }
 
-    private void invokeParam(TableMeta tableMetadata, Map<String, Object> paramMap, SqlCommandType sqlCommandType) {
+    private void invokeParam(TableMeta tableMetadata, Map<String, Object> paramMap, SqlCommandType command) {
         LoglicColumn logic = tableMetadata.getLogic();
+        SqlCommandType realCommand = command;
         if (logic != null) {
             paramMap.put(logic.getField(), logic.getValid());
-            if (sqlCommandType == SqlCommandType.DELETE) {
+            if (realCommand == SqlCommandType.DELETE) {
                 paramMap.put("invalid", logic.getInvalid());
+            }
+        }
+        if (!tableMetadata.getAuditorMap().isEmpty() && (realCommand == SqlCommandType.INSERT
+                || realCommand == SqlCommandType.UPDATE)) {
+            for (AuditorColumn item : tableMetadata.getAuditorMap().values()) {
+                if (SqlCommandType.INSERT == realCommand) {
+                    if (item.getType() == AuditorType.CREATE_ID) {
+                        paramMap.put(item.getField(),auditorContext.id());
+                    } else if (item.getType() == AuditorType.CREATE_NAME) {
+                        paramMap.put(item.getField(), auditorContext.name());
+                    } else if (item.getType() == AuditorType.CREATE_TIME) {
+                        paramMap.put(item.getField(), auditorContext.time());
+                    }
+                }
+                if (item.getType() == AuditorType.UPDATE_ID) {
+                    paramMap.put(item.getField(), auditorContext.id());
+                } else if (item.getType() == AuditorType.UPDATE_NAME) {
+                    paramMap.put(item.getField(),auditorContext.name());
+                } else if (item.getType() == AuditorType.UPDATE_TIME) {
+                    paramMap.put(item.getField(), auditorContext.time());
+                }
             }
         }
     }

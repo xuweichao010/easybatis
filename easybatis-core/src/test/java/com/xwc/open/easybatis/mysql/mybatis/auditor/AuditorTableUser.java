@@ -44,6 +44,11 @@ public class AuditorTableUser {
     private Integer job;
 
     /**
+     * 是否有效 0:有效 1:无效
+     */
+    private Integer valid;
+
+    /**
      * 创建时间
      */
     @CreateTime
