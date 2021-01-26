@@ -29,7 +29,7 @@ public class DefaultUpdateColumnSnippet implements UpdateSetSnippet, MyBatisOrSq
                 ).collect(Collectors.joining());
             }
         } else {
-            return setParamList.stream().map(param -> this.setParam(param.getColumnName(), param.getColumnName())).collect(Collectors.joining(", "));
+            return setParamList.stream().map(param -> this.setParam(param.getColumnName(), param.getParamName())).collect(Collectors.joining(", "));
         }
     }
 

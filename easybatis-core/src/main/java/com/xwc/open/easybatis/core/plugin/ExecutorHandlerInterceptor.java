@@ -125,11 +125,17 @@ public class ExecutorHandlerInterceptor implements Interceptor {
             if (methodMeta.keyParam() != null) {
                 IdMeta id = tableMetadata.getId();
                 paramMap.put(id.getField(), value);
-            } else if (paramMeta != null) {
+            } else {
                 paramMap.put(paramMeta.getParamName(), value);
             }
         }
-        invokeParam(tableMetadata, paramMap, methodMeta.getSqlCommand());
+        if (methodMeta.hasSetParam()) {
+            this.invokeParam(tableMetadata, paramMap, methodMeta.getSqlCommand());
+        } else {
+            paramMap.values().forEach(item -> {
+                this.invokeObject(item, tableMetadata, methodMeta.getSqlCommand());
+            });
+        }
         if (paramMap.size() == 1) {
             return paramMap.values().iterator().next();
         }
@@ -218,7 +224,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
             for (AuditorColumn item : tableMetadata.getAuditorMap().values()) {
                 if (SqlCommandType.INSERT == realCommand) {
                     if (item.getType() == AuditorType.CREATE_ID) {
-                        paramMap.put(item.getField(),auditorContext.id());
+                        paramMap.put(item.getField(), auditorContext.id());
                     } else if (item.getType() == AuditorType.CREATE_NAME) {
                         paramMap.put(item.getField(), auditorContext.name());
                     } else if (item.getType() == AuditorType.CREATE_TIME) {
@@ -228,7 +234,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
                 if (item.getType() == AuditorType.UPDATE_ID) {
                     paramMap.put(item.getField(), auditorContext.id());
                 } else if (item.getType() == AuditorType.UPDATE_NAME) {
-                    paramMap.put(item.getField(),auditorContext.name());
+                    paramMap.put(item.getField(), auditorContext.name());
                 } else if (item.getType() == AuditorType.UPDATE_TIME) {
                     paramMap.put(item.getField(), auditorContext.time());
                 }
