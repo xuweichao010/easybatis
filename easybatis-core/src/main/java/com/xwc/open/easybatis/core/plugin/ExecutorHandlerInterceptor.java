@@ -129,12 +129,12 @@ public class ExecutorHandlerInterceptor implements Interceptor {
                 paramMap.put(paramMeta.getParamName(), value);
             }
         }
-        if (methodMeta.hasSetParam()) {
-            this.invokeParam(tableMetadata, paramMap, methodMeta.getSqlCommand());
-        } else {
+        if (methodMeta.entityParam() != null) {
             paramMap.values().forEach(item -> {
                 this.invokeObject(item, tableMetadata, methodMeta.getSqlCommand());
             });
+        } else {
+            this.invokeParam(tableMetadata, paramMap, methodMeta.getSqlCommand());
         }
         if (paramMap.size() == 1) {
             return paramMap.values().iterator().next();

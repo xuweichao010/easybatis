@@ -45,7 +45,7 @@ public class AuditorBaseTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `updateId`, `updateTime`, `updateName` FROM t_user <where> `id` = #{id} </where></script>", sql);
+        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `updateTime`, `updateName`, `updateId` FROM t_user <where> `id` = #{id} </where></script>", sql);
     }
 
     @Test

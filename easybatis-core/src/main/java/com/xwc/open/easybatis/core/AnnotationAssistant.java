@@ -163,13 +163,14 @@ public class AnnotationAssistant {
             list.add(paramMeta);
         }
         LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
-        if (logic != null && (methodMeta.getSqlCommand() != SqlCommandType.INSERT)) {
+        // 增删改查都都需要增删改查
+        if (logic != null && list.stream().noneMatch(ParamMeta::isEntity)) {
             ParamMeta logicParamMeta = ParamMeta.builder(logic.getColumn(), logic.getField(), ConditionType.EQUAL,
                     null, false, false);
             logicParamMeta.setSimulate(true);
             list.add(logicParamMeta);
         }
-        if (list.stream().filter(ParamMeta::isSetParam).count() != 0 && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
+        if (list.stream().anyMatch(ParamMeta::isSetParam) && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
             methodMeta.getTableMetadata().getAuditorMap().values().stream()
                     .filter(item -> item.getType().command() == SqlCommandType.UPDATE)
                     .sorted(Comparator.comparing(s1 -> s1.getType().ordinal()))

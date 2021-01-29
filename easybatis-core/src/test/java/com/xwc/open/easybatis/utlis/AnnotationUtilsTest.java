@@ -79,7 +79,5 @@ public class AnnotationUtilsTest {
         @UpdateId("update_user_id")
         private Long updateId;
 
-        @CreateId
-        private Long createUserId;
     }
 }

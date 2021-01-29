@@ -60,9 +60,8 @@ public class LogicBaseTest {
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
         Assert.assertEquals("<script>" +
-                " UPDATE t_user SET `orgCode` = #{entity.orgCode}, `orgName` = #{entity.orgName}" +
-                " <where> `id` = #{entity.id} AND `valid` = #{valid} </where>" +
-                "</script>", sql);
+                " UPDATE t_user SET `orgCode` = #{orgCode}, `orgName` = #{orgName}" +
+                " <where> `id` = #{id} AND `valid` = #{valid} </where></script>", sql);
     }
 
     @Test
