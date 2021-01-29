@@ -23,6 +23,7 @@ import com.xwc.open.easybatis.core.model.table.AuditorColumn;
 import com.xwc.open.easybatis.core.model.table.ColumnMeta;
 import com.xwc.open.easybatis.core.model.table.IdMeta;
 import com.xwc.open.easybatis.core.model.table.LoglicColumn;
+
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.ParamNameUtil;
 
@@ -33,10 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 创建人：徐卫超
- * 创建时间：2019/5/8  16:12
- * 业务：
- * 功能：用于获取注解信息
+ * 创建人：徐卫超 创建时间：2019/5/8  16:12 业务： 功能：用于获取注解信息
  */
 public class AnnotationAssistant {
 
@@ -47,23 +45,27 @@ public class AnnotationAssistant {
     }
 
     private final static Set<Class<? extends Annotation>> auditorAnnoSet = Stream.of(CreateId.class,
-            UpdateId.class, CreateName.class, UpdateName.class, CreateTime.class, UpdateTime.class).collect(Collectors.toSet());
+            UpdateId.class, CreateName.class, UpdateName.class, CreateTime.class, UpdateTime.class)
+            .collect(Collectors.toSet());
     private final static Set<Class<? extends Annotation>> operationAnnoSet = Stream
             .of(SelectSql.class, InsertSql.class, UpdateSql.class, DeleteSql.class).collect(Collectors.toSet());
     private static final Set<Class<? extends Annotation>> queryAnnoSet = Stream
             .of(Equal.class, NotEqual.class, IsNull.class, IsNotNull.class, In.class, NotIn.class,
-                    Like.class, RightLike.class, LeftLike.class, NotLike.class, NotLeftLike.class, NotRightLike.class, GreaterThan.class, GreaterThanEqual.class, LessThan.class
+                    Like.class, RightLike.class, LeftLike.class, NotLike.class, NotLeftLike.class, NotRightLike.class,
+                    GreaterThan.class, GreaterThanEqual.class, LessThan.class
                     , LessThanEqual.class, Start.class, Offset.class, ASC.class, DESC.class)
             .collect(Collectors.toSet());
 
     public String tableName(Class<?> entityType) {
         Table tableAnno = AnnotationUtils.findAnnotation(entityType, Table.class);
-        if (tableAnno == null) throw new RuntimeException(entityType.getName() + "not find @Table Annotation");
+        if (tableAnno == null) { throw new RuntimeException(entityType.getName() + "not find @Table Annotation"); }
         String name = (String) AnnotationUtils.getValue(tableAnno, "value");
         if (StringUtils.isEmpty(name) && configuration.getTablePrefix() != null) {
             return configuration.getTablePrefix() + underscoreName(entityType.getSimpleName());
         }
-        if (StringUtils.isEmpty(name)) throw new RuntimeException(entityType.getName() + " not find @Table Annotation");
+        if (StringUtils.isEmpty(name)) {
+            throw new RuntimeException(entityType.getName() + " not find @Table Annotation");
+        }
         return name;
     }
 
@@ -79,12 +81,13 @@ public class AnnotationAssistant {
         table.setSource(entityType);
         List<Field> fieldArr = Reflection.getField(entityType);
         for (Field field : fieldArr) {
-            if (isIgnore(field)) continue;
+            if (isIgnore(field)) { continue; }
             ColumnMeta columnMeta = analysisColunm(field, entityType);
-            if (columnMeta == null) continue;
+            if (columnMeta == null) { continue; }
             if (columnMeta.hashAnnotationType(Id.class)) {
                 Id id = columnMeta.chooseAnnotationType(Id.class);
-                table.setId(new IdMeta(columnMeta, id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type(), id));
+                table.setId(new IdMeta(columnMeta,
+                        id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type(), id));
                 continue;
             } else if (columnMeta.hashAnnotationType(Loglic.class)) {
                 Loglic loglic = columnMeta.chooseAnnotationType(Loglic.class);
@@ -113,7 +116,7 @@ public class AnnotationAssistant {
      */
     public MethodMeta parseMethodMate(Method method, TableMeta tableMetadata) {
         Annotation operationAnnotationType = chooseOperationAnnotationType(method);
-        if (operationAnnotationType == null) return null;
+        if (operationAnnotationType == null) { return null; }
         if (operationAnnotationType instanceof SelectSql) {
             return parseSelectMethodMate(method, tableMetadata);
         } else if (operationAnnotationType instanceof InsertSql) {
@@ -145,11 +148,13 @@ public class AnnotationAssistant {
         meta.setMethod(method);
         meta.setParamMetaList(parseMethodParam(meta));
         boolean hasDynamic = meta.hasDynamic();
-        if (hasDynamic) meta.getParamMetaList().forEach(paramMeta -> {
-            if (paramMeta.getDynamicType() == DynamicType.NO_DYNAMIC) {
-                paramMeta.setDynamicType(DynamicType.GUISE_DYNAMIC);
-            }
-        });
+        if (hasDynamic) {
+            meta.getParamMetaList().forEach(paramMeta -> {
+                if (paramMeta.getDynamicType() == DynamicType.NO_DYNAMIC) {
+                    paramMeta.setDynamicType(DynamicType.GUISE_DYNAMIC);
+                }
+            });
+        }
         return meta;
     }
 
@@ -175,8 +180,9 @@ public class AnnotationAssistant {
                     .filter(item -> item.getType().command() == SqlCommandType.UPDATE)
                     .sorted(Comparator.comparing(s1 -> s1.getType().ordinal()))
                     .forEach(item -> {
-                        ParamMeta setParam = ParamMeta.builder(item.getColumn(), item.getField(), ConditionType.SET_PARAM,
-                                null, false, false);
+                        ParamMeta setParam = ParamMeta
+                                .builder(item.getColumn(), item.getField(), ConditionType.SET_PARAM,
+                                        null, false, false);
                         setParam.setSimulate(true);
                         list.add(setParam);
                     });
@@ -184,7 +190,8 @@ public class AnnotationAssistant {
         return list;
     }
 
-    private ParamMeta parseParameter(Parameter parameter, String paramName, SqlCommandType command, Class<?> entityClass, boolean dynamic) {
+    private ParamMeta parseParameter(Parameter parameter, String paramName, SqlCommandType command,
+            Class<?> entityClass, boolean dynamic) {
         //处理接口泛型 泛型的两种情况是 主键或者是实体
         if (parameter.getParameterizedType() instanceof TypeVariable) {
             ParamMeta paramMeta = ParamMeta.builder(underscoreName(paramName), paramName);

@@ -70,14 +70,14 @@ public class LogicBaseTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
-        String sqlTarget = "<script>" +
-                " UPDATE t_user" +
-                " <set>" +
-                " <if test='entity.orgCode != null'> `orgCode` = #{entity.orgCode},</if>" +
-                " <if test='entity.orgName != null'> `orgName` = #{entity.orgName},</if>" +
-                " </set>" +
-                " <where> `id` = #{entity.id} AND `valid` = #{valid} </where>" +
-                "</script>";
+        String sqlTarget = "<script>"
+                + " UPDATE t_user"
+                + " <set>"
+                + " <if test='orgCode != null'> `orgCode` = #{orgCode},</if>"
+                + " <if test='orgName != null'> `orgName` = #{orgName},</if>"
+                + " </set>"
+                + " <where> `id` = #{id} AND `valid` = #{valid} </where>"
+                + "</script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 

@@ -36,10 +36,12 @@ public class DefaultUpdateConditionSnippet implements UpdateConditionSnippet, My
                 paramMeta = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity).collect(Collectors.toList()).get(0);
             }
             IdMeta id = methodMeta.getTableMetadata().getId();
-            sb.append(" `" + id.getColumn() + "` = " + this.mybatisParam(id.getField(), paramMeta == null ? null : paramMeta.getParamName()));
+            sb.append(" `").append(id.getColumn()).append("` = ")
+                    .append(this.mybatisParam(id.getField(), paramMeta == null ? null : paramMeta.getParamName()));
             LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
             if (logic != null) {
-                sb.append(" AND `" + logic.getColumn() + "` = " + this.mybatisParam(logic.getField(), null));
+                sb.append(" AND `").append(logic.getColumn()).append("` = ")
+                        .append(this.mybatisParam(logic.getField(), paramMeta == null ? null : paramMeta.getParamName()));
             }
             return sb.toString();
         } else {
