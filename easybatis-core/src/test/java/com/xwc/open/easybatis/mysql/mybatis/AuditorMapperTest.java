@@ -54,7 +54,6 @@ public class AuditorMapperTest {
         auditorUserMapper = sqlSession.getMapper(AuditorUserMapper.class);
         auditorTableUserMapper = sqlSession.getMapper(AuditorTableUserMapper.class);
         init();
-
     }
 
     public void init() {
@@ -117,8 +116,8 @@ public class AuditorMapperTest {
 
         Integer update = auditorUserMapper.updateParam(name,this.auditorUser.getId());
         Assert.assertEquals(update, Integer.valueOf(1));
-//        update = auditorTableUserMapper.update("t_user", this.auditorTableUser);
-//        Assert.assertEquals(update, Integer.valueOf(1));
+        update = auditorTableUserMapper.updateParam("t_user", name,this.auditorTableUser.getId());
+        Assert.assertEquals(update, Integer.valueOf(1));
     }
 
 

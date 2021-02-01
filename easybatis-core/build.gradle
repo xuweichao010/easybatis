@@ -19,7 +19,7 @@ compileTestJava {
     options.compilerArgs << '-parameters'
 }
 dependencies {
-    implementation 'org.mybatis:mybatis:3.5.6'
+    compile 'org.mybatis:mybatis:3.5.6'
     runtimeOnly 'mysql:mysql-connector-java:8.0.21'
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12'

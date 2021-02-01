@@ -53,7 +53,6 @@ public class BaseMapperTest {
         sqlSession = sqlSessionFactory.openSession(true);
         mybatisTableUserMapper = sqlSession.getMapper(MybatisTableUserMapper.class);
         mybatisUserMapper = sqlSession.getMapper(MybatisUserMapper.class);
-
     }
 
     @After
