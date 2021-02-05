@@ -12,6 +12,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,7 +50,7 @@ public class MixtureMapperTest {
         sqlSession = sqlSessionFactory.openSession(true);
         mixtureUserMapper = sqlSession.getMapper(MixtureUserMapper.class);
         mixtureTableUserMapper = sqlSession.getMapper(MixtureTableUserMapper.class);
-        init();
+        this.init();
     }
 
     @After
@@ -59,6 +60,20 @@ public class MixtureMapperTest {
     }
 
     void init() {
+        this.mixtureUser = this.genderMixtureUser();
+        this.mixtureTableUser = this.genderMixtureTableUser();
+        mixtureUserMapper.insert(mixtureUser);
+        mixtureTableUserMapper.insert("t_user", mixtureTableUser);
+
+    }
+
+    @Test
+    public void insert() {
+
+    }
+
+    @Test
+    public void insertBatch() {
         List<MixtureTableUser> tableList = Arrays
                 .asList(genderMixtureTableUser(), genderMixtureTableUser(), genderMixtureTableUser());
         List<MixtureUser> list = Arrays.asList(genderMixtureUser(), genderMixtureUser(), genderMixtureUser());
@@ -69,7 +84,36 @@ public class MixtureMapperTest {
     @Test
     public void selectKey() {
 
+        Assert.assertNotNull(mixtureTableUser);
+        MixtureUser mixtureUser = mixtureUserMapper.selectKey(this.mixtureUser.getId());
+        Assert.assertNotNull(mixtureUser);
     }
+
+    @Test
+    public void update() {
+        mixtureTableUserMapper.update("t_user", this.mixtureTableUser);
+        mixtureUserMapper.update(this.mixtureUser);
+    }
+
+    @Test
+    public void updateActive() {
+        MixtureUser activeUser = new MixtureUser();
+        activeUser.setAge(1);
+        activeUser.setId(this.mixtureUser.getId());
+        mixtureUserMapper.updateActivate(activeUser);
+
+        MixtureTableUser activeTableUser = new MixtureTableUser();
+        activeTableUser.setAge(1);
+        activeTableUser.setId(this.mixtureTableUser.getId());
+        mixtureTableUserMapper.updateActivate("t_user", activeTableUser);
+    }
+
+    @Test
+    public void delete() {
+        mixtureTableUserMapper.delete("t_user", this.mixtureTableUser.getId());
+        mixtureUserMapper.delete(this.mixtureUser.getId());
+    }
+
 
     private MixtureUser genderMixtureUser() {
         Random random = new Random();
