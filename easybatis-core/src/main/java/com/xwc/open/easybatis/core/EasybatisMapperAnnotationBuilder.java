@@ -703,23 +703,19 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
 
     private class AnnotationWrapper {
         private final Annotation annotation;
-        private final String databaseId;
+        private final String databaseId = "";
         private final SqlCommandType sqlCommandType;
 
         AnnotationWrapper(Annotation annotation) {
             super();
             this.annotation = annotation;
             if (annotation instanceof SelectSql) {
-                databaseId = ((SelectSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.SELECT;
             } else if (annotation instanceof UpdateSql) {
-                databaseId = ((UpdateSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.UPDATE;
             } else if (annotation instanceof InsertSql) {
-                databaseId = ((InsertSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.INSERT;
             } else if (annotation instanceof DeleteSql) {
-                databaseId = ((DeleteSql) annotation).databaseId();
                 if (tableMeta.getLogic() != null) {
                     sqlCommandType = SqlCommandType.UPDATE;
                 } else {
@@ -728,11 +724,7 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             } else {
                 sqlCommandType = SqlCommandType.UNKNOWN;
                 if (annotation instanceof Options) {
-                    databaseId = ((Options) annotation).databaseId();
                 } else if (annotation instanceof SelectKey) {
-                    databaseId = ((SelectKey) annotation).databaseId();
-                } else {
-                    databaseId = "";
                 }
             }
         }
