@@ -1,8 +1,8 @@
 package com.xwc.open.easybatis.utlis;
 
-import com.xwc.open.easybatis.core.anno.auditor.Auditor;
-import com.xwc.open.easybatis.core.anno.auditor.CreateId;
-import com.xwc.open.easybatis.core.anno.auditor.UpdateId;
+import com.xwc.open.easybatis.core.anno.table.auditor.Auditor;
+import com.xwc.open.easybatis.core.anno.table.auditor.CreateId;
+import com.xwc.open.easybatis.core.anno.table.auditor.UpdateId;
 import com.xwc.open.easybatis.core.anno.table.Column;
 import com.xwc.open.easybatis.core.anno.table.Table;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;

@@ -4,8 +4,7 @@ import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
-import com.xwc.open.easybatis.core.model.table.IdMeta;
-import com.xwc.open.easybatis.core.model.table.LoglicColumn;
+import com.xwc.open.easybatis.core.model.table.IdMapping;
 import com.xwc.open.easybatis.core.mysql.condition.CompareCondition;
 import com.xwc.open.easybatis.core.mysql.condition.InCondition;
 import com.xwc.open.easybatis.core.mysql.condition.LikeCondition;
@@ -38,7 +37,7 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
         boolean multi = paramMetaList.size() != queryList.size();
         if (queryList.size() == 1) {
             if (methodMeta.keyParam() != null) {
-                IdMeta id = methodMeta.getTableMetadata().getId();
+                IdMapping id = methodMeta.getTableMetadata().getId();
                 list.add(ParamMeta.builder(id.getColumn(), id.getField(), ConditionType.EQUAL));
             } else if (paramMetaList.get(0).isMultiCondition()) {
                 list.addAll(methodMeta.getParamMetaList().get(0).getChildList());

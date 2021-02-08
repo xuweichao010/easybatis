@@ -3,8 +3,8 @@ package com.xwc.open.easybatis.core.mysql.snippet;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
-import com.xwc.open.easybatis.core.model.table.IdMeta;
-import com.xwc.open.easybatis.core.model.table.LoglicColumn;
+import com.xwc.open.easybatis.core.model.table.IdMapping;
+import com.xwc.open.easybatis.core.model.table.LogicMapping;
 import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
 import com.xwc.open.easybatis.core.support.snippet.SelectConditionSnippet;
 import com.xwc.open.easybatis.core.support.snippet.UpdateConditionSnippet;
@@ -35,10 +35,10 @@ public class DefaultUpdateConditionSnippet implements UpdateConditionSnippet, My
             if (methodMeta.getParamMetaList().size() > 1) {
                 paramMeta = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity).collect(Collectors.toList()).get(0);
             }
-            IdMeta id = methodMeta.getTableMetadata().getId();
+            IdMapping id = methodMeta.getTableMetadata().getId();
             sb.append(" `").append(id.getColumn()).append("` = ")
                     .append(this.mybatisParam(id.getField(), paramMeta == null ? null : paramMeta.getParamName()));
-            LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
+            LogicMapping logic = methodMeta.getTableMetadata().getLogic();
             if (logic != null) {
                 sb.append(" AND `").append(logic.getColumn()).append("` = ")
                         .append(this.mybatisParam(logic.getField(), paramMeta == null ? null : paramMeta.getParamName()));

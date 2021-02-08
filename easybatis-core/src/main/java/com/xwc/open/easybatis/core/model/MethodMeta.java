@@ -2,7 +2,7 @@ package com.xwc.open.easybatis.core.model;
 
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
-import com.xwc.open.easybatis.core.model.table.ColumnMeta;
+import com.xwc.open.easybatis.core.model.table.Mapping;
 import lombok.Data;
 import org.apache.ibatis.mapping.SqlCommandType;
 
@@ -45,20 +45,20 @@ public class MethodMeta {
         return chooseAnnotationType(annotationClass) != null;
     }
 
-    public List<ColumnMeta> selectColumnList() {
+    public List<Mapping> selectColumnList() {
         return column().stream().filter(Objects::nonNull).filter(column -> !column.isSelectIgnore()).collect(Collectors.toList());
     }
 
-    public List<ColumnMeta> insertColumnList() {
+    public List<Mapping> insertColumnList() {
         return column().stream().filter(Objects::nonNull).filter(column -> !column.isInsertIgnore()).collect(Collectors.toList());
     }
 
-    public List<ColumnMeta> updateColumnList() {
+    public List<Mapping> updateColumnList() {
         return column().stream().filter(Objects::nonNull).filter(column -> !column.isUpdateIgnore()).collect(Collectors.toList());
     }
 
-    public List<ColumnMeta> column() {
-        ArrayList<ColumnMeta> list = new ArrayList<>();
+    public List<Mapping> column() {
+        ArrayList<Mapping> list = new ArrayList<>();
         list.add(tableMetadata.getId());
         list.addAll(tableMetadata.getColumnMetaList());
         list.addAll(tableMetadata.getAuditorMap().values().stream().sorted(Comparator.comparingInt(s -> s.getType().ordinal())).collect(Collectors.toList()));

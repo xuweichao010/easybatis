@@ -1,7 +1,7 @@
 package com.xwc.open.easybatis.mysql.mybatis.logic;
 
 import com.xwc.open.easybatis.core.anno.table.Id;
-import com.xwc.open.easybatis.core.anno.table.Loglic;
+import com.xwc.open.easybatis.core.anno.table.Logic;
 import com.xwc.open.easybatis.core.anno.table.Table;
 import com.xwc.open.easybatis.core.enums.IdType;
 import lombok.Data;
@@ -53,7 +53,7 @@ public class LogicUser {
     /**
      * 是否有效 0:有效 1:无效
      */
-    @Loglic(invalid = LOGIC_INVALID, valid = LOGIC_VALID, selectIgnore = false)
+    @Logic(invalid = LOGIC_INVALID, valid = LOGIC_VALID, selectIgnore = false)
     private Integer valid;
 
 

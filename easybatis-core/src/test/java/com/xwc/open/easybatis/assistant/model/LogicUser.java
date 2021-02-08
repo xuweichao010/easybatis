@@ -1,7 +1,7 @@
 package com.xwc.open.easybatis.assistant.model;
 
 import com.xwc.open.easybatis.core.anno.table.Id;
-import com.xwc.open.easybatis.core.anno.table.Loglic;
+import com.xwc.open.easybatis.core.anno.table.Logic;
 import com.xwc.open.easybatis.core.anno.table.Table;
 import com.xwc.open.easybatis.core.enums.IdType;
 import lombok.Data;
@@ -51,7 +51,7 @@ public class LogicUser {
     /**
      * 是否有效 0:有效 1:无效
      */
-    @Loglic(valid = 1, invalid = 0)
+    @Logic(valid = 1, invalid = 0)
     private Integer valid;
 
 }

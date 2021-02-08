@@ -1,6 +1,6 @@
 package com.xwc.open.easybatis.core.model.table;
 
-import com.xwc.open.easybatis.core.anno.table.Loglic;
+import com.xwc.open.easybatis.core.anno.table.Logic;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 
 /**
@@ -8,19 +8,19 @@ import com.xwc.open.easybatis.core.commons.AnnotationUtils;
  * 时间：2020/9/9
  * 描述：逻辑列
  */
-public class LoglicColumn extends ColumnMeta {
+public class LogicMapping extends Mapping {
     private int valid;
 
     private int invalid;
 
-    public LoglicColumn(ColumnMeta columnMeta, Loglic loglic) {
+    public LogicMapping(Mapping columnMeta, Logic logic) {
         super(columnMeta);
-        this.valid = loglic.valid();
-        this.invalid = loglic.invalid();
+        this.valid = logic.valid();
+        this.invalid = logic.invalid();
         this.setUpdateIgnore(true);
         this.setInsertIgnore(false);
         this.setSelectIgnore(true);
-        this.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(loglic));
+        this.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(logic));
     }
 
     public int getValid() {

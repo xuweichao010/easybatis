@@ -1,13 +1,13 @@
 package com.xwc.open.easybatis.boot.test.entity;
 
-import com.xwc.open.easybatis.core.anno.auditor.CreateId;
-import com.xwc.open.easybatis.core.anno.auditor.CreateName;
-import com.xwc.open.easybatis.core.anno.auditor.CreateTime;
-import com.xwc.open.easybatis.core.anno.auditor.UpdateId;
-import com.xwc.open.easybatis.core.anno.auditor.UpdateName;
-import com.xwc.open.easybatis.core.anno.auditor.UpdateTime;
+import com.xwc.open.easybatis.core.anno.table.auditor.CreateId;
+import com.xwc.open.easybatis.core.anno.table.auditor.CreateName;
+import com.xwc.open.easybatis.core.anno.table.auditor.CreateTime;
+import com.xwc.open.easybatis.core.anno.table.auditor.UpdateId;
+import com.xwc.open.easybatis.core.anno.table.auditor.UpdateName;
+import com.xwc.open.easybatis.core.anno.table.auditor.UpdateTime;
 import com.xwc.open.easybatis.core.anno.table.Id;
-import com.xwc.open.easybatis.core.anno.table.Loglic;
+import com.xwc.open.easybatis.core.anno.table.Logic;
 import com.xwc.open.easybatis.core.anno.table.Table;
 import com.xwc.open.easybatis.core.enums.IdType;
 
@@ -52,7 +52,7 @@ public class User {
     /**
      * 是否有效 0:有效 1:无效
      */
-    @Loglic(invalid = 0, valid = 1)
+    @Logic(invalid = 0, valid = 1)
     private Integer valid;
 
     /**

@@ -1,15 +1,12 @@
 package com.xwc.open.easybatis.mysql.mybatis;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
-import com.xwc.open.easybatis.core.anno.auditor.Auditor;
+import com.xwc.open.easybatis.core.anno.table.auditor.Auditor;
 import com.xwc.open.easybatis.mysql.mybatis.auditor.AuditorTableUser;
 import com.xwc.open.easybatis.mysql.mybatis.auditor.AuditorTableUserMapper;
 import com.xwc.open.easybatis.mysql.mybatis.auditor.AuditorUser;
 import com.xwc.open.easybatis.mysql.mybatis.auditor.AuditorUserMapper;
-import com.xwc.open.easybatis.mysql.mybatis.logic.LogicTableUser;
-import com.xwc.open.easybatis.mysql.mybatis.logic.LogicTableUserMapper;
-import com.xwc.open.easybatis.mysql.mybatis.logic.LogicUser;
-import com.xwc.open.easybatis.mysql.mybatis.logic.LogicUserMapper;
+
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;

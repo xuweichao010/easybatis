@@ -1,7 +1,5 @@
 package com.xwc.open.easybatis.assistant.model;
 
-import com.xwc.open.easybatis.core.anno.auditor.*;
-import com.xwc.open.easybatis.core.anno.table.Table;
 import lombok.Data;
 
 import java.util.Date;

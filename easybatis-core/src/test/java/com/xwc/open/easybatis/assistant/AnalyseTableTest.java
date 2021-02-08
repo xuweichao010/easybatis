@@ -4,14 +4,13 @@ package com.xwc.open.easybatis.assistant;
 import com.xwc.open.easybatis.assistant.model.*;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
-import com.xwc.open.easybatis.core.anno.auditor.Auditor;
 import com.xwc.open.easybatis.core.enums.AuditorType;
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.model.TableMeta;
-import com.xwc.open.easybatis.core.model.table.AuditorColumn;
-import com.xwc.open.easybatis.core.model.table.ColumnMeta;
-import com.xwc.open.easybatis.core.model.table.IdMeta;
-import com.xwc.open.easybatis.core.model.table.LoglicColumn;
+import com.xwc.open.easybatis.core.model.table.AuditorMapping;
+import com.xwc.open.easybatis.core.model.table.Mapping;
+import com.xwc.open.easybatis.core.model.table.IdMapping;
+import com.xwc.open.easybatis.core.model.table.LogicMapping;
 import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,7 +61,7 @@ public class AnalyseTableTest {
         if (tableMetadata.getId() == null) {
             Assert.fail();
         } else {
-            IdMeta id = tableMetadata.getId();
+            IdMapping id = tableMetadata.getId();
             if (id.getIdType() == IdType.AUTO) {
                 Assert.assertFalse(id.isSelectIgnore());
                 Assert.assertFalse(id.isUpdateIgnore());
@@ -73,7 +72,7 @@ public class AnalyseTableTest {
                 Assert.assertFalse(id.isInsertIgnore());
             }
         }
-        for (ColumnMeta column : tableMetadata.getColumnMetaList()) {
+        for (Mapping column : tableMetadata.getColumnMetaList()) {
             if (column.getField().equals("address")) {
                 Assert.assertEquals(column.getColumn(), "address_column");
             }
@@ -95,7 +94,7 @@ public class AnalyseTableTest {
         if (tableMetadata.getColumnMetaList().isEmpty()) {
             Assert.fail();
         }
-        LoglicColumn logic = tableMetadata.getLogic();
+        LogicMapping logic = tableMetadata.getLogic();
         Assert.assertNotNull(logic);
     }
 
@@ -105,9 +104,9 @@ public class AnalyseTableTest {
         if (tableMetadata.getColumnMetaList().isEmpty()) {
             Assert.fail();
         }
-        Map<AuditorType, AuditorColumn> auditorMap = tableMetadata.getAuditorMap();
+        Map<AuditorType, AuditorMapping> auditorMap = tableMetadata.getAuditorMap();
         Assert.assertNotNull(auditorMap);
-        AuditorColumn auditorColumn = auditorMap.get(AuditorType.UPDATE_NAME);
+        AuditorMapping auditorColumn = auditorMap.get(AuditorType.UPDATE_NAME);
         Assert.assertNotNull(auditorColumn);
         Assert.assertEquals(auditorColumn.getColumn(),"update_name01");
         Assert.assertFalse(auditorColumn.isSelectIgnore());

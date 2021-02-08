@@ -5,13 +5,12 @@ import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
-import com.xwc.open.easybatis.core.anno.auditor.*;
+import com.xwc.open.easybatis.core.anno.table.auditor.*;
 import com.xwc.open.easybatis.core.anno.condition.filter.*;
 import com.xwc.open.easybatis.core.anno.table.*;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.commons.StringUtils;
-import com.xwc.open.easybatis.core.enums.AuditorType;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.DynamicType;
 import com.xwc.open.easybatis.core.enums.IdType;
@@ -19,10 +18,10 @@ import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
 import com.xwc.open.easybatis.core.model.TableMeta;
-import com.xwc.open.easybatis.core.model.table.AuditorColumn;
-import com.xwc.open.easybatis.core.model.table.ColumnMeta;
-import com.xwc.open.easybatis.core.model.table.IdMeta;
-import com.xwc.open.easybatis.core.model.table.LoglicColumn;
+import com.xwc.open.easybatis.core.model.table.AuditorMapping;
+import com.xwc.open.easybatis.core.model.table.Mapping;
+import com.xwc.open.easybatis.core.model.table.IdMapping;
+import com.xwc.open.easybatis.core.model.table.LogicMapping;
 
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.ParamNameUtil;
@@ -82,21 +81,21 @@ public class AnnotationAssistant {
         List<Field> fieldArr = Reflection.getField(entityType);
         for (Field field : fieldArr) {
             if (isIgnore(field)) { continue; }
-            ColumnMeta columnMeta = analysisColunm(field, entityType);
+            Mapping columnMeta = analysisColunm(field, entityType);
             if (columnMeta == null) { continue; }
             if (columnMeta.hashAnnotationType(Id.class)) {
                 Id id = columnMeta.chooseAnnotationType(Id.class);
-                table.setId(new IdMeta(columnMeta,
+                table.setId(new IdMapping(columnMeta,
                         id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type(), id));
                 continue;
-            } else if (columnMeta.hashAnnotationType(Loglic.class)) {
-                Loglic loglic = columnMeta.chooseAnnotationType(Loglic.class);
-                table.setLogic(new LoglicColumn(columnMeta, loglic));
+            } else if (columnMeta.hashAnnotationType(Logic.class)) {
+                Logic loglic = columnMeta.chooseAnnotationType(Logic.class);
+                table.setLogic(new LogicMapping(columnMeta, loglic));
                 continue;
             } else if (columnMeta.hashAnnotationType(Auditor.class)) {
                 AnnotationUtils.AnnotationMate mate = AnnotationUtils.findAnnotationMate(field, Auditor.class);
                 columnMeta.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(mate.getImplAnnotation()));
-                table.addAuditor(new AuditorColumn(columnMeta, ((Auditor) mate.getAnnotation()).type()));
+                table.addAuditor(new AuditorMapping(columnMeta, ((Auditor) mate.getAnnotation()).type()));
 
                 continue;
             } else if (columnMeta.hashAnnotationType(Column.class)) {
@@ -167,7 +166,7 @@ public class AnnotationAssistant {
                     , methodMeta.getTableMetadata().getSource(), methodMeta.isDynamic());
             list.add(paramMeta);
         }
-        LoglicColumn logic = methodMeta.getTableMetadata().getLogic();
+        LogicMapping logic = methodMeta.getTableMetadata().getLogic();
         // 增删改查都都需要增删改查
         if (logic != null && list.stream().noneMatch(ParamMeta::isEntity)) {
             ParamMeta logicParamMeta = ParamMeta.builder(logic.getColumn(), logic.getField(), ConditionType.EQUAL,
@@ -322,7 +321,7 @@ public class AnnotationAssistant {
      * @param clazz 实体的class对象
      * @return 字段和数据表的字段映射关系 如果存在关系则返回Column 负责返回空
      */
-    private ColumnMeta analysisColunm(Field field, Class<?> clazz) {
+    private Mapping analysisColunm(Field field, Class<?> clazz) {
         Method getter;
         Method setter;
         try {
@@ -331,7 +330,7 @@ public class AnnotationAssistant {
         } catch (NoSuchMethodException e) {
             return null;
         }
-        return ColumnMeta.builder(field, getter, setter, underscoreName(field.getName()));
+        return Mapping.builder(field, getter, setter, underscoreName(field.getName()));
     }
 
 

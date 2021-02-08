@@ -2,23 +2,17 @@ package com.xwc.open.easybatis.core.plugin;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.enums.AuditorType;
-import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
 import com.xwc.open.easybatis.core.model.TableMeta;
-import com.xwc.open.easybatis.core.model.table.AuditorColumn;
-import com.xwc.open.easybatis.core.model.table.ColumnMeta;
-import com.xwc.open.easybatis.core.model.table.IdMeta;
-import com.xwc.open.easybatis.core.model.table.LoglicColumn;
+import com.xwc.open.easybatis.core.model.table.AuditorMapping;
+import com.xwc.open.easybatis.core.model.table.IdMapping;
+import com.xwc.open.easybatis.core.model.table.LogicMapping;
 import com.xwc.open.easybatis.core.support.AuditorContext;
 import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
@@ -78,7 +72,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
             paramMap = new HashMap<>();
             ParamMeta paramMeta = methodMeta.singleParam();
             if (methodMeta.keyParam() != null) {
-                IdMeta id = tableMetadata.getId();
+                IdMapping id = tableMetadata.getId();
                 paramMap.put(id.getField(), value);
             } else if (paramMeta != null) {
                 paramMap.put(paramMeta.getParamName(), value);
@@ -101,7 +95,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
             paramMap = new HashMap<>();
             ParamMeta paramMeta = methodMeta.singleParam();
             if (methodMeta.keyParam() != null) {
-                IdMeta id = tableMetadata.getId();
+                IdMapping id = tableMetadata.getId();
                 paramMap.put(id.getField(), value);
             } else if (paramMeta != null) {
                 paramMap.put(paramMeta.getParamName(), value);
@@ -123,7 +117,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
             paramMap = new HashMap<>();
             ParamMeta paramMeta = methodMeta.singleParam();
             if (methodMeta.keyParam() != null) {
-                IdMeta id = tableMetadata.getId();
+                IdMapping id = tableMetadata.getId();
                 paramMap.put(id.getField(), value);
             } else {
                 paramMap.put(paramMeta.getParamName(), value);
@@ -179,7 +173,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
     private void invokeObject(Object node, TableMeta tableMetadata, SqlCommandType command) {
         SqlCommandType realCommand = command;
         if (tableMetadata.isSource(node.getClass())) {
-            LoglicColumn logic = tableMetadata.getLogic();
+            LogicMapping logic = tableMetadata.getLogic();
             if (logic != null) {
                 invokeMethod(node, logic.getSetter(), logic.getValid());
                 if (realCommand == SqlCommandType.DELETE) {
@@ -188,7 +182,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
             }
             if (!tableMetadata.getAuditorMap().isEmpty() && (realCommand == SqlCommandType.INSERT
                     || realCommand == SqlCommandType.UPDATE)) {
-                for (AuditorColumn item : tableMetadata.getAuditorMap().values()) {
+                for (AuditorMapping item : tableMetadata.getAuditorMap().values()) {
                     if (SqlCommandType.INSERT == realCommand) {
                         if (item.getType() == AuditorType.CREATE_ID) {
                             invokeMethod(node, item.getSetter(), auditorContext.id());
@@ -211,7 +205,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
     }
 
     private void invokeParam(TableMeta tableMetadata, Map<String, Object> paramMap, SqlCommandType command) {
-        LoglicColumn logic = tableMetadata.getLogic();
+        LogicMapping logic = tableMetadata.getLogic();
         SqlCommandType realCommand = command;
         if (logic != null) {
             paramMap.put(logic.getField(), logic.getValid());
@@ -221,7 +215,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
         }
         if (!tableMetadata.getAuditorMap().isEmpty() && (realCommand == SqlCommandType.INSERT
                 || realCommand == SqlCommandType.UPDATE)) {
-            for (AuditorColumn item : tableMetadata.getAuditorMap().values()) {
+            for (AuditorMapping item : tableMetadata.getAuditorMap().values()) {
                 if (SqlCommandType.INSERT == realCommand) {
                     if (item.getType() == AuditorType.CREATE_ID) {
                         paramMap.put(item.getField(), auditorContext.id());

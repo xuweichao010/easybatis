@@ -1,8 +1,6 @@
 package com.xwc.open.easybatis.mysql.mybatis.auditor;
 
-import com.xwc.open.easybatis.core.anno.auditor.*;
 import com.xwc.open.easybatis.core.anno.table.Id;
-import com.xwc.open.easybatis.core.anno.table.Loglic;
 import com.xwc.open.easybatis.core.anno.table.Table;
 import com.xwc.open.easybatis.core.enums.IdType;
 import lombok.Data;

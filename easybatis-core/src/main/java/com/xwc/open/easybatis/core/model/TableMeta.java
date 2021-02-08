@@ -1,10 +1,10 @@
 package com.xwc.open.easybatis.core.model;
 
 import com.xwc.open.easybatis.core.enums.AuditorType;
-import com.xwc.open.easybatis.core.model.table.AuditorColumn;
-import com.xwc.open.easybatis.core.model.table.ColumnMeta;
-import com.xwc.open.easybatis.core.model.table.IdMeta;
-import com.xwc.open.easybatis.core.model.table.LoglicColumn;
+import com.xwc.open.easybatis.core.model.table.AuditorMapping;
+import com.xwc.open.easybatis.core.model.table.Mapping;
+import com.xwc.open.easybatis.core.model.table.IdMapping;
+import com.xwc.open.easybatis.core.model.table.LogicMapping;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -33,31 +33,31 @@ public class TableMeta {
     /**
      * 主键信息
      */
-    private IdMeta id;
+    private IdMapping id;
 
     /**
      * 普通属性信息
      */
-    private List<ColumnMeta> columnMetaList = new ArrayList<>(10);
+    private List<Mapping> columnMetaList = new ArrayList<>(10);
     /**
      * 审计信息
      */
-    private Map<AuditorType, AuditorColumn> auditorMap = new ConcurrentHashMap<>(6);
+    private Map<AuditorType, AuditorMapping> auditorMap = new ConcurrentHashMap<>(6);
 
     /**
      * 逻辑字段
      */
-    private LoglicColumn logic;
+    private LogicMapping logic;
 
     private Class<?> source;
 
 
-    public void setId(IdMeta id) {
+    public void setId(IdMapping id) {
         this.id = id;
         setResult(id.isResult());
     }
 
-    public void setLogic(LoglicColumn logic) {
+    public void setLogic(LogicMapping logic) {
         this.logic = logic;
         setResult(logic.isResult());
     }
@@ -66,13 +66,13 @@ public class TableMeta {
         if (!this.result && result) this.result = true;
     }
 
-    public void addAuditor(AuditorColumn auditor) {
+    public void addAuditor(AuditorMapping auditor) {
         this.auditorMap.put(auditor.getType(), auditor);
         this.setResult(auditor.isResult());
     }
 
 
-    public void addColumn(ColumnMeta columnMeta) {
+    public void addColumn(Mapping columnMeta) {
         this.columnMetaList.add(columnMeta);
         setResult(columnMeta.isResult());
     }

@@ -1,6 +1,5 @@
 package com.xwc.open.easybatis.mysql.parser.auditor;
 
-import com.xwc.open.easybatis.core.anno.auditor.*;
 import com.xwc.open.easybatis.core.anno.table.Id;
 import com.xwc.open.easybatis.core.anno.table.Table;
 import com.xwc.open.easybatis.core.enums.IdType;

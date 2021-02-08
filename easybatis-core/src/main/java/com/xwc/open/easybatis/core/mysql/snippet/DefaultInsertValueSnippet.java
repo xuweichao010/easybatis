@@ -3,7 +3,7 @@ package com.xwc.open.easybatis.core.mysql.snippet;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
-import com.xwc.open.easybatis.core.model.table.ColumnMeta;
+import com.xwc.open.easybatis.core.model.table.Mapping;
 import com.xwc.open.easybatis.core.support.snippet.InsertValueSnippet;
 
 import java.util.List;
@@ -50,7 +50,7 @@ public class DefaultInsertValueSnippet implements InsertValueSnippet {
         return sb.append(field).append("}").toString();
     }
 
-    public String insertValueSnippet(List<ColumnMeta> list, String prefix) {
+    public String insertValueSnippet(List<Mapping> list, String prefix) {
         return "(" + list.stream().map(column -> this.fieldColumn(column.getField(), prefix)).collect(Collectors.joining(", ")) + ")";
     }
 }

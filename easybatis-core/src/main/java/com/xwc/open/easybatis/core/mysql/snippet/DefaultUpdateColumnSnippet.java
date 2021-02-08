@@ -3,7 +3,7 @@ package com.xwc.open.easybatis.core.mysql.snippet;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMeta;
-import com.xwc.open.easybatis.core.model.table.ColumnMeta;
+import com.xwc.open.easybatis.core.model.table.Mapping;
 import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
 import com.xwc.open.easybatis.core.support.snippet.UpdateSetSnippet;
 
@@ -33,7 +33,7 @@ public class DefaultUpdateColumnSnippet implements UpdateSetSnippet, MyBatisOrSq
         }
     }
 
-    public String setParam(ColumnMeta columnMeta, String prefix) {
+    public String setParam(Mapping columnMeta, String prefix) {
         return "`" + columnMeta.getColumn() + "` = " + this.mybatisParam(columnMeta.getField(), prefix);
     }
 

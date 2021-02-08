@@ -1,0 +1,1 @@
+package com.xwc.open.easybatis.core.anno.table.auditor;import com.xwc.open.easybatis.core.enums.AuditorType;import java.lang.annotation.*;/** * 创建人：徐卫超 * 时间：2019/8/3 17:23 * 功能： * 备注： */@Documented@Target({ElementType.ANNOTATION_TYPE})@Retention(RetentionPolicy.RUNTIME)@Inheritedpublic @interface Auditor {    AuditorType type();}
