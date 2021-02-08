@@ -19,5 +19,5 @@ public class EasybatisProperties {
     /**
      * 显示创建SQL的日志
      */
-    private boolean generatorSqlLogger = false;
+    private boolean generatorSqlLogger = true;
 }

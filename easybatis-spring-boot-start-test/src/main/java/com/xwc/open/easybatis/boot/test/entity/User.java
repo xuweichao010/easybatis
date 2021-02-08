@@ -52,7 +52,7 @@ public class User {
     /**
      * 是否有效 0:有效 1:无效
      */
-    @Loglic(invalid = 200, valid = 201)
+    @Loglic(invalid = 0, valid = 1)
     private Integer valid;
 
     /**

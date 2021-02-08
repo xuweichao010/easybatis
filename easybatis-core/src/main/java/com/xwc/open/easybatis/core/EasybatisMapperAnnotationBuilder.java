@@ -656,7 +656,7 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             return new ProviderSqlSource(assistant.getConfiguration(), annotation, type, method);
         }
         if (this.easybatisConfiguration.isGeneratorSqlLogger()) {
-            logger.info(" 方法名：{}.{} SQL:{} ", this.type.getSimpleName(), method.getName(), sqlSourceGenerator);
+            logger.info(" 方法名：{}.{} \t  {} ", this.type.getSimpleName(), method.getName(), generatorSql);
         }
         return buildSqlSourceFromStrings(new String[]{generatorSql}, parameterType, languageDriver);
     }
