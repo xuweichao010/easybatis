@@ -660,7 +660,7 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         }
         if (this.easybatisConfiguration.isGeneratorSqlLogger()) {
             Log log = LogFactory.getLog(this.getClass());
-            log.trace(" 方法名：" + this.type.getSimpleName() + "." + method.getName() + " \t   " + generatorSql);
+            log.trace(this.type.getSimpleName() + "." + method.getName() + " \t   " + generatorSql);
         }
         return buildSqlSourceFromStrings(new String[]{generatorSql}, parameterType, languageDriver);
     }

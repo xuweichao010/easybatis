@@ -16,8 +16,6 @@ public class UserService {
 
     @PostConstruct
     public void init() {
-        System.out.println(userMapper);
         User user = userMapper.findByName("曹操");
-        System.out.println(user);
     }
 }
