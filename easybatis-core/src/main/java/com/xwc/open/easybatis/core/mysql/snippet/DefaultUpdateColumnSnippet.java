@@ -2,7 +2,7 @@ package com.xwc.open.easybatis.core.mysql.snippet;
 
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.model.MethodMeta;
-import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.model.table.Mapping;
 import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
 import com.xwc.open.easybatis.core.support.snippet.UpdateSetSnippet;
@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
  */
 public class DefaultUpdateColumnSnippet implements UpdateSetSnippet, MyBatisOrSqlTemplate {
     public String apply(MethodMeta methodMeta) {
-        List<ParamMeta> paramList = methodMeta.getParamMetaList();
-        List<ParamMeta> setParamList = paramList.stream().filter(paramMeta1 -> paramMeta1.getCondition() == ConditionType.SET_PARAM).collect(Collectors.toList());
+        List<ParamMapping> paramList = methodMeta.getParamMetaList();
+        List<ParamMapping> setParamList = paramList.stream().filter(paramMeta1 -> paramMeta1.getCondition() == ConditionType.SET_PARAM).collect(Collectors.toList());
         if (setParamList.isEmpty()) {
             String prefix = methodMeta.getParamMetaList().size() > 1 ? methodMeta.entityParam().getParamName() : null;
             if (!methodMeta.hasDynamic()) {

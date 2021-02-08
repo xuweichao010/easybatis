@@ -3,7 +3,7 @@ package com.xwc.open.easybatis.core.mysql.snippet;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
-import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
 import com.xwc.open.easybatis.core.support.snippet.PageSnippet;
 
@@ -23,8 +23,8 @@ public class DefaultPageSnippet implements PageSnippet, MyBatisOrSqlTemplate {
 
     @Override
     public String apply(MethodMeta methodMeta) {
-        ArrayList<ParamMeta> page = new ArrayList<>();
-        for (ParamMeta paramMeta : methodMeta.getParamMetaList()) {
+        ArrayList<ParamMapping> page = new ArrayList<>();
+        for (ParamMapping paramMeta : methodMeta.getParamMetaList()) {
             if (orderCondition.contains(paramMeta.getCondition())) {
                 page.add(paramMeta);
             } else {
@@ -44,15 +44,15 @@ public class DefaultPageSnippet implements PageSnippet, MyBatisOrSqlTemplate {
         } else {
             StringBuilder sb = new StringBuilder();
             boolean multi = methodMeta.getParamMetaList().size() > 1;
-            List<ParamMeta> startList = page.stream().filter(paramMeta -> paramMeta.getCondition() == ConditionType.START).collect(Collectors.toList());
+            List<ParamMapping> startList = page.stream().filter(paramMeta -> paramMeta.getCondition() == ConditionType.START).collect(Collectors.toList());
             if (startList.size() != 1) {
                 throw new EasyBatisException("分页错误 无法匹配下标数据");
             }
-            ParamMeta start = startList.get(0);
+            ParamMapping start = startList.get(0);
             sb.append(this.mybatisParam(start.getParamName(), multi ? start.getParentParamName() : null));
-            List<ParamMeta> offsetList = page.stream().filter(paramMeta -> paramMeta.getCondition() == ConditionType.OFFSET).collect(Collectors.toList());
+            List<ParamMapping> offsetList = page.stream().filter(paramMeta -> paramMeta.getCondition() == ConditionType.OFFSET).collect(Collectors.toList());
             if (!offsetList.isEmpty()) {
-                ParamMeta offset = offsetList.get(0);
+                ParamMapping offset = offsetList.get(0);
                 sb.append(", ").append(this.mybatisParam(offset.getParamName(), multi ? offset.getParentParamName() : null));
             }
             return sb.toString();

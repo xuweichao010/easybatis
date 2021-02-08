@@ -3,20 +3,27 @@ package com.xwc.open.easybatis.core.model;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.DynamicType;
+import com.xwc.open.easybatis.core.model.table.Mapping;
+
 import lombok.Data;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentMap;
 
 /**
- * 作者：徐卫超 cc
- * 时间：2020/9/9
- * 描述：属性元数据
+ * 作者：徐卫超 cc 时间：2020/9/9 描述：属性元数据
  */
 
 @Data
-public class ParamMeta {
+public class ParamMapping {
+    public static final String TYPE_ENTITY = "TYPE_ENTITY";
+    public static final String PARAM_LIST = "PARAM_LIST";
+    public static final String PARAM_KEY = "PARAM_KEY";
+
+    private static final Map<String, Boolean> typeMap = new HashMap<>();
     /**
      * 属于自定义对象还是java对象 true 是自定义对象  false为非自定义对象
      */
@@ -40,19 +47,19 @@ public class ParamMeta {
 
     private boolean primaryKey = false;
 
-    private List<ParamMeta> childList;
+    private List<ParamMapping> childList;
 
     /**
      * 伪装成一个参数 用于逻辑删除和审计功能
      */
     private boolean simulate = false;
 
-    private ParamMeta() {
+    private ParamMapping() {
 
     }
 
-    public static ParamMeta builder(String columnName, String paramName, boolean dynamic) {
-        ParamMeta tar = new ParamMeta();
+    public static ParamMapping builder(String columnName, String paramName, boolean dynamic) {
+        ParamMapping tar = new ParamMapping();
         tar.columnName = columnName;
         tar.paramName = paramName;
         tar.dynamicType = dynamic ? DynamicType.DYNAMIC : DynamicType.NO_DYNAMIC;
@@ -61,8 +68,9 @@ public class ParamMeta {
     }
 
 
-    public static ParamMeta builder(String columnName, String paramName, ConditionType condition, String alias, boolean custom, boolean dynamic) {
-        ParamMeta tar = new ParamMeta();
+    public static ParamMapping builder(String columnName, String paramName, ConditionType condition, String alias,
+            boolean custom, boolean dynamic) {
+        ParamMapping tar = new ParamMapping();
         tar.columnName = columnName;
         tar.paramName = paramName;
         tar.condition = condition;
@@ -71,16 +79,16 @@ public class ParamMeta {
         return tar;
     }
 
-    public static ParamMeta builder(String column, String field) {
+    public static ParamMapping builder(String column, String field) {
         return builder(column, field, ConditionType.NONE, null, false, false);
     }
 
-    public static ParamMeta builder(String column, String field, ConditionType condition) {
+    public static ParamMapping builder(String column, String field, ConditionType condition) {
         return builder(column, field, condition, null, false, false);
     }
 
-    public static ParamMeta builder(String field, boolean entity, boolean list) {
-        ParamMeta builder = builder(field, field, ConditionType.NONE, null, false, false);
+    public static ParamMapping builder(String field, boolean entity, boolean list) {
+        ParamMapping builder = builder(field, field, ConditionType.NONE, null, false, false);
         builder.setEntity(entity);
         builder.setList(list);
         return builder;
@@ -127,7 +135,7 @@ public class ParamMeta {
 
     public boolean isCondition() {
         if (isMultiCondition()) {
-            for (ParamMeta paramMeta : this.childList) {
+            for (ParamMapping paramMeta : this.childList) {
                 if (paramMeta.isParamCondition()) {
                     return true;
                 }
@@ -139,10 +147,11 @@ public class ParamMeta {
     }
 
     public boolean isParamCondition() {
-        return this.condition != ConditionType.NONE && this.condition != ConditionType.IGNORE && this.condition != ConditionType.SET_PARAM;
+        return this.condition != ConditionType.NONE && this.condition != ConditionType.IGNORE
+                && this.condition != ConditionType.SET_PARAM;
     }
 
-    public static boolean isDynamic(ParamMeta paramMeta) {
+    public static boolean isDynamic(ParamMapping paramMeta) {
         return paramMeta.dynamicType == DynamicType.DYNAMIC;
     }
 }

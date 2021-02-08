@@ -4,7 +4,7 @@ import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.DynamicType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
-import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
 import com.xwc.open.easybatis.core.support.snippet.OrderBySnippet;
 
@@ -24,12 +24,12 @@ public class DefaultOrderBySnippet implements OrderBySnippet, MyBatisOrSqlTempla
 
     @Override
     public String apply(MethodMeta methodMeta) {
-        List<ParamMeta> orderList = new ArrayList<>();
-        for (ParamMeta paramMeta : methodMeta.getParamMetaList()) {
+        List<ParamMapping> orderList = new ArrayList<>();
+        for (ParamMapping paramMeta : methodMeta.getParamMetaList()) {
             if (orderCondition.contains(paramMeta.getCondition())) {
                 orderList.add(paramMeta);
             } else if (paramMeta.getChildList() != null && !paramMeta.getChildList().isEmpty()) {
-                for (ParamMeta meta : paramMeta.getChildList()) {
+                for (ParamMapping meta : paramMeta.getChildList()) {
                     if (orderCondition.contains(paramMeta.getCondition())) {
                         orderList.add(meta);
                     }
@@ -38,7 +38,7 @@ public class DefaultOrderBySnippet implements OrderBySnippet, MyBatisOrSqlTempla
         }
         boolean multi = methodMeta.getParamMetaList().size() > 1;
         StringBuilder sb = new StringBuilder();
-        List<ParamMeta> collect = orderList.stream().filter(paramMeta -> paramMeta.getCondition() == ConditionType.EQUAL).collect(Collectors.toList());
+        List<ParamMapping> collect = orderList.stream().filter(paramMeta -> paramMeta.getCondition() == ConditionType.EQUAL).collect(Collectors.toList());
         if (collect.isEmpty()) {
             orderList.forEach(orderCondition -> {
                 String prefix = multi && orderCondition.hasParent() ? orderCondition.getParentParamName() : null;
@@ -55,7 +55,7 @@ public class DefaultOrderBySnippet implements OrderBySnippet, MyBatisOrSqlTempla
             if (collect.size() != 1) {
                 throw new EasyBatisException("无法处理两个orderBy");
             } else {
-                ParamMeta paramMeta = collect.get(0);
+                ParamMapping paramMeta = collect.get(0);
                 if (paramMeta.getDynamicType() == DynamicType.DYNAMIC) {
                     sb.append("${").append(this.paramName(paramMeta.getParamName(), multi && paramMeta.hasParent() ? paramMeta.getParentParamName() : null)).append("}");
                 } else {

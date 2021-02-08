@@ -34,7 +34,7 @@ public class MethodMeta {
     /**
      * 参数有的定义信息
      */
-    List<ParamMeta> paramMetaList;
+    List<ParamMapping> paramMetaList;
 
 
     public <T extends Annotation> T chooseAnnotationType(Class<T> annotationClass) {
@@ -73,7 +73,7 @@ public class MethodMeta {
      */
     public boolean hasDynamic() {
         if (this.sqlCommand == SqlCommandType.SELECT) {
-            return (dynamic || this.paramMetaList.stream().anyMatch(ParamMeta::isDynamic));
+            return (dynamic || this.paramMetaList.stream().anyMatch(ParamMapping::isDynamic));
         } else if (this.sqlCommand == SqlCommandType.UPDATE) {
             if (dynamic) {
                 if (!hasSetParam() && entityParam() != null) {
@@ -89,8 +89,8 @@ public class MethodMeta {
         }
     }
 
-    public ParamMeta entityParam() {
-        List<ParamMeta> collect = this.paramMetaList.stream().filter(ParamMeta::isEntity).collect(Collectors.toList());
+    public ParamMapping entityParam() {
+        List<ParamMapping> collect = this.paramMetaList.stream().filter(ParamMapping::isEntity).collect(Collectors.toList());
         if (collect.size() == 1) {
             return collect.get(0);
         } else if (collect.size() > 1) {
@@ -100,8 +100,8 @@ public class MethodMeta {
         }
     }
 
-    public ParamMeta keyParam() {
-        List<ParamMeta> collect = this.paramMetaList.stream().filter(ParamMeta::isPrimaryKey).collect(Collectors.toList());
+    public ParamMapping keyParam() {
+        List<ParamMapping> collect = this.paramMetaList.stream().filter(ParamMapping::isPrimaryKey).collect(Collectors.toList());
         if (collect.size() == 1) {
             return collect.get(0);
         } else {
@@ -109,8 +109,8 @@ public class MethodMeta {
         }
     }
 
-    public ParamMeta singleParam() {
-        List<ParamMeta> collect = this.getParamMetaList().stream().filter(paramMeta -> !paramMeta.isSimulate()).collect(Collectors.toList());
+    public ParamMapping singleParam() {
+        List<ParamMapping> collect = this.getParamMetaList().stream().filter(paramMeta -> !paramMeta.isSimulate()).collect(Collectors.toList());
         if (collect.size() == 1) {
             return collect.get(0);
         }
@@ -118,7 +118,7 @@ public class MethodMeta {
     }
 
     public boolean hasSetParam() {
-        return this.paramMetaList.stream().anyMatch(ParamMeta::isSetParam);
+        return this.paramMetaList.stream().anyMatch(ParamMapping::isSetParam);
     }
 
 

@@ -1,7 +1,7 @@
 package com.xwc.open.easybatis.core.support;
 
 import com.xwc.open.easybatis.core.commons.StringUtils;
-import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.model.ParamMapping;
 
 /**
  * 作者：徐卫超 cc
@@ -61,7 +61,7 @@ public interface MyBatisOrSqlTemplate {
         return prefix != null ? prefix + "." + fieldName : fieldName;
     }
 
-    default String columnName(ParamMeta paramMeta) {
+    default String columnName(ParamMapping paramMeta) {
         if (StringUtils.hasText(paramMeta.getAlias())) {
             return paramMeta.getAlias() + ".`" + paramMeta.getColumnName() + "`";
         }

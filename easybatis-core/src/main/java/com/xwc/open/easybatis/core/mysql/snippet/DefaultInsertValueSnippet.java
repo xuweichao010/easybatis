@@ -2,7 +2,7 @@ package com.xwc.open.easybatis.core.mysql.snippet;
 
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
-import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.model.table.Mapping;
 import com.xwc.open.easybatis.core.support.snippet.InsertValueSnippet;
 
@@ -18,10 +18,10 @@ public class DefaultInsertValueSnippet implements InsertValueSnippet {
 
     @Override
     public String apply(MethodMeta methodMeta) {
-        List<ParamMeta> paramList = methodMeta.getParamMetaList();
-        List<ParamMeta> entityList = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity)
+        List<ParamMapping> paramList = methodMeta.getParamMetaList();
+        List<ParamMapping> entityList = methodMeta.getParamMetaList().stream().filter(ParamMapping::isEntity)
                 .collect(Collectors.toList());
-        ParamMeta entityParam = entityList.get(0);
+        ParamMapping entityParam = entityList.get(0);
         if (methodMeta.entityParam() == null) {
             throw new EasyBatisException("有 " + entityList.size() + " 个实体对象，导致无法创建SQL");
         }

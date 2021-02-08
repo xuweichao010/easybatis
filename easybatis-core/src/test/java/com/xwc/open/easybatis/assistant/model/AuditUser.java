@@ -3,10 +3,17 @@ package com.xwc.open.easybatis.assistant.model;
 
 import com.xwc.open.easybatis.core.anno.table.Id;
 import com.xwc.open.easybatis.core.anno.table.Table;
+import com.xwc.open.easybatis.core.anno.table.auditor.CreateId;
+import com.xwc.open.easybatis.core.anno.table.auditor.CreateName;
+import com.xwc.open.easybatis.core.anno.table.auditor.CreateTime;
+import com.xwc.open.easybatis.core.anno.table.auditor.UpdateId;
+import com.xwc.open.easybatis.core.anno.table.auditor.UpdateName;
+import com.xwc.open.easybatis.core.anno.table.auditor.UpdateTime;
 import com.xwc.open.easybatis.core.enums.IdType;
-import lombok.Data;
 
 import java.util.Date;
+
+import lombok.Data;
 
 @Table("t_user")
 @Data

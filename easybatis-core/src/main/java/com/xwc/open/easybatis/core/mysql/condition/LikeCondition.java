@@ -1,7 +1,7 @@
 package com.xwc.open.easybatis.core.mysql.condition;
 
 import com.xwc.open.easybatis.core.enums.ConditionType;
-import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.support.QueryCondition;
 
 import java.util.Set;
@@ -21,7 +21,7 @@ public class LikeCondition implements QueryCondition {
     ).collect(Collectors.toSet());
 
     @Override
-    public String apply(ParamMeta metaData, boolean multi) {
+    public String apply(ParamMapping metaData, boolean multi) {
         if (!conditionTypeSet.contains(metaData.getCondition())) return null;
         String prefix = multi && metaData.hasParent() ? metaData.getParentParamName() : null;
         String columnName = this.columnName(metaData);

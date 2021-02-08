@@ -2,7 +2,7 @@ package com.xwc.open.easybatis.core.mysql.snippet;
 
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.model.MethodMeta;
-import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.model.table.IdMapping;
 import com.xwc.open.easybatis.core.model.table.LogicMapping;
 import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
@@ -26,14 +26,14 @@ public class DefaultUpdateConditionSnippet implements UpdateConditionSnippet, My
 
     @Override
     public String apply(MethodMeta methodMeta) {
-        List<ParamMeta> paramList = methodMeta.getParamMetaList();
-        List<ParamMeta> setParamList = paramList.stream()
+        List<ParamMapping> paramList = methodMeta.getParamMetaList();
+        List<ParamMapping> setParamList = paramList.stream()
                 .filter(paramMeta1 -> paramMeta1.getCondition() == ConditionType.SET_PARAM).collect(Collectors.toList());
         if (setParamList.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            ParamMeta paramMeta = null;
+            ParamMapping paramMeta = null;
             if (methodMeta.getParamMetaList().size() > 1) {
-                paramMeta = methodMeta.getParamMetaList().stream().filter(ParamMeta::isEntity).collect(Collectors.toList()).get(0);
+                paramMeta = methodMeta.getParamMetaList().stream().filter(ParamMapping::isEntity).collect(Collectors.toList()).get(0);
             }
             IdMapping id = methodMeta.getTableMetadata().getId();
             sb.append(" `").append(id.getColumn()).append("` = ")

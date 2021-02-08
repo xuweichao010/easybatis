@@ -2,7 +2,7 @@ package com.xwc.open.easybatis.core.support;
 
 import com.xwc.open.easybatis.core.enums.DynamicType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
-import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.model.ParamMapping;
 
 /**
  * 创建人：徐卫超 CC
@@ -11,7 +11,7 @@ import com.xwc.open.easybatis.core.model.ParamMeta;
  */
 public interface QueryCondition extends MyBatisOrSqlTemplate {
 
-    String apply(ParamMeta metaData, boolean multi);
+    String apply(ParamMapping metaData, boolean multi);
 
 
     default String doApply(String conditionParam, String conditionQuery, DynamicType type) {

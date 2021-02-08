@@ -3,7 +3,7 @@ package com.xwc.open.easybatis.core.plugin;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.enums.AuditorType;
 import com.xwc.open.easybatis.core.model.MethodMeta;
-import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.model.TableMeta;
 import com.xwc.open.easybatis.core.model.table.AuditorMapping;
 import com.xwc.open.easybatis.core.model.table.IdMapping;
@@ -70,7 +70,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
             paramMap = (Map<String, Object>) value;
         } else {
             paramMap = new HashMap<>();
-            ParamMeta paramMeta = methodMeta.singleParam();
+            ParamMapping paramMeta = methodMeta.singleParam();
             if (methodMeta.keyParam() != null) {
                 IdMapping id = tableMetadata.getId();
                 paramMap.put(id.getField(), value);
@@ -93,7 +93,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
             paramMap = (Map<String, Object>) value;
         } else {
             paramMap = new HashMap<>();
-            ParamMeta paramMeta = methodMeta.singleParam();
+            ParamMapping paramMeta = methodMeta.singleParam();
             if (methodMeta.keyParam() != null) {
                 IdMapping id = tableMetadata.getId();
                 paramMap.put(id.getField(), value);
@@ -115,7 +115,7 @@ public class ExecutorHandlerInterceptor implements Interceptor {
             paramMap = (Map<String, Object>) value;
         } else {
             paramMap = new HashMap<>();
-            ParamMeta paramMeta = methodMeta.singleParam();
+            ParamMapping paramMeta = methodMeta.singleParam();
             if (methodMeta.keyParam() != null) {
                 IdMapping id = tableMetadata.getId();
                 paramMap.put(id.getField(), value);

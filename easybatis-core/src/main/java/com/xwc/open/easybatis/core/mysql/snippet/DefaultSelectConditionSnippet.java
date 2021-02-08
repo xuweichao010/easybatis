@@ -3,7 +3,7 @@ package com.xwc.open.easybatis.core.mysql.snippet;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.model.MethodMeta;
-import com.xwc.open.easybatis.core.model.ParamMeta;
+import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.model.table.IdMapping;
 import com.xwc.open.easybatis.core.mysql.condition.CompareCondition;
 import com.xwc.open.easybatis.core.mysql.condition.InCondition;
@@ -30,15 +30,15 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
     }
 
     public String apply(MethodMeta methodMeta) {
-        List<ParamMeta> paramMetaList = methodMeta.getParamMetaList();
-        List<ParamMeta> queryList = paramMetaList.stream().filter(paramMeta -> !paramMeta.isIgnore()).collect(Collectors.toList());
+        List<ParamMapping> paramMetaList = methodMeta.getParamMetaList();
+        List<ParamMapping> queryList = paramMetaList.stream().filter(paramMeta -> !paramMeta.isIgnore()).collect(Collectors.toList());
         // 处理参数为主键类型的情况
-        List<ParamMeta> list = new ArrayList<>();
+        List<ParamMapping> list = new ArrayList<>();
         boolean multi = paramMetaList.size() != queryList.size();
         if (queryList.size() == 1) {
             if (methodMeta.keyParam() != null) {
                 IdMapping id = methodMeta.getTableMetadata().getId();
-                list.add(ParamMeta.builder(id.getColumn(), id.getField(), ConditionType.EQUAL));
+                list.add(ParamMapping.builder(id.getColumn(), id.getField(), ConditionType.EQUAL));
             } else if (paramMetaList.get(0).isMultiCondition()) {
                 list.addAll(methodMeta.getParamMetaList().get(0).getChildList());
             } else {
@@ -58,7 +58,7 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
         return listCondition(list, multi);
     }
 
-    public String listCondition(List<ParamMeta> list, boolean multi) {
+    public String listCondition(List<ParamMapping> list, boolean multi) {
         String queryCondition = list.stream()
                 .map(condition -> mapCondition(condition, multi))
                 .filter(StringUtils::hasText).collect(Collectors.joining());
@@ -69,7 +69,7 @@ public class DefaultSelectConditionSnippet implements SelectConditionSnippet {
     }
 
 
-    private String mapCondition(ParamMeta metadata, boolean multi) {
+    private String mapCondition(ParamMapping metadata, boolean multi) {
         for (QueryCondition queryCondition : conditionList) {
             String condition = queryCondition.apply(metadata, multi);
             if (StringUtils.hasText(condition)) {
