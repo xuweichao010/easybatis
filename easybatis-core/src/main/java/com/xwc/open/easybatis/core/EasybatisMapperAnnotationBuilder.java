@@ -39,6 +39,8 @@ import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.Discriminator;
 import org.apache.ibatis.mapping.FetchType;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -88,7 +90,8 @@ import java.util.stream.Stream;
 public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
     private static final Set<Class<? extends Annotation>> statementAnnotationTypes = Stream
             .of(SelectSql.class, InsertSql.class, UpdateSql.class, DeleteSql.class).collect(Collectors.toSet());
-    private final static Logger logger = LoggerFactory.getLogger(EasybatisConfiguration.class);
+    //private final static Log logger =
+
 
     private final EasybatisConfiguration easybatisConfiguration;
     private final MapperBuilderAssistant assistant;
@@ -656,7 +659,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             return new ProviderSqlSource(assistant.getConfiguration(), annotation, type, method);
         }
         if (this.easybatisConfiguration.isGeneratorSqlLogger()) {
-            logger.info(" 方法名：{}.{} \t  {} ", this.type.getSimpleName(), method.getName(), generatorSql);
+            Log log = LogFactory.getLog(this.getClass());
+            log.trace(" 方法名：" + this.type.getSimpleName() + "." + method.getName() + " \t   " + generatorSql);
         }
         return buildSqlSourceFromStrings(new String[]{generatorSql}, parameterType, languageDriver);
     }
