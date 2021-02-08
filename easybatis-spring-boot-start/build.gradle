@@ -1,5 +1,4 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
@@ -9,8 +8,10 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compileOnly("org.springframework:spring-context:5.3.3")
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
     compileOnly("org.springframework.boot:spring-boot-configuration-processor:2.4.2")
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.4'
-    compile project(":easybatis-core")
+    compileOnly("org.springframework.boot:spring-boot-autoconfigure:2.4.2")
+    compileOnly("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.4")
+    compile(project(":easybatis-core"))
 }

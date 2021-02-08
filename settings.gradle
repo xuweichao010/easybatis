@@ -2,4 +2,5 @@ rootProject.name = 'easybatis'
 include 'easybatis-core'
 include 'easybatis-spring'
 include 'easybatis-spring-boot-start'
+include 'easybatis-spring-boot-start-test'
 

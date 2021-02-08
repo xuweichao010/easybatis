@@ -14,4 +14,5 @@ dependencies {
     compileOnly("org.springframework:spring-context:5.3.3")
     implementation("org.mybatis:mybatis-spring:2.0.6")
     compile project(":easybatis-core")
+
 }

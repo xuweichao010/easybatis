@@ -27,4 +27,5 @@ dependencies {
     testCompile 'org.projectlombok:lombok:1.18.12'
     testCompile 'log4j:log4j:1.2.17'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+    compileOnly("org.apache.logging.log4j:log4j-slf4j-impl:2.12.0")
 }

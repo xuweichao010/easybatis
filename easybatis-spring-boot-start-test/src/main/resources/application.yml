@@ -1,0 +1,56 @@
+server:
+  port: 7001
+spring:
+  profiles.active: dev
+  logging.level:
+    root: INFO
+  #数据库配置
+  datasource:
+    type:
+    url:
+    username:
+    password:
+    initialSize: 1           # 配置初始化大小、最小、最大
+    minIdle: 8
+    maxActive: 10
+    maxWait: 60000                          # 配置获取连接等待超时的时间
+    timeBetweenEvictionRunsMillis: 60000    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    minEvictableIdleTimeMillis: 30000       # 配置一个连接在池中最小生存的时间，单位是毫秒
+    validationQuery: SELECT 'x'
+    testWhileIdle: true
+    testOnBorrow: true
+    testOnReturn: false
+    filters: stat,wall          #配置监控统计拦截的filters
+    poolPreparedStatements: false       #打开PSCache，并且指定每个连接上PSCache的大小
+    maxPoolPreparedStatementPerConnectionSize: 20
+    mapUnderscoreToCamelCase: true
+  scheduled:
+    enableAsync: true
+    enableSoa: true
+    duration: true
+    #soaId: zhiyinhao
+    async:
+      corePoolSize: 20
+      maxPoolSize: 40
+  cache.type: SIMPLE
+  redis:                # REDIS (RedisProperties)
+    database: 9         #Redis数据库索引（默认为0）
+    host: localhost     # Redis服务器地址
+    port: 6379          # Redis服务器连接端口
+    password:           # Redis服务器连接密码（默认为空）
+    pool:               #线程池配置
+      max-active: 8     # 连接池最大连接数（使用负值表示没有限制）
+      max-wait: -1      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+      max-idle: 8       # 连接池中的最大空闲连接
+      min-idle: 0       # 连接池中的最小空闲连接
+      timeout: 0        # 连接超时时间（毫秒）
+mybatis: # myBatis 配置
+  configuration:
+    map-underscore-to-camel-case: true
+    type: AUTO
+    sqlLogger: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql 日志
+  mapper-locations: classpath*:com/xwc/**/*.xml
+flyway:
+  locations: classpath:/db/migration
+  encoding: UTF-8

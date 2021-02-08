@@ -8,9 +8,22 @@ import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.TableMeta;
 import com.xwc.open.easybatis.core.support.SqlSourceGenerator;
-import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.annotations.ResultMap;
+
+import org.apache.ibatis.annotations.Arg;
+import org.apache.ibatis.annotations.CacheNamespace;
+import org.apache.ibatis.annotations.CacheNamespaceRef;
+import org.apache.ibatis.annotations.Case;
+import org.apache.ibatis.annotations.Lang;
+import org.apache.ibatis.annotations.MapKey;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Options.FlushCachePolicy;
+import org.apache.ibatis.annotations.Property;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.ResultType;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.SelectKey;
+import org.apache.ibatis.annotations.TypeDiscriminator;
 import org.apache.ibatis.binding.MapperMethod.ParamMap;
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.builder.CacheRefResolver;
@@ -26,7 +39,15 @@ import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.mapping.*;
+import org.apache.ibatis.mapping.Discriminator;
+import org.apache.ibatis.mapping.FetchType;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ResultFlag;
+import org.apache.ibatis.mapping.ResultMapping;
+import org.apache.ibatis.mapping.ResultSetType;
+import org.apache.ibatis.mapping.SqlCommandType;
+import org.apache.ibatis.mapping.SqlSource;
+import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.parsing.PropertyParser;
 import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.scripting.LanguageDriver;
@@ -36,12 +57,27 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -52,6 +88,7 @@ import java.util.stream.Stream;
 public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
     private static final Set<Class<? extends Annotation>> statementAnnotationTypes = Stream
             .of(SelectSql.class, InsertSql.class, UpdateSql.class, DeleteSql.class).collect(Collectors.toSet());
+    private final static Logger logger = LoggerFactory.getLogger(EasybatisConfiguration.class);
 
     private final EasybatisConfiguration easybatisConfiguration;
     private final MapperBuilderAssistant assistant;
@@ -147,7 +184,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
                 }
             }
             if (inputStream != null) {
-                XMLMapperBuilder xmlParser = new XMLMapperBuilder(inputStream, assistant.getConfiguration(), xmlResource, configuration.getSqlFragments(), type.getName());
+                XMLMapperBuilder xmlParser = new XMLMapperBuilder(inputStream, assistant.getConfiguration(),
+                        xmlResource, configuration.getSqlFragments(), type.getName());
                 xmlParser.parse();
             }
         }
@@ -159,7 +197,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             Integer size = cacheDomain.size() == 0 ? null : cacheDomain.size();
             Long flushInterval = cacheDomain.flushInterval() == 0 ? null : cacheDomain.flushInterval();
             Properties props = convertToProperties(cacheDomain.properties());
-            assistant.useNewCache(cacheDomain.implementation(), cacheDomain.eviction(), flushInterval, size, cacheDomain.readWrite(), cacheDomain.blocking(), props);
+            assistant.useNewCache(cacheDomain.implementation(), cacheDomain.eviction(), flushInterval, size,
+                    cacheDomain.readWrite(), cacheDomain.blocking(), props);
         }
     }
 
@@ -181,7 +220,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             Class<?> refType = cacheDomainRef.value();
             String refName = cacheDomainRef.name();
             if (refType == void.class && refName.isEmpty()) {
-                throw new BuilderException("Should be specified either value() or name() attribute in the @CacheNamespaceRef");
+                throw new BuilderException(
+                        "Should be specified either value() or name() attribute in the @CacheNamespaceRef");
             }
             if (refType != void.class && !refName.isEmpty()) {
                 throw new BuilderException("Cannot use both value() and name() attribute in the @CacheNamespaceRef");
@@ -221,7 +261,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         return type.getName() + "." + method.getName() + suffix;
     }
 
-    private void applyResultMap(String resultMapId, Class<?> returnType, Arg[] args, Result[] results, TypeDiscriminator discriminator) {
+    private void applyResultMap(String resultMapId, Class<?> returnType, Arg[] args, Result[] results,
+            TypeDiscriminator discriminator) {
         List<ResultMapping> resultMappings = new ArrayList<>();
         applyConstructorArgs(args, returnType, resultMappings);
         applyResults(results, returnType, resultMappings);
@@ -231,7 +272,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         createDiscriminatorResultMaps(resultMapId, returnType, discriminator);
     }
 
-    private void createDiscriminatorResultMaps(String resultMapId, Class<?> resultType, TypeDiscriminator discriminator) {
+    private void createDiscriminatorResultMaps(String resultMapId, Class<?> resultType,
+            TypeDiscriminator discriminator) {
         if (discriminator != null) {
             for (Case c : discriminator.cases()) {
                 String caseResultMapId = resultMapId + "-" + c.value();
@@ -271,9 +313,11 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         final LanguageDriver languageDriver = getLanguageDriver(method);
         // 获取方法上的注解信息
         getAnnotationWrapper(method, true, statementAnnotationTypes).ifPresent(statementAnnotation -> {
-            final SqlSource sqlSource = buildSqlSource(statementAnnotation.getAnnotation(), parameterTypeClass, languageDriver, method);
+            final SqlSource sqlSource = buildSqlSource(statementAnnotation.getAnnotation(), parameterTypeClass,
+                    languageDriver, method);
             final SqlCommandType sqlCommandType = statementAnnotation.getSqlCommandType();
-            final Options options = getAnnotationWrapper(method, false, Options.class).map(x -> (Options) x.getAnnotation()).orElse(null);
+            final Options options = getAnnotationWrapper(method, false, Options.class)
+                    .map(x -> (Options) x.getAnnotation()).orElse(null);
             final String mappedStatementId = type.getName() + "." + method.getName();
 
             final KeyGenerator keyGenerator;
@@ -281,12 +325,15 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             String keyColumn = null;
             if (SqlCommandType.INSERT.equals(sqlCommandType) || SqlCommandType.UPDATE.equals(sqlCommandType)) {
                 // first check for SelectKey annotation - that overrides everything else
-                SelectKey selectKey = getAnnotationWrapper(method, false, SelectKey.class).map(x -> (SelectKey) x.getAnnotation()).orElse(null);
+                SelectKey selectKey = getAnnotationWrapper(method, false, SelectKey.class)
+                        .map(x -> (SelectKey) x.getAnnotation()).orElse(null);
                 if (selectKey != null) {
-                    keyGenerator = handleSelectKeyAnnotation(selectKey, mappedStatementId, getParameterType(method), languageDriver);
+                    keyGenerator = handleSelectKeyAnnotation(selectKey, mappedStatementId, getParameterType(method),
+                            languageDriver);
                     keyProperty = selectKey.keyProperty();
                 } else if (options == null) {
-                    keyGenerator = configuration.isUseGeneratedKeys() ? Jdbc3KeyGenerator.INSTANCE : NoKeyGenerator.INSTANCE;
+                    keyGenerator = configuration.isUseGeneratedKeys() ? Jdbc3KeyGenerator.INSTANCE
+                                                                      : NoKeyGenerator.INSTANCE;
                 } else {
                     keyGenerator = options.useGeneratedKeys() ? Jdbc3KeyGenerator.INSTANCE : NoKeyGenerator.INSTANCE;
                     keyProperty = options.keyProperty();
@@ -310,7 +357,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
                     flushCache = false;
                 }
                 useCache = options.useCache();
-                fetchSize = options.fetchSize() > -1 || options.fetchSize() == Integer.MIN_VALUE ? options.fetchSize() : null; //issue #348
+                fetchSize = options.fetchSize() > -1 || options.fetchSize() == Integer.MIN_VALUE ? options.fetchSize()
+                                                                                                 : null; //issue #348
                 timeout = options.timeout() > -1 ? options.timeout() : null;
                 statementType = options.statementType();
                 if (options.resultSetType() != ResultSetType.DEFAULT) {
@@ -368,7 +416,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         Class<?> parameterType = null;
         Class<?>[] parameterTypes = method.getParameterTypes();
         for (Class<?> currentParameterType : parameterTypes) {
-            if (!RowBounds.class.isAssignableFrom(currentParameterType) && !ResultHandler.class.isAssignableFrom(currentParameterType)) {
+            if (!RowBounds.class.isAssignableFrom(currentParameterType) && !ResultHandler.class
+                    .isAssignableFrom(currentParameterType)) {
                 if (parameterType == null) {
                     parameterType = currentParameterType;
                 } else {
@@ -408,7 +457,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
                         // (gcode issue #443) actual type can be a also a parameterized type
                         returnType = (Class<?>) ((ParameterizedType) returnTypeParameter).getRawType();
                     } else if (returnTypeParameter instanceof GenericArrayType) {
-                        Class<?> componentType = (Class<?>) ((GenericArrayType) returnTypeParameter).getGenericComponentType();
+                        Class<?> componentType = (Class<?>) ((GenericArrayType) returnTypeParameter)
+                                .getGenericComponentType();
                         // (gcode issue #525) support List<byte[]>
                         returnType = Array.newInstance(componentType, 0).getClass();
                     }
@@ -553,7 +603,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         return value == null || value.trim().length() == 0 ? null : value;
     }
 
-    private KeyGenerator handleSelectKeyAnnotation(SelectKey selectKeyAnnotation, String baseStatementId, Class<?> parameterTypeClass, LanguageDriver languageDriver) {
+    private KeyGenerator handleSelectKeyAnnotation(SelectKey selectKeyAnnotation, String baseStatementId,
+            Class<?> parameterTypeClass, LanguageDriver languageDriver) {
         String id = baseStatementId + SelectKeyGenerator.SELECT_KEY_SUFFIX;
         Class<?> resultTypeClass = selectKeyAnnotation.resultType();
         StatementType statementType = selectKeyAnnotation.statementType();
@@ -575,7 +626,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
         SqlSource sqlSource = buildSqlSource(selectKeyAnnotation, parameterTypeClass, languageDriver, null);
         SqlCommandType sqlCommandType = SqlCommandType.SELECT;
 
-        assistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType, fetchSize, timeout, parameterMap, parameterTypeClass, resultMap, resultTypeClass, resultSetTypeEnum,
+        assistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType, fetchSize, timeout, parameterMap,
+                parameterTypeClass, resultMap, resultTypeClass, resultSetTypeEnum,
                 flushCache, useCache, false,
                 keyGenerator, keyProperty, keyColumn, databaseId, languageDriver, null);
 
@@ -588,35 +640,41 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
     }
 
     private SqlSource buildSqlSource(Annotation annotation, Class<?> parameterType, LanguageDriver languageDriver,
-                                     Method method) {
+            Method method) {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method, tableMeta);
         easybatisConfiguration.addMethodMeta(type.getName() + "." + method.getName(), methodMeta);
+        String generatorSql;
         if (annotation instanceof SelectSql) {
-            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.select(methodMeta)}, parameterType, languageDriver);
+            generatorSql = sqlSourceGenerator.select(methodMeta);
         } else if (annotation instanceof UpdateSql) {
-            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.update(methodMeta)}, parameterType, languageDriver);
+            generatorSql = sqlSourceGenerator.update(methodMeta);
         } else if (annotation instanceof InsertSql) {
-            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.insert(methodMeta)}, parameterType, languageDriver);
+            generatorSql = sqlSourceGenerator.insert(methodMeta);
         } else if (annotation instanceof DeleteSql) {
-            return buildSqlSourceFromStrings(new String[]{sqlSourceGenerator.delete(methodMeta)}, parameterType, languageDriver);
+            generatorSql = sqlSourceGenerator.delete(methodMeta);
+        } else {
+            return new ProviderSqlSource(assistant.getConfiguration(), annotation, type, method);
         }
-        return new ProviderSqlSource(assistant.getConfiguration(), annotation, type, method);
+        if (this.easybatisConfiguration.isGeneratorSqlLogger()) {
+            logger.info(" 方法名：{}.{} SQL:{} ", this.type.getSimpleName(), method.getName(), sqlSourceGenerator);
+        }
+        return buildSqlSourceFromStrings(new String[]{generatorSql}, parameterType, languageDriver);
     }
 
     private SqlSource buildSqlSourceFromStrings(String[] strings, Class<?> parameterTypeClass,
-                                                LanguageDriver languageDriver) {
+            LanguageDriver languageDriver) {
         return languageDriver.createSqlSource(configuration, String.join(" ", strings).trim(), parameterTypeClass);
     }
 
     @SafeVarargs
     private final Optional<AnnotationWrapper> getAnnotationWrapper(Method method, boolean errorIfNoMatch,
-                                                                   Class<? extends Annotation>... targetTypes) {
+            Class<? extends Annotation>... targetTypes) {
         return getAnnotationWrapper(method, errorIfNoMatch, Arrays.asList(targetTypes));
     }
 
 
     private Optional<AnnotationWrapper> getAnnotationWrapper(Method method, boolean errorIfNoMatch,
-                                                             Collection<Class<? extends Annotation>> targetTypes) {
+            Collection<Class<? extends Annotation>> targetTypes) {
         String databaseId = configuration.getDatabaseId();
         Map<String, AnnotationWrapper> statementAnnotations = targetTypes.stream()
                 .flatMap(x -> Arrays.stream(method.getAnnotationsByType(x))).map(AnnotationWrapper::new)
@@ -636,7 +694,8 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
             // Annotations exist, but there is no matching one for the specified databaseId
             throw new BuilderException(
                     String.format(
-                            "Could not find a statement annotation that correspond a current database or default statement on method '%s.%s'. Current database id is [%s].",
+                            "Could not find a statement annotation that correspond a current database or default "
+                                    + "statement on method '%s.%s'. Current database id is [%s].",
                             method.getDeclaringClass().getName(), method.getName(), databaseId));
         }
         return Optional.ofNullable(annotationWrapper);
