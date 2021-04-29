@@ -1,0 +1,1 @@
+package com.xwc.open.easybatis.core.support;/** * 创建人：徐卫超 * 时间：2019/10/14 15:33 * 功能：用于标识easybatis 需要增强的mapper * 备注： */public interface EasyMapper<E, K> {}

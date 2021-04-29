@@ -1,1 +1,0 @@
-package com.xwc.open.easybatis.interfaces;/** * 创建人：徐卫超 * 时间：2019/6/20 9:51 * 功能：分页接口 * 备注： */public interface Page {    String START = "pageStart";    String OFFSET = "pageOffset";    Integer getPageStart();    Integer getPageOffset();}
