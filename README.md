@@ -148,6 +148,85 @@ User(id=37bd0225cc94400db744aac8dee8a001, orgCode=200, orgName=总公司, name=�
 - 总结:
     通过以上几个简单的步骤，我们就实现了User表的CRUD功能，甚至连XML文件都不用编写了,只需要简单的配置一下就可以了，Easybatis 帮我们做的远远不止这些，我们继续了解它的其他功能把
 
+#### 自定义查询
+
+```java
+// 1. 需要查询name字段和 orgCode字段 下面两个查询是等价的
+@SelectSql
+List<User> findBy(String name, String orgCode);
+@SelectSql
+List<User> findByCustom(@Equal("name") String customName,@Equal String orgCode);
+    
+//2. 一个查询可能需要name字段或者orgCode字段时可以这样写  下面两种动态查询也是一样的
+@SelectSql(dynamic = true)
+List<User> findByDynamic(String name, String orgCode);
+@SelectSql
+List<User> findByParamDynamic(@Equal(dynamic = true) String name, @Equal(dynamic = true)String orgCode);
+
+//3. 如果一个查询有必传参数和非必传参数我们就可以这样写
+@SelectSql
+List<User> findByParamDynamic(String name, @Equal(dynamic = true)String orgCode);
+
+//4. 在一个查询中有多种类型的查询条件，我们可以这样写
+@SelectSql
+List<User> findByMultiCondition(@Like(dynamic = true) String orgCode, @In List<String> id, String name);
+
+// 5. 如果我们想进行排序 可以这样写.
+@SelectSql
+List<User> orderUser(@ASC Boolean id);
+
+// 6. 如果我们想带条件的查询排序 可以这样写
+@SelectSql
+List<User> orderByCUser(String orgCode, @ASC Boolean id);
+
+// 7. 如果我们想 动态的控制 id 排序条件可以这样写, 只有当id有值的时候才会参与排序
+@SelectSql
+List<User> orderByUser(String orgCode, @ASC(dynamic = true) Boolean id, @DESC Boolean name);
+
+// 8. 我们想统计符合条件的记录可以这样写
+@SelectSql
+@Count
+Integer count(String name, String orgCode);
+
+// 9. 如果我们想去重 org_name 数据可以这样写
+@SelectSql(" org_name ")
+@Distinct
+List<String> distinct(String name, String orgCode);
+
+// 10. 如果我们想去重后统计数据
+@SelectSql(" org_name ")
+@Distinct
+@Count
+List<String> distinct(String name, String orgCode);
+
+// 11. 如果我们想做分页查询
+@SelectSql
+List<User> limit(String name, String orgCode, @Start Integer start, @Offset Integer offset);
+
+// 12.如果我们觉得 查询参数太多了 我们可以定义一个对象，在对象中去定义这些查询。
+public class UserFilter {
+    @RightLike
+    private String orgCode;
+
+    private String name;
+    @ASC
+    private Integer id;
+    @Start
+    private Integer start;
+    @Offset
+    private Integer offset;
+}
+@SelectSql
+List<User> limit(UserFilter filter);
+```
+
+
+
+
+
+
+
+
 ### 3.0 核心功能
 
 #### 核心接口
