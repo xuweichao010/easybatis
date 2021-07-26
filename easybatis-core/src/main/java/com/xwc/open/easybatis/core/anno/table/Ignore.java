@@ -1,5 +1,8 @@
 package com.xwc.open.easybatis.core.anno.table;
 
+import com.xwc.open.easybatis.core.anno.condition.filter.Condition;
+import com.xwc.open.easybatis.core.enums.ConditionType;
+
 import java.lang.annotation.*;
 
 /**
@@ -11,5 +14,6 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})     //只能使用在：类、接口、注解、枚举
 @Retention(RetentionPolicy.RUNTIME)     //在运行时有效
+@Condition(type = ConditionType.IGNORE)
 public @interface Ignore {
 }

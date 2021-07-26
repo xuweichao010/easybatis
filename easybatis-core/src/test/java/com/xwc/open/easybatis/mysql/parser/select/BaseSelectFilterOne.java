@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.mysql.parser.select;
 
+import com.xwc.open.easybatis.core.anno.condition.filter.In;
 import lombok.Data;
 
 /**
@@ -16,4 +17,8 @@ public class BaseSelectFilterOne {
      * 机构编码
      */
     private String orgCode;
+
+    @In("id")
+    private String ids;
+
 }

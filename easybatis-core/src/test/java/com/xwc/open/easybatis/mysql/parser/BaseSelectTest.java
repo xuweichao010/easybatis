@@ -155,6 +155,7 @@ public class BaseSelectTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " <where> <if test='id != null'> AND `id` = #{id} </if>" +
                 " <if test='orgCode != null'> AND `orgCode` = #{orgCode} </if>" +
+                " <if test='ids != null'> AND id IN <foreach item= 'item'  collection='ids' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
