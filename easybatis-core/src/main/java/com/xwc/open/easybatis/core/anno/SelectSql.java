@@ -1,7 +1,6 @@
 package com.xwc.open.easybatis.core.anno;
 
 
-
 import java.lang.annotation.*;
 
 /**
@@ -24,6 +23,9 @@ public @interface SelectSql {
      * @return
      */
     boolean dynamic() default false;
+
+
+    String from() default "";
 
     /**
      * @return A database id that correspond this statement

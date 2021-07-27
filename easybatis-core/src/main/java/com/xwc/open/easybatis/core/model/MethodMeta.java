@@ -1,17 +1,13 @@
 package com.xwc.open.easybatis.core.model;
 
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
-import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.table.Mapping;
 import lombok.Data;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -24,7 +20,11 @@ public class MethodMeta {
      */
     private SqlCommandType sqlCommand;
 
-    private boolean dynamic;
+    Map<String, Object> optionalAnnotationAttributes;
+
+    private String columns;
+
+    private String from;
     /**
      * 关联的表的实体的定义信息
      */
@@ -39,6 +39,42 @@ public class MethodMeta {
      */
     List<ParamMapping> paramMetaList;
 
+    /**
+     * 是否是多个参数
+     */
+    private boolean isMulti = false;
+
+    public void addAttributes(String key, Object value) {
+        this.optionalAnnotationAttributes.put(key, value);
+    }
+
+    public Object optionalAttributes(String attributes) {
+        return this.optionalAnnotationAttributes.get(attributes);
+    }
+
+    public String optionalStringAttributes(String attributes) {
+        Object o = this.optionalAttributes(attributes);
+        if (o == null) {
+            return null;
+        }
+        return (String) o;
+    }
+
+    public Integer optionalIntAttributes(String attributes) {
+        Object o = this.optionalAttributes(attributes);
+        if (o == null) {
+            return null;
+        }
+        return (int) o;
+    }
+
+    public Boolean optionalBooleanAttributes(String attributes) {
+        Object o = this.optionalAttributes(attributes);
+        if (o == null) {
+            return null;
+        }
+        return (boolean) o;
+    }
 
     public <T extends Annotation> T chooseAnnotationType(Class<T> annotationClass) {
         return AnnotationUtils.findAnnotation(this.method, annotationClass);

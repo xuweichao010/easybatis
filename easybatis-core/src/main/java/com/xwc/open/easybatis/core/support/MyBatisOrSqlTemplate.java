@@ -10,26 +10,11 @@ import com.xwc.open.easybatis.core.model.ParamMapping;
  */
 public interface MyBatisOrSqlTemplate {
 
-    default String dynamicAndConditionIf(String paramName, String conditionQuery) {
-        return " <if test='" + paramName + " != null'>" + andCondition(conditionQuery) + " </if>";
-    }
-
-    default String dynamicConditionIf(String paramName, String conditionQuery) {
-        return " <if test='" + paramName + " != null'> " + conditionQuery + " </if>";
-    }
 
 
-    default String guiseDynamicAndConditionIf(String conditionQuery) {
-        return " <if test='true'>" + andCondition(conditionQuery) + " </if>";
-    }
 
-    default String guiseDynamicConditionIf(String conditionQuery) {
-        return " <if test='true'> " + conditionQuery + ", </if>";
-    }
 
-    default String andCondition(String conditionQuery) {
-        return " AND " + conditionQuery;
-    }
+
 
 
     default String dynamicSetIf(String setParam, String setValue) {

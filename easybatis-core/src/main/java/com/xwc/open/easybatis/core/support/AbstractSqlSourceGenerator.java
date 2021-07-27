@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
 
     protected SelectColumnSnippet selectColumnSnippet;
-    protected SelectConditionSnippet selectConditionSnippet;
+    protected FromSnippet fromSnippet;
+    protected ConditionSnippet conditionSnippet;
     protected InsertValueSnippet insertColumnValue;
     protected UpdateSetSnippet updateColumnSnippet;
     protected UpdateConditionSnippet updateConditionSnippet;
@@ -21,15 +22,20 @@ public abstract class AbstractSqlSourceGenerator implements SqlSourceGenerator {
     protected DeleteSetLogicSnippet deleteLogicSnippet;
     protected OrderBySnippet orderBySnippet;
     protected PageSnippet pageSnippet;
+    protected PlaceholderBuilder placeholderBuilder;
 
 
-    public AbstractSqlSourceGenerator() {
+    public AbstractSqlSourceGenerator(PlaceholderBuilder placeholderBuilder) {
+        this.placeholderBuilder = placeholderBuilder;
     }
 
     public String insertColumn(MethodMeta methodMeta) {
-        return methodMeta.insertColumnList().stream().map(column -> "`" + column.getColumn() + "`")
+        return methodMeta.insertColumnList()
+                .stream().map(column ->
+                        placeholderBuilder.columnHolder(null, column.getColumn()).getHolder())
                 .collect(Collectors.joining(", "));
     }
+
 
     public String insertColumnValue(MethodMeta methodMeta) {
         return insertColumnValue.apply(methodMeta);

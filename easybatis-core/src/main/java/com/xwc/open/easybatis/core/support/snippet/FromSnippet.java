@@ -3,10 +3,11 @@ package com.xwc.open.easybatis.core.support.snippet;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 
 /**
- * 作者：徐卫超 cc
- * 时间：2020/12/25
- * 描述：更新语句更新条件SQL片段构建
+ * 作者：Clay(徐卫超 )
+ * 时间：2021/7/26
+ * 描述：From片段
  */
-public interface SelectConditionSnippet {
+public interface FromSnippet {
+
     String apply(MethodMeta methodMeta);
 }

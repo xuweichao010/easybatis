@@ -19,6 +19,8 @@ import com.xwc.open.easybatis.core.model.table.AuditorMapping;
 import com.xwc.open.easybatis.core.model.table.IdMapping;
 import com.xwc.open.easybatis.core.model.table.LogicMapping;
 import com.xwc.open.easybatis.core.model.table.Mapping;
+import com.xwc.open.easybatis.core.support.PlaceholderBuilder;
+import com.xwc.open.easybatis.core.support.impl.MyBatisPlaceholderBuilder;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.ParamNameUtil;
 
@@ -34,6 +36,7 @@ import java.util.stream.Stream;
 public class AnnotationAssistant {
 
     private final EasybatisConfiguration configuration;
+    private final PlaceholderBuilder placeholderBuilder = new MyBatisPlaceholderBuilder();
 
     public AnnotationAssistant(EasybatisConfiguration configuration) {
         this.configuration = configuration;
@@ -48,7 +51,7 @@ public class AnnotationAssistant {
             .of(Equal.class, NotEqual.class, IsNull.class, IsNotNull.class, In.class, NotIn.class,
                     Like.class, RightLike.class, LeftLike.class, NotLike.class, NotLeftLike.class, NotRightLike.class,
                     GreaterThan.class, GreaterThanEqual.class, LessThan.class
-                    , LessThanEqual.class, Start.class, Offset.class, ASC.class, DESC.class)
+                    , LessThanEqual.class, Start.class, Offset.class, ASC.class, DESC.class, Ignore.class)
             .collect(Collectors.toSet());
 
     public String tableName(Class<?> entityType) {
@@ -171,7 +174,7 @@ public class AnnotationAssistant {
 
     public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata) {
         MethodMeta meta = new MethodMeta();
-        meta.setDynamic(AnnotationUtils.findAnnotation(method, SelectSql.class).dynamic());
+        meta.setOptionalAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(AnnotationUtils.findAnnotation(method, SelectSql.class)));
         meta.setTableMetadata(tableMetadata);
         meta.setMethodName(method.getName());
         meta.setSqlCommand(SqlCommandType.SELECT);
@@ -181,7 +184,8 @@ public class AnnotationAssistant {
         resolverMethodParams(meta, paramMap);
         // 解析审计
         resolverAuditor(meta, paramMap);
-        meta.setParamMetaList(resolverSqlCondition(paramMap, meta));
+        // resolverSqlCondition
+        resolverSqlCondition(paramMap, meta);
         return meta;
     }
 
@@ -202,37 +206,44 @@ public class AnnotationAssistant {
 //        methodMeta.setParamMetaList(list);
 //    }
 
-    private List<ParamMapping> resolverSqlCondition(Map<String, ParamMate> paramMap, MethodMeta methodMeta) {
+    private void resolverSqlCondition(Map<String, ParamMate> paramMap, MethodMeta methodMeta) {
         List<ParamMapping> list = new ArrayList<>();
-        if (paramMap.isEmpty()) return list;
+        if (paramMap.isEmpty()) {
+            methodMeta.setParamMetaList(list);
+        }
         boolean isMulti = paramMap.size() > 1;
         // 方法是否是动态
-        boolean methodDynamic = methodMeta.isDynamic();
+        boolean methodDynamic = methodMeta.optionalBooleanAttributes("dynamic");
         paramMap.forEach((paramName, paramMate) -> {
             if (paramMate.getType() == ParamMate.TYPE_CUSTOM_ENTITY || paramMate.getType() == ParamMate.TYPE_ENTITY) {
                 list.addAll(parseObjectMate(paramMate, isMulti, methodDynamic));
             } else {
-                ParamMapping paramMapping = parseParamMate(paramMate, null, isMulti, methodDynamic);
+                ParamMapping paramMapping = parseParamMate(paramMate, null, isMulti, methodDynamic, false);
                 if (paramMapping != null) {
                     list.add(paramMapping);
                 }
             }
         });
-        return list;
+        if (!methodDynamic && list.stream().anyMatch(ParamMapping::isDynamic)) {
+            methodMeta.addAttributes("builderDynamic", true);
+        } else {
+            methodMeta.addAttributes("builderDynamic", methodDynamic);
+        }
+        methodMeta.setParamMetaList(list);
     }
 
     private List<ParamMapping> parseObjectMate(ParamMate paramMate, boolean isMulti, boolean methodDynamic) {
         return paramMate.getChildren().stream().map(item -> {
             if (isMulti) {
-                return parseParamMate(item, paramMate.getParamName(), true, methodDynamic);
+                return parseParamMate(item, paramMate.getParamName(), true, methodDynamic, true);
             } else {
-                return parseParamMate(item, null, false, methodDynamic);
+                return parseParamMate(item, null, false, methodDynamic, true);
             }
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     private ParamMapping parseParamMate(ParamMate paramMate, String parentName,
-                                        boolean isMulti, boolean methodDynamic) {
+                                        boolean isMulti, boolean methodDynamic, boolean isObject) {
         String paramName = paramMate.getParamName();
         if (paramMate.getAnnotation() == null) {
             return ParamMapping.convert(paramName, underscoreName(paramName),
@@ -255,19 +266,16 @@ public class AnnotationAssistant {
 
         // 处理方法参数中只有一个IN 查询的时候
         if (!isMulti && (annotation.type() == ConditionType.IN || annotation.type() == ConditionType.NOT_IN)) {
-            return ParamMapping.convert("list", underscoreName(paramName),
-                    builderPlaceholder(paramName, parentName), alias, methodDynamic || dynamic, annotation.type());
+            return ParamMapping.convert("list", underscoreName(paramName), builderPlaceholder(paramName, parentName),
+                    alias, methodDynamic || dynamic, annotation.type());
         }
-        return ParamMapping.convert(paramName, StringUtils.hasText(value) ? value : underscoreName(paramName),
-                builderPlaceholder(paramName, parentName), alias, dynamic || methodDynamic, annotation.type());
+        return ParamMapping.convert(paramName, StringUtils.hasText(value) ? value : underscoreName(paramName), builderPlaceholder(paramName, parentName),
+                alias, dynamic || methodDynamic, annotation.type());
     }
 
 
     private Placeholder builderPlaceholder(String paramName, String parentName) {
-        Placeholder placeholder = new Placeholder();
-        placeholder.setParamPath(StringUtils.isEmpty(parentName) ? paramName : (parentName + "." + paramName));
-        placeholder.setHolder("#{" + placeholder.getParamPath() + "}");
-        return placeholder;
+        return placeholderBuilder.parameterHolder(paramName, parentName);
     }
 
 

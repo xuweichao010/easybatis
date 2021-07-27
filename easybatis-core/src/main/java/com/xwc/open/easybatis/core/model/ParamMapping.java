@@ -37,14 +37,15 @@ public class ParamMapping {
     private boolean dynamic;
 
     /**
-     * 组合条件 例如： LIMIT ORDER BETWEEN 等语法需要用到该属性
+     * 组合条件 例如： LIMIT  BETWEEN 等语法需要用到该属性
      */
     private List<ParamMapping> composition;
 
     private ConditionType condition;
 
 
-    public static ParamMapping convert(String paramName, String columnName, Placeholder placeholderName, String alias, boolean dynamic, ConditionType condition) {
+    public static ParamMapping convert(String paramName, String columnName, Placeholder placeholderName, String alias,
+                                       boolean dynamic, ConditionType condition) {
         ParamMapping tar = new ParamMapping();
         tar.paramName = paramName;
         tar.columnName = columnName;
