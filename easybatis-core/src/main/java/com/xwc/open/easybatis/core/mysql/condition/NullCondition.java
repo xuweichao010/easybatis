@@ -12,8 +12,8 @@ import com.xwc.open.easybatis.core.support.impl.AbstractQueryCondition;
  */
 public class NullCondition extends AbstractQueryCondition {
     {
-        this.addQueryCondition(ConditionType.IN, "IS NULL");
-        this.addQueryCondition(ConditionType.NOT_IN, "IS NOT NULL");
+        this.addQueryCondition(ConditionType.IS_NULL, "IS NULL");
+        this.addQueryCondition(ConditionType.NOT_NULL, "IS NOT NULL");
     }
 
     public NullCondition(PlaceholderBuilder placeholderBuilder) {

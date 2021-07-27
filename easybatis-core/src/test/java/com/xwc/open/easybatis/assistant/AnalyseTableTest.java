@@ -8,9 +8,9 @@ import com.xwc.open.easybatis.core.enums.AuditorType;
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.model.TableMeta;
 import com.xwc.open.easybatis.core.model.table.AuditorMapping;
-import com.xwc.open.easybatis.core.model.table.Mapping;
 import com.xwc.open.easybatis.core.model.table.IdMapping;
 import com.xwc.open.easybatis.core.model.table.LogicMapping;
+import com.xwc.open.easybatis.core.model.table.Mapping;
 import org.apache.ibatis.session.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
@@ -106,9 +106,9 @@ public class AnalyseTableTest {
         }
         Map<AuditorType, AuditorMapping> auditorMap = tableMetadata.getAuditorMap();
         Assert.assertNotNull(auditorMap);
-        AuditorMapping auditorColumn = auditorMap.get(AuditorType.UPDATE_NAME);
+        AuditorMapping auditorColumn = auditorMap.get(AuditorType.INSERT);
         Assert.assertNotNull(auditorColumn);
-        Assert.assertEquals(auditorColumn.getColumn(),"update_name01");
+        Assert.assertEquals(auditorColumn.getColumn(), "update_name01");
         Assert.assertFalse(auditorColumn.isSelectIgnore());
     }
 

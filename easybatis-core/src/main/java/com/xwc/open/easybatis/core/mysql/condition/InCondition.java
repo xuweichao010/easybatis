@@ -32,7 +32,7 @@ public class InCondition extends AbstractQueryCondition {
     }
 
     private String builderInCondition(ParamMapping mapping) {
-        return placeholderBuilder.columnHolder(mapping.getAlias(), mapping.getColumnName()).getHolder()
+        return " AND " + placeholderBuilder.columnHolder(mapping.getAlias(), mapping.getColumnName()).getHolder()
                 + " " + this.queryConditionExpression(mapping.getCondition())
                 + " <foreach item= 'item'  collection='" + mapping.getPlaceholderName().getParamPath()
                 + "' open='(' separator=', ' close=')'>#{item}</foreach>";

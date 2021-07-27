@@ -155,7 +155,7 @@ public class BaseSelectTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " <where> <if test='id != null'> AND `id` = #{id} </if>" +
                 " <if test='orgCode != null'> AND `orgCode` = #{orgCode} </if>" +
-                " <if test='ids != null'> AND id IN <foreach item= 'item'  collection='ids' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
+                " <if test='ids != null'> AND `id` IN <foreach item= 'item'  collection='ids' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
@@ -189,7 +189,7 @@ public class BaseSelectTest {
         String targetSql = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " <where>" +
-                " <if test='true'> AND `name` = #{name} </if>" +
+                " `name` = #{name}" +
                 " <if test='orgCode != null'> AND `orgCode` = #{orgCode} </if>" +
                 " <if test='two.orgName != null'> AND `orgName` = #{two.orgName} </if>" +
                 " <if test='two.name != null'> AND `name` = #{two.name} </if>" +

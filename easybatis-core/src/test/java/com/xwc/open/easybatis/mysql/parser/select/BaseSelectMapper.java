@@ -30,7 +30,7 @@ public interface BaseSelectMapper extends BaseTableMapper<BaseSelectEntity, Stri
     void methodParamMultiDynamic(@Equal(dynamic = true) String name, @Equal(dynamic = true) String orgCode);
 
     @SelectSql
-    void methodCustom(BaseSelectFilterOne one);
+    void methodCustom(BaseSelectFilterThree one);
 
     @SelectSql
     void methodMultiCustom(BaseSelectFilterOne one, BaseSelectFilterTwo two);

@@ -42,8 +42,8 @@ public class AnnotationAssistant {
         this.configuration = configuration;
     }
 
-    private final static Set<Class<? extends Annotation>> auditorAnnoSet = Stream.of(CreateId.class,
-            UpdateId.class, CreateName.class, UpdateName.class, CreateTime.class, UpdateTime.class)
+    private final static Set<Class<? extends Annotation>> AuditorAnnoSet = Stream.of(CreateId.class,
+            UpdateId.class, CreateName.class, UpdateName.class, CreateTime.class, UpdateTime.class, Auditor.class)
             .collect(Collectors.toSet());
     private final static Set<Class<? extends Annotation>> operationAnnoSet = Stream
             .of(SelectSql.class, InsertSql.class, UpdateSql.class, DeleteSql.class).collect(Collectors.toSet());
@@ -179,44 +179,27 @@ public class AnnotationAssistant {
         meta.setMethodName(method.getName());
         meta.setSqlCommand(SqlCommandType.SELECT);
         meta.setMethod(method);
-        Map<String, ParamMate> paramMap = new HashMap<>();
+        List<ParamMate> paramList = new ArrayList<>();
         // 解析方法参数
-        resolverMethodParams(meta, paramMap);
-        // 解析审计
-        resolverAuditor(meta, paramMap);
-        // resolverSqlCondition
-        resolverSqlCondition(paramMap, meta);
+        resolverMethodParams(meta, paramList);
+        // 解析逻辑删除
+        resolverLogic(meta, paramList);
+        // 根据解析数据构建SQL条件
+        resolverSqlParamSnippet(paramList, meta);
         return meta;
     }
 
-//    private void parseMethodParam(MethodMeta methodMeta) {
-//        Map<String, ParamMate> paramMap = new HashMap<>();
-//        // 解析方法参数
-//        resolverMethodParams(methodMeta, paramMap);
-//        if (methodMeta.getSqlCommand() == SqlCommandType.SELECT || methodMeta.getSqlCommand() == SqlCommandType.UPDATE) {
-//            // 解析逻辑删除
-//            resolverLogic(methodMeta, paramMap);
-//        }
-//
-//
-//        // 解析审计
-//        resolverAuditor(methodMeta, paramMap);
-//
-//        List<ParamMapping> list = resolverMyBatisParam(paramMap, methodMeta);
-//        methodMeta.setParamMetaList(list);
-//    }
-
-    private void resolverSqlCondition(Map<String, ParamMate> paramMap, MethodMeta methodMeta) {
+    private void resolverSqlParamSnippet(List<ParamMate> paramList, MethodMeta methodMeta) {
         List<ParamMapping> list = new ArrayList<>();
-        if (paramMap.isEmpty()) {
+        if (paramList.isEmpty()) {
             methodMeta.setParamMetaList(list);
         }
-        boolean isMulti = paramMap.size() > 1;
+        boolean isMulti = paramList.size() > 1;
         // 方法是否是动态
         boolean methodDynamic = methodMeta.optionalBooleanAttributes("dynamic");
-        paramMap.forEach((paramName, paramMate) -> {
+        paramList.forEach(paramMate -> {
             if (paramMate.getType() == ParamMate.TYPE_CUSTOM_ENTITY || paramMate.getType() == ParamMate.TYPE_ENTITY) {
-                list.addAll(parseObjectMate(paramMate, isMulti, methodDynamic));
+                list.addAll(parseObjectMate(paramMate, isMulti, true));
             } else {
                 ParamMapping paramMapping = parseParamMate(paramMate, null, isMulti, methodDynamic, false);
                 if (paramMapping != null) {
@@ -224,11 +207,6 @@ public class AnnotationAssistant {
                 }
             }
         });
-        if (!methodDynamic && list.stream().anyMatch(ParamMapping::isDynamic)) {
-            methodMeta.addAttributes("builderDynamic", true);
-        } else {
-            methodMeta.addAttributes("builderDynamic", methodDynamic);
-        }
         methodMeta.setParamMetaList(list);
     }
 
@@ -266,7 +244,9 @@ public class AnnotationAssistant {
 
         // 处理方法参数中只有一个IN 查询的时候
         if (!isMulti && (annotation.type() == ConditionType.IN || annotation.type() == ConditionType.NOT_IN)) {
-            return ParamMapping.convert("list", underscoreName(paramName), builderPlaceholder(paramName, parentName),
+            return ParamMapping.convert("list",
+                    StringUtils.hasText(value) ? value : underscoreName(paramName),
+                    builderPlaceholder(paramName, parentName),
                     alias, methodDynamic || dynamic, annotation.type());
         }
         return ParamMapping.convert(paramName, StringUtils.hasText(value) ? value : underscoreName(paramName), builderPlaceholder(paramName, parentName),
@@ -283,14 +263,14 @@ public class AnnotationAssistant {
      * 解析方法上的参数
      *
      * @param methodMeta 元信息
-     * @param paramMap   结果集合
+     * @param paramList  结果集合
      */
-    private void resolverMethodParams(MethodMeta methodMeta, Map<String, ParamMate> paramMap) {
+    private void resolverMethodParams(MethodMeta methodMeta, List<ParamMate> paramList) {
         Parameter[] parameters = methodMeta.getMethod().getParameters();
         List<String> paramNames = ParamNameUtil.getParamNames(methodMeta.getMethod());
         for (int i = 0; i < paramNames.size(); i++) {
             ParamMate paramMeta = parseParameter(parameters[i], paramNames.get(i), methodMeta);
-            paramMap.put(paramNames.get(i), paramMeta);
+            paramList.add(paramMeta);
         }
     }
 
@@ -353,18 +333,16 @@ public class AnnotationAssistant {
      * 解析审计信息
      *
      * @param methodMeta 元信息
-     * @param paramMap   结果集合
+     * @param paramList  结果集合
      */
-    private void resolverAuditor(MethodMeta methodMeta, Map<String, ParamMate> paramMap) {
-        if (!hasEntity(paramMap) && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
+    private void resolverAuditor(MethodMeta methodMeta, List<ParamMate> paramList) {
+        if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)
+                && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
             methodMeta.getTableMetadata().getAuditorMap().values().forEach(auditorMapping -> {
-                paramMap.put(auditorMapping.getField(), ParamMate.builder(auditorMapping.getField(), ParamMate.TYPE_AUDITOR));
+                paramList.add(ParamMate.builder(auditorMapping.getField(), ParamMate.TYPE_AUDITOR,
+                        chooseAuditsAnnotationType(auditorMapping.getAnnotationSet())));
             });
         }
-    }
-
-    public boolean hasEntity(Map<String, ParamMate> paramMap) {
-        return paramMap.values().stream().anyMatch(item -> item.getType() == ParamMate.TYPE_ENTITY);
     }
 
 
@@ -372,13 +350,13 @@ public class AnnotationAssistant {
      * 解析逻辑删除信息
      *
      * @param methodMeta 元信息
-     * @param paramMap   结果集合
+     * @param paramList  结果集合
      */
-    private void resolverLogic(MethodMeta methodMeta, Map<String, ParamMate> paramMap) {
+    private void resolverLogic(MethodMeta methodMeta, List<ParamMate> paramList) {
         LogicMapping logic = methodMeta.getTableMetadata().getLogic();
         if (logic == null) return;
         if (methodMeta.getSqlCommand() == SqlCommandType.SELECT || methodMeta.getSqlCommand() == SqlCommandType.UPDATE) {
-            paramMap.put(logic.getField(), ParamMate.builder(logic.getColumn(), ParamMate.TYPE_LOGIC));
+            paramList.add(ParamMate.builder(logic.getColumn(), ParamMate.TYPE_LOGIC));
         }
     }
 
@@ -548,10 +526,19 @@ public class AnnotationAssistant {
     /**
      * 检查是否是审计字段 如果是则返回对应注解
      */
-    public Annotation chooseAduitorAnnotationType(Field field) {
+    public Annotation chooseAuditsAnnotationType(Field field) {
         Annotation[] annotations = field.getDeclaredAnnotations();
         for (Annotation annotation : annotations) {
-            if (auditorAnnoSet.contains(annotation.annotationType())) {
+            if (AuditorAnnoSet.contains(annotation.annotationType())) {
+                return annotation;
+            }
+        }
+        return null;
+    }
+
+    public Annotation chooseAuditsAnnotationType(Set<Annotation> annotationSet) {
+        for (Annotation annotation : annotationSet) {
+            if (AuditorAnnoSet.contains(annotation.annotationType())) {
                 return annotation;
             }
         }
