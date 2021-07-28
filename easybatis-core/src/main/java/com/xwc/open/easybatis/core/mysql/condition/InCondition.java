@@ -25,7 +25,7 @@ public class InCondition extends AbstractQueryCondition {
         if (!this.hasCondition(mapping.getCondition())) return null;
         String condition = builderInCondition(mapping);
         if (mapping.isDynamic()) {
-            return dynamicCondition(mapping.getPlaceholderName().getParamPath(), condition);
+            return dynamicCondition(mapping.getPlaceholderName().getName(), condition);
         } else {
             return nonDynamicCondition(condition);
         }
@@ -34,7 +34,7 @@ public class InCondition extends AbstractQueryCondition {
     private String builderInCondition(ParamMapping mapping) {
         return " AND " + placeholderBuilder.columnHolder(mapping.getAlias(), mapping.getColumnName()).getHolder()
                 + " " + this.queryConditionExpression(mapping.getCondition())
-                + " <foreach item= 'item'  collection='" + mapping.getPlaceholderName().getParamPath()
+                + " <foreach item= 'item'  collection='" + mapping.getPlaceholderName().getName()
                 + "' open='(' separator=', ' close=')'>#{item}</foreach>";
     }
 

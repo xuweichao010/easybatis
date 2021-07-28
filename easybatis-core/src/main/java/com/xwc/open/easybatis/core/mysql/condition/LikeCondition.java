@@ -29,7 +29,7 @@ public class LikeCondition extends AbstractQueryCondition {
         if (!this.hasCondition(mapping.getCondition())) return null;
         String condition = builderLikeCondition(mapping);
         if (mapping.isDynamic()) {
-            return dynamicCondition(mapping.getPlaceholderName().getParamPath(), condition);
+            return dynamicCondition(mapping.getPlaceholderName().getName(), condition);
         } else {
             return nonDynamicCondition(condition);
         }

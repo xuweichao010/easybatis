@@ -14,8 +14,8 @@ public class MyBatisPlaceholderBuilder implements PlaceholderBuilder {
     @Override
     public Placeholder parameterHolder(String paramName, String parentName) {
         Placeholder placeholder = new Placeholder();
-        placeholder.setParamPath(StringUtils.isEmpty(parentName) ? paramName : (parentName + "." + paramName));
-        placeholder.setHolder("#{" + placeholder.getParamPath() + "}");
+        placeholder.setName(StringUtils.isEmpty(parentName) ? paramName : (parentName + "." + paramName));
+        placeholder.setHolder("#{" + placeholder.getName() + "}");
         return placeholder;
     }
 
@@ -27,7 +27,7 @@ public class MyBatisPlaceholderBuilder implements PlaceholderBuilder {
             columnHolder = alias + "." + columnHolder;
         }
         placeholder.setHolder(columnHolder);
-        placeholder.setParamPath(column);
+        placeholder.setName(column);
         return placeholder;
     }
 }

@@ -13,7 +13,7 @@ public class Placeholder {
     /**
      * 参数路径
      */
-    private String paramPath;
+    private String name;
 
 
     /**

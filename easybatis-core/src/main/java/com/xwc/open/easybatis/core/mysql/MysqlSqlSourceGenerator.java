@@ -1,10 +1,10 @@
 package com.xwc.open.easybatis.core.mysql;
 
-import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.mysql.snippet.MySqlConditionSnippet;
 import com.xwc.open.easybatis.core.mysql.snippet.MySqlFromSnippet;
+import com.xwc.open.easybatis.core.mysql.snippet.MySqlOrderBySnippet;
 import com.xwc.open.easybatis.core.mysql.snippet.MySqlSelectColumnSnippet;
 import com.xwc.open.easybatis.core.support.AbstractSqlSourceGenerator;
 import com.xwc.open.easybatis.core.support.PlaceholderBuilder;
@@ -21,11 +21,12 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         this.selectColumnSnippet = new MySqlSelectColumnSnippet(placeholderBuilder);
         this.fromSnippet = new MySqlFromSnippet();
         this.conditionSnippet = new MySqlConditionSnippet(placeholderBuilder);
+        this.orderBySnippet = new MySqlOrderBySnippet(placeholderBuilder);
 //        this.deleteConditionSnippet = new MySqlDeleteConditionSnippet(selectConditionSnippet);
 //        this.insertColumnValue = new DefaultInsertValueSnippet();
 //        this.updateColumnSnippet = new DefaultUpdateColumnSnippet();
 //        this.updateConditionSnippet = new DefaultUpdateConditionSnippet(this.selectConditionSnippet);
-//        this.orderBySnippet = new DefaultOrderBySnippet();
+
 //        this.pageSnippet = new DefaultPageSnippet();
 //        this.deleteLogicSnippet = new MySqlDeleteLogicSnippet();
     }
@@ -40,10 +41,10 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         if (StringUtils.hasText(conditionSnippet)) {
             sb.append(" <where>").append(conditionSnippet).append(" </where>");
         }
-//        String orderSnippet = this.orderBySnippet.apply(methodMetaData);
-//        if (StringUtils.hasText(orderSnippet)) {
-//            sb.append(" <trim prefix='ORDER BY' suffixOverrides=', '>").append(orderSnippet).append(" </trim>");
-//        }
+        String orderSnippet = this.orderBySnippet.apply(methodMetaData);
+        if (StringUtils.hasText(orderSnippet)) {
+            sb.append(" <trim prefix='ORDER BY' suffixOverrides=','> ").append(orderSnippet).append(" </trim>");
+        }
 //        String page = this.pageSnippet.apply(methodMetaData);
 //        if (StringUtils.hasText(page)) {
 //            sb.append(" LIMIT ").append(page);

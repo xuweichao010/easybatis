@@ -42,8 +42,7 @@ public class BaseSelectTest {
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
         this.annotationAssistant = easybatisConfiguration.getAnnotationAssistant();
         this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(BaseSelectMapper.class));
-
-
+        
     }
 
     @Test
