@@ -239,7 +239,7 @@ public class AnnotationAssistant {
         // 获取参数信息
         Map<String, Object> annotationAttributes = AnnotationUtils.getAnnotationAttributes(paramMate.getAnnotation());
         String alias = (String) annotationAttributes.get("alias");
-        boolean dynamic = (boolean) annotationAttributes.get("dynamic");
+        boolean dynamic = (annotationAttributes.get("dynamic") != null && (boolean) annotationAttributes.get("dynamic"));
         String value = (String) annotationAttributes.get("value");
 
         // 处理方法参数中只有一个IN 查询的时候

@@ -217,7 +217,7 @@ public class OtherTest {
 
 
 
-    //@Test
+    @Test
     public void page() {
         Method method = chooseMethod(OtherMapper.class, "limit");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
