@@ -508,7 +508,7 @@ public class QueryConditionTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_condition" +
                 " <where>" +
-                " name IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach>" +
+                " `name` IN <foreach item= 'item'  collection='collection' open='(' separator=', ' close=')'>#{item}</foreach>" +
                 " </where>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
@@ -522,7 +522,7 @@ public class QueryConditionTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
                 " <where> " +
-                "<if test='name != null'> AND name IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
+                "<if test='collection != null'> AND `name` IN <foreach item= 'item'  collection='collection' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
         System.out.println(sql);
@@ -538,7 +538,7 @@ public class QueryConditionTest {
         String sqlTarget = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
                 " <where>" +
-                " <if test='customName != null'> AND name IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
+                " <if test='collection != null'> AND `name` IN <foreach item= 'item'  collection='collection' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
@@ -554,7 +554,7 @@ public class QueryConditionTest {
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_condition" +
                 " <where>" +
-                " name NOT IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach>" +
+                " `name` NOT IN <foreach item= 'item'  collection='collection' open='(' separator=', ' close=')'>#{item}</foreach>" +
                 " </where>" +
                 "</script>";
         System.out.println(sql);
@@ -569,7 +569,7 @@ public class QueryConditionTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String sqlTarget = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
                 " <where>" +
-                " <if test='name != null'> AND name NOT IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
+                " <if test='collection != null'> AND `name` NOT IN <foreach item= 'item'  collection='collection' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);
@@ -584,7 +584,7 @@ public class QueryConditionTest {
         String sqlTarget = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
                 " <where>" +
-                " <if test='customName != null'> AND name NOT IN <foreach item= 'item'  collection='list' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
+                " <if test='collection != null'> AND `name` NOT IN <foreach item= 'item'  collection='collection' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
         Assert.assertEquals(sql, sqlTarget);

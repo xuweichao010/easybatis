@@ -97,8 +97,8 @@ public class BaseInsertTest {
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
-                " VALUES " +
-                " <foreach item= 'item'  collection='list' separator=', '>" +
+                " VALUES" +
+                " <foreach item= 'item'  collection='collection' separator=', '>" +
                 " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.name})" +
                 " </foreach>" +
                 " </script>";
@@ -114,8 +114,8 @@ public class BaseInsertTest {
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
-                " VALUES " +
-                " <foreach item= 'item'  collection='list' separator=', '>" +
+                " VALUES" +
+                " <foreach item= 'item'  collection='collection' separator=', '>" +
                 " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.name})" +
                 " </foreach>" +
                 " </script>";
@@ -131,7 +131,7 @@ public class BaseInsertTest {
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
-                " VALUES " +
+                " VALUES" +
                 " <foreach item= 'item'  collection='listParam' separator=', '>" +
                 " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.name})" +
                 " </foreach>" +
@@ -148,7 +148,7 @@ public class BaseInsertTest {
         String sqlTarget = "<script>" +
                 " INSERT INTO t_mysql_sql_source" +
                 " (`id`, `orgCode`, `orgName`, `name`)" +
-                " VALUES " +
+                " VALUES" +
                 " <foreach item= 'item'  collection='listParam' separator=', '>" +
                 " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.name})" +
                 " </foreach>" +

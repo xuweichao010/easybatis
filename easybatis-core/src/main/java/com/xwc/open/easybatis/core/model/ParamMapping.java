@@ -12,6 +12,9 @@ import java.util.List;
 @Data
 public class ParamMapping {
 
+    private boolean entity;
+    private boolean batch;
+
     /**
      * 属性名
      */
@@ -41,6 +44,9 @@ public class ParamMapping {
      */
     private List<ParamMapping> composition;
 
+    /**
+     * 条件
+     */
     private ConditionType condition;
 
 
@@ -56,4 +62,11 @@ public class ParamMapping {
         return tar;
     }
 
+    public static ParamMapping convertEntity(String paramName, boolean isBatch) {
+        ParamMapping tar = new ParamMapping();
+        tar.paramName = paramName;
+        tar.entity = true;
+        tar.batch = isBatch;
+        return tar;
+    }
 }

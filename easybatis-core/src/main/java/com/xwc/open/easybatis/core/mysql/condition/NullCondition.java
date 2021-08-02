@@ -27,12 +27,12 @@ public class NullCondition extends AbstractQueryCondition {
         if (mapping.isDynamic()) {
             return dynamicCondition(mapping.getPlaceholderName().getName(), condition);
         } else {
-            return nonDynamicCondition(condition);
+            return condition;
         }
     }
 
     private String builderNullCondition(ParamMapping mapping) {
-        return placeholderBuilder.columnHolder(mapping.getAlias(), mapping.getColumnName()).getHolder() +
+        return " AND " + placeholderBuilder.columnHolder(mapping.getAlias(), mapping.getColumnName()).getHolder() + " " +
                 this.queryConditionExpression(mapping.getCondition());
     }
 }

@@ -27,7 +27,7 @@ public class InCondition extends AbstractQueryCondition {
         if (mapping.isDynamic()) {
             return dynamicCondition(mapping.getPlaceholderName().getName(), condition);
         } else {
-            return nonDynamicCondition(condition);
+            return condition;
         }
     }
 

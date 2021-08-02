@@ -125,8 +125,9 @@ public class AnnotationAssistant {
         }
         if (operationAnnotationType instanceof SelectSql) {
             return parseSelectMethodMate(method, tableMetadata);
+        } else if (operationAnnotationType instanceof InsertSql) {
+            return parseInsertMethodMate(method, tableMetadata);
         }
-//        else if (operationAnnotationType instanceof InsertSql) {
 //            return parseInsertMethodMate(method, tableMetadata);
 //        } else if (operationAnnotationType instanceof UpdateSql) {
 //            return parseUpdateMethodMate(method, tableMetadata);
@@ -136,16 +137,7 @@ public class AnnotationAssistant {
         return null;
     }
 
-//    private MethodMeta parseInsertMethodMate(Method method, TableMeta tableMetadata) {
-//        MethodMeta meta = new MethodMeta();
-//        meta.setDynamic(false);
-//        meta.setTableMetadata(tableMetadata);
-//        meta.setMethodName(method.getName());
-//        meta.setSqlCommand(SqlCommandType.INSERT);
-//        meta.setMethod(method);
-//        meta.setParamMetaList(parseMethodParam(meta));
-//        return meta;
-//    }
+
 //
 //    private MethodMeta parseUpdateMethodMate(Method method, TableMeta tableMetadata) {
 //        MethodMeta meta = new MethodMeta();
@@ -174,7 +166,8 @@ public class AnnotationAssistant {
 
     public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata) {
         MethodMeta meta = new MethodMeta();
-        meta.setOptionalAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(AnnotationUtils.findAnnotation(method, SelectSql.class)));
+        meta.setOptionalAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(AnnotationUtils.
+                findAnnotation(method, SelectSql.class)));
         meta.setTableMetadata(tableMetadata);
         meta.setMethodName(method.getName());
         meta.setSqlCommand(SqlCommandType.SELECT);
@@ -189,17 +182,41 @@ public class AnnotationAssistant {
         return meta;
     }
 
+    private MethodMeta parseInsertMethodMate(Method method, TableMeta tableMetadata) {
+        MethodMeta meta = new MethodMeta();
+        meta.setOptionalAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(AnnotationUtils.
+                findAnnotation(method, InsertSql.class)));
+        meta.setTableMetadata(tableMetadata);
+        meta.setMethodName(method.getName());
+        meta.setSqlCommand(SqlCommandType.INSERT);
+        meta.setMethod(method);
+        meta.setMethod(method);
+        List<ParamMate> paramList = new ArrayList<>();
+        // 解析方法参数
+        resolverMethodParams(meta, paramList);
+        // 根据解析数据构建SQL条件
+        resolverSqlParamSnippet(paramList, meta);
+        return meta;
+    }
+
     private void resolverSqlParamSnippet(List<ParamMate> paramList, MethodMeta methodMeta) {
         List<ParamMapping> list = new ArrayList<>();
         if (paramList.isEmpty()) {
             methodMeta.setParamMetaList(list);
         }
         boolean isMulti = paramList.size() > 1;
+        methodMeta.setMulti(isMulti);
         // 方法是否是动态
         boolean methodDynamic = methodMeta.optionalBooleanAttributes("dynamic");
         paramList.forEach(paramMate -> {
-            if (paramMate.getType() == ParamMate.TYPE_CUSTOM_ENTITY || paramMate.getType() == ParamMate.TYPE_ENTITY) {
+            if (paramMate.getType() == ParamMate.TYPE_CUSTOM_ENTITY) {
                 list.addAll(parseObjectMate(paramMate, isMulti, true));
+            } else if (paramMate.getType() == ParamMate.TYPE_ENTITY) {
+                if (methodMeta.getSqlCommand() == SqlCommandType.INSERT || methodMeta.getSqlCommand() == SqlCommandType.UPDATE) {
+                    list.add(ParamMapping.convertEntity(paramMate.getParamName(), paramMate.isBatch()));
+                } else {
+                    list.addAll(parseObjectMate(paramMate, isMulti, true));
+                }
             } else {
                 ParamMapping paramMapping = parseParamMate(paramMate, null, isMulti, methodDynamic, false);
                 if (paramMapping != null) {
@@ -208,12 +225,13 @@ public class AnnotationAssistant {
             }
         });
         methodMeta.setParamMetaList(list);
+
     }
 
     private List<ParamMapping> parseObjectMate(ParamMate paramMate, boolean isMulti, boolean methodDynamic) {
         return paramMate.getChildren().stream().map(item -> {
             if (isMulti) {
-                return parseParamMate(item, paramMate.getParamName(), true, methodDynamic, true);
+                return parseParamMate(item, paramMate.getParamName(), false, methodDynamic, true);
             } else {
                 return parseParamMate(item, null, false, methodDynamic, true);
             }
@@ -244,9 +262,9 @@ public class AnnotationAssistant {
 
         // 处理方法参数中只有一个IN 查询的时候
         if (!isMulti && (annotation.type() == ConditionType.IN || annotation.type() == ConditionType.NOT_IN)) {
-            return ParamMapping.convert("list",
+            return ParamMapping.convert("collection",
                     StringUtils.hasText(value) ? value : underscoreName(paramName),
-                    builderPlaceholder(paramName, parentName),
+                    builderPlaceholder("collection", parentName),
                     alias, methodDynamic || dynamic, annotation.type());
         }
         return ParamMapping.convert(paramName, StringUtils.hasText(value) ? value : underscoreName(paramName), builderPlaceholder(paramName, parentName),
@@ -280,9 +298,11 @@ public class AnnotationAssistant {
         ParamMate paramMeta;
         if (parameter.getParameterizedType() instanceof TypeVariable) {
             if (isEntityParam(parameter.getParameterizedType(), entityClass)) {
-                // 处理实体对象
-                // paramMeta = ParamMate.builder(methodMeta.getTableMetadata().getId().getField(), ParamMate.TYPE_ENTITY);
-                paramMeta = parseCustomParameter((Class<?>) parameter.getParameterizedType(), paramName);
+                if (SqlCommandType.INSERT == methodMeta.getSqlCommand() || SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
+                    return ParamMate.builder(paramName, ParamMate.TYPE_ENTITY);
+                } else {
+                    return parseCustomParameter(entityClass, paramName);
+                }
             } else if (isKeyParam(parameter.getParameterizedType())) {
                 paramMeta = ParamMate.builder(methodMeta.getTableMetadata().getId().getField(), ParamMate.TYPE_KEY);
             } else {
@@ -295,19 +315,18 @@ public class AnnotationAssistant {
             if (Collection.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())) {
                 if (methodMeta.getSqlCommand() == SqlCommandType.SELECT) {
                     return ParamMate.builder(paramName, annotation);
-                } else if (!isEntityParam(parameterizedType.getActualTypeArguments()[0], entityClass)
-                        && SqlCommandType.INSERT == methodMeta.getSqlCommand()) {
-                    throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
+                } else if (isEntityParam(parameterizedType.getActualTypeArguments()[0], entityClass)
+                        && (SqlCommandType.INSERT == methodMeta.getSqlCommand() || SqlCommandType.UPDATE == methodMeta.getSqlCommand())) {
+                    return ParamMate.builderBatch(paramName, ParamMate.TYPE_ENTITY);
                 } else {
-                    return ParamMate.builder(paramName, ParamMate.TYPE_ENTITY);
+                    throw new EasyBatisException("Easybatis 框架解析错误");
                 }
             } else {
                 return ParamMate.builder(paramName, annotation);
             }
-
         } else {
             if (isEntityParam(parameter.getParameterizedType(), entityClass)) {
-                paramMeta = ParamMate.builder(methodMeta.getTableMetadata().getId().getField(), ParamMate.TYPE_ENTITY);
+                paramMeta = ParamMate.builder(paramName, ParamMate.TYPE_ENTITY);
             } else if (Reflection.isCustomObject(parameter.getType()) && methodMeta.getSqlCommand() == SqlCommandType.SELECT) {
                 paramMeta = parseCustomParameter((Class<?>) parameter.getParameterizedType(), paramName);
             } else {
@@ -316,6 +335,7 @@ public class AnnotationAssistant {
             }
             return paramMeta;
         }
+
     }
 
     private ParamMate parseCustomParameter(Class<?> type, String paramName) {
@@ -359,132 +379,6 @@ public class AnnotationAssistant {
             paramList.add(ParamMate.builder(logic.getColumn(), ParamMate.TYPE_LOGIC));
         }
     }
-
-
-//    @Deprecated
-//    private ParamMapping parseParameter(Parameter parameter, String paramName, SqlCommandType command,
-//                                        Class<?> entityClass, boolean dynamic) {
-//        //处理接口泛型 泛型的两种情况是 主键或者是实体
-//        if (parameter.getParameterizedType() instanceof TypeVariable) {
-//            ParamMapping paramMeta = ParamMapping.builder(underscoreName(paramName), paramName);
-//            if (isEntityParam(parameter.getParameterizedType(), entityClass)) {
-//                paramMeta.setEntity(true);
-//            } else if (isKeyParam(parameter.getParameterizedType())) {
-//                paramMeta.setPrimaryKey(true);
-//                paramMeta.setCondition(ConditionType.EQUAL);
-//            } else {
-//                throw new EasyBatisException("泛型类型不匹配");
-//            }
-//            return paramMeta;
-//        } else if (parameter.getParameterizedType() instanceof ParameterizedType) { // 处理接口中的集合类型
-//            ParameterizedType parameterizedType = (ParameterizedType) parameter.getParameterizedType();
-//            if (Collection.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())) {
-//                if (command == SqlCommandType.SELECT) {
-//                    return parseAnnotation(parameter.getAnnotations(), paramName, dynamic);
-//                } else if (!isEntityParam(parameterizedType.getActualTypeArguments()[0], entityClass)) {
-//                    throw new EasyBatisException("InsertSql 的参数类型和接口类型不一致");
-//                }
-//                return ParamMapping.builder(paramName, true, true);
-//            } else {
-//                return ParamMapping.builder(paramName, false, false);
-//            }
-//        } else {
-//            if (isEntityParam(parameter.getParameterizedType(), entityClass)) {
-//                return ParamMapping.builder(paramName, true, false);
-//            } else if (Reflection.isCustomObject(parameter.getType()) && command == SqlCommandType.SELECT) {
-//                return parseCustomParameter((Class<?>) parameter.getParameterizedType(), paramName);
-//            } else {
-//                return parseAnnotation(parameter.getAnnotations(), paramName, dynamic);
-//            }
-//        }
-//    }
-
-
-//    private ParamMapping parseCustomParameter(Class<?> type, String paramName) {
-//        ParamMapping param = ParamMapping.builder(this.underscoreName(paramName), paramName, true);
-//        List<Field> fieldList = Reflection.getField(type);
-//        List<ParamMapping> paramList = new ArrayList<>();
-//        for (Field field : fieldList) {
-//            ParamMapping paramMetaData = parseAnnotation(field.getDeclaredAnnotations(),
-//                    field.getName(), true);
-//            paramMetaData.setParentParamName(param.getParamName());
-//            paramList.add(paramMetaData);
-//            param.setDynamicType(DynamicType.DYNAMIC);
-//        }
-//        param.setChildList(paramList);
-//        return param;
-//    }
-
-//
-//    /**
-//     * @param annotations 查询条件上的注解信息
-//     * @param paramName   参数名
-//     * @return ParamMetaData
-//     */
-//    public ParamMapping parseAnnotation(Annotation[] annotations, String paramName, boolean methodGlobalDynamic) {
-//        Annotation ignore = chooseAnnotationType(annotations, Ignore.class);
-//        ParamMapping param = ParamMapping.builder(underscoreName(paramName), paramName, methodGlobalDynamic);
-//        if (ignore != null) {
-//            param.setCondition(ConditionType.IGNORE);
-//            return param;
-//        }
-//        Annotation queryAnnotation = chooseQueryAnnotationType(annotations);
-//        if (queryAnnotation != null) {
-//            Map<String, Object> map = AnnotationUtils.getAnnotationAttributes(queryAnnotation);
-//            param.mergeConditionAnnotation(map);
-//            Condition condition = AnnotationUtils.findAnnotation(queryAnnotation.annotationType(), Condition.class);
-//            if (condition == null) {
-//                throw new EasyBatisException("注解格式不符合规范");
-//            } else {
-//                param.setCondition(condition.type());
-//            }
-//        }
-//        Annotation setParamAnnotation = chooseSetParamAnnotationType(annotations);
-//        if (queryAnnotation != null && setParamAnnotation != null) {
-//            throw new EasyBatisException("查询条件和设置参数注解无法在一起使用");
-//        } else if (setParamAnnotation != null) {
-//            param.setCondition(ConditionType.SET_PARAM);
-//        } else if (queryAnnotation == null) {
-//            param.setCondition(ConditionType.EQUAL);
-//        } else {
-//            return param;
-//        }
-//        return param;
-//    }
-
-//    /**
-//     * @param annotations 查询条件上的注解信息
-//     * @param paramName   参数名
-//     * @return ParamMetaData
-//     */
-//    public Condition parseCondtion(Annotation[] annotations, String paramName, boolean methodGlobalDynamic) {
-//        Annotation ignore = chooseAnnotationType(annotations, Condition.class);
-//        if (ignore != null) {
-//            return ConditionType.IGNORE
-//        }
-//        Annotation queryAnnotation = chooseQueryAnnotationType(annotations);
-//        if (queryAnnotation != null) {
-//            Map<String, Object> map = AnnotationUtils.getAnnotationAttributes(queryAnnotation);
-//            param.mergeConditionAnnotation(map);
-//            Condition condition = AnnotationUtils.findAnnotation(queryAnnotation.annotationType(), Condition.class);
-//            if (condition == null) {
-//                throw new EasyBatisException("注解格式不符合规范");
-//            } else {
-//                param.setCondition(condition.type());
-//            }
-//        }
-//        Annotation setParamAnnotation = chooseSetParamAnnotationType(annotations);
-//        if (queryAnnotation != null && setParamAnnotation != null) {
-//            throw new EasyBatisException("查询条件和设置参数注解无法在一起使用");
-//        } else if (setParamAnnotation != null) {
-//            param.setCondition(ConditionType.SET_PARAM);
-//        } else if (queryAnnotation == null) {
-//            param.setCondition(ConditionType.EQUAL);
-//        } else {
-//            return param;
-//        }
-//        return param;
-//    }
 
 
     private boolean isEntityParam(Type entityType, Class<?> entityClass) {

@@ -24,6 +24,8 @@ public class ParamMate {
      */
     private int type;
 
+    private boolean batch;
+
     /**
      * 参数名称
      */
@@ -49,11 +51,24 @@ public class ParamMate {
         return builder(paramName, type, null);
     }
 
+    public static ParamMate builderBatch(String paramName, int type) {
+        return builderBatch(paramName, type, null);
+    }
+
     public static ParamMate builder(String paramName, Integer type, Annotation annotation) {
         ParamMate tar = new ParamMate();
         tar.setParamName(paramName);
         tar.type = type;
         tar.annotation = annotation;
+        return tar;
+    }
+
+    public static ParamMate builderBatch(String paramName, Integer type, Annotation annotation) {
+        ParamMate tar = new ParamMate();
+        tar.setParamName(paramName);
+        tar.type = type;
+        tar.annotation = annotation;
+        tar.batch = true;
         return tar;
     }
 }

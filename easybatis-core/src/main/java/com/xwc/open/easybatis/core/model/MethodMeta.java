@@ -76,7 +76,7 @@ public class MethodMeta {
     public Boolean optionalBooleanAttributes(String attributes) {
         Object o = this.optionalAttributes(attributes);
         if (o == null) {
-            return null;
+            return false;
         }
         return (boolean) o;
     }

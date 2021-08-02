@@ -13,8 +13,8 @@ import com.xwc.open.easybatis.core.support.impl.AbstractQueryCondition;
 public class LikeCondition extends AbstractQueryCondition {
     {
         this.addQueryCondition(ConditionType.LIKE, "LIKE CONCAT('%%',%s,'%%')");
-        this.addQueryCondition(ConditionType.RIGHT_LIKE, "LIKE CONCAT('%%',%s)");
-        this.addQueryCondition(ConditionType.LEFT_LIKE, "LIKE CONCAT(%s,'%%')");
+        this.addQueryCondition(ConditionType.RIGHT_LIKE, "LIKE CONCAT(%s,'%%')");
+        this.addQueryCondition(ConditionType.LEFT_LIKE, "LIKE CONCAT('%%',%s)");
         this.addQueryCondition(ConditionType.NOT_LIKE, "NOT LIKE CONCAT('%%',%s,'%%')");
         this.addQueryCondition(ConditionType.NOT_LEFT_LIKE, "NOT LIKE CONCAT('%%',%s)");
         this.addQueryCondition(ConditionType.NOT_RIGHT_LIKE, "NOT LIKE CONCAT(%s,'%%')");
@@ -31,12 +31,12 @@ public class LikeCondition extends AbstractQueryCondition {
         if (mapping.isDynamic()) {
             return dynamicCondition(mapping.getPlaceholderName().getName(), condition);
         } else {
-            return nonDynamicCondition(condition);
+            return condition;
         }
     }
 
     public String builderLikeCondition(ParamMapping mapping) {
-        return placeholderBuilder.columnHolder(mapping.getAlias(), mapping.getColumnName()).getHolder()
+        return " AND " + placeholderBuilder.columnHolder(mapping.getAlias(), mapping.getColumnName()).getHolder()
                 + " " + String.format(this.queryConditionExpression(mapping.getCondition()),
                 mapping.getPlaceholderName().getHolder());
     }
