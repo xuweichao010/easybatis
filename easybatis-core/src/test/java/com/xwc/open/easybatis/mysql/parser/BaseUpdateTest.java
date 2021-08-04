@@ -50,7 +50,7 @@ public class BaseUpdateTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source" +
-                " SET `orgCode` = #{orgCode}, `orgName` = #{orgName}, `name` = #{name}" +
+                " <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, `name` = #{name}, </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
@@ -63,7 +63,7 @@ public class BaseUpdateTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source" +
-                " SET `orgCode` = #{orgCode}, `orgName` = #{orgName}, `name` = #{name}" +
+                " <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, `name` = #{name}, </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
@@ -76,7 +76,7 @@ public class BaseUpdateTest {
         String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source" +
-                " SET `orgCode` = #{entity.orgCode}, `orgName` = #{entity.orgName}, `name` = #{entity.name}" +
+                " <set> `orgCode` = #{entity.orgCode}, `orgName` = #{entity.orgName}, `name` = #{entity.name}, </set>" +
                 " <where> `id` = #{entity.id} </where>" +
                 "</script>";
         Assert.assertEquals(select, targetSql);
@@ -89,7 +89,7 @@ public class BaseUpdateTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source" +
-                " SET `orgCode` = #{orgCode}, `orgName` = #{orgName}" +
+                " <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, </set>" +
                 "</script>";
         Assert.assertEquals(sql, targetSql);
     }
@@ -101,7 +101,7 @@ public class BaseUpdateTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source" +
-                " SET `orgCode` = #{orgCode}, `orgName` = #{orgName}" +
+                " <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, `id` = #{id}, </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
         Assert.assertEquals(sql, targetSql);
@@ -137,7 +137,7 @@ public class BaseUpdateTest {
                 " </set>" +
                 " <where> `id` = #{entity.id} </where>" +
                 "</script>";
-       Assert.assertEquals(sql, targetSql);
+       Assert.assertEquals(targetSql,sql );
     }
 
     private Method chooseMethod(Class<?> classType, String methodName) {

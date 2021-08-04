@@ -24,9 +24,12 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         // 写入相关
         this.insertColumnSnippet = new MySqlInsertColumnSnippet(placeholderBuilder);
         this.insertValueSnippet = new MySqlInsertValueSnippet(placeholderBuilder);
+        // update
+        this.updateColumnSnippet = new MysqlUpdateColumnSnippet(placeholderBuilder);
+
 //        this.deleteConditionSnippet = new MySqlDeleteConditionSnippet(selectConditionSnippet);
 //        this.insertColumnValue = new DefaultInsertValueSnippet();
-//        this.updateColumnSnippet = new DefaultUpdateColumnSnippet();
+//
 //        this.updateConditionSnippet = new DefaultUpdateConditionSnippet(this.selectConditionSnippet);
 //        this.deleteLogicSnippet = new MySqlDeleteLogicSnippet();
     }
@@ -70,18 +73,14 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
     @Override
     public String update(MethodMeta methodMetaData) {
         StringBuilder sb = new StringBuilder();
-//        sb.append("<script>")
-//                .append(" UPDATE ").append(methodMetaData.getTableMetadata().getTableName());
-//        if (methodMetaData.hasDynamic()) {
-//            sb.append(" <set>").append(this.updateColumnSnippet.apply(methodMetaData)).append(" </set>");
-//        } else {
-//            sb.append(" SET ").append(this.updateColumnSnippet.apply(methodMetaData));
-//        }
-//        String conditionSnippet = this.updateConditionSnippet.apply(methodMetaData);
-//        if (StringUtils.hasText(conditionSnippet)) {
-//            sb.append(" <where>").append(conditionSnippet).append(" </where>");
-//        }
-//        sb.append("</script>");
+        sb.append("<script>")
+                .append(" UPDATE ").append(methodMetaData.getTableMetadata().getTableName());
+        sb.append(" <set> ").append(this.updateColumnSnippet.apply(methodMetaData)).append(" </set>");
+        String conditionSnippet = this.conditionSnippet.apply(methodMetaData);
+        if (StringUtils.hasText(conditionSnippet)) {
+            sb.append(" <where>").append(conditionSnippet).append(" </where>");
+        }
+        sb.append("</script>");
         return sb.toString();
     }
 

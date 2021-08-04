@@ -1,8 +1,6 @@
 package com.xwc.open.easybatis.core.model;
 
-import com.xwc.open.easybatis.core.anno.condition.filter.OrderBy;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
-import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.model.table.Mapping;
 import lombok.Data;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -11,7 +9,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Data
@@ -47,6 +44,10 @@ public class MethodMeta {
      * 是否是多个参数
      */
     private boolean isMulti = false;
+
+    public void addParamMeta(ParamMapping mapping) {
+        this.paramMetaList.add(mapping);
+    }
 
 
     public void addAttributes(String key, Object value) {

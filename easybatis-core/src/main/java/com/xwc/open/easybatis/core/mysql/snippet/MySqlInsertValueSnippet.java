@@ -47,7 +47,7 @@ public class MySqlInsertValueSnippet implements InsertValueSnippet {
     }
 
     public String insert(String paramName, TableMeta tableMeta) {
-        return "(" + MysqlCommonsUtils.column(tableMeta).stream()
+        return "(" + MysqlCommonsUtils.insertColumn(tableMeta).stream()
                 .map(field -> placeholderBuilder.parameterHolder(field.getField(), paramName).getHolder())
                 .collect(Collectors.joining(", ")) + ")";
     }

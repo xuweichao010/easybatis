@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  */
 public class MysqlCommonsUtils {
 
-    public static List<Mapping> column(TableMeta tableMeta) {
+    public static List<Mapping> insertColumn(TableMeta tableMeta) {
         ArrayList<Mapping> list = new ArrayList<>();
         if (tableMeta.getId().getIdType() != IdType.AUTO) {
             list.add(tableMeta.getId());
@@ -24,7 +24,18 @@ public class MysqlCommonsUtils {
         list.addAll(tableMeta.getColumnMetaList());
         list.addAll(tableMeta.getAuditorMap().values().stream()
                 .sorted(Comparator.comparingInt(s -> s.getType().ordinal())).collect(Collectors.toList()));
-        if(tableMeta.getLogic() !=null){
+        if (tableMeta.getLogic() != null) {
+            list.add(tableMeta.getLogic());
+        }
+        return list;
+    }
+
+    public static List<Mapping> updateColumn(TableMeta tableMeta) {
+        ArrayList<Mapping> list = new ArrayList<>();
+        list.addAll(tableMeta.getColumnMetaList());
+        list.addAll(tableMeta.getAuditorMap().values().stream().filter(item -> !item.isUpdateIgnore())
+                .sorted(Comparator.comparingInt(s -> s.getType().ordinal())).collect(Collectors.toList()));
+        if (tableMeta.getLogic() != null) {
             list.add(tableMeta.getLogic());
         }
         return list;

@@ -22,7 +22,7 @@ public class MySqlInsertColumnSnippet implements InsertColumnSnippet {
 
     @Override
     public String apply(MethodMeta methodMeta) {
-        return " (" + MysqlCommonsUtils.column(methodMeta.getTableMetadata()).stream()
+        return " (" + MysqlCommonsUtils.insertColumn(methodMeta.getTableMetadata()).stream()
                 .map(field -> placeholderBuilder.columnHolder(null, field.getColumn()).getHolder())
                 .collect(Collectors.joining(", ")) + ")";
     }

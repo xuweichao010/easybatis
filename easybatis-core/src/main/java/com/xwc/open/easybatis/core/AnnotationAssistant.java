@@ -51,7 +51,7 @@ public class AnnotationAssistant {
             .of(Equal.class, NotEqual.class, IsNull.class, IsNotNull.class, In.class, NotIn.class,
                     Like.class, RightLike.class, LeftLike.class, NotLike.class, NotLeftLike.class, NotRightLike.class,
                     GreaterThan.class, GreaterThanEqual.class, LessThan.class
-                    , LessThanEqual.class, Start.class, Offset.class, ASC.class, DESC.class, Ignore.class)
+                    , LessThanEqual.class, Start.class, Offset.class, ASC.class, DESC.class, Ignore.class, SetParam.class)
             .collect(Collectors.toSet());
 
     public String tableName(Class<?> entityType) {
@@ -127,32 +127,51 @@ public class AnnotationAssistant {
             return parseSelectMethodMate(method, tableMetadata);
         } else if (operationAnnotationType instanceof InsertSql) {
             return parseInsertMethodMate(method, tableMetadata);
+        } else if (operationAnnotationType instanceof UpdateSql) {
+            return parseUpdateMethodMate(method, tableMetadata);
         }
-//            return parseInsertMethodMate(method, tableMetadata);
-//        } else if (operationAnnotationType instanceof UpdateSql) {
-//            return parseUpdateMethodMate(method, tableMetadata);
-//        } else if (operationAnnotationType instanceof DeleteSql) {
+        //else if (operationAnnotationType instanceof DeleteSql) {
 //            return parseDeleteMethodMate(method, tableMetadata);
 //        }
         return null;
     }
 
 
-//
-//    private MethodMeta parseUpdateMethodMate(Method method, TableMeta tableMetadata) {
-//        MethodMeta meta = new MethodMeta();
-//        meta.setDynamic(AnnotationUtils.findAnnotation(method, UpdateSql.class).dynamic());
-//        meta.setTableMetadata(tableMetadata);
-//        meta.setMethodName(method.getName());
-//        meta.setSqlCommand(SqlCommandType.UPDATE);
-//        meta.setMethod(method);
-//        meta.setParamMetaList(parseMethodParam(meta));
-//        List<ParamMapping> list = meta.getParamMetaList().stream().filter(ParamMapping::isList).collect(Collectors.toList());
-//        if (!list.isEmpty()) {
-//            throw new EasyBatisException("无法处理批量跟新数据");
-//        }
-//        return meta;
-//    }
+    private MethodMeta parseUpdateMethodMate(Method method, TableMeta tableMetadata) {
+        MethodMeta meta = new MethodMeta();
+        meta.setOptionalAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(AnnotationUtils.
+                findAnnotation(method, UpdateSql.class)));
+        meta.setTableMetadata(tableMetadata);
+        meta.setMethodName(method.getName());
+        meta.setSqlCommand(SqlCommandType.UPDATE);
+        meta.setMethod(method);
+        //解析方法
+        List<ParamMate> paramList = new ArrayList<>();
+        // 解析方法参数
+        resolverMethodParams(meta, paramList);
+        // 解析逻辑删除
+        resolverLogic(meta, paramList);
+        // 处理审计
+        resolverAuditor(meta, paramList);
+        // 解析参数
+        resolverSqlParamSnippet(paramList, meta);
+        // 处理更新条件
+        ParamMate entityParam = paramList.stream()
+                .filter(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY).findAny().orElse(null);
+        if (entityParam != null) {
+            // 根据解析数据构建SQL条件
+            // 添加主键修改条件
+            IdMapping id = meta.getTableMetadata().getId();
+            Placeholder placeholder = placeholderBuilder.parameterHolder(id.getField(), meta.isMulti() ? entityParam.getParamName() : null);
+            meta.addParamMeta(ParamMapping.convert(id.getField(), id.getColumn(), placeholder, null, false, ConditionType.EQUAL));
+            LogicMapping logic = meta.getTableMetadata().getLogic();
+            if (logic != null) {
+                placeholder = placeholderBuilder.parameterHolder(logic.getField(), meta.isMulti() ? entityParam.getParamName() : null);
+                meta.addParamMeta(ParamMapping.convert(logic.getField(), logic.getColumn(), placeholder, null, false, ConditionType.EQUAL));
+            }
+        }
+        return meta;
+    }
 
 //    private MethodMeta parseDeleteMethodMate(Method method, TableMeta tableMetadata) {
 //        MethodMeta meta = new MethodMeta();
@@ -190,11 +209,12 @@ public class AnnotationAssistant {
         meta.setMethodName(method.getName());
         meta.setSqlCommand(SqlCommandType.INSERT);
         meta.setMethod(method);
-        meta.setMethod(method);
         List<ParamMate> paramList = new ArrayList<>();
         // 解析方法参数
         resolverMethodParams(meta, paramList);
-        // 根据解析数据构建SQL条件
+        // 解析审计
+        resolverAuditor(meta, paramList);
+        // 解析参数
         resolverSqlParamSnippet(paramList, meta);
         return meta;
     }
@@ -358,10 +378,12 @@ public class AnnotationAssistant {
     private void resolverAuditor(MethodMeta methodMeta, List<ParamMate> paramList) {
         if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)
                 && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
-            methodMeta.getTableMetadata().getAuditorMap().values().forEach(auditorMapping -> {
-                paramList.add(ParamMate.builder(auditorMapping.getField(), ParamMate.TYPE_AUDITOR,
-                        chooseAuditsAnnotationType(auditorMapping.getAnnotationSet())));
-            });
+            if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)) {
+                methodMeta.getTableMetadata().getAuditorMap().values().forEach(auditorMapping -> {
+                    paramList.add(ParamMate.builder(auditorMapping.getField(), ParamMate.TYPE_AUDITOR,
+                            chooseAuditsAnnotationType(auditorMapping.getAnnotationSet())));
+                });
+            }
         }
     }
 
@@ -376,7 +398,9 @@ public class AnnotationAssistant {
         LogicMapping logic = methodMeta.getTableMetadata().getLogic();
         if (logic == null) return;
         if (methodMeta.getSqlCommand() == SqlCommandType.SELECT || methodMeta.getSqlCommand() == SqlCommandType.UPDATE) {
-            paramList.add(ParamMate.builder(logic.getColumn(), ParamMate.TYPE_LOGIC));
+            if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)) {
+                paramList.add(ParamMate.builder(logic.getColumn(), ParamMate.TYPE_LOGIC));
+            }
         }
     }
 
@@ -512,46 +536,4 @@ public class AnnotationAssistant {
         }
         return camelCaseName;
     }
-
-
-//    /**
-//     * 请见方法 parseMethodParam1
-//     *
-//     * @param methodMeta
-//     * @return
-//     */
-//    @Deprecated
-//    private List<ParamMapping> parseMethodParam(MethodMeta methodMeta) {
-//        Parameter[] parameters = methodMeta.getMethod().getParameters();
-//        List<String> paramNames = ParamNameUtil.getParamNames(methodMeta.getMethod());
-//        List<ParamMapping> list = new ArrayList<>();
-//        for (int i = 0; i < paramNames.size(); i++) {
-//            ParamMapping paramMeta = parseParameter(parameters[i], paramNames.get(i), methodMeta.getSqlCommand()
-//                    , methodMeta.getTableMetadata().getSource(), methodMeta.isDynamic());
-//            list.add(paramMeta);
-//        }
-//        LogicMapping logic = methodMeta.getTableMetadata().getLogic();
-//        // 增删改查都都需要增删改查
-//        if (logic != null && list.stream().noneMatch(ParamMapping::isEntity)) {
-//            ParamMapping logicParamMeta = ParamMapping.builder(logic.getColumn(), logic.getField(), ConditionType.EQUAL,
-//                    null, false, false);
-//            logicParamMeta.setSimulate(true);
-//            list.add(logicParamMeta);
-//        }
-//        if (list.stream().anyMatch(ParamMapping::isSetParam) && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
-//            methodMeta.getTableMetadata().getAuditorMap().values().stream()
-//                    .filter(item -> item.getType().command() == SqlCommandType.UPDATE)
-//                    .sorted(Comparator.comparing(s1 -> s1.getType().ordinal()))
-//                    .forEach(item -> {
-//                        ParamMapping setParam = ParamMapping
-//                                .builder(item.getColumn(), item.getField(), ConditionType.SET_PARAM,
-//                                        null, false, false);
-//                        setParam.setSimulate(true);
-//                        list.add(setParam);
-//                    });
-//        }
-//        return list;
-//    }
-
-
 }
