@@ -197,7 +197,6 @@ public class AnnotationAssistant {
         //有逻辑删除时
         if (logic != null) {
             Placeholder placeholder = placeholderBuilder.parameterHolder(logic.getField(), null);
-            meta.addParamMeta(ParamMapping.convert(logic.getField(), logic.getColumn(), placeholder, null, false, ConditionType.EQUAL));
             meta.addParamMeta(ParamMapping.convert(logic.getField() + "0", logic.getColumn(), placeholder, null, false, ConditionType.SET_PARAM));
         }
         return meta;
@@ -214,7 +213,8 @@ public class AnnotationAssistant {
         List<ParamMate> paramList = new ArrayList<>();
         // 解析方法参数
         resolverMethodParams(meta, paramList);
-
+        // 解析逻辑删除
+        resolverLogic(meta, paramList);
         // 根据解析数据构建SQL条件
         resolverSqlParamSnippet(paramList, meta);
         return meta;
@@ -257,7 +257,7 @@ public class AnnotationAssistant {
                     list.addAll(parseObjectMate(paramMate, isMulti, true));
                 }
             } else {
-                ParamMapping paramMapping = parseParamMate(paramMate, null, isMulti, methodDynamic);
+                ParamMapping paramMapping = parseParamMate(paramMate, null, isMulti, methodDynamic, false);
                 if (paramMapping != null) {
                     list.add(paramMapping);
                 }
@@ -270,15 +270,15 @@ public class AnnotationAssistant {
     private List<ParamMapping> parseObjectMate(ParamMate paramMate, boolean isMulti, boolean methodDynamic) {
         return paramMate.getChildren().stream().map(item -> {
             if (isMulti) {
-                return parseParamMate(item, paramMate.getParamName(), false, methodDynamic);
+                return parseParamMate(item, paramMate.getParamName(), false, methodDynamic, true);
             } else {
-                return parseParamMate(item, null, false, methodDynamic);
+                return parseParamMate(item, null, false, methodDynamic, true);
             }
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     private ParamMapping parseParamMate(ParamMate paramMate, String parentName,
-                                        boolean isMulti, boolean methodDynamic) {
+                                        boolean isMulti, boolean methodDynamic, boolean isObject) {
         String paramName = paramMate.getParamName();
         if (paramMate.getAnnotation() == null) {
             return ParamMapping.convert(paramName, underscoreName(paramName),
@@ -304,7 +304,7 @@ public class AnnotationAssistant {
         String value = (String) annotationAttributes.get("value");
 
         // 处理方法参数中只有一个IN 查询的时候
-        if (!isMulti && (annotation.type() == ConditionType.IN || annotation.type() == ConditionType.NOT_IN)) {
+        if (!isMulti && (annotation.type() == ConditionType.IN || annotation.type() == ConditionType.NOT_IN) && !isObject) {
             return ParamMapping.convert("collection",
                     StringUtils.hasText(value) ? value : underscoreName(paramName),
                     builderPlaceholder("collection", parentName),
@@ -420,7 +420,7 @@ public class AnnotationAssistant {
     private void resolverLogic(MethodMeta methodMeta, List<ParamMate> paramList) {
         LogicMapping logic = methodMeta.getTableMetadata().getLogic();
         if (logic == null) return;
-        if (methodMeta.getSqlCommand() == SqlCommandType.SELECT || methodMeta.getSqlCommand() == SqlCommandType.UPDATE) {
+        if (methodMeta.getSqlCommand() != SqlCommandType.INSERT ) {
             if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)) {
                 paramList.add(ParamMate.builder(logic.getColumn(), ParamMate.TYPE_LOGIC));
             }

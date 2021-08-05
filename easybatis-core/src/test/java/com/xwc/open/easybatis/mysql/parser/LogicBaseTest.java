@@ -59,9 +59,7 @@ public class LogicBaseTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
-        Assert.assertEquals("<script>" +
-                " UPDATE t_user SET `orgCode` = #{orgCode}, `orgName` = #{orgName}" +
-                " <where> `id` = #{id} AND `valid` = #{valid} </where></script>", sql);
+        Assert.assertEquals("<script> UPDATE t_user <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, </set> <where> `id` = #{id} AND `valid` = #{valid} </where></script>", sql);
     }
 
     @Test
@@ -97,7 +95,14 @@ public class LogicBaseTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
-        String sqlTarget = "<script> INSERT INTO t_user (`id`, `orgCode`, `orgName`, `valid`) VALUES  <foreach item= 'item'  collection='list' separator=', '> (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.valid}) </foreach> </script>";
+        String sqlTarget = "<script>" +
+                " INSERT INTO t_user" +
+                " (`id`, `orgCode`, `orgName`, `valid`)" +
+                " VALUES" +
+                " <foreach item= 'item'  collection='collection' separator=', '>" +
+                " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.valid})" +
+                " </foreach>" +
+                " </script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 
@@ -107,8 +112,7 @@ public class LogicBaseTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().delete(methodMeta);
-        System.out.println(sql);
-        String sqlTarget = "<script> UPDATE t_user SET valid = #{invalid} <where> `id` = #{id} AND `valid` = #{valid} </where></script>";
+        String sqlTarget = "<script> UPDATE t_user <set> `valid` = #{valid0}, </set> <where> `id` = #{id} AND `valid` = #{valid} </where></script>";
         Assert.assertEquals(sqlTarget, sql);
     }
 

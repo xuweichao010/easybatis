@@ -6,6 +6,7 @@ import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.model.Placeholder;
 import com.xwc.open.easybatis.core.model.table.Mapping;
+import com.xwc.open.easybatis.core.mysql.MysqlCommonsUtils;
 import com.xwc.open.easybatis.core.support.MyBatisOrSqlTemplate;
 import com.xwc.open.easybatis.core.support.PlaceholderBuilder;
 import com.xwc.open.easybatis.core.support.snippet.UpdateSetSnippet;
@@ -44,7 +45,7 @@ public class MysqlUpdateColumnSnippet implements UpdateSetSnippet, MyBatisOrSqlT
                     .map(column -> setParam(column, prefix, dynamic))
                     .collect(Collectors.joining(" "));
         } else {
-            return methodMeta.getParamMetaList().stream()
+            return collect.stream()
                     .map(mapping -> setParam(mapping, dynamic)).collect(Collectors.joining(" "));
         }
 

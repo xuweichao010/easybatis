@@ -104,7 +104,7 @@ public class AuditorBaseTest {
         System.out.println(sql);
         String sqlTarget = "<script>" +
                 " UPDATE t_user" +
-                " <set> `name` = #{name}, `id` = #{id}, `updateTime` = #{updateTime}, `updateId` = #{updateId}, `updateName` = #{updateName}, </set>" +
+                " <set> `name` = #{name}, `updateTime` = #{updateTime}, `updateId` = #{updateId}, `updateName` = #{updateName}, </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
         Assert.assertEquals(sqlTarget, sql);

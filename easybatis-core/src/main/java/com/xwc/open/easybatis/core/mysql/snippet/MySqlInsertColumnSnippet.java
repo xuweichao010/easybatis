@@ -2,6 +2,7 @@
 package com.xwc.open.easybatis.core.mysql.snippet;
 
 import com.xwc.open.easybatis.core.model.MethodMeta;
+import com.xwc.open.easybatis.core.mysql.MysqlCommonsUtils;
 import com.xwc.open.easybatis.core.support.PlaceholderBuilder;
 import com.xwc.open.easybatis.core.support.snippet.InsertColumnSnippet;
 

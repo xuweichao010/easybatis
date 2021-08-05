@@ -5,6 +5,7 @@ import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.model.TableMeta;
+import com.xwc.open.easybatis.core.mysql.MysqlCommonsUtils;
 import com.xwc.open.easybatis.core.support.PlaceholderBuilder;
 import com.xwc.open.easybatis.core.support.snippet.InsertValueSnippet;
 

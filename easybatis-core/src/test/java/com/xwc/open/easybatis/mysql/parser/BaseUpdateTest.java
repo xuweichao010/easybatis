@@ -101,7 +101,7 @@ public class BaseUpdateTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
         String targetSql = "<script>" +
                 " UPDATE t_mysql_sql_source" +
-                " <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, `id` = #{id}, </set>" +
+                " <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
         Assert.assertEquals(sql, targetSql);

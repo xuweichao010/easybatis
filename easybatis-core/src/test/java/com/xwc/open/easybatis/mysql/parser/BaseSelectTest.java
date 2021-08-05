@@ -157,7 +157,7 @@ public class BaseSelectTest {
                 " <if test='ids != null'> AND `id` IN <foreach item= 'item'  collection='ids' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
-        Assert.assertEquals(select, targetSql);
+        Assert.assertEquals(targetSql, select);
 
     }
 

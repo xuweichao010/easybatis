@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.core.mysql.snippet;
+package com.xwc.open.easybatis.core.mysql;
 
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.model.TableMeta;
@@ -45,9 +45,6 @@ public class MysqlCommonsUtils {
         list.addAll(tableMeta.getColumnMetaList());
         list.addAll(tableMeta.getAuditorList().stream().filter(item -> !item.isUpdateIgnore())
                 .sorted(Comparator.comparingInt(s -> s.getType().ordinal())).collect(Collectors.toList()));
-        if (tableMeta.getLogic() != null) {
-            list.add(tableMeta.getLogic());
-        }
         return list;
     }
 
