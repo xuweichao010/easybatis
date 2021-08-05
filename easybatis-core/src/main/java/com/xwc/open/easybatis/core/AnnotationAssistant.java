@@ -84,30 +84,29 @@ public class AnnotationAssistant {
             if (isIgnore(field)) {
                 continue;
             }
-            Mapping columnMeta = analysisColunm(field, entityType);
-            if (columnMeta == null) {
+            Mapping mapping = analysisColunm(field, entityType);
+            if (mapping == null) {
                 continue;
             }
-            if (columnMeta.hashAnnotationType(Id.class)) {
-                Id id = columnMeta.chooseAnnotationType(Id.class);
-                table.setId(new IdMapping(columnMeta,
+            if (mapping.hashAnnotationType(Id.class)) {
+                Id id = mapping.chooseAnnotationType(Id.class);
+                table.setId(new IdMapping(mapping,
                         id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type(), id));
                 continue;
-            } else if (columnMeta.hashAnnotationType(Logic.class)) {
-                Logic loglic = columnMeta.chooseAnnotationType(Logic.class);
-                table.setLogic(new LogicMapping(columnMeta, loglic));
+            } else if (mapping.hashAnnotationType(Logic.class)) {
+                Logic loglic = mapping.chooseAnnotationType(Logic.class);
+                table.setLogic(new LogicMapping(mapping, loglic));
                 continue;
-            } else if (columnMeta.hashAnnotationType(Auditor.class)) {
+            } else if (mapping.hashAnnotationType(Auditor.class)) {
                 AnnotationUtils.AnnotationMate mate = AnnotationUtils.findAnnotationMate(field, Auditor.class);
-                columnMeta.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(mate.getImplAnnotation()));
-                table.addAuditor(new AuditorMapping(columnMeta, ((Auditor) mate.getAnnotation()).type()));
-
+                mapping.mergeAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(mate.getImplAnnotation()));
+                table.addAuditor(new AuditorMapping(mapping, ((Auditor) mate.getAnnotation()).type()));
                 continue;
-            } else if (columnMeta.hashAnnotationType(Column.class)) {
-                Column column = columnMeta.chooseAnnotationType(Column.class);
-                columnMeta.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(column));
+            } else if (mapping.hashAnnotationType(Column.class)) {
+                Column column = mapping.chooseAnnotationType(Column.class);
+                mapping.mergeAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(column));
             }
-            table.addColumn(columnMeta);
+            table.addColumn(mapping);
         }
         return table.validate();
     }
@@ -129,10 +128,9 @@ public class AnnotationAssistant {
             return parseInsertMethodMate(method, tableMetadata);
         } else if (operationAnnotationType instanceof UpdateSql) {
             return parseUpdateMethodMate(method, tableMetadata);
+        } else if (operationAnnotationType instanceof DeleteSql) {
+            return parseDeleteMethodMate(method, tableMetadata);
         }
-        //else if (operationAnnotationType instanceof DeleteSql) {
-//            return parseDeleteMethodMate(method, tableMetadata);
-//        }
         return null;
     }
 
@@ -173,15 +171,37 @@ public class AnnotationAssistant {
         return meta;
     }
 
-//    private MethodMeta parseDeleteMethodMate(Method method, TableMeta tableMetadata) {
-//        MethodMeta meta = new MethodMeta();
-//        meta.setTableMetadata(tableMetadata);
-//        meta.setMethodName(method.getName());
-//        meta.setSqlCommand(SqlCommandType.DELETE);
-//        meta.setMethod(method);
-//        parseMethodParam1(meta);
-//        return meta;
-//    }
+    private MethodMeta parseDeleteMethodMate(Method method, TableMeta tableMetadata) {
+        MethodMeta meta = new MethodMeta();
+        meta.setTableMetadata(tableMetadata);
+        meta.setOptionalAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(AnnotationUtils.
+                findAnnotation(method, DeleteSql.class)));
+        meta.setMethodName(method.getName());
+        meta.setMethod(method);
+        LogicMapping logic = meta.getTableMetadata().getLogic();
+        if (logic == null) {
+            meta.setSqlCommand(SqlCommandType.DELETE);
+        } else {
+            meta.setSqlCommand(SqlCommandType.UPDATE);
+        }
+        //解析方法
+        List<ParamMate> paramList = new ArrayList<>();
+        // 解析方法参数
+        resolverMethodParams(meta, paramList);
+        // 解析逻辑删除
+        resolverLogic(meta, paramList);
+        // 处理审计
+        resolverAuditor(meta, paramList);
+        // 解析参数
+        resolverSqlParamSnippet(paramList, meta);
+        //有逻辑删除时
+        if (logic != null) {
+            Placeholder placeholder = placeholderBuilder.parameterHolder(logic.getField(), null);
+            meta.addParamMeta(ParamMapping.convert(logic.getField(), logic.getColumn(), placeholder, null, false, ConditionType.EQUAL));
+            meta.addParamMeta(ParamMapping.convert(logic.getField() + "0", logic.getColumn(), placeholder, null, false, ConditionType.SET_PARAM));
+        }
+        return meta;
+    }
 
     public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata) {
         MethodMeta meta = new MethodMeta();
@@ -194,8 +214,7 @@ public class AnnotationAssistant {
         List<ParamMate> paramList = new ArrayList<>();
         // 解析方法参数
         resolverMethodParams(meta, paramList);
-        // 解析逻辑删除
-        resolverLogic(meta, paramList);
+
         // 根据解析数据构建SQL条件
         resolverSqlParamSnippet(paramList, meta);
         return meta;
@@ -238,7 +257,7 @@ public class AnnotationAssistant {
                     list.addAll(parseObjectMate(paramMate, isMulti, true));
                 }
             } else {
-                ParamMapping paramMapping = parseParamMate(paramMate, null, isMulti, methodDynamic, false);
+                ParamMapping paramMapping = parseParamMate(paramMate, null, isMulti, methodDynamic);
                 if (paramMapping != null) {
                     list.add(paramMapping);
                 }
@@ -251,19 +270,23 @@ public class AnnotationAssistant {
     private List<ParamMapping> parseObjectMate(ParamMate paramMate, boolean isMulti, boolean methodDynamic) {
         return paramMate.getChildren().stream().map(item -> {
             if (isMulti) {
-                return parseParamMate(item, paramMate.getParamName(), false, methodDynamic, true);
+                return parseParamMate(item, paramMate.getParamName(), false, methodDynamic);
             } else {
-                return parseParamMate(item, null, false, methodDynamic, true);
+                return parseParamMate(item, null, false, methodDynamic);
             }
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     private ParamMapping parseParamMate(ParamMate paramMate, String parentName,
-                                        boolean isMulti, boolean methodDynamic, boolean isObject) {
+                                        boolean isMulti, boolean methodDynamic) {
         String paramName = paramMate.getParamName();
         if (paramMate.getAnnotation() == null) {
             return ParamMapping.convert(paramName, underscoreName(paramName),
                     builderPlaceholder(paramName, parentName), null, methodDynamic, ConditionType.EQUAL);
+        }
+        if (paramMate.getType() == ParamMate.TYPE_AUDITOR) {
+            return ParamMapping.convert(paramName, underscoreName(paramName),
+                    builderPlaceholder(paramName, parentName), null, false, ConditionType.SET_PARAM);
         }
         // 获取参数条件
         AnnotationUtils.AnnotationMate annotationMate = AnnotationUtils.findAnnotationMate(paramMate.getAnnotation(), Condition.class);
@@ -379,7 +402,7 @@ public class AnnotationAssistant {
         if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)
                 && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
             if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)) {
-                methodMeta.getTableMetadata().getAuditorMap().values().forEach(auditorMapping -> {
+                methodMeta.getTableMetadata().getAuditorList().stream().filter(item -> item.getType().command() == SqlCommandType.UPDATE).forEach(auditorMapping -> {
                     paramList.add(ParamMate.builder(auditorMapping.getField(), ParamMate.TYPE_AUDITOR,
                             chooseAuditsAnnotationType(auditorMapping.getAnnotationSet())));
                 });

@@ -28,7 +28,9 @@ public class MySqlSelectColumnSnippet implements SelectColumnSnippet {
             selectColumn = methodMeta.optionalStringAttributes("value");
             isDefault = false;
         } else {
-            selectColumn = selectColumn(methodMeta);
+            selectColumn = MysqlCommonsUtils.selectColumn(methodMeta.getTableMetadata()).stream()
+                    .map(mapping -> placeholderBuilder.columnHolder(null, mapping.getColumn()).getHolder())
+                    .collect(Collectors.joining(", "));
         }
         String distinct = distinct(methodMeta.chooseAnnotationType(Distinct.class), selectColumn);
         if (distinct.equals(selectColumn)) {
@@ -37,13 +39,6 @@ public class MySqlSelectColumnSnippet implements SelectColumnSnippet {
             return count(methodMeta.chooseAnnotationType(Count.class), distinct, false);
         }
 
-    }
-
-    public String selectColumn(MethodMeta methodMeta) {
-        return methodMeta.selectColumnList()
-                .stream().map(column ->
-                        placeholderBuilder.columnHolder(null, column.getColumn()).getHolder())
-                .collect(Collectors.joining(", "));
     }
 
     public String count(Count count, String selectColumns, boolean isDefault) {

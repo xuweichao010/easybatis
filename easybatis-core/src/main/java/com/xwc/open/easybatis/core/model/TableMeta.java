@@ -1,11 +1,10 @@
 package com.xwc.open.easybatis.core.model;
 
-import com.xwc.open.easybatis.core.enums.AuditorType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.table.AuditorMapping;
-import com.xwc.open.easybatis.core.model.table.Mapping;
 import com.xwc.open.easybatis.core.model.table.IdMapping;
 import com.xwc.open.easybatis.core.model.table.LogicMapping;
+import com.xwc.open.easybatis.core.model.table.Mapping;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class TableMeta {
     /**
      * 审计信息
      */
-    private Map<AuditorType, AuditorMapping> auditorMap = new ConcurrentHashMap<>(6);
+    private List<AuditorMapping> auditorList = new ArrayList<>(6);
 
     /**
      * 逻辑字段
@@ -68,7 +67,7 @@ public class TableMeta {
     }
 
     public void addAuditor(AuditorMapping auditor) {
-        this.auditorMap.put(auditor.getType(), auditor);
+        this.auditorList.add( auditor);
         this.setResult(auditor.isResult());
     }
 

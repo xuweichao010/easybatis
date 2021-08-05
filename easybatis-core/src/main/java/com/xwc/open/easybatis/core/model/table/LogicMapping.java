@@ -20,7 +20,7 @@ public class LogicMapping extends Mapping {
         this.setUpdateIgnore(true);
         this.setInsertIgnore(false);
         this.setSelectIgnore(true);
-        this.mergeTableAnnotation(AnnotationUtils.getAnnotationAttributes(logic));
+        this.mergeAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(logic));
     }
 
     public int getValid() {

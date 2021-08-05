@@ -5,7 +5,6 @@ import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.TableMeta;
-import com.xwc.open.easybatis.mysql.parser.auditor.AuditorUser;
 import com.xwc.open.easybatis.mysql.parser.auditor.AuditorUserMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
@@ -45,7 +44,7 @@ public class AuditorBaseTest {
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `updateTime`, `updateName`, `updateId` FROM t_user <where> `id` = #{id} </where></script>", sql);
+        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `updateTime`, `updateId`, `updateName` FROM t_user <where> `id` = #{id} </where></script>", sql);
     }
 
     @Test
@@ -56,11 +55,11 @@ public class AuditorBaseTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
         String sqlTarget = "<script>" +
                 " INSERT INTO t_user" +
-                " (`id`, `orgCode`, `orgName`, `createTime`, `updateTime`, `createName`, `updateName`, `createId`, `updateId`)" +
+                " (`id`, `orgCode`, `orgName`, `createTime`, `createId`, `createName`, `updateTime`, `updateId`, `updateName`)" +
                 " VALUES" +
-                " (#{id}, #{orgCode}, #{orgName}, #{createTime}, #{updateTime}, #{createName}, #{updateName}, #{createId}, #{updateId})" +
+                " (#{id}, #{orgCode}, #{orgName}, #{createTime}, #{createId}, #{createName}, #{updateTime}, #{updateId}, #{updateName})" +
                 " </script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(sqlTarget, sql);
     }
 
     @Test
@@ -71,12 +70,13 @@ public class AuditorBaseTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
         String sqlTarget = "<script>" +
                 " INSERT INTO t_user" +
-                " (`id`, `orgCode`, `orgName`, `createTime`, `updateTime`, `createName`, `updateName`, `createId`, `updateId`)" +
-                " VALUES  <foreach item= 'item'  collection='list' separator=', '>" +
-                " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.createTime}, #{item.updateTime}, #{item.createName}, #{item.updateName}, #{item.createId}, #{item.updateId})" +
+                " (`id`, `orgCode`, `orgName`, `createTime`, `createId`, `createName`, `updateTime`, `updateId`, `updateName`)" +
+                " VALUES" +
+                " <foreach item= 'item'  collection='collection' separator=', '>" +
+                " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.createTime}, #{item.createId}, #{item.createName}, #{item.updateTime}, #{item.updateId}, #{item.updateName})" +
                 " </foreach>" +
                 " </script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(sqlTarget, sql);
     }
 
     @Test
@@ -86,10 +86,13 @@ public class AuditorBaseTest {
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
         String sqlTarget = "<script>" +
-                " UPDATE t_user SET `orgCode` = #{orgCode}, `orgName` = #{orgName}, `updateTime` = #{updateTime}, `updateName` = #{updateName}, `updateId` = #{updateId}" +
+                " UPDATE t_user" +
+                " <set>" +
+                " `orgCode` = #{orgCode}, `orgName` = #{orgName}, `updateTime` = #{updateTime}, `updateId` = #{updateId}, `updateName` = #{updateName}," +
+                " </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(sqlTarget, sql);
     }
 
     @Test
@@ -100,10 +103,11 @@ public class AuditorBaseTest {
         String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
         System.out.println(sql);
         String sqlTarget = "<script>" +
-                " UPDATE t_user SET `name` = #{name}, `updateTime` = #{updateTime}, `updateName` = #{updateName}, `updateId` = #{updateId}" +
+                " UPDATE t_user" +
+                " <set> `name` = #{name}, `id` = #{id}, `updateTime` = #{updateTime}, `updateId` = #{updateId}, `updateName` = #{updateName}, </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(sqlTarget, sql);
     }
 
     private Method chooseMethod(Class<?> classType, String methodName) {

@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 public class MySqlConditionSnippet implements ConditionSnippet {
     protected List<QueryCondition> conditionList;
 
-    private PlaceholderBuilder placeholderBuilder;
 
     public MySqlConditionSnippet(PlaceholderBuilder placeholderBuilder) {
         this.conditionList = Stream.of(new CompareCondition(placeholderBuilder), new NullCondition(placeholderBuilder),

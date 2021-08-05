@@ -90,31 +90,18 @@ public class MysqlSqlSourceGenerator extends AbstractSqlSourceGenerator {
         if (methodMetaData.getTableMetadata().getLogic() == null) {
             return doDelete(methodMetaData);
         } else {
-            return doLogicDelete(methodMetaData);
+            return update(methodMetaData);
         }
-    }
-
-    private String doLogicDelete(MethodMeta methodMetaData) {
-        StringBuilder sb = new StringBuilder();
-//        sb.append("<script>")
-//                .append(" UPDATE ").append(methodMetaData.getTableMetadata().getTableName())
-//                .append(" SET ").append(this.deleteLogicSnippet.apply(methodMetaData));
-//        String conditionSnippet = this.deleteConditionSnippet.apply(methodMetaData);
-//        if (StringUtils.hasText(conditionSnippet)) {
-//            sb.append(" <where>").append(conditionSnippet).append(" </where>");
-//        }
-//        sb.append("</script>");
-        return sb.toString();
     }
 
     private String doDelete(MethodMeta methodMetaData) {
         StringBuilder sb = new StringBuilder();
-//        sb.append("<script> DELETE FROM ").append(methodMetaData.getTableMetadata().getTableName());
-//        String conditionSnippet = this.deleteConditionSnippet.apply(methodMetaData);
-//        if (StringUtils.hasText(conditionSnippet)) {
-//            sb.append(" <where>").append(conditionSnippet).append(" </where>");
-//        }
-//        sb.append("</script>");
+        sb.append("<script> DELETE FROM ").append(methodMetaData.getTableMetadata().getTableName());
+        String conditionSnippet = this.conditionSnippet.apply(methodMetaData);
+        if (StringUtils.hasText(conditionSnippet)) {
+            sb.append(" <where>").append(conditionSnippet).append(" </where>");
+        }
+        sb.append("</script>");
         return sb.toString();
     }
 }

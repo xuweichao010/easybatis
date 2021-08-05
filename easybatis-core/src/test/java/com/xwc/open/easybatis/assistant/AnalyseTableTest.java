@@ -16,8 +16,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Map;
-
 
 /**
  * 作者：徐卫超 cc
@@ -104,9 +102,8 @@ public class AnalyseTableTest {
         if (tableMetadata.getColumnMetaList().isEmpty()) {
             Assert.fail();
         }
-        Map<AuditorType, AuditorMapping> auditorMap = tableMetadata.getAuditorMap();
-        Assert.assertNotNull(auditorMap);
-        AuditorMapping auditorColumn = auditorMap.get(AuditorType.INSERT);
+        Assert.assertFalse(tableMetadata.getAuditorList().isEmpty());
+        AuditorMapping auditorColumn = tableMetadata.getAuditorList().stream().filter(item -> item.getField().equals("updateName")).findAny().orElse(null);
         Assert.assertNotNull(auditorColumn);
         Assert.assertEquals(auditorColumn.getColumn(), "update_name01");
         Assert.assertFalse(auditorColumn.isSelectIgnore());

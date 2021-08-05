@@ -90,23 +90,12 @@ public class MethodMeta {
         return chooseAnnotationType(annotationClass) != null;
     }
 
-    public List<Mapping> selectColumnList() {
-        return column().stream().filter(Objects::nonNull).filter(column -> !column.isSelectIgnore()).collect(Collectors.toList());
-    }
-
-    public List<Mapping> insertColumnList() {
-        return column().stream().filter(Objects::nonNull).filter(column -> !column.isInsertIgnore()).collect(Collectors.toList());
-    }
-
-    public List<Mapping> updateColumnList() {
-        return column().stream().filter(Objects::nonNull).filter(column -> !column.isUpdateIgnore()).collect(Collectors.toList());
-    }
 
     public List<Mapping> column() {
         ArrayList<Mapping> list = new ArrayList<>();
         list.add(tableMetadata.getId());
         list.addAll(tableMetadata.getColumnMetaList());
-        list.addAll(tableMetadata.getAuditorMap().values().stream().sorted(Comparator.comparingInt(s -> s.getType().ordinal())).collect(Collectors.toList()));
+        list.addAll(tableMetadata.getAuditorList().stream().sorted(Comparator.comparingInt(s -> s.getType().ordinal())).collect(Collectors.toList()));
         list.add(tableMetadata.getLogic());
         return list;
     }

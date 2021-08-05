@@ -22,7 +22,7 @@ public class MysqlCommonsUtils {
             list.add(tableMeta.getId());
         }
         list.addAll(tableMeta.getColumnMetaList());
-        list.addAll(tableMeta.getAuditorMap().values().stream()
+        list.addAll(tableMeta.getAuditorList().stream()
                 .sorted(Comparator.comparingInt(s -> s.getType().ordinal())).collect(Collectors.toList()));
         if (tableMeta.getLogic() != null) {
             list.add(tableMeta.getLogic());
@@ -30,10 +30,20 @@ public class MysqlCommonsUtils {
         return list;
     }
 
+    public static List<Mapping> selectColumn(TableMeta tableMeta) {
+        ArrayList<Mapping> list = new ArrayList<>();
+        list.add(tableMeta.getId());
+        list.addAll(tableMeta.getColumnMetaList());
+        list.addAll(tableMeta.getAuditorList().stream()
+                .sorted(Comparator.comparingInt(s -> s.getType().ordinal()))
+                .filter(auditorMapping -> !auditorMapping.isSelectIgnore()).collect(Collectors.toList()));
+        return list;
+    }
+
     public static List<Mapping> updateColumn(TableMeta tableMeta) {
         ArrayList<Mapping> list = new ArrayList<>();
         list.addAll(tableMeta.getColumnMetaList());
-        list.addAll(tableMeta.getAuditorMap().values().stream().filter(item -> !item.isUpdateIgnore())
+        list.addAll(tableMeta.getAuditorList().stream().filter(item -> !item.isUpdateIgnore())
                 .sorted(Comparator.comparingInt(s -> s.getType().ordinal())).collect(Collectors.toList()));
         if (tableMeta.getLogic() != null) {
             list.add(tableMeta.getLogic());
