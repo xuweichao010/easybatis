@@ -56,7 +56,6 @@ import java.util.stream.Stream;
 public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
     private static final Set<Class<? extends Annotation>> statementAnnotationTypes = Stream
             .of(SelectSql.class, InsertSql.class, UpdateSql.class, DeleteSql.class).collect(Collectors.toSet());
-    //private final static Log logger =
 
 
     private final EasybatisConfiguration easybatisConfiguration;

@@ -161,11 +161,13 @@ public class AnnotationAssistant {
             // 添加主键修改条件
             IdMapping id = meta.getTableMetadata().getId();
             Placeholder placeholder = placeholderBuilder.parameterHolder(id.getField(), meta.isMulti() ? entityParam.getParamName() : null);
-            meta.addParamMeta(ParamMapping.convert(id.getField(), id.getColumn(), placeholder, null, false, ConditionType.EQUAL));
+            meta.addParamMeta(ParamMapping.convert(id.getField(), id.getColumn(), placeholder, null, false,
+                    ConditionType.EQUAL, null));
             LogicMapping logic = meta.getTableMetadata().getLogic();
             if (logic != null) {
                 placeholder = placeholderBuilder.parameterHolder(logic.getField(), meta.isMulti() ? entityParam.getParamName() : null);
-                meta.addParamMeta(ParamMapping.convert(logic.getField(), logic.getColumn(), placeholder, null, false, ConditionType.EQUAL));
+                meta.addParamMeta(ParamMapping.convert(logic.getField(), logic.getColumn(),
+                        placeholder, null, false, ConditionType.EQUAL, null));
             }
         }
         return meta;
@@ -196,8 +198,10 @@ public class AnnotationAssistant {
         resolverSqlParamSnippet(paramList, meta);
         //有逻辑删除时
         if (logic != null) {
+            meta.setLogicallyDelete(true);
             Placeholder placeholder = placeholderBuilder.parameterHolder(logic.getField(), null);
-            meta.addParamMeta(ParamMapping.convert(logic.getField() + "0", logic.getColumn(), placeholder, null, false, ConditionType.SET_PARAM));
+            meta.addParamMeta(ParamMapping.convert(logic.getField() + "0", logic.getColumn(), placeholder,
+                    null, false, ConditionType.SET_PARAM, null));
         }
         return meta;
     }
@@ -279,15 +283,22 @@ public class AnnotationAssistant {
 
     private ParamMapping parseParamMate(ParamMate paramMate, String parentName,
                                         boolean isMulti, boolean methodDynamic, boolean isObject) {
+        String methodParamName = StringUtils.hasText(parentName) ? parentName : paramMate.getParamName();
         String paramName = paramMate.getParamName();
-        if (paramMate.getAnnotation() == null) {
-            return ParamMapping.convert(paramName, underscoreName(paramName),
-                    builderPlaceholder(paramName, parentName), null, methodDynamic, ConditionType.EQUAL);
-        }
         if (paramMate.getType() == ParamMate.TYPE_AUDITOR) {
             return ParamMapping.convert(paramName, underscoreName(paramName),
-                    builderPlaceholder(paramName, parentName), null, false, ConditionType.SET_PARAM);
+                    builderPlaceholder(paramName, parentName), null, false, ConditionType.SET_PARAM, null);
         }
+        if (paramMate.getType() == ParamMate.TYPE_LOGIC) {
+            return ParamMapping.convert(paramName, underscoreName(paramName),
+                    builderPlaceholder(paramName, parentName), null, false, ConditionType.EQUAL, null);
+        }
+
+        if (paramMate.getAnnotation() == null) {
+            return ParamMapping.convert(paramName, underscoreName(paramName),
+                    builderPlaceholder(paramName, parentName), null, methodDynamic, ConditionType.EQUAL, methodParamName);
+        }
+
         // 获取参数条件
         AnnotationUtils.AnnotationMate annotationMate = AnnotationUtils.findAnnotationMate(paramMate.getAnnotation(), Condition.class);
         if (annotationMate == null) {
@@ -308,10 +319,10 @@ public class AnnotationAssistant {
             return ParamMapping.convert("collection",
                     StringUtils.hasText(value) ? value : underscoreName(paramName),
                     builderPlaceholder("collection", parentName),
-                    alias, methodDynamic || dynamic, annotation.type());
+                    alias, methodDynamic || dynamic, annotation.type(), methodParamName);
         }
         return ParamMapping.convert(paramName, StringUtils.hasText(value) ? value : underscoreName(paramName), builderPlaceholder(paramName, parentName),
-                alias, dynamic || methodDynamic, annotation.type());
+                alias, dynamic || methodDynamic, annotation.type(), methodParamName);
     }
 
 
@@ -420,7 +431,7 @@ public class AnnotationAssistant {
     private void resolverLogic(MethodMeta methodMeta, List<ParamMate> paramList) {
         LogicMapping logic = methodMeta.getTableMetadata().getLogic();
         if (logic == null) return;
-        if (methodMeta.getSqlCommand() != SqlCommandType.INSERT ) {
+        if (methodMeta.getSqlCommand() != SqlCommandType.INSERT) {
             if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)) {
                 paramList.add(ParamMate.builder(logic.getColumn(), ParamMate.TYPE_LOGIC));
             }

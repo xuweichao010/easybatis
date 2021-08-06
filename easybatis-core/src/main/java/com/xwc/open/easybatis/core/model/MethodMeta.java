@@ -1,14 +1,13 @@
 package com.xwc.open.easybatis.core.model;
 
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
-import com.xwc.open.easybatis.core.model.table.Mapping;
 import lombok.Data;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
 
 
 @Data
@@ -44,6 +43,8 @@ public class MethodMeta {
      * 是否是多个参数
      */
     private boolean isMulti = false;
+
+    private boolean logicallyDelete = false;
 
     public void addParamMeta(ParamMapping mapping) {
         this.paramMetaList.add(mapping);
@@ -86,17 +87,8 @@ public class MethodMeta {
         return AnnotationUtils.findAnnotation(this.method, annotationClass);
     }
 
-    public boolean hashAnnotationType(Class<? extends Annotation> annotationClass) {
-        return chooseAnnotationType(annotationClass) != null;
+    public boolean hashEnhance() {
+        return tableMetadata.getLogic() != null || !tableMetadata.getAuditorList().isEmpty();
     }
 
-
-    public List<Mapping> column() {
-        ArrayList<Mapping> list = new ArrayList<>();
-        list.add(tableMetadata.getId());
-        list.addAll(tableMetadata.getColumnMetaList());
-        list.addAll(tableMetadata.getAuditorList().stream().sorted(Comparator.comparingInt(s -> s.getType().ordinal())).collect(Collectors.toList()));
-        list.add(tableMetadata.getLogic());
-        return list;
-    }
 }

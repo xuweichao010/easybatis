@@ -1,1 +1,1 @@
-package com.xwc.open.easybatis.core.support;/** * 创建人：徐卫超 * 时间：2019/8/3 15:08 * 功能：esbatis审计功能接口 * 备注： */public interface AuditorContext {    Object id();    Object name();    Object time();    void clear();}
+package com.xwc.open.easybatis.core.support;import java.util.Map;/** * 创建人：徐卫超 * 时间：2019/8/3 15:08 * 功能：esbatis审计功能接口 * 备注： */public interface AuditorContext {    Map<String, Object> get();}
