@@ -82,7 +82,7 @@ public class AnalyseMethodTest {
                 MethodMeta metadata = annotationAssistant.parseMethodMate(method, tableMeta);
                 List<ParamMapping> paramMetaList = metadata.getParamMetaList();
                 paramMetaList.forEach(paramMapping -> {
-                    if (paramMapping.getParamName().equals("list")) {
+                    if (paramMapping.getParamName().equals("collection")) {
                         Assert.assertEquals("ids", paramMapping.getColumnName());
                         Assert.assertEquals(ConditionType.IN, paramMapping.getCondition());
                     } else {

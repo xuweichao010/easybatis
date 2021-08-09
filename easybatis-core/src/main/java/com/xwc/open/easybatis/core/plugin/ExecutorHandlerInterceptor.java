@@ -122,8 +122,8 @@ public class ExecutorHandlerInterceptor implements Interceptor {
                 try {
                     logic.getSetter().invoke(obj, logic.getValid());
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                }
 
+                }
             }
         }
     }

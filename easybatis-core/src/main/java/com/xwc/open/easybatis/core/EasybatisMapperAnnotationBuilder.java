@@ -6,9 +6,10 @@ import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.enums.IdType;
+import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
+import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.model.TableMeta;
-import com.xwc.open.easybatis.core.model.table.IdMapping;
 import com.xwc.open.easybatis.core.support.SqlSourceGenerator;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.annotations.ResultMap;
@@ -302,9 +303,10 @@ public class EasybatisMapperAnnotationBuilder extends MapperAnnotationBuilder {
                     keyProperty = selectKey.keyProperty();
                 } else if (tableMeta.getId().getIdType() == IdType.AUTO && SqlCommandType.INSERT.equals(sqlCommandType)) {
                     // 处理自增长ID
-                    if (methodMeta.getParamMetaList().size() > 1) {
-                        IdMapping id = methodMeta.getTableMetadata().getId();
-                        keyProperty = id.getField() + "." + tableMeta.getId().getField();
+                    if (methodMeta.isMulti()) {
+                        ParamMapping mapping = methodMeta.getParamMetaList().stream().filter(ParamMapping::isEntity).findAny()
+                                .orElseThrow(() -> new EasyBatisException("未发现实体对象"));
+                        keyProperty = mapping.getParamName() + "." + methodMeta.getTableMetadata().getId().getField();
                     } else {
                         keyProperty = tableMeta.getId().getField();
                     }
