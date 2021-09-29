@@ -6,6 +6,7 @@ import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.TableMeta;
 import com.xwc.open.easybatis.mysql.parser.logic.LogicBaseMapper;
+import com.xwc.open.easybatis.mysql.parser.logic.LogicTableBaseMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -43,6 +44,33 @@ public class LogicBaseTest {
         this.annotationAssistant = easybatisConfiguration.getAnnotationAssistant();
         this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(LogicBaseMapper.class));
     }
+
+    @Test
+    public void findAll() {
+        Method method = chooseMethod(LogicBaseMapper.class, "findAll");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName` FROM t_user" +
+                " <where> `valid` = #{valid} </where>" +
+                "</script>";
+        Assert.assertEquals(expected, sql);
+    }
+
+    @Test
+    public void findTableAll() {
+        Method method = chooseMethod(LogicTableBaseMapper.class, "findAll");
+        MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
+                tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
+                " SELECT `id`, `orgCode`, `orgName` FROM t_user" +
+                " <where> `valid` = #{valid} </where>" +
+                "</script>";
+        Assert.assertEquals(expected, sql);
+    }
+
 
     @Test
     public void selectKey() {

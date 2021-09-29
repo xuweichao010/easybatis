@@ -23,4 +23,6 @@ import java.util.List;
 public interface LogicTableUserMapper extends BaseTableMapper<LogicTableUser, String> {
 
 
+    @SelectSql
+    List<LogicTableUser> findAll(@Ignore String tableName);
 }

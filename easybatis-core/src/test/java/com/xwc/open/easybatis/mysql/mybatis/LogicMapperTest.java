@@ -70,6 +70,14 @@ public class LogicMapperTest {
     }
 
     @Test
+    public void findAll(){
+        List<LogicUser> users = logicUserMapper.findAll();
+        Assert.assertFalse(users.isEmpty());
+        List<LogicTableUser> tableUsers = logicTableUserMapper.findAll("t_user");
+        Assert.assertFalse(tableUsers.isEmpty());
+    }
+
+    @Test
     public void insert() {
         LogicTableUser logicTableUser = genderLogicTableUser();
         LogicUser logicUser = genderLogicUser();

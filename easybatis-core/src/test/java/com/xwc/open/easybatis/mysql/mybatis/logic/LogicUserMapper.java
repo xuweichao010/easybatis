@@ -30,4 +30,7 @@ public interface LogicUserMapper extends BaseMapper<LogicUser, String> {
 
     @SelectSql
     List<LogicUser> list(UserFilter filter);
+
+    @SelectSql
+    List<LogicUser> findAll();
 }

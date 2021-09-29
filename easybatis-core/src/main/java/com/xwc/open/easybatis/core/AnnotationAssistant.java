@@ -306,15 +306,17 @@ public class AnnotationAssistant {
             throw new IllegalArgumentException("非法的注解信息");
         }
         Condition annotation = (Condition) annotationMate.getAnnotation();
-        if (annotation.type() == ConditionType.IGNORE) {
-            return null;
-        }
+
         // 获取参数信息
         Map<String, Object> annotationAttributes = AnnotationUtils.getAnnotationAttributes(paramMate.getAnnotation());
         String alias = (String) annotationAttributes.get("alias");
         boolean dynamic = (annotationAttributes.get("dynamic") != null && (boolean) annotationAttributes.get("dynamic"));
         String value = (String) annotationAttributes.get("value");
 
+        if (annotation.type() == ConditionType.IGNORE) {
+            return ParamMapping.convert(paramName, null, null,
+                    null, false, annotation.type(), methodParamName);
+        }
         // 处理方法参数中只有一个IN 查询的时候
         if (!isMulti && (annotation.type() == ConditionType.IN || annotation.type() == ConditionType.NOT_IN) && !isObject) {
             return ParamMapping.convert("collection",

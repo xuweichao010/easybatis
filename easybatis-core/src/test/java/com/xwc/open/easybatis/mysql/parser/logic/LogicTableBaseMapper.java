@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.mysql.parser.logic;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
+import com.xwc.open.easybatis.core.anno.table.Ignore;
 import com.xwc.open.easybatis.core.support.BaseMapper;
 
 import java.util.List;
@@ -10,11 +11,9 @@ import java.util.List;
  * 时间：2020/12/18
  * 描述：
  */
-public interface LogicBaseMapper extends BaseMapper<LogicEntity, String> {
-
-    List<LogicEntity> list(LogicFilter filter);
+public interface LogicTableBaseMapper extends BaseMapper<LogicTableEntity, String> {
 
     @SelectSql
-    List<LogicBaseMapper> findAll();
+    List<LogicTableEntity> findAll(@Ignore String tableName);
 
 }

@@ -5,8 +5,8 @@ import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.TableMeta;
-import com.xwc.open.easybatis.mysql.parser.select.BaseSelectMapper;
-import com.xwc.open.easybatis.mysql.parser.select.OrgSelectMapper;
+import com.xwc.open.easybatis.mysql.parser.logic.LogicBaseMapper;
+import com.xwc.open.easybatis.mysql.parser.logic.LogicTableBaseMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
  * 时间：2020/12/18
  * 描述：mysql单元测试
  */
-public class BaseSelectBug {
+public class LogicTableBaseTest {
 
 
     SqlSessionFactory sqlSessionFactory;
@@ -42,28 +42,16 @@ public class BaseSelectBug {
         this.configuration = this.sqlSessionFactory.getConfiguration();
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
         this.annotationAssistant = easybatisConfiguration.getAnnotationAssistant();
-        this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(OrgSelectMapper.class));
-
-
+        this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(LogicTableBaseMapper.class));
     }
 
-    /**
-     * 主键处理BUG
-     * 描述： 当主键的属性名不为 id的时候 查询条件被申明成ID
-     * 错误：<script> SELECT `code`, `name`, `parent_code`, `parent_name`, `address`, `employees_num` FROM t_org <where> `id` = #{id} AND `valid` = #{valid} </where></script>
-     * 正确：<script> SELECT `code`, `name`, `parent_code`, `parent_name`, `address`, `employees_num` FROM t_org <where> `code` = #{code} AND `valid` = #{valid} </where></script>
-     */
     @Test
-    public void idColumnBug() {
-
-        Method method = chooseMethod(OrgSelectMapper.class, "selectKey");
+    public void findAll() {
+        Method method = chooseMethod(LogicTableBaseMapper.class, "findAll");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
         String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String expected = "<script>" +
-                " SELECT `code`, `name`, `parent_code`, `parent_name`, `address`, `employees_num` FROM t_org" +
-                " <where> `code` = #{code} AND `valid` = #{valid} </where>" +
-                "</script>";
+        String expected = "<script> SELECT `id`, `orgCode`, `orgName` FROM ${tableName} <where> `valid` = #{valid} </where></script>";
         Assert.assertEquals(expected, sql);
     }
 

@@ -46,7 +46,9 @@ public class ExecutorHandlerInterceptor implements Interceptor {
 
     private Object doIntercept(MethodMeta methodMeta, Object value, MappedStatement ms) {
         Map<String, Object> paramMap;
-        if (value instanceof Map) {
+        if (value == null) {
+            paramMap = new HashMap<>();
+        } else if (value instanceof Map) {
             paramMap = (Map<String, Object>) value;
         } else {
             paramMap = new HashMap<>();
