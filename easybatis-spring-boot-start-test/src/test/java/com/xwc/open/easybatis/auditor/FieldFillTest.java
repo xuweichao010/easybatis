@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
-public class AuditorTest {
+public class FieldFillTest {
     @Autowired
     private AuditorUserMapper auditorUserMapper;
 

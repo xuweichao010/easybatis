@@ -1,7 +1,7 @@
 package com.xwc.open.easybatis.core.model;
 
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
-import com.xwc.open.easybatis.core.model.table.AuditorMapping;
+import com.xwc.open.easybatis.core.model.table.FieldFillMapping;
 import com.xwc.open.easybatis.core.model.table.IdMapping;
 import com.xwc.open.easybatis.core.model.table.LogicMapping;
 import com.xwc.open.easybatis.core.model.table.Mapping;
@@ -9,8 +9,6 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 创建人：徐卫超
@@ -42,7 +40,7 @@ public class TableMeta {
     /**
      * 审计信息
      */
-    private List<AuditorMapping> auditorList = new ArrayList<>(6);
+    private List<FieldFillMapping> FieldFills = new ArrayList<>(6);
 
     /**
      * 逻辑字段
@@ -66,8 +64,8 @@ public class TableMeta {
         if (!this.result && result) this.result = true;
     }
 
-    public void addAuditor(AuditorMapping auditor) {
-        this.auditorList.add( auditor);
+    public void addAuditor(FieldFillMapping auditor) {
+        this.FieldFills.add(auditor);
         this.setResult(auditor.isResult());
     }
 

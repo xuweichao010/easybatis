@@ -4,10 +4,9 @@ package com.xwc.open.easybatis.assistant;
 import com.xwc.open.easybatis.assistant.model.*;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
-import com.xwc.open.easybatis.core.enums.AuditorType;
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.model.TableMeta;
-import com.xwc.open.easybatis.core.model.table.AuditorMapping;
+import com.xwc.open.easybatis.core.model.table.FieldFillMapping;
 import com.xwc.open.easybatis.core.model.table.IdMapping;
 import com.xwc.open.easybatis.core.model.table.LogicMapping;
 import com.xwc.open.easybatis.core.model.table.Mapping;
@@ -97,13 +96,13 @@ public class AnalyseTableTest {
     }
 
     @Test
-    public void parseEntityAuditColumn() {
+    public void parseEntityFillsColumn() {
         TableMeta tableMetadata = annotationAssistant.parseEntityMate(AuditUser.class);
         if (tableMetadata.getColumnMetaList().isEmpty()) {
             Assert.fail();
         }
-        Assert.assertFalse(tableMetadata.getAuditorList().isEmpty());
-        AuditorMapping auditorColumn = tableMetadata.getAuditorList().stream().filter(item -> item.getField().equals("updateName")).findAny().orElse(null);
+        Assert.assertFalse(tableMetadata.getFieldFills().isEmpty());
+        FieldFillMapping auditorColumn = tableMetadata.getFieldFills().stream().filter(item -> item.getField().equals("updateName")).findAny().orElse(null);
         Assert.assertNotNull(auditorColumn);
         Assert.assertEquals(auditorColumn.getColumn(), "update_name01");
         Assert.assertFalse(auditorColumn.isSelectIgnore());

@@ -1,8 +1,7 @@
 package com.xwc.open.easybatis.utlis;
 
-import com.xwc.open.easybatis.core.anno.table.auditor.Auditor;
-import com.xwc.open.easybatis.core.anno.table.auditor.CreateId;
-import com.xwc.open.easybatis.core.anno.table.auditor.UpdateId;
+import com.xwc.open.easybatis.core.anno.table.FieldFill;
+import com.xwc.open.easybatis.core.anno.table.fill.UpdateId;
 import com.xwc.open.easybatis.core.anno.table.Column;
 import com.xwc.open.easybatis.core.anno.table.Table;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
@@ -27,8 +26,8 @@ public class AnnotationUtilsTest {
             } else if (field.getName().equals("updateId")) {
                 UpdateId updateId = AnnotationUtils.findAnnotation(field, UpdateId.class);
                 Assert.assertNotNull(updateId);
-                Auditor auditor = AnnotationUtils.findAnnotation(field, Auditor.class);
-                Assert.assertNotNull(auditor);
+                FieldFill fieldFill = AnnotationUtils.findAnnotation(field, FieldFill.class);
+                Assert.assertNotNull(fieldFill);
             }
         }
         Assert.assertEquals(fields.length, 2);
@@ -52,8 +51,8 @@ public class AnnotationUtilsTest {
                 UpdateId updateId = AnnotationUtils.findAnnotation(field, UpdateId.class);
                 Object value = AnnotationUtils.getValue(updateId, "value");
                 Assert.assertNotNull(value);
-                Auditor auditor = AnnotationUtils.findAnnotation(field, Auditor.class);
-                value = AnnotationUtils.getValue(auditor, "type");
+                FieldFill fieldFill = AnnotationUtils.findAnnotation(field, FieldFill.class);
+                value = AnnotationUtils.getValue(fieldFill, "type");
                 Assert.assertNotNull(value);
             }
         }
@@ -64,7 +63,7 @@ public class AnnotationUtilsTest {
         Field[] fields = AnnotationUtilsObject.class.getDeclaredFields();
         for (Field field : fields) {
             if (field.getName().equals("createUserId")) {
-                AnnotationUtils.AnnotationMate annotationMate = AnnotationUtils.findAnnotationMate(field, Auditor.class);
+                AnnotationUtils.AnnotationMate annotationMate = AnnotationUtils.findAnnotationMate(field, FieldFill.class);
                 System.out.println(annotationMate);
             }
         }

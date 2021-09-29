@@ -88,7 +88,7 @@ public class MethodMeta {
     }
 
     public boolean hashEnhance() {
-        return tableMetadata.getLogic() != null || !tableMetadata.getAuditorList().isEmpty();
+        return tableMetadata.getLogic() != null || !tableMetadata.getFieldFills().isEmpty();
     }
 
 }

@@ -51,6 +51,12 @@ public class ConditionMapperTest {
     }
 
     @Test
+    public void findAll() {
+        List<ConditionUser> all = conditionUserMapper.findAll();
+        Assert.assertFalse(all.isEmpty());
+    }
+
+    @Test
     public void equal() {
 
         List<ConditionUser> conditionUserList = conditionUserMapper.defaultEqual("曹操");

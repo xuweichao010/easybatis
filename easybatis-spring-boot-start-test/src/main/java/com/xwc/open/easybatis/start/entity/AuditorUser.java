@@ -1,10 +1,9 @@
 package com.xwc.open.easybatis.start.entity;
 
 import com.xwc.open.easybatis.core.anno.table.Table;
-import com.xwc.open.easybatis.core.anno.table.auditor.*;
+import com.xwc.open.easybatis.core.anno.table.fill.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import java.util.Date;
 

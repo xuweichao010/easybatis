@@ -66,9 +66,9 @@ public class ExecutorHandlerInterceptor implements Interceptor {
         ParamMapping entity = methodMeta.getParamMetaList().stream().filter(ParamMapping::isEntity).findAny().orElse(null);
         if (entity == null) {
             if (sqlCommand == SqlCommandType.UPDATE) {
-                methodMeta.getTableMetadata().getAuditorList().forEach(item -> {
+                methodMeta.getTableMetadata().getFieldFills().forEach(item -> {
                     if (item.getType().command() == SqlCommandType.UPDATE) {
-                        Object o = fillMap.get(item.getField());
+                        Object o = fillMap.get(item.getAttribute());
                         paramMap.put(item.getField(), o);
                     }
                 });
@@ -101,15 +101,15 @@ public class ExecutorHandlerInterceptor implements Interceptor {
 
     public void invokeObject(Object obj, TableMeta tableMeta, SqlCommandType command, Map<String, Object> fillMap) {
         if (command == SqlCommandType.UPDATE || command == SqlCommandType.INSERT) {
-            tableMeta.getAuditorList().forEach(item -> {
+            tableMeta.getFieldFills().forEach(item -> {
                 try {
                     if (item.getType().command() == SqlCommandType.UPDATE) {
-                        Object o = fillMap.get(item.getField());
+                        Object o = fillMap.get(item.getAttribute());
                         item.getSetter().invoke(obj, o);
                         return;
                     }
                     if (item.getType().command() == command) {
-                        Object o = fillMap.get(item.getField());
+                        Object o = fillMap.get(item.getAttribute());
                         item.getSetter().invoke(obj, o);
                     }
                 } catch (IllegalAccessException | InvocationTargetException e) {

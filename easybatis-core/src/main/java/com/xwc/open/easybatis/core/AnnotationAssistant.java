@@ -7,7 +7,7 @@ import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
 import com.xwc.open.easybatis.core.anno.condition.filter.*;
 import com.xwc.open.easybatis.core.anno.table.*;
-import com.xwc.open.easybatis.core.anno.table.auditor.*;
+import com.xwc.open.easybatis.core.anno.table.fill.*;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.commons.StringUtils;
@@ -15,7 +15,7 @@ import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.*;
-import com.xwc.open.easybatis.core.model.table.AuditorMapping;
+import com.xwc.open.easybatis.core.model.table.FieldFillMapping;
 import com.xwc.open.easybatis.core.model.table.IdMapping;
 import com.xwc.open.easybatis.core.model.table.LogicMapping;
 import com.xwc.open.easybatis.core.model.table.Mapping;
@@ -42,8 +42,8 @@ public class AnnotationAssistant {
         this.configuration = configuration;
     }
 
-    private final static Set<Class<? extends Annotation>> AuditorAnnoSet = Stream.of(CreateId.class,
-            UpdateId.class, CreateName.class, UpdateName.class, CreateTime.class, UpdateTime.class, Auditor.class)
+    private final static Set<Class<? extends Annotation>> fillAnnoSet = Stream.of(CreateId.class,
+            UpdateId.class, CreateName.class, UpdateName.class, CreateTime.class, UpdateTime.class, FieldFill.class)
             .collect(Collectors.toSet());
     private final static Set<Class<? extends Annotation>> operationAnnoSet = Stream
             .of(SelectSql.class, InsertSql.class, UpdateSql.class, DeleteSql.class).collect(Collectors.toSet());
@@ -97,10 +97,11 @@ public class AnnotationAssistant {
                 Logic loglic = mapping.chooseAnnotationType(Logic.class);
                 table.setLogic(new LogicMapping(mapping, loglic));
                 continue;
-            } else if (mapping.hashAnnotationType(Auditor.class)) {
-                AnnotationUtils.AnnotationMate mate = AnnotationUtils.findAnnotationMate(field, Auditor.class);
+            } else if (mapping.hashAnnotationType(FieldFill.class)) {
+                AnnotationUtils.AnnotationMate mate = AnnotationUtils.findAnnotationMate(field, FieldFill.class);
                 mapping.mergeAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(mate.getImplAnnotation()));
-                table.addAuditor(new AuditorMapping(mapping, ((Auditor) mate.getAnnotation()).type()));
+                FieldFill fieldFill = (FieldFill) mate.getAnnotation();
+                table.addAuditor(new FieldFillMapping(mapping, fieldFill.attribute(), fieldFill.type()));
                 continue;
             } else if (mapping.hashAnnotationType(Column.class)) {
                 Column column = mapping.chooseAnnotationType(Column.class);
@@ -150,7 +151,7 @@ public class AnnotationAssistant {
         // 解析逻辑删除
         resolverLogic(meta, paramList);
         // 处理审计
-        resolverAuditor(meta, paramList);
+        resolverfills(meta, paramList);
         // 解析参数
         resolverSqlParamSnippet(paramList, meta);
         // 处理更新条件
@@ -193,7 +194,7 @@ public class AnnotationAssistant {
         // 解析逻辑删除
         resolverLogic(meta, paramList);
         // 处理审计
-        resolverAuditor(meta, paramList);
+        resolverfills(meta, paramList);
         // 解析参数
         resolverSqlParamSnippet(paramList, meta);
         //有逻辑删除时
@@ -236,7 +237,7 @@ public class AnnotationAssistant {
         // 解析方法参数
         resolverMethodParams(meta, paramList);
         // 解析审计
-        resolverAuditor(meta, paramList);
+        resolverfills(meta, paramList);
         // 解析参数
         resolverSqlParamSnippet(paramList, meta);
         return meta;
@@ -409,11 +410,11 @@ public class AnnotationAssistant {
      * @param methodMeta 元信息
      * @param paramList  结果集合
      */
-    private void resolverAuditor(MethodMeta methodMeta, List<ParamMate> paramList) {
+    private void resolverfills(MethodMeta methodMeta, List<ParamMate> paramList) {
         if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)
                 && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
             if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)) {
-                methodMeta.getTableMetadata().getAuditorList().stream().filter(item -> item.getType().command() == SqlCommandType.UPDATE).forEach(auditorMapping -> {
+                methodMeta.getTableMetadata().getFieldFills().stream().filter(item -> item.getType().command() == SqlCommandType.UPDATE).forEach(auditorMapping -> {
                     paramList.add(ParamMate.builder(auditorMapping.getField(), ParamMate.TYPE_AUDITOR,
                             chooseAuditsAnnotationType(auditorMapping.getAnnotationSet())));
                 });
@@ -475,22 +476,16 @@ public class AnnotationAssistant {
         return AnnotationUtils.findAnnotation(field, Ignore.class) != null;
     }
 
-    /**
-     * 检查是否是审计字段 如果是则返回对应注解
-     */
-    public Annotation chooseAuditsAnnotationType(Field field) {
-        Annotation[] annotations = field.getDeclaredAnnotations();
-        for (Annotation annotation : annotations) {
-            if (AuditorAnnoSet.contains(annotation.annotationType())) {
-                return annotation;
-            }
-        }
-        return null;
-    }
 
+    /**
+     * 集合中是否有填充属性
+     *
+     * @param annotationSet
+     * @return
+     */
     public Annotation chooseAuditsAnnotationType(Set<Annotation> annotationSet) {
         for (Annotation annotation : annotationSet) {
-            if (AuditorAnnoSet.contains(annotation.annotationType())) {
+            if (fillAnnoSet.contains(annotation.annotationType())) {
                 return annotation;
             }
         }

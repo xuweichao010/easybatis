@@ -14,6 +14,10 @@ import java.util.List;
  */
 @Mapper
 public interface ConditionUserMapper extends EasyMapper<ConditionUser, String> {
+
+    @SelectSql
+    List<ConditionUser> findAll();
+
     @SelectSql
     List<ConditionUser> defaultEqual(String name);
 

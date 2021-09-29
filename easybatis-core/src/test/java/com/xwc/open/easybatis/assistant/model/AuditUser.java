@@ -3,12 +3,12 @@ package com.xwc.open.easybatis.assistant.model;
 
 import com.xwc.open.easybatis.core.anno.table.Id;
 import com.xwc.open.easybatis.core.anno.table.Table;
-import com.xwc.open.easybatis.core.anno.table.auditor.CreateId;
-import com.xwc.open.easybatis.core.anno.table.auditor.CreateName;
-import com.xwc.open.easybatis.core.anno.table.auditor.CreateTime;
-import com.xwc.open.easybatis.core.anno.table.auditor.UpdateId;
-import com.xwc.open.easybatis.core.anno.table.auditor.UpdateName;
-import com.xwc.open.easybatis.core.anno.table.auditor.UpdateTime;
+import com.xwc.open.easybatis.core.anno.table.fill.CreateId;
+import com.xwc.open.easybatis.core.anno.table.fill.CreateName;
+import com.xwc.open.easybatis.core.anno.table.fill.CreateTime;
+import com.xwc.open.easybatis.core.anno.table.fill.UpdateId;
+import com.xwc.open.easybatis.core.anno.table.fill.UpdateName;
+import com.xwc.open.easybatis.core.anno.table.fill.UpdateTime;
 import com.xwc.open.easybatis.core.enums.IdType;
 
 import java.util.Date;

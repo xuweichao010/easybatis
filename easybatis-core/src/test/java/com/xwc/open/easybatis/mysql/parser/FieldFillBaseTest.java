@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 
-public class AuditorBaseTest {
+public class FieldFillBaseTest {
 
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;

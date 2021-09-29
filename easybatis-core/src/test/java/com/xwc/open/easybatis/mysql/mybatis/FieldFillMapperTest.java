@@ -1,7 +1,6 @@
 package com.xwc.open.easybatis.mysql.mybatis;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
-import com.xwc.open.easybatis.core.anno.table.auditor.Auditor;
 import com.xwc.open.easybatis.mysql.mybatis.auditor.AuditorTableUser;
 import com.xwc.open.easybatis.mysql.mybatis.auditor.AuditorTableUserMapper;
 import com.xwc.open.easybatis.mysql.mybatis.auditor.AuditorUser;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class AuditorMapperTest {
+public class FieldFillMapperTest {
 
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
