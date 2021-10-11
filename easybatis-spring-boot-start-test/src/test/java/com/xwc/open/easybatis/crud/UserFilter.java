@@ -1,6 +1,6 @@
 package com.xwc.open.easybatis.crud;
 
-import com.xwc.open.easybatis.core.anno.condition.filter.ASC;
+import com.xwc.open.easybatis.core.anno.condition.ASC;
 import com.xwc.open.easybatis.core.anno.condition.filter.Offset;
 import com.xwc.open.easybatis.core.anno.condition.filter.RightLike;
 import com.xwc.open.easybatis.core.anno.condition.filter.Start;

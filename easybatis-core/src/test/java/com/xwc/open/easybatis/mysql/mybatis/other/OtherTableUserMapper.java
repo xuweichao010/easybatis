@@ -1,8 +1,8 @@
 package com.xwc.open.easybatis.mysql.mybatis.other;
 
 import com.xwc.open.easybatis.core.anno.SelectSql;
-import com.xwc.open.easybatis.core.anno.condition.filter.ASC;
-import com.xwc.open.easybatis.core.anno.condition.filter.DESC;
+import com.xwc.open.easybatis.core.anno.condition.ASC;
+import com.xwc.open.easybatis.core.anno.condition.DESC;
 import com.xwc.open.easybatis.core.anno.table.Ignore;
 import com.xwc.open.easybatis.core.support.EasyMapper;
 import org.apache.ibatis.annotations.Mapper;

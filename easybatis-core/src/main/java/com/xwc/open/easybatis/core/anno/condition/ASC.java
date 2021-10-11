@@ -1,5 +1,6 @@
-package com.xwc.open.easybatis.core.anno.condition.filter;
+package com.xwc.open.easybatis.core.anno.condition;
 
+import com.xwc.open.easybatis.core.anno.condition.filter.Condition;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 
 import java.lang.annotation.*;
@@ -13,9 +14,8 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Condition(type = ConditionType.ORDER_BY_DESC)
-public @interface DESC {
-
+@Condition(type = ConditionType.ORDER_BY_ASC)
+public @interface ASC {
     /**
      * 属性和数据表之间的列关系
      *
@@ -34,3 +34,5 @@ public @interface DESC {
      */
     String alias() default "";
 }
+
+

@@ -1,5 +1,8 @@
 package com.xwc.open.easybatis.core.mysql.snippet;
 
+import com.xwc.open.easybatis.core.anno.condition.Count;
+import com.xwc.open.easybatis.core.anno.condition.OrderBy;
+import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.MethodMeta;
@@ -39,17 +42,26 @@ public class MySqlOrderBySnippet implements OrderBySnippet {
         List<ParamMapping> orderList = methodMeta.getParamMetaList().stream().filter(item ->
                 orderConditionMap.containsKey(item.getCondition())).collect(Collectors.toList());
         if (orderList.isEmpty()) return null;
-        validate(orderList);
+        OrderBy annotation = methodMeta.chooseAnnotationType(OrderBy.class);
+        if (annotation != null) {
+            if (StringUtils.hasText(annotation.value())) {
+                return annotation.value();
+            } else if (orderList.size() > 1) {
+                throw new EasyBatisException("@OrderBy 无法和 @ASC或@DESC混用");
+            } else {
+                throw new EasyBatisException("无效的 OrderBy 语句");
+            }
+        }
         return orderList.stream().map(this::builderOrderBy).collect(Collectors.joining(" "));
     }
 
     private String builderOrderBy(ParamMapping mapping) {
         String orderBy;
         if (mapping.getCondition() == ConditionType.ORDER_BY) {
-            orderBy =  mapping.getColumnName() + " " + orderConditionMap.get(mapping.getCondition());
+            orderBy = mapping.getColumnName() + " " + orderConditionMap.get(mapping.getCondition());
         } else {
             orderBy = placeholderBuilder.columnHolder(mapping.getAlias(), mapping.getColumnName()).getHolder()
-                    + " " + orderConditionMap.get(mapping.getCondition())+",";
+                    + " " + orderConditionMap.get(mapping.getCondition()) + ",";
         }
         if (mapping.isDynamic()) {
             return "<if test='" + mapping.getPlaceholderName().getName() + " != null'> " + orderBy + "</if>";
@@ -58,13 +70,4 @@ public class MySqlOrderBySnippet implements OrderBySnippet {
         }
     }
 
-    public void validate(List<ParamMapping> orderList) {
-        List<ParamMapping> orderByList = orderList.stream()
-                .filter(mapping -> mapping.getCondition() == ConditionType.ORDER_BY).collect(Collectors.toList());
-        if (orderByList.size() > 1) {
-            throw new EasyBatisException("发现多个@OrderBy 一个查询中有且最多只能有一个OrderBy注解");
-        } else if (orderByList.size() == 1 && orderList.size() != 1) {
-            throw new EasyBatisException("@OrderBy 无法和 @ASC或@DESC混用");
-        }
-    }
 }

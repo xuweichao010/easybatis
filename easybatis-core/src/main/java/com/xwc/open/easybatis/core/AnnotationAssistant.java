@@ -5,6 +5,8 @@ import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
+import com.xwc.open.easybatis.core.anno.condition.ASC;
+import com.xwc.open.easybatis.core.anno.condition.DESC;
 import com.xwc.open.easybatis.core.anno.condition.filter.*;
 import com.xwc.open.easybatis.core.anno.table.*;
 import com.xwc.open.easybatis.core.anno.table.fill.*;
@@ -262,10 +264,7 @@ public class AnnotationAssistant {
                     list.addAll(parseObjectMate(paramMate, isMulti, true));
                 }
             } else {
-                ParamMapping paramMapping = parseParamMate(paramMate, null, isMulti, methodDynamic, false);
-                if (paramMapping != null) {
-                    list.add(paramMapping);
-                }
+                list.add( parseParamMate(paramMate, null, isMulti, methodDynamic, false));
             }
         });
         methodMeta.setParamMetaList(list);
