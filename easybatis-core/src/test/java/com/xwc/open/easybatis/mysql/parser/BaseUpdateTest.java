@@ -47,26 +47,26 @@ public class BaseUpdateTest {
     public void update() {
         Method method = chooseMethod(BaseUpdateMapper.class, "update");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String expected = "<script>" +
                 " UPDATE t_mysql_sql_source" +
                 " <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, `name` = #{name}, </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
-        Assert.assertEquals(select, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void updateEntity() {
         Method method = chooseMethod(BaseUpdateMapper.class, "updateEntity");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String expected = "<script>" +
                 " UPDATE t_mysql_sql_source" +
                 " <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, `name` = #{name}, </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
-        Assert.assertEquals(select, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
 
@@ -74,46 +74,46 @@ public class BaseUpdateTest {
     public void updateEntityMixture() {
         Method method = chooseMethod(BaseUpdateMapper.class, "updateEntityMixture");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String expected = "<script>" +
                 " UPDATE t_mysql_sql_source" +
                 " <set> `orgCode` = #{entity.orgCode}, `orgName` = #{entity.orgName}, `name` = #{entity.name}, </set>" +
                 " <where> `id` = #{entity.id} </where>" +
                 "</script>";
-        Assert.assertEquals(select, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void updateParam() {
         Method method = chooseMethod(BaseUpdateMapper.class, "updateParam");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String expected = "<script>" +
                 " UPDATE t_mysql_sql_source" +
                 " <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, </set>" +
                 "</script>";
-        Assert.assertEquals(sql, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void updateParamCondition() {
         Method method = chooseMethod(BaseUpdateMapper.class, "updateParamCondition");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String expected = "<script>" +
                 " UPDATE t_mysql_sql_source" +
                 " <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
-        Assert.assertEquals(sql, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void updateEntityDynamic() {
         Method method = chooseMethod(BaseUpdateMapper.class, "updateEntityDynamic");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String expected = "<script>" +
                 " UPDATE t_mysql_sql_source" +
                 " <set>" +
                 " <if test='orgCode != null'> `orgCode` = #{orgCode},</if>" +
@@ -121,23 +121,19 @@ public class BaseUpdateTest {
                 " <if test='name != null'> `name` = #{name},</if>" +
                 " </set>" +
                 " <where> `id` = #{id} </where></script>";
-        Assert.assertEquals(sql, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
-    public void updateByCondition(){
-        Method method = chooseMethod(BaseUpdateMapper.class, "updateByCondition");
-        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        System.out.println(sql);
-    }
-
-    @Test
-    public void updateKey(){
+    public void updateKey() {
         Method method = chooseMethod(BaseUpdateMapper.class, "updateKey");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        System.out.println(sql);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String expected = "<script> UPDATE t_mysql_sql_source <set> `status` = #{status}, </set>" +
+                " <where> `ids` IN <foreach item= 'item'  collection='ids' open='(' separator=', ' close=')'>#{item}</foreach>" +
+                " </where>" +
+                "</script>";
+        Assert.assertEquals(expected, actual);
     }
 
 
@@ -145,8 +141,8 @@ public class BaseUpdateTest {
     public void updateEntityDynamicMixture() {
         Method method = chooseMethod(BaseUpdateMapper.class, "updateEntityDynamicMixture");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        String expected = "<script>" +
                 " UPDATE t_mysql_sql_source" +
                 " <set>" +
                 " <if test='entity.orgCode != null'> `orgCode` = #{entity.orgCode},</if>" +
@@ -155,7 +151,7 @@ public class BaseUpdateTest {
                 " </set>" +
                 " <where> `id` = #{entity.id} </where>" +
                 "</script>";
-       Assert.assertEquals(targetSql,sql );
+        Assert.assertEquals(expected, actual);
     }
 
     private Method chooseMethod(Class<?> classType, String methodName) {

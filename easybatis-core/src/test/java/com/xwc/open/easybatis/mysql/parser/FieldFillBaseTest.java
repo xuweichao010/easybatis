@@ -43,8 +43,9 @@ public class FieldFillBaseTest {
         Method method = chooseMethod(AuditorUserMapper.class, "selectKey");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `updateTime`, `updateId`, `updateName` FROM t_user <where> `id` = #{id} </where></script>", sql);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected ="<script> SELECT `id`, `orgCode`, `orgName`, `updateTime`, `updateId`, `updateName` FROM t_user <where> `id` = #{id} </where></script>";
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -52,14 +53,14 @@ public class FieldFillBaseTest {
         Method method = chooseMethod(AuditorUserMapper.class, "insert");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String expected = "<script>" +
                 " INSERT INTO t_user" +
                 " (`id`, `orgCode`, `orgName`, `createTime`, `createId`, `createName`, `updateTime`, `updateId`, `updateName`)" +
                 " VALUES" +
                 " (#{id}, #{orgCode}, #{orgName}, #{createTime}, #{createId}, #{createName}, #{updateTime}, #{updateId}, #{updateName})" +
                 " </script>";
-        Assert.assertEquals(sqlTarget, sql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -67,8 +68,8 @@ public class FieldFillBaseTest {
         Method method = chooseMethod(AuditorUserMapper.class, "insertBatch");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String expected = "<script>" +
                 " INSERT INTO t_user" +
                 " (`id`, `orgCode`, `orgName`, `createTime`, `createId`, `createName`, `updateTime`, `updateId`, `updateName`)" +
                 " VALUES" +
@@ -76,7 +77,7 @@ public class FieldFillBaseTest {
                 " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.createTime}, #{item.createId}, #{item.createName}, #{item.updateTime}, #{item.updateId}, #{item.updateName})" +
                 " </foreach>" +
                 " </script>";
-        Assert.assertEquals(sqlTarget, sql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -84,15 +85,15 @@ public class FieldFillBaseTest {
         Method method = chooseMethod(AuditorUserMapper.class, "update");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
+        String expected = "<script>" +
                 " UPDATE t_user" +
                 " <set>" +
                 " `orgCode` = #{orgCode}, `orgName` = #{orgName}, `updateTime` = #{updateTime}, `updateId` = #{updateId}, `updateName` = #{updateName}," +
                 " </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
-        Assert.assertEquals(sqlTarget, sql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -100,14 +101,13 @@ public class FieldFillBaseTest {
         Method method = chooseMethod(AuditorUserMapper.class, "updateParam");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
-        System.out.println(sql);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
+        String expected = "<script>" +
                 " UPDATE t_user" +
                 " <set> `name` = #{name}, `updateTime` = #{updateTime}, `updateId` = #{updateId}, `updateName` = #{updateName}, </set>" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
-        Assert.assertEquals(sqlTarget, sql);
+        Assert.assertEquals(expected, actual);
     }
 
     private Method chooseMethod(Class<?> classType, String methodName) {

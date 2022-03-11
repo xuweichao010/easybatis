@@ -50,9 +50,9 @@ public class LogicTableBaseTest {
         Method method = chooseMethod(LogicTableBaseMapper.class, "findAll");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String expected = "<script> SELECT `id`, `orgCode`, `orgName` FROM ${tableName} <where> `valid` = #{valid} </where></script>";
-        Assert.assertEquals(expected, sql);
+        Assert.assertEquals(expected, actual);
     }
 
 

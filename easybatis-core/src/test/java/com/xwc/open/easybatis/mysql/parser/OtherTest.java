@@ -49,9 +49,9 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "countAll");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT COUNT(*) FROM t_condition</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script> SELECT COUNT(*) FROM t_condition</script>";
+        Assert.assertEquals(expected, actual);
 
     }
 
@@ -60,9 +60,9 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "countCondition");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT COUNT(*) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
-        Assert.assertEquals(sql, sqlTarget);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script> SELECT COUNT(*) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -70,9 +70,9 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "distinctAll");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT DISTINCT(`id`, `orgCode`, `orgName`, `name`) FROM t_condition</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script> SELECT DISTINCT(`id`, `orgCode`, `orgName`, `name`) FROM t_condition</script>";
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -80,9 +80,9 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "distinctCondition");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT DISTINCT(`id`, `orgCode`, `orgName`, `name`) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
-        Assert.assertEquals(sql, sqlTarget);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script> SELECT DISTINCT(`id`, `orgCode`, `orgName`, `name`) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -90,9 +90,9 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "distinctCustomCondition");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT DISTINCT(id) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
-        Assert.assertEquals(sql, sqlTarget);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script> SELECT DISTINCT(id) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -100,9 +100,9 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "distinctCountCondition");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script> SELECT COUNT(DISTINCT(id)) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
-        Assert.assertEquals(sql, sqlTarget);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script> SELECT COUNT(DISTINCT(id)) FROM t_condition <where> `name` = #{name} AND `age` = #{age} </where></script>";
+        Assert.assertEquals(expected, actual);
     }
 
 
@@ -111,15 +111,15 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "orderBy");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT id FROM t_condition" +
                 " <where> `name` = #{name} </where>" +
                 " <trim prefix='ORDER BY' suffixOverrides=','>" +
                 " `name` ASC," +
                 " </trim>" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -127,15 +127,15 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "orderByMulti");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT id FROM t_condition" +
                 " <where> `name` = #{name} </where>" +
                 " <trim prefix='ORDER BY' suffixOverrides=','>" +
                 " `name` ASC, `job` DESC," +
                 " </trim>" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -143,8 +143,8 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "orderByMethodDynamic");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_condition" +
                 " <where>" +
@@ -154,7 +154,7 @@ public class OtherTest {
                 " <if test='age != null'> `age` ASC,</if>" +
                 " </trim>" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -162,8 +162,8 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "orderByMethodDynamicMulti");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_condition" +
                 " <where>" +
@@ -174,7 +174,7 @@ public class OtherTest {
                 " <if test='job != null'> `job` DESC,</if>" +
                 " </trim>" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -182,8 +182,8 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "orderByParamDynamic");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_condition" +
                 " <where>" +
@@ -193,7 +193,7 @@ public class OtherTest {
                 " <if test='age != null'> `age` ASC,</if>" +
                 " </trim>" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -201,8 +201,8 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "orderByParamDynamicMulti");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
                 " <where>" +
                 " <if test='name != null'> AND `name` = #{name} </if>" +
@@ -212,7 +212,7 @@ public class OtherTest {
                 " <if test='job != null'> `job` DESC,</if>" +
                 " </trim>" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(expected, actual);
     }
 
 
@@ -222,12 +222,12 @@ public class OtherTest {
         Method method = chooseMethod(OtherMapper.class, "limit");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_condition" +
                 " LIMIT #{start}, #{offset}" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(expected, actual);
     }
 
 

@@ -50,12 +50,12 @@ public class LogicBaseTest {
         Method method = chooseMethod(LogicBaseMapper.class, "findAll");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName` FROM t_user" +
                 " <where> `valid` = #{valid} </where>" +
                 "</script>";
-        Assert.assertEquals(expected, sql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -63,12 +63,12 @@ public class LogicBaseTest {
         Method method = chooseMethod(LogicTableBaseMapper.class, "findAll");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName` FROM t_user" +
                 " <where> `valid` = #{valid} </where>" +
                 "</script>";
-        Assert.assertEquals(expected, sql);
+        Assert.assertEquals(expected, actual);
     }
 
 
@@ -77,8 +77,9 @@ public class LogicBaseTest {
         Method method = chooseMethod(LogicBaseMapper.class, "selectKey");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName` FROM t_user <where> `id` = #{id} AND `valid` = #{valid} </where></script>", sql);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script> SELECT `id`, `orgCode`, `orgName` FROM t_user <where> `id` = #{id} AND `valid` = #{valid} </where></script>";
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -86,8 +87,9 @@ public class LogicBaseTest {
         Method method = chooseMethod(LogicBaseMapper.class, "update");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
-        Assert.assertEquals("<script> UPDATE t_user <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, </set> <where> `id` = #{id} AND `valid` = #{valid} </where></script>", sql);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
+        String expected = "<script> UPDATE t_user <set> `orgCode` = #{orgCode}, `orgName` = #{orgName}, </set> <where> `id` = #{id} AND `valid` = #{valid} </where></script>";
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -95,8 +97,8 @@ public class LogicBaseTest {
         Method method = chooseMethod(LogicBaseMapper.class, "updateActivate");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
-        String sqlTarget = "<script>"
+        String actual = easybatisConfiguration.getSqlSourceGenerator().update(methodMeta);
+        String expected = "<script>"
                 + " UPDATE t_user"
                 + " <set>"
                 + " <if test='orgCode != null'> `orgCode` = #{orgCode},</if>"
@@ -104,7 +106,7 @@ public class LogicBaseTest {
                 + " </set>"
                 + " <where> `id` = #{id} AND `valid` = #{valid} </where>"
                 + "</script>";
-        Assert.assertEquals(sqlTarget, sql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -112,9 +114,9 @@ public class LogicBaseTest {
         Method method = chooseMethod(LogicBaseMapper.class, "insert");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
-        String sqlTarget = "<script> INSERT INTO t_user (`id`, `orgCode`, `orgName`, `valid`) VALUES (#{id}, #{orgCode}, #{orgName}, #{valid}) </script>";
-        Assert.assertEquals(sqlTarget, sql);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String expected = "<script> INSERT INTO t_user (`id`, `orgCode`, `orgName`, `valid`) VALUES (#{id}, #{orgCode}, #{orgName}, #{valid}) </script>";
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -122,8 +124,8 @@ public class LogicBaseTest {
         Method method = chooseMethod(LogicBaseMapper.class, "insertBatch");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().insert(methodMeta);
+        String expected = "<script>" +
                 " INSERT INTO t_user" +
                 " (`id`, `orgCode`, `orgName`, `valid`)" +
                 " VALUES" +
@@ -131,7 +133,7 @@ public class LogicBaseTest {
                 " (#{item.id}, #{item.orgCode}, #{item.orgName}, #{item.valid})" +
                 " </foreach>" +
                 " </script>";
-        Assert.assertEquals(sqlTarget, sql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -139,9 +141,9 @@ public class LogicBaseTest {
         Method method = chooseMethod(LogicBaseMapper.class, "delete");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().delete(methodMeta);
-        String sqlTarget = "<script> UPDATE t_user <set> `valid` = #{valid0}, </set> <where> `id` = #{id} AND `valid` = #{valid} </where></script>";
-        Assert.assertEquals(sqlTarget, sql);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().delete(methodMeta);
+        String expected = "<script> UPDATE t_user <set> `valid` = #{valid0}, </set> <where> `id` = #{id} AND `valid` = #{valid} </where></script>";
+        Assert.assertEquals(expected, actual);
     }
 
 
