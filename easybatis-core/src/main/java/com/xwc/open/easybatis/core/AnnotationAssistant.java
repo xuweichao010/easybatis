@@ -153,7 +153,7 @@ public class AnnotationAssistant {
         // 解析逻辑删除
         resolverLogic(meta, paramList);
         // 处理审计
-        resolverfills(meta, paramList);
+        resolverFills(meta, paramList);
         // 解析参数
         resolverSqlParamSnippet(paramList, meta);
         // 处理更新条件
@@ -196,7 +196,7 @@ public class AnnotationAssistant {
         // 解析逻辑删除
         resolverLogic(meta, paramList);
         // 处理审计
-        resolverfills(meta, paramList);
+        resolverFills(meta, paramList);
         // 解析参数
         resolverSqlParamSnippet(paramList, meta);
         //有逻辑删除时
@@ -239,7 +239,7 @@ public class AnnotationAssistant {
         // 解析方法参数
         resolverMethodParams(meta, paramList);
         // 解析审计
-        resolverfills(meta, paramList);
+        resolverFills(meta, paramList);
         // 解析参数
         resolverSqlParamSnippet(paramList, meta);
         return meta;
@@ -263,8 +263,10 @@ public class AnnotationAssistant {
                 } else {
                     list.addAll(parseObjectMate(paramMate, isMulti, true));
                 }
+            } else if (paramMate.getType() == ParamMate.TYPE_KEY && methodMeta.getSqlCommand() == SqlCommandType.SELECT) {
+                list.add(parseParamMate(paramMate, null, isMulti, methodDynamic, false));
             } else {
-                list.add( parseParamMate(paramMate, null, isMulti, methodDynamic, false));
+                list.add(parseParamMate(paramMate, null, isMulti, methodDynamic, false));
             }
         });
         methodMeta.setParamMetaList(list);
@@ -278,7 +280,7 @@ public class AnnotationAssistant {
             } else {
                 return parseParamMate(item, null, false, methodDynamic, true);
             }
-        }).filter(Objects::nonNull).collect(Collectors.toList());
+        }).collect(Collectors.toList());
     }
 
     private ParamMapping parseParamMate(ParamMate paramMate, String parentName,
@@ -374,8 +376,10 @@ public class AnnotationAssistant {
                 } else if (isEntityParam(parameterizedType.getActualTypeArguments()[0], entityClass)
                         && (SqlCommandType.INSERT == methodMeta.getSqlCommand() || SqlCommandType.UPDATE == methodMeta.getSqlCommand())) {
                     return ParamMate.builderBatch(paramName, ParamMate.TYPE_ENTITY);
+                } else if (isKeyParam(parameterizedType.getActualTypeArguments()[0])) {
+                    return ParamMate.builder(paramName, ParamMate.TYPE_KEY, annotation);
                 } else {
-                    throw new EasyBatisException("Easybatis 框架解析错误");
+                    return ParamMate.builder(paramName, annotation);
                 }
             } else {
                 return ParamMate.builder(paramName, annotation);
@@ -411,7 +415,7 @@ public class AnnotationAssistant {
      * @param methodMeta 元信息
      * @param paramList  结果集合
      */
-    private void resolverfills(MethodMeta methodMeta, List<ParamMate> paramList) {
+    private void resolverFills(MethodMeta methodMeta, List<ParamMate> paramList) {
         if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)
                 && SqlCommandType.UPDATE == methodMeta.getSqlCommand()) {
             if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)) {

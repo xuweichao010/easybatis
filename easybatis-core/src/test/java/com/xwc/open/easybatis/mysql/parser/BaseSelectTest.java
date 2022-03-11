@@ -42,7 +42,7 @@ public class BaseSelectTest {
         this.easybatisConfiguration = new EasybatisConfiguration(configuration);
         this.annotationAssistant = easybatisConfiguration.getAnnotationAssistant();
         this.tableMeta = annotationAssistant.parseEntityMate(Reflection.getEntityClass(BaseSelectMapper.class));
-        
+
     }
 
     @Test
@@ -50,10 +50,10 @@ public class BaseSelectTest {
         Method method = chooseMethod(BaseSelectMapper.class, "selectKey");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source <where> `id` = #{id} </where></script>", select);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source <where> `id` = #{id} </where></script>";
+        Assert.assertEquals(expected, actual);
     }
-
 
 
     @Test
@@ -61,8 +61,9 @@ public class BaseSelectTest {
         Method method = chooseMethod(BaseSelectMapper.class, "selectKey");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source <where> `id` = #{id} </where></script>", select);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source <where> `id` = #{id} </where></script>";
+        Assert.assertEquals(expected, actual);
     }
 
 
@@ -71,8 +72,9 @@ public class BaseSelectTest {
         Method method = chooseMethod(BaseSelectMapper.class, "findAll1");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT id FROM t_mysql_sql_source</script>", select);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script> SELECT id FROM t_mysql_sql_source</script>";
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -80,8 +82,9 @@ public class BaseSelectTest {
         Method method = chooseMethod(BaseSelectMapper.class, "findAll");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        Assert.assertEquals("<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source</script>", select);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script> SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source</script>";
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -89,12 +92,12 @@ public class BaseSelectTest {
         Method method = chooseMethod(BaseSelectMapper.class, "methodGlobalDynamic");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name`" +
                 " FROM t_mysql_sql_source <where> <if test='name != null'> AND `name` = #{name} </if> </where>" +
                 "</script>";
-        Assert.assertEquals(select, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
 
@@ -103,12 +106,12 @@ public class BaseSelectTest {
         Method method = chooseMethod(BaseSelectMapper.class, "methodParamDynamic");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " <where> <if test='name != null'> AND `name` = #{name} </if> </where>" +
                 "</script>";
-        Assert.assertEquals(select, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -116,15 +119,15 @@ public class BaseSelectTest {
         Method method = chooseMethod(BaseSelectMapper.class, "methodGlobalMultiDynamic");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " <where>" +
                 " <if test='name != null'> AND `name` = #{name} </if>" +
                 " <if test='orgCode != null'> AND `orgCode` = #{orgCode} </if>" +
                 " </where>" +
                 "</script>";
-        Assert.assertEquals(select, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -132,15 +135,15 @@ public class BaseSelectTest {
         Method method = chooseMethod(BaseSelectMapper.class, "methodParamMultiDynamic");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " <where>" +
                 " <if test='name != null'> AND `name` = #{name} </if>" +
                 " <if test='orgCode != null'> AND `orgCode` = #{orgCode} </if>" +
                 " </where>" +
                 "</script>";
-        Assert.assertEquals(select, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
 
@@ -149,15 +152,15 @@ public class BaseSelectTest {
         Method method = chooseMethod(BaseSelectMapper.class, "methodCustom");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " <where> <if test='id != null'> AND `id` = #{id} </if>" +
                 " <if test='orgCode != null'> AND `orgCode` = #{orgCode} </if>" +
                 " <if test='ids != null'> AND `id` IN <foreach item= 'item'  collection='ids' open='(' separator=', ' close=')'>#{item}</foreach> </if>" +
                 " </where>" +
                 "</script>";
-        Assert.assertEquals(targetSql, select);
+        Assert.assertEquals(expected, actual);
 
     }
 
@@ -167,8 +170,8 @@ public class BaseSelectTest {
         Method method = chooseMethod(BaseSelectMapper.class, "methodMultiCustom");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " <where> <if test='one.id != null'> AND `id` = #{one.id} </if>" +
                 " <if test='one.orgCode != null'> AND `orgCode` = #{one.orgCode} </if>" +
@@ -176,7 +179,7 @@ public class BaseSelectTest {
                 " <if test='two.name != null'> AND `name` = #{two.name} </if>" +
                 " </where>" +
                 "</script>";
-        Assert.assertEquals(select, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -184,8 +187,8 @@ public class BaseSelectTest {
         Method method = chooseMethod(BaseSelectMapper.class, "methodMixture");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String select = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
-        String targetSql = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String expected = "<script>" +
                 " SELECT `id`, `orgCode`, `orgName`, `name` FROM t_mysql_sql_source" +
                 " <where>" +
                 " `name` = #{name}" +
@@ -194,7 +197,7 @@ public class BaseSelectTest {
                 " <if test='two.name != null'> AND `name` = #{two.name} </if>" +
                 " </where>" +
                 "</script>";
-        Assert.assertEquals(select, targetSql);
+        Assert.assertEquals(expected, actual);
     }
 
 

@@ -69,6 +69,7 @@ public class BaseUpdateTest {
         Assert.assertEquals(select, targetSql);
     }
 
+
     @Test
     public void updateEntityMixture() {
         Method method = chooseMethod(BaseUpdateMapper.class, "updateEntityMixture");
@@ -122,6 +123,23 @@ public class BaseUpdateTest {
                 " <where> `id` = #{id} </where></script>";
         Assert.assertEquals(sql, targetSql);
     }
+
+    @Test
+    public void updateByCondition(){
+        Method method = chooseMethod(BaseUpdateMapper.class, "updateByCondition");
+        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        System.out.println(sql);
+    }
+
+    @Test
+    public void updateKey(){
+        Method method = chooseMethod(BaseUpdateMapper.class, "updateKey");
+        MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
+        String sql = easybatisConfiguration.getSqlSourceGenerator().update(meta);
+        System.out.println(sql);
+    }
+
 
     @Test
     public void updateEntityDynamicMixture() {

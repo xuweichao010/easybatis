@@ -4,8 +4,10 @@ import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
+import com.xwc.open.easybatis.core.anno.condition.filter.In;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 创建人：徐卫超
@@ -33,5 +35,6 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 
     @DeleteSql
     Integer delete(K id);
+
 
 }

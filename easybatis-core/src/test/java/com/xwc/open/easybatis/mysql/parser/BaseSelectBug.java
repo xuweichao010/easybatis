@@ -59,12 +59,12 @@ public class BaseSelectBug {
         Method method = chooseMethod(OrgSelectMapper.class, "selectKey");
         MethodMeta methodMeta = annotationAssistant.parseMethodMate(method,
                 tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
+        String actual = easybatisConfiguration.getSqlSourceGenerator().select(methodMeta);
         String expected = "<script>" +
                 " SELECT `code`, `name`, `parent_code`, `parent_name`, `address`, `employees_num` FROM t_org" +
                 " <where> `code` = #{code} AND `valid` = #{valid} </where>" +
                 "</script>";
-        Assert.assertEquals(expected, sql);
+        Assert.assertEquals(expected, actual);
     }
 
 

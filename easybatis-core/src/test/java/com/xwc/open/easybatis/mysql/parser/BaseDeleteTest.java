@@ -49,36 +49,36 @@ public class BaseDeleteTest {
     public void delete() {
         Method method = chooseMethod(BaseDeleteMapper.class, "delete");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
+        String expected = "<script>" +
                 " DELETE FROM t_mysql_sql_source" +
                 " <where> `id` = #{id} </where>" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void deleteParam() {
         Method method = chooseMethod(BaseDeleteMapper.class, "deleteParam");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
+        String expected = "<script>" +
                 " DELETE FROM t_mysql_sql_source" +
                 " <where> `orgName` = #{orgName} </where>" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void deleteParamDynamic() {
         Method method = chooseMethod(BaseDeleteMapper.class, "deleteParamDynamic");
         MethodMeta meta = annotationAssistant.parseMethodMate(method, tableMeta);
-        String sql = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
-        String sqlTarget = "<script>" +
+        String actual = easybatisConfiguration.getSqlSourceGenerator().delete(meta);
+        String expected = "<script>" +
                 " DELETE FROM t_mysql_sql_source" +
                 " <where> <if test='orgName != null'> AND `orgName` = #{orgName} </if> </where>" +
                 "</script>";
-        Assert.assertEquals(sql, sqlTarget);
+        Assert.assertEquals(expected, actual);
     }
 
 

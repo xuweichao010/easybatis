@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.core.model;
 
+import com.xwc.open.easybatis.core.model.table.IdMapping;
 import lombok.Data;
 
 import java.lang.annotation.Annotation;
@@ -24,6 +25,7 @@ public class ParamMate {
      */
     private int type;
 
+
     private boolean batch;
 
     /**
@@ -39,6 +41,7 @@ public class ParamMate {
      * 条件注解
      */
     private Annotation annotation;
+
 
     private Class<?> sourceClass;
 

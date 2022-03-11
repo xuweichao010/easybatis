@@ -8,9 +8,9 @@ import com.xwc.open.easybatis.core.support.BaseMapper;
 /**
  * 作者：徐卫超 cc
  * 时间：2020/12/23
- * 描述：插入测试mapper
+ * 描述：更新测试mapper
  */
-public interface BaseUpdateMapper extends BaseMapper<BaseUpdateEntity, String> {
+public interface BaseUpdateMapper extends UpdateMapper<BaseUpdateEntity, String> {
     @UpdateSql
     Object updateEntity(BaseUpdateEntity entity);
 
