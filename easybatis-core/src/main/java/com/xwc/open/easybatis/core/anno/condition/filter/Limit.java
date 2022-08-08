@@ -5,15 +5,15 @@ import com.xwc.open.easybatis.core.enums.SyntaxPosition;
 import java.lang.annotation.*;
 
 /**
- * 创建人：徐卫超
- * 创建时间：2019/4/24  10:56
- * 业务：
- * 功能：
+ * 类描述：
+ * 作者：徐卫超 (cc)
+ * 时间 2022/7/25 17:38
  */
 @Documented
-@Target({ElementType.PARAMETER, ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Condition(SyntaxPosition.PAGE)
-public @interface Offset {
+public @interface Limit {
 
+    String relation() default "";
 }

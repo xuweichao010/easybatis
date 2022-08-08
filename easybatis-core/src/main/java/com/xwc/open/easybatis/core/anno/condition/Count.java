@@ -1,5 +1,8 @@
 package com.xwc.open.easybatis.core.anno.condition;
 
+import com.xwc.open.easybatis.core.anno.condition.filter.Condition;
+import com.xwc.open.easybatis.core.enums.SyntaxPosition;
+
 import java.lang.annotation.*;
 
 /**
@@ -11,6 +14,6 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
+@Condition(SyntaxPosition.SELECT)
 public @interface Count {
 }

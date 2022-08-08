@@ -15,6 +15,11 @@ import java.lang.annotation.*;
 @Inherited
 public @interface SelectSql {
 
+    /**
+     * 需要查询的列
+     *
+     * @return
+     */
     String value() default "";
 
     /**
@@ -25,13 +30,11 @@ public @interface SelectSql {
     boolean dynamic() default false;
 
 
-    String from() default "";
-
     /**
-     * @return A database id that correspond this statement
-     * @since 3.5.5
+     * 查询join模式当为空的时候默认不开启，join值有内容的时候就会会处理成连表查询
+     *
+     * @return
      */
-    String databaseId() default "";
-
+    String join() default "";
 
 }

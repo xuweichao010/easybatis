@@ -5,15 +5,12 @@ import com.xwc.open.easybatis.core.anno.DeleteSql;
 import com.xwc.open.easybatis.core.anno.InsertSql;
 import com.xwc.open.easybatis.core.anno.SelectSql;
 import com.xwc.open.easybatis.core.anno.UpdateSql;
-import com.xwc.open.easybatis.core.anno.condition.ASC;
-import com.xwc.open.easybatis.core.anno.condition.DESC;
-import com.xwc.open.easybatis.core.anno.condition.filter.*;
+import com.xwc.open.easybatis.core.anno.condition.filter.Condition;
+import com.xwc.open.easybatis.core.anno.condition.filter.SetParam;
 import com.xwc.open.easybatis.core.anno.table.*;
-import com.xwc.open.easybatis.core.anno.table.fill.*;
 import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.commons.StringUtils;
-import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.enums.IdType;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.*;
@@ -21,16 +18,16 @@ import com.xwc.open.easybatis.core.model.table.FieldFillMapping;
 import com.xwc.open.easybatis.core.model.table.IdMapping;
 import com.xwc.open.easybatis.core.model.table.LogicMapping;
 import com.xwc.open.easybatis.core.model.table.Mapping;
-import com.xwc.open.easybatis.core.support.PlaceholderBuilder;
-import com.xwc.open.easybatis.core.support.impl.MyBatisPlaceholderBuilder;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.ParamNameUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 创建人：徐卫超 创建时间：2019/5/8  16:12 业务： 功能：用于获取注解信息
@@ -38,23 +35,12 @@ import java.util.stream.Stream;
 public class AnnotationAssistant {
 
     private final EasybatisConfiguration configuration;
-    private final PlaceholderBuilder placeholderBuilder = new MyBatisPlaceholderBuilder();
+//    private final PlaceholderBuilder placeholderBuilder = new MyBatisPlaceholderBuilder();
 
     public AnnotationAssistant(EasybatisConfiguration configuration) {
         this.configuration = configuration;
     }
 
-    private final static Set<Class<? extends Annotation>> fillAnnoSet = Stream.of(CreateId.class,
-            UpdateId.class, CreateName.class, UpdateName.class, CreateTime.class, UpdateTime.class, FieldFill.class)
-            .collect(Collectors.toSet());
-    private final static Set<Class<? extends Annotation>> operationAnnoSet = Stream
-            .of(SelectSql.class, InsertSql.class, UpdateSql.class, DeleteSql.class).collect(Collectors.toSet());
-    private static final Set<Class<? extends Annotation>> queryAnnoSet = Stream
-            .of(Equal.class, NotEqual.class, IsNull.class, IsNotNull.class, In.class, NotIn.class,
-                    Like.class, RightLike.class, LeftLike.class, NotLike.class, NotLeftLike.class, NotRightLike.class,
-                    GreaterThan.class, GreaterThanEqual.class, LessThan.class
-                    , LessThanEqual.class, Start.class, Offset.class, ASC.class, DESC.class, Ignore.class, SetParam.class)
-            .collect(Collectors.toSet());
 
     public String tableName(Class<?> entityType) {
         Table tableAnno = AnnotationUtils.findAnnotation(entityType, Table.class);
@@ -77,6 +63,7 @@ public class AnnotationAssistant {
      * @param entityType 实体Class对象
      * @return 返回TableMetadata
      */
+    @SuppressWarnings("uncheck")
     public TableMeta parseEntityMate(Class<?> entityType) {
         TableMeta table = new TableMeta();
         table.setTableName(tableName(entityType));
@@ -94,25 +81,30 @@ public class AnnotationAssistant {
                 Id id = mapping.chooseAnnotationType(Id.class);
                 table.setId(new IdMapping(mapping,
                         id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type(), id));
-                continue;
             } else if (mapping.hashAnnotationType(Logic.class)) {
-                Logic loglic = mapping.chooseAnnotationType(Logic.class);
-                table.setLogic(new LogicMapping(mapping, loglic));
-                continue;
-            } else if (mapping.hashAnnotationType(FieldFill.class)) {
-                AnnotationUtils.AnnotationMate mate = AnnotationUtils.findAnnotationMate(field, FieldFill.class);
-                mapping.mergeAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(mate.getImplAnnotation()));
-                FieldFill fieldFill = (FieldFill) mate.getAnnotation();
-                table.addAuditor(new FieldFillMapping(mapping, fieldFill.attribute(), fieldFill.type()));
-                continue;
+                Logic logic = mapping.chooseAnnotationType(Logic.class);
+                table.setLogic(new LogicMapping(mapping, logic));
             } else if (mapping.hashAnnotationType(Column.class)) {
                 Column column = mapping.chooseAnnotationType(Column.class);
                 mapping.mergeAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(column));
+                // 处理字段是否是填充属性
+                AnnotationUtils.AnnotationMate mate;
+                if ((mate = AnnotationUtils.findAnnotationMate(field, FieldFill.class)) != null) {
+                    mapping.mergeAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(mate.getImplAnnotation()));
+                    FieldFill fieldFill = (FieldFill) mate.getAnnotation();
+                    table.addFill(new FieldFillMapping(mapping, fieldFill.attribute(), fieldFill.type()));
+                } else {
+                    table.addColumn(mapping);
+                }
+            } else {
+                table.addColumn(mapping);
             }
-            table.addColumn(mapping);
         }
         return table.validate();
     }
+
+
+
 
     /**
      * 处理方法上的注解信息
@@ -421,7 +413,7 @@ public class AnnotationAssistant {
             if (paramList.stream().noneMatch(paramMate -> paramMate.getType() == ParamMate.TYPE_ENTITY)) {
                 methodMeta.getTableMetadata().getFieldFills().stream().filter(item -> item.getType().command() == SqlCommandType.UPDATE).forEach(auditorMapping -> {
                     paramList.add(ParamMate.builder(auditorMapping.getField(), ParamMate.TYPE_AUDITOR,
-                            chooseAuditsAnnotationType(auditorMapping.getAnnotationSet())));
+                            chooseAuditsAnnotationType(methodMeta.getMethod());
                 });
             }
         }
@@ -485,29 +477,19 @@ public class AnnotationAssistant {
     /**
      * 集合中是否有填充属性
      *
-     * @param annotationSet
+     * @param method
      * @return
      */
-    public Annotation chooseAuditsAnnotationType(Set<Annotation> annotationSet) {
-        for (Annotation annotation : annotationSet) {
-            if (fillAnnoSet.contains(annotation.annotationType())) {
-                return annotation;
-            }
-        }
-        return null;
+    public Annotation chooseAuditsAnnotationType(Method method) {
+        return AnnotationUtils.findAnnotation(method, Logic.class);
     }
 
-    /**
-     * 判断注解数组中是否有查询条件注解
-     */
-    private Annotation chooseQueryAnnotationType(Annotation[] annotations) {
-        for (Annotation annotation : annotations) {
-            if (queryAnnoSet.contains(annotation.annotationType())) {
-                return annotation;
-            }
-        }
-        return null;
-    }
+//    /**
+//     * 判断注解数组中是否有查询条件注解
+//     */
+//    private Annotation chooseQueryAnnotationType(Method method) {
+//        return AnnotationUtils.findAnnotation(method, FieldFill.class);
+//    }
 
     /**
      * 判断注解数组中是否有查询条件注解

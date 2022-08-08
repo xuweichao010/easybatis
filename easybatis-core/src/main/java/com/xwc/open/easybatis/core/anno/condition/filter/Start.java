@@ -1,6 +1,6 @@
 package com.xwc.open.easybatis.core.anno.condition.filter;
 
-import com.xwc.open.easybatis.core.enums.ConditionType;
+import com.xwc.open.easybatis.core.enums.SyntaxPosition;
 
 import java.lang.annotation.*;
 
@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Condition(type = ConditionType.START)
+@Condition(SyntaxPosition.PAGE)
 public @interface Start {
 
 

@@ -8,7 +8,9 @@ import com.xwc.open.easybatis.core.model.table.Mapping;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 创建人：徐卫超
@@ -19,10 +21,6 @@ import java.util.List;
 @Data
 public class TableMeta {
 
-    /**
-     * 实体映射时 需不需要注入Result信息
-     */
-    private boolean result = false;
 
     /**
      * 表名
@@ -36,54 +34,34 @@ public class TableMeta {
     /**
      * 普通属性信息
      */
-    private List<Mapping> columnMetaList = new ArrayList<>(10);
+    private Set<Mapping> columnMetaList = new HashSet<>(32);
     /**
-     * 审计信息
+     * 填充字段信息
      */
-    private List<FieldFillMapping> FieldFills = new ArrayList<>(6);
-
+    private Set<FieldFillMapping> FillMetas= new HashSet<>();
     /**
      * 逻辑字段
      */
     private LogicMapping logic;
 
+    /**
+     * 原始信息
+     */
     private Class<?> source;
 
-
-    public void setId(IdMapping id) {
-        this.id = id;
-        setResult(id.isResult());
-    }
-
-    public void setLogic(LogicMapping logic) {
-        this.logic = logic;
-        setResult(logic.isResult());
-    }
-
-    public void setResult(boolean result) {
-        if (!this.result && result) this.result = true;
-    }
-
-    public void addAuditor(FieldFillMapping auditor) {
-        this.FieldFills.add(auditor);
-        this.setResult(auditor.isResult());
-    }
-
-
-    public void addColumn(Mapping columnMeta) {
-        this.columnMetaList.add(columnMeta);
-        setResult(columnMeta.isResult());
-    }
-
-
-    public boolean isSource(Class<?> aClass) {
-        return this.source.getName().equals(aClass.getName());
-    }
 
     public TableMeta validate() {
         if (id == null) {
             throw new EasyBatisException(this.source.getName() + "未指定主键注解");
         }
         return this;
+    }
+
+    public void addFill(FieldFillMapping fieldFillMapping) {
+        this.FillMetas.add(fieldFillMapping);
+    }
+
+    public void addColumn(Mapping mapping) {
+        this.columnMetaList.add(mapping);
     }
 }

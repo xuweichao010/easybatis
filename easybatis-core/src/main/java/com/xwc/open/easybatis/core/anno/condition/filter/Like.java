@@ -1,6 +1,6 @@
 package com.xwc.open.easybatis.core.anno.condition.filter;
 
-import com.xwc.open.easybatis.core.enums.ConditionType;
+import com.xwc.open.easybatis.core.enums.SyntaxPosition;
 
 
 import java.lang.annotation.*;
@@ -14,9 +14,8 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Condition(type = ConditionType.LIKE)
+@Condition(SyntaxPosition.CONDITION)
 public @interface Like {
-
 
     /**
      * 属性和数据表之间的列关系

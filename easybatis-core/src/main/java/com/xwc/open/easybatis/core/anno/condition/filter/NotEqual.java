@@ -1,6 +1,6 @@
 package com.xwc.open.easybatis.core.anno.condition.filter;
 
-import com.xwc.open.easybatis.core.enums.ConditionType;
+import com.xwc.open.easybatis.core.enums.SyntaxPosition;
 
 import java.lang.annotation.*;
 
@@ -13,8 +13,9 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Condition(type = ConditionType.NOT_EQUAL)
+@Condition(SyntaxPosition.CONDITION)
 public @interface NotEqual {
+
 
     /**
      * 属性和数据表之间的列关系
@@ -24,18 +25,19 @@ public @interface NotEqual {
     String value() default "";
 
     /**
+     * query对象查询查询时dynamic 自动为true
+     *
+     * @return 标识是否使用动态查询
+     */
+    boolean dynamic() default false;
+
+
+    /**
      * 条件别名
      * 在JOIN条件中使用
      *
-     * @return
+     * @return 返回属性的别名
      */
     String alias() default "";
-
-    /**
-     * query对象查询查询时dynamic 自动为true
-     *
-     * @return
-     */
-    boolean dynamic() default false;
 
 }

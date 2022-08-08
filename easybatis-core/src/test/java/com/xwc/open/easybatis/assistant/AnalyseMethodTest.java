@@ -5,7 +5,6 @@ import com.xwc.open.easybatis.assistant.method.MethodTestUserMapper;
 import com.xwc.open.easybatis.assistant.model.User;
 import com.xwc.open.easybatis.core.AnnotationAssistant;
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
-import com.xwc.open.easybatis.core.enums.ConditionType;
 import com.xwc.open.easybatis.core.model.MethodMeta;
 import com.xwc.open.easybatis.core.model.ParamMapping;
 import com.xwc.open.easybatis.core.model.TableMeta;

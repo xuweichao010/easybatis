@@ -1,7 +1,6 @@
 package com.xwc.open.easybatis.core.anno.table;
 
 
-
 import java.lang.annotation.*;
 
 /**
@@ -14,7 +13,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Column {
- /**
+    /**
      * 属性和数据表之间的列关系
      *
      * @return

@@ -1,7 +1,6 @@
 package com.xwc.open.easybatis.core.anno.condition.filter;
 
-import com.xwc.open.easybatis.core.enums.ConditionType;
-
+import com.xwc.open.easybatis.core.enums.SyntaxPosition;
 
 import java.lang.annotation.*;
 
@@ -14,7 +13,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Condition(type = ConditionType.SET_PARAM)
+@Condition(SyntaxPosition.SET)
 public @interface SetParam {
 
 
@@ -24,5 +23,6 @@ public @interface SetParam {
      * @return
      */
     String value() default "";
+
 
 }

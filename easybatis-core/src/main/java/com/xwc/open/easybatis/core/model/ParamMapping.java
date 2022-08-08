@@ -1,6 +1,5 @@
 package com.xwc.open.easybatis.core.model;
 
-import com.xwc.open.easybatis.core.enums.ConditionType;
 import lombok.Data;
 
 import java.util.List;

@@ -2,6 +2,8 @@ plugins {
     id 'org.springframework.boot' version '2.4.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'maven-publish'
+
 }
 
 group 'com.xwc.open'
@@ -24,8 +26,8 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'junit:junit'
 }
-
 test {
     useJUnitPlatform()
 }
+
 

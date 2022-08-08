@@ -3,7 +3,6 @@ package com.xwc.open.easybatis.spring.boot;
 
 import com.xwc.open.easybatis.core.EasybatisConfiguration;
 import com.xwc.open.easybatis.core.support.AuditorContext;
-import com.xwc.open.easybatis.core.support.impl.DefaultAuditorContext;
 
 import com.xwc.open.easybatis.spring.EasybatisProperties;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -14,8 +13,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-
-import java.util.concurrent.locks.LockSupport;
 
 
 @org.springframework.context.annotation.Configuration
