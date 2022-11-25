@@ -12,6 +12,7 @@ import com.xwc.open.easybatis.core.commons.AnnotationUtils;
 import com.xwc.open.easybatis.core.commons.Reflection;
 import com.xwc.open.easybatis.core.commons.StringUtils;
 import com.xwc.open.easybatis.core.enums.IdType;
+import com.xwc.open.easybatis.core.excp.CheckEasyBatisException;
 import com.xwc.open.easybatis.core.excp.EasyBatisException;
 import com.xwc.open.easybatis.core.model.*;
 import com.xwc.open.easybatis.core.model.table.FieldFillMapping;
@@ -23,11 +24,9 @@ import org.apache.ibatis.reflection.ParamNameUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 创建人：徐卫超 创建时间：2019/5/8  16:12 业务： 功能：用于获取注解信息
@@ -43,11 +42,11 @@ public class AnnotationAssistant {
 
 
     public String tableName(Class<?> entityType) {
-        Table tableAnno = AnnotationUtils.findAnnotation(entityType, Table.class);
-        if (tableAnno == null) {
+        Table table = AnnotationUtils.findAnnotation(entityType, Table.class);
+        if (table == null) {
             throw new RuntimeException(entityType.getName() + "not find @Table Annotation");
         }
-        String name = (String) AnnotationUtils.getValue(tableAnno, "value");
+        String name = (String) AnnotationUtils.getValue(table, "value");
         if (StringUtils.isEmpty(name) && configuration.getTablePrefix() != null) {
             return configuration.getTablePrefix() + underscoreName(entityType.getSimpleName());
         }
@@ -104,8 +103,6 @@ public class AnnotationAssistant {
     }
 
 
-
-
     /**
      * 处理方法上的注解信息
      *
@@ -127,6 +124,31 @@ public class AnnotationAssistant {
             return parseDeleteMethodMate(method, tableMetadata);
         }
         return null;
+    }
+
+    public void parseMethodMate1(Method method, TableMeta tableMetadata) {
+        Parameter[] parameters = method.getParameters();
+        Parameter entityParameter = Stream.of(parameters)
+                .filter(parameter -> {
+                    if (parameter.getType().equals(tableMetadata.getClass())) {
+                        return true;
+                    }
+                    if (parameter.getType().isAssignableFrom(Collection.class)) {
+                        Class<?> entityClass = Reflection.geCollectionEntityClass(parameter.getType());
+                        if (entityClass != null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                .findAny().orElse(null);
+        Parameter mapParameter = Stream.of(parameters).filter(parameter -> parameter.getType().isAssignableFrom(Map.class))
+                .findAny().orElse(null);
+        if (entityParameter != null && mapParameter != null) {
+            throw new CheckEasyBatisException("参数中实体对象和Map无法共存");
+        }
+
+
     }
 
 
@@ -169,98 +191,21 @@ public class AnnotationAssistant {
     }
 
     private MethodMeta parseDeleteMethodMate(Method method, TableMeta tableMetadata) {
-        MethodMeta meta = new MethodMeta();
-        meta.setTableMetadata(tableMetadata);
-        meta.setOptionalAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(AnnotationUtils.
-                findAnnotation(method, DeleteSql.class)));
-        meta.setMethodName(method.getName());
-        meta.setMethod(method);
-        LogicMapping logic = meta.getTableMetadata().getLogic();
-        if (logic == null) {
-            meta.setSqlCommand(SqlCommandType.DELETE);
-        } else {
-            meta.setSqlCommand(SqlCommandType.UPDATE);
-        }
-        //解析方法
-        List<ParamMate> paramList = new ArrayList<>();
-        // 解析方法参数
-        resolverMethodParams(meta, paramList);
-        // 解析逻辑删除
-        resolverLogic(meta, paramList);
-        // 处理审计
-        resolverFills(meta, paramList);
-        // 解析参数
-        resolverSqlParamSnippet(paramList, meta);
-        //有逻辑删除时
-        if (logic != null) {
-            meta.setLogicallyDelete(true);
-            Placeholder placeholder = placeholderBuilder.parameterHolder(logic.getField(), null);
-            meta.addParamMeta(ParamMapping.convert(logic.getField() + "0", logic.getColumn(), placeholder,
-                    null, false, ConditionType.SET_PARAM, null));
-        }
-        return meta;
+
     }
 
     public MethodMeta parseSelectMethodMate(Method method, TableMeta tableMetadata) {
-        MethodMeta meta = new MethodMeta();
-        meta.setOptionalAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(AnnotationUtils.
-                findAnnotation(method, SelectSql.class)));
-        meta.setTableMetadata(tableMetadata);
-        meta.setMethodName(method.getName());
-        meta.setSqlCommand(SqlCommandType.SELECT);
-        meta.setMethod(method);
-        List<ParamMate> paramList = new ArrayList<>();
-        // 解析方法参数
-        resolverMethodParams(meta, paramList);
-        // 解析逻辑删除
-        resolverLogic(meta, paramList);
-        // 根据解析数据构建SQL条件
-        resolverSqlParamSnippet(paramList, meta);
+
         return meta;
     }
 
     private MethodMeta parseInsertMethodMate(Method method, TableMeta tableMetadata) {
-        MethodMeta meta = new MethodMeta();
-        meta.setOptionalAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(AnnotationUtils.
-                findAnnotation(method, InsertSql.class)));
-        meta.setTableMetadata(tableMetadata);
-        meta.setMethodName(method.getName());
-        meta.setSqlCommand(SqlCommandType.INSERT);
-        meta.setMethod(method);
-        List<ParamMate> paramList = new ArrayList<>();
-        // 解析方法参数
-        resolverMethodParams(meta, paramList);
-        // 解析审计
-        resolverFills(meta, paramList);
-        // 解析参数
-        resolverSqlParamSnippet(paramList, meta);
+
         return meta;
     }
 
     private void resolverSqlParamSnippet(List<ParamMate> paramList, MethodMeta methodMeta) {
-        List<ParamMapping> list = new ArrayList<>();
-        if (paramList.isEmpty()) {
-            methodMeta.setParamMetaList(list);
-        }
-        boolean isMulti = paramList.size() > 1;
-        methodMeta.setMulti(isMulti);
-        // 方法是否是动态
-        boolean methodDynamic = methodMeta.optionalBooleanAttributes("dynamic");
-        paramList.forEach(paramMate -> {
-            if (paramMate.getType() == ParamMate.TYPE_CUSTOM_ENTITY) {
-                list.addAll(parseObjectMate(paramMate, isMulti, true));
-            } else if (paramMate.getType() == ParamMate.TYPE_ENTITY) {
-                if (methodMeta.getSqlCommand() == SqlCommandType.INSERT || methodMeta.getSqlCommand() == SqlCommandType.UPDATE) {
-                    list.add(ParamMapping.convertEntity(paramMate.getParamName(), paramMate.isBatch()));
-                } else {
-                    list.addAll(parseObjectMate(paramMate, isMulti, true));
-                }
-            } else if (paramMate.getType() == ParamMate.TYPE_KEY && methodMeta.getSqlCommand() == SqlCommandType.SELECT) {
-                list.add(parseParamMate(paramMate, null, isMulti, methodDynamic, false));
-            } else {
-                list.add(parseParamMate(paramMate, null, isMulti, methodDynamic, false));
-            }
-        });
+
         methodMeta.setParamMetaList(list);
 
     }
@@ -535,20 +480,7 @@ public class AnnotationAssistant {
 
     private String underscoreName(String camelCaseName) {
         if (configuration.isMapUnderscoreToCamelCase()) {
-            StringBuilder result = new StringBuilder();
-            if (camelCaseName != null && camelCaseName.length() > 0) {
-                result.append(camelCaseName.substring(0, 1).toLowerCase());
-                for (int i = 1; i < camelCaseName.length(); i++) {
-                    char ch = camelCaseName.charAt(i);
-                    if (Character.isUpperCase(ch)) {
-                        result.append("_");
-                        result.append(Character.toLowerCase(ch));
-                    } else {
-                        result.append(ch);
-                    }
-                }
-            }
-            return result.toString();
+
         }
         return camelCaseName;
     }

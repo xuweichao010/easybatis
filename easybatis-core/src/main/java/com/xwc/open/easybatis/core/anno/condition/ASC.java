@@ -24,6 +24,11 @@ public @interface ASC {
     String value() default "";
 
 
+    /**
+     * 是否是动态查询
+     *
+     * @return
+     */
     boolean dynamic() default false;
 
     /**
