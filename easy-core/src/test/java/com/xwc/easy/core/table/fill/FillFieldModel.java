@@ -1,6 +1,6 @@
 package com.xwc.easy.core.table.fill;
 
-import com.xwc.open.easy.core.annotations.FillField;
+import com.xwc.open.easy.core.annotations.FillColumn;
 import com.xwc.open.easy.core.enums.FillType;
 
 /**
@@ -9,7 +9,7 @@ import com.xwc.open.easy.core.enums.FillType;
  * 时间 2022/11/25 22:48
  */
 public class FillFieldModel {
-    @FillField(selectIgnore = true, type = FillType.MODIFY)
+    @FillColumn(selectIgnore = true, type = FillType.MODIFY)
     private String createUserId;
 
     public String getCreateUserId() {

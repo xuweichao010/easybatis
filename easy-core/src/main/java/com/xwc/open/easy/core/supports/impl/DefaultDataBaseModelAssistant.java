@@ -140,28 +140,28 @@ public class DefaultDataBaseModelAssistant implements DataBaseModelAssistant {
      * @return 返回一个自动填充属性封装对象
      */
     public FillAttribute fillAttribute(Class<?> clazz, Field field) {
-        FillField fillField = AnnotationUtils.findAnnotation(field, FillField.class);
-        if (fillField == null) {
+        FillColumn fillColumn = AnnotationUtils.findAnnotation(field, FillColumn.class);
+        if (fillColumn == null) {
             return null;
         }
         FillAttribute fillAttribute = (FillAttribute) this.process(new FillAttribute(), clazz, field);
         if (fillAttribute == null) {
             return null;
         }
-        if (StringUtils.hasText(fillField.identification())) {
+        if (StringUtils.hasText(fillColumn.identification())) {
 
         }
         // 处理填充标识
-        String identification = StringUtils.hasText(fillField.identification()) ? fillField.identification() : fillAttribute.getField();
+        String identification = StringUtils.hasText(fillColumn.identification()) ? fillColumn.identification() : fillAttribute.getField();
         fillAttribute.setIdentification(identification);
         // 填充类型处理
-        fillAttribute.setType(fillField.type());
-        fillAttribute.setSelectIgnore(fillField.selectIgnore());
-        if (StringUtils.hasText(fillField.value())) {
-            fillAttribute.setColumn(fillField.value());
+        fillAttribute.setType(fillColumn.type());
+        fillAttribute.setSelectIgnore(fillColumn.selectIgnore());
+        if (StringUtils.hasText(fillColumn.value())) {
+            fillAttribute.setColumn(fillColumn.value());
         }
-        if (StringUtils.hasText(fillField.value())) {
-            fillAttribute.setColumn(fillField.value());
+        if (StringUtils.hasText(fillColumn.value())) {
+            fillAttribute.setColumn(fillColumn.value());
         }
         return fillAttribute;
     }

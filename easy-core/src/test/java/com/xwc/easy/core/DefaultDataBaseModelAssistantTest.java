@@ -1,5 +1,8 @@
 package com.xwc.easy.core;
 
+import com.xwc.easy.core.table.column.ColumnModel;
+import com.xwc.easy.core.table.column.IgnoreColumnModel;
+import com.xwc.easy.core.table.column.NotColumnModel;
 import com.xwc.easy.core.table.fill.CustomFillFieldModel;
 import com.xwc.easy.core.table.fill.FillFieldModel;
 import com.xwc.easy.core.table.key.*;
@@ -11,6 +14,7 @@ import com.xwc.open.easy.core.enums.FillType;
 import com.xwc.open.easy.core.enums.IdType;
 import com.xwc.open.easy.core.model.FillAttribute;
 import com.xwc.open.easy.core.model.LogicAttribute;
+import com.xwc.open.easy.core.model.ModelAttribute;
 import com.xwc.open.easy.core.model.PrimaryKeyAttribute;
 import com.xwc.open.easy.core.supports.impl.DefaultDataBaseModelAssistant;
 import com.xwc.open.easy.core.supports.impl.DefaultUUIDHandler;
@@ -204,6 +208,9 @@ public class DefaultDataBaseModelAssistantTest {
         Assert.assertEquals("delete_flag", logicAttribute.getColumn());
     }
 
+    /**
+     * 正常填充注解测试
+     */
     @Test
     public void fillField() {
         EasyConfiguration configuration = new EasyConfiguration();
@@ -217,6 +224,10 @@ public class DefaultDataBaseModelAssistantTest {
         Assert.assertEquals(FillType.MODIFY, fillAttribute.getType());
     }
 
+
+    /**
+     * 自定义属性填充注解测试
+     */
     @Test
     public void customFillField() {
         EasyConfiguration configuration = new EasyConfiguration();
@@ -229,4 +240,47 @@ public class DefaultDataBaseModelAssistantTest {
         Assert.assertEquals("create_user_id", fillAttribute.getColumn());
         Assert.assertEquals(FillType.MODIFY, fillAttribute.getType());
     }
+
+    /**
+     * 没有Column普通属性的解析测试
+     */
+    @Test
+    public void notColumn() {
+        EasyConfiguration configuration = new EasyConfiguration();
+        DefaultDataBaseModelAssistant assistant = new DefaultDataBaseModelAssistant(configuration);
+        Field field = Reflection.getField(NotColumnModel.class).stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+        ModelAttribute modelAttribute = assistant.modelAttribute(NotColumnModel.class, field);
+        Assert.assertEquals("username", modelAttribute.getColumn());
+    }
+
+    /**
+     * 有Column注解的解析测试
+     */
+    @Test
+    public void column() {
+        EasyConfiguration configuration = new EasyConfiguration();
+        DefaultDataBaseModelAssistant assistant = new DefaultDataBaseModelAssistant(configuration);
+        Field field = Reflection.getField(ColumnModel.class).stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+        ModelAttribute modelAttribute = assistant.modelAttribute(ColumnModel.class, field);
+        Assert.assertEquals("alias_name", modelAttribute.getColumn());
+        Assert.assertTrue(modelAttribute.isInsertIgnore());
+        Assert.assertTrue(modelAttribute.isUpdateIgnore());
+        Assert.assertTrue(modelAttribute.isSelectIgnore());
+    }
+
+    /**
+     * 忽略属性的测试
+     */
+    @Test
+    public void ignoreColumn() {
+        EasyConfiguration configuration = new EasyConfiguration();
+        DefaultDataBaseModelAssistant assistant = new DefaultDataBaseModelAssistant(configuration);
+        Field field = Reflection.getField(IgnoreColumnModel.class).stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+        ModelAttribute modelAttribute = assistant.modelAttribute(IgnoreColumnModel.class, field);
+        Assert.assertNull(modelAttribute);
+    }
+
 }
