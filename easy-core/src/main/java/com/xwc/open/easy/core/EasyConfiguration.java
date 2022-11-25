@@ -1,11 +1,11 @@
 package com.xwc.open.easy.core;
 
 import com.xwc.open.easy.core.enums.IdType;
-import com.xwc.open.easy.core.supports.DataBaseModelAssistant;
+import com.xwc.open.easy.core.assistant.DataBaseModelAssistant;
 import com.xwc.open.easy.core.supports.IdGenerateHandlerFactory;
 import com.xwc.open.easy.core.supports.NameConverter;
 import com.xwc.open.easy.core.supports.impl.CamelConverterUnderscore;
-import com.xwc.open.easy.core.supports.impl.DefaultDataBaseModelAssistant;
+import com.xwc.open.easy.core.assistant.DefaultDataBaseModelAssistant;
 import com.xwc.open.easy.core.supports.impl.DefaultIdGenerateHandlerFactory;
 
 /**

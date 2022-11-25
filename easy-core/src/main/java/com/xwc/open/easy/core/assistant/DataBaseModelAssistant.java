@@ -1,4 +1,4 @@
-package com.xwc.open.easy.core.supports;
+package com.xwc.open.easy.core.assistant;
 
 import com.xwc.open.easy.core.model.DatabaseModel;
 import com.xwc.open.easy.core.model.FillAttribute;

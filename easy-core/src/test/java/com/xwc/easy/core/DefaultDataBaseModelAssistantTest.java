@@ -16,7 +16,7 @@ import com.xwc.open.easy.core.model.FillAttribute;
 import com.xwc.open.easy.core.model.LogicAttribute;
 import com.xwc.open.easy.core.model.ModelAttribute;
 import com.xwc.open.easy.core.model.PrimaryKeyAttribute;
-import com.xwc.open.easy.core.supports.impl.DefaultDataBaseModelAssistant;
+import com.xwc.open.easy.core.assistant.DefaultDataBaseModelAssistant;
 import com.xwc.open.easy.core.supports.impl.DefaultUUIDHandler;
 import com.xwc.open.easy.core.supports.impl.NoneIdGenerateHandler;
 import com.xwc.open.easy.core.supports.impl.NoneNameConverter;

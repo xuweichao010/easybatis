@@ -1,11 +1,12 @@
-package com.xwc.open.easy.core.supports.impl;
+package com.xwc.open.easy.core.assistant;
 
 import com.xwc.open.easy.core.EasyConfiguration;
 import com.xwc.open.easy.core.annotations.*;
 import com.xwc.open.easy.core.enums.IdType;
 import com.xwc.open.easy.core.exceptions.CheckDatabaseModelException;
 import com.xwc.open.easy.core.model.*;
-import com.xwc.open.easy.core.supports.DataBaseModelAssistant;
+import com.xwc.open.easy.core.assistant.DataBaseModelAssistant;
+import com.xwc.open.easy.core.supports.impl.DefaultUUIDHandler;
 import com.xwc.open.easy.core.utils.AnnotationUtils;
 import com.xwc.open.easy.core.utils.Reflection;
 import com.xwc.open.easy.core.utils.StringUtils;
