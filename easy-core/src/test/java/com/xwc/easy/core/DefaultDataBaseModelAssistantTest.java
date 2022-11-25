@@ -1,14 +1,20 @@
 package com.xwc.easy.core;
 
-import com.xwc.easy.core.table.key.AutoPrimaryKey;
-import com.xwc.easy.core.table.key.GlobalPrimaryKey;
-import com.xwc.easy.core.table.key.NotAutoPrimaryKey;
+import com.xwc.easy.core.table.fill.CustomFillFieldModel;
+import com.xwc.easy.core.table.fill.FillFieldModel;
+import com.xwc.easy.core.table.key.*;
+import com.xwc.easy.core.table.logic.LogicField;
 import com.xwc.easy.core.table.name.DataBaseModelAutoTableName;
 import com.xwc.easy.core.table.name.DataBaseModelTableName;
 import com.xwc.open.easy.core.EasyConfiguration;
+import com.xwc.open.easy.core.enums.FillType;
 import com.xwc.open.easy.core.enums.IdType;
+import com.xwc.open.easy.core.model.FillAttribute;
+import com.xwc.open.easy.core.model.LogicAttribute;
 import com.xwc.open.easy.core.model.PrimaryKeyAttribute;
 import com.xwc.open.easy.core.supports.impl.DefaultDataBaseModelAssistant;
+import com.xwc.open.easy.core.supports.impl.DefaultUUIDHandler;
+import com.xwc.open.easy.core.supports.impl.NoneIdGenerateHandler;
 import com.xwc.open.easy.core.supports.impl.NoneNameConverter;
 import com.xwc.open.easy.core.utils.Reflection;
 import org.junit.Assert;
@@ -110,6 +116,9 @@ public class DefaultDataBaseModelAssistantTest {
         Assert.assertTrue(primaryKeyAttribute.isUpdateIgnore());
     }
 
+    /**
+     * 测试全局配置的主键类型 没有配置的时候 而且也没有指定属性的时候 会不会报错
+     */
     @Test
     public void globalPrimaryKey() {
         EasyConfiguration configuration = new EasyConfiguration();
@@ -124,6 +133,9 @@ public class DefaultDataBaseModelAssistantTest {
         Assert.fail();
     }
 
+    /**
+     * 测试全局属性配置了后 能否正常处理全局属性
+     */
     @Test
     public void globalConfigurationPrimaryKey() {
         EasyConfiguration configuration = new EasyConfiguration();
@@ -133,5 +145,88 @@ public class DefaultDataBaseModelAssistantTest {
                 .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         PrimaryKeyAttribute primaryKeyAttribute = assistant.primaryKeyAttribute(NotAutoPrimaryKey.class, field);
         Assert.assertEquals(IdType.AUTO, primaryKeyAttribute.getIdType());
+    }
+
+    /**
+     * 测试全局主键配置了后 最定义主键配置是否生效
+     */
+    @Test
+    public void globalCustomConfigurationPrimaryKey() {
+        EasyConfiguration configuration = new EasyConfiguration();
+        configuration.setGlobalIdType(IdType.AUTO);
+        DefaultDataBaseModelAssistant assistant = new DefaultDataBaseModelAssistant(configuration);
+        Field field = Reflection.getField(GlobalCustomPrimaryKey.class).stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+        PrimaryKeyAttribute primaryKeyAttribute = assistant.primaryKeyAttribute(GlobalCustomPrimaryKey.class, field);
+        Assert.assertEquals(IdType.INPUT, primaryKeyAttribute.getIdType());
+    }
+
+
+    /**
+     * 测试UUID ID 有 IdGenerateHandler
+     */
+    @Test
+    public void uuiPrimaryKey() {
+        EasyConfiguration configuration = new EasyConfiguration();
+        DefaultDataBaseModelAssistant assistant = new DefaultDataBaseModelAssistant(configuration);
+        Field field = Reflection.getField(UuidPrimaryKey.class).stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+        PrimaryKeyAttribute primaryKeyAttribute = assistant.primaryKeyAttribute(UuidPrimaryKey.class, field);
+        Assert.assertTrue(primaryKeyAttribute.getIdGenerateHandler().getClass().isAssignableFrom(DefaultUUIDHandler.class));
+    }
+
+    /**
+     * 测试HANDLER 自定义ID 有 IdGenerateHandler
+     */
+    @Test
+    public void customPrimaryKey() {
+        EasyConfiguration configuration = new EasyConfiguration();
+        DefaultDataBaseModelAssistant assistant = new DefaultDataBaseModelAssistant(configuration);
+        Field field = Reflection.getField(HandlerPrimaryKey.class).stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+        PrimaryKeyAttribute primaryKeyAttribute = assistant.primaryKeyAttribute(HandlerPrimaryKey.class, field);
+        Assert.assertTrue(primaryKeyAttribute.getIdGenerateHandler().getClass().isAssignableFrom(NoneIdGenerateHandler.class));
+    }
+
+    /**
+     * 测试logic是否工作正常
+     */
+    @Test
+    public void logic() {
+        EasyConfiguration configuration = new EasyConfiguration();
+        DefaultDataBaseModelAssistant assistant = new DefaultDataBaseModelAssistant(configuration);
+        Field field = Reflection.getField(LogicField.class).stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+        LogicAttribute logicAttribute = assistant.logicAttribute(LogicField.class, field);
+        Assert.assertNotNull(logicAttribute);
+        Assert.assertEquals(100, logicAttribute.getInvalid());
+        Assert.assertEquals(101, logicAttribute.getValid());
+        Assert.assertEquals("delete_flag", logicAttribute.getColumn());
+    }
+
+    @Test
+    public void fillField() {
+        EasyConfiguration configuration = new EasyConfiguration();
+        DefaultDataBaseModelAssistant assistant = new DefaultDataBaseModelAssistant(configuration);
+        Field field = Reflection.getField(FillFieldModel.class).stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+        FillAttribute fillAttribute = assistant.fillAttribute(FillFieldModel.class, field);
+        Assert.assertTrue(fillAttribute.isSelectIgnore());
+        Assert.assertEquals("createUserId", fillAttribute.getIdentification());
+        Assert.assertEquals("create_user_id", fillAttribute.getColumn());
+        Assert.assertEquals(FillType.MODIFY, fillAttribute.getType());
+    }
+
+    @Test
+    public void customFillField() {
+        EasyConfiguration configuration = new EasyConfiguration();
+        DefaultDataBaseModelAssistant assistant = new DefaultDataBaseModelAssistant(configuration);
+        Field field = Reflection.getField(CustomFillFieldModel.class).stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+        FillAttribute fillAttribute = assistant.fillAttribute(CustomFillFieldModel.class, field);
+        Assert.assertTrue(fillAttribute.isSelectIgnore());
+        Assert.assertEquals("username", fillAttribute.getIdentification());
+        Assert.assertEquals("create_user_id", fillAttribute.getColumn());
+        Assert.assertEquals(FillType.MODIFY, fillAttribute.getType());
     }
 }

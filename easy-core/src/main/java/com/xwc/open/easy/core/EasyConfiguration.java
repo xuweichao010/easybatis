@@ -2,8 +2,11 @@ package com.xwc.open.easy.core;
 
 import com.xwc.open.easy.core.enums.IdType;
 import com.xwc.open.easy.core.supports.DataBaseModelAssistant;
+import com.xwc.open.easy.core.supports.IdGenerateHandlerFactory;
 import com.xwc.open.easy.core.supports.NameConverter;
 import com.xwc.open.easy.core.supports.impl.CamelConverterUnderscore;
+import com.xwc.open.easy.core.supports.impl.DefaultDataBaseModelAssistant;
+import com.xwc.open.easy.core.supports.impl.DefaultIdGenerateHandlerFactory;
 
 /**
  * 类描述：
@@ -37,14 +40,28 @@ public class EasyConfiguration {
     private NameConverter columnNameConverter = new CamelConverterUnderscore();
 
     /**
-     *
+     * 表名称转换以 用于把类名装换称所需要的表名
      */
     private NameConverter tableNameConverter = new CamelConverterUnderscore();
 
     /**
+     * 主键生成策略工厂 用于管理自定义主键创建策略
+     */
+    private IdGenerateHandlerFactory idGenerateHandlerFactory = new DefaultIdGenerateHandlerFactory();
+
+    /**
      * 数据模型解析助手
      */
-    private DataBaseModelAssistant baseModelAssistant;
+    private DataBaseModelAssistant baseModelAssistant = new DefaultDataBaseModelAssistant(this);
+
+
+    public IdGenerateHandlerFactory getIdGenerateHandlerFactory() {
+        return idGenerateHandlerFactory;
+    }
+
+    public void setIdGenerateHandlerFactory(IdGenerateHandlerFactory idGenerateHandlerFactory) {
+        this.idGenerateHandlerFactory = idGenerateHandlerFactory;
+    }
 
     public IdType getGlobalIdType() {
         return globalIdType;

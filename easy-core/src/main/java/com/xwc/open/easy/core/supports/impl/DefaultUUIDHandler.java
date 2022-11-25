@@ -1,6 +1,6 @@
 package com.xwc.open.easy.core.supports.impl;
 
-import com.xwc.open.easy.core.supports.IdTypeHandler;
+import com.xwc.open.easy.core.supports.IdGenerateHandler;
 
 import java.util.UUID;
 
@@ -9,9 +9,11 @@ import java.util.UUID;
  * 作者：徐卫超 (cc)
  * 时间 2022/11/24 15:47
  */
-public class DefaultUUIDHandler implements IdTypeHandler {
+public class DefaultUUIDHandler implements IdGenerateHandler {
+
+
     @Override
-    public String next() {
+    public Object next(Object entity) {
         return UUID.randomUUID().toString().replace("-", "");
     }
 }

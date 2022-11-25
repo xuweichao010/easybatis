@@ -2,6 +2,8 @@ package com.xwc.open.easy.core.annotations;
 
 
 import com.xwc.open.easy.core.enums.IdType;
+import com.xwc.open.easy.core.supports.IdGenerateHandler;
+import com.xwc.open.easy.core.supports.impl.NoneIdGenerateHandler;
 
 import java.lang.annotation.*;
 
@@ -13,7 +15,7 @@ import java.lang.annotation.*;
  */
 
 @Documented
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Id {
     /**
@@ -27,9 +29,17 @@ public @interface Id {
      * AUTO: 自增长数据类型 交给数据库来决定
      * UUID: UUID来作为数据主键
      * INPUT: 以用户提供的主键来作为标准
-     *
+     * HANDLER: 用于自定义策略
      */
     IdType type() default IdType.GLOBAL;
+
+    /**
+     * id生成器
+     * 只有 属性type等于INPUT的时候 需要使用该属性
+     *
+     * @return
+     */
+    Class<? extends IdGenerateHandler> idGenerateHandler() default NoneIdGenerateHandler.class;
 
 
 }

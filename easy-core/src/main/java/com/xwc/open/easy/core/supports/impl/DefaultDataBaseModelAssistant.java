@@ -90,6 +90,12 @@ public class DefaultDataBaseModelAssistant implements DataBaseModelAssistant {
         if (idType == null) {
             throw new CheckDatabaseModelException("请填写有效的IdType类型");
         }
+        // 获取主键的生成策略 UUID的生成策略也是由 IdGenerateHandler来决定的 只是系统提前封装了 因为UUID不依赖外部且有良好的分布式能力
+        if (idType == IdType.UUID) {
+            primaryKeyAttribute.setIdGenerateHandler(configuration.getIdGenerateHandlerFactory().getHandler(DefaultUUIDHandler.class));
+        } else if (idType == IdType.HANDLER) {
+            primaryKeyAttribute.setIdGenerateHandler(configuration.getIdGenerateHandlerFactory().getHandler(id.idGenerateHandler()));
+        }
         primaryKeyAttribute.setUpdateIgnore(true);
         primaryKeyAttribute.setInsertIgnore(idType == IdType.AUTO);
         primaryKeyAttribute.setIdType(idType);
@@ -134,28 +140,28 @@ public class DefaultDataBaseModelAssistant implements DataBaseModelAssistant {
      * @return 返回一个自动填充属性封装对象
      */
     public FillAttribute fillAttribute(Class<?> clazz, Field field) {
-        FillColumn fillColumn = AnnotationUtils.findAnnotation(field, FillColumn.class);
-        if (fillColumn == null) {
+        FillField fillField = AnnotationUtils.findAnnotation(field, FillField.class);
+        if (fillField == null) {
             return null;
         }
         FillAttribute fillAttribute = (FillAttribute) this.process(new FillAttribute(), clazz, field);
         if (fillAttribute == null) {
             return null;
         }
-        if (StringUtils.hasText(fillColumn.identification())) {
+        if (StringUtils.hasText(fillField.identification())) {
 
         }
         // 处理填充标识
-        String identification = StringUtils.hasText(fillColumn.identification()) ? fillColumn.identification() : fillAttribute.getField();
+        String identification = StringUtils.hasText(fillField.identification()) ? fillField.identification() : fillAttribute.getField();
         fillAttribute.setIdentification(identification);
         // 填充类型处理
-        fillAttribute.setType(fillAttribute.getType());
-        fillAttribute.setSelectIgnore(fillColumn.selectIgnore());
-        if (StringUtils.hasText(fillColumn.value())) {
-            fillAttribute.setColumn(fillColumn.value());
+        fillAttribute.setType(fillField.type());
+        fillAttribute.setSelectIgnore(fillField.selectIgnore());
+        if (StringUtils.hasText(fillField.value())) {
+            fillAttribute.setColumn(fillField.value());
         }
-        if (StringUtils.hasText(fillColumn.value())) {
-            fillAttribute.setColumn(fillColumn.value());
+        if (StringUtils.hasText(fillField.value())) {
+            fillAttribute.setColumn(fillField.value());
         }
         return fillAttribute;
     }
