@@ -56,52 +56,6 @@ public class AnnotationAssistant {
         return name;
     }
 
-    /**
-     * 解析实体信息
-     *
-     * @param entityType 实体Class对象
-     * @return 返回TableMetadata
-     */
-    @SuppressWarnings("uncheck")
-    public TableMeta parseEntityMate(Class<?> entityType) {
-        TableMeta table = new TableMeta();
-        table.setTableName(tableName(entityType));
-        table.setSource(entityType);
-        List<Field> fieldArr = Reflection.getField(entityType);
-        for (Field field : fieldArr) {
-            if (isIgnore(field)) {
-                continue;
-            }
-            Mapping mapping = analysisColunm(field, entityType);
-            if (mapping == null) {
-                continue;
-            }
-            if (mapping.hashAnnotationType(Id.class)) {
-                Id id = mapping.chooseAnnotationType(Id.class);
-                table.setId(new IdMapping(mapping,
-                        id.type() == IdType.GLOBAL ? configuration.useGlobalPrimaKeyType() : id.type(), id));
-            } else if (mapping.hashAnnotationType(Logic.class)) {
-                Logic logic = mapping.chooseAnnotationType(Logic.class);
-                table.setLogic(new LogicMapping(mapping, logic));
-            } else if (mapping.hashAnnotationType(Column.class)) {
-                Column column = mapping.chooseAnnotationType(Column.class);
-                mapping.mergeAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(column));
-                // 处理字段是否是填充属性
-                AnnotationUtils.AnnotationMate mate;
-                if ((mate = AnnotationUtils.findAnnotationMate(field, FieldFill.class)) != null) {
-                    mapping.mergeAnnotationAttributes(AnnotationUtils.getAnnotationAttributes(mate.getImplAnnotation()));
-                    FieldFill fieldFill = (FieldFill) mate.getAnnotation();
-                    table.addFill(new FieldFillMapping(mapping, fieldFill.attribute(), fieldFill.type()));
-                } else {
-                    table.addColumn(mapping);
-                }
-            } else {
-                table.addColumn(mapping);
-            }
-        }
-        return table.validate();
-    }
-
 
     /**
      * 处理方法上的注解信息
@@ -382,8 +336,8 @@ public class AnnotationAssistant {
     }
 
 
-    private boolean isEntityParam(Type entityType, Class<?> entityClass) {
-        return entityType.getTypeName().equals("E") || entityType.equals(entityClass);
+    private boolean isEntityParam(Type parameterType, Class<?> entityClass) {
+        return parameterType.getTypeName().equals("E") || parameterType.equals(entityClass);
     }
 
     private boolean isKeyParam(Type entityType) {

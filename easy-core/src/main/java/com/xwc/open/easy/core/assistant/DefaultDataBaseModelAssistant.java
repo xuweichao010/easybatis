@@ -5,7 +5,6 @@ import com.xwc.open.easy.core.annotations.*;
 import com.xwc.open.easy.core.enums.IdType;
 import com.xwc.open.easy.core.exceptions.CheckDatabaseModelException;
 import com.xwc.open.easy.core.model.*;
-import com.xwc.open.easy.core.assistant.DataBaseModelAssistant;
 import com.xwc.open.easy.core.supports.impl.DefaultUUIDHandler;
 import com.xwc.open.easy.core.utils.AnnotationUtils;
 import com.xwc.open.easy.core.utils.Reflection;
@@ -27,8 +26,8 @@ public class DefaultDataBaseModelAssistant implements DataBaseModelAssistant {
     }
 
     @Override
-    public DatabaseModel getResultModel(Class<?> clazz) {
-        DatabaseModel model = new DatabaseModel();
+    public DatabaseMeta getDatabaseMeta(Class<?> clazz) {
+        DatabaseMeta model = new DatabaseMeta();
         model.setTableName(tableName(clazz));
         List<Field> fields = Reflection.getField(clazz);
         for (Field field : fields) {
@@ -175,6 +174,10 @@ public class DefaultDataBaseModelAssistant implements DataBaseModelAssistant {
      * @return 返回一个普通的属性字段属性封装
      */
     public ModelAttribute modelAttribute(Class<?> clazz, Field field) {
+        Ignore ignore = AnnotationUtils.findAnnotation(field, Ignore.class);
+        if (ignore == null) {
+            return null;
+        }
         Column column = AnnotationUtils.findAnnotation(field, Column.class);
         if (column != null && column.ignore()) {
             return null;

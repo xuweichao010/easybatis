@@ -1,9 +1,6 @@
 package com.xwc.open.easy.core.assistant;
 
-import com.xwc.open.easy.core.model.DatabaseModel;
-import com.xwc.open.easy.core.model.FillAttribute;
-
-import java.lang.reflect.Field;
+import com.xwc.open.easy.core.model.DatabaseMeta;
 
 /**
  * 类描述：
@@ -12,9 +9,6 @@ import java.lang.reflect.Field;
  */
 public interface DataBaseModelAssistant {
 
-    DatabaseModel getResultModel(Class<?> clazz);
-
-
-
+    DatabaseMeta getDatabaseMeta(Class<?> clazz);
 
 }

@@ -8,7 +8,7 @@ import java.util.*;
  * 时间 2022/11/24 14:16
  */
 @SuppressWarnings("unused")
-public class DatabaseModel {
+public class DatabaseMeta {
 
     /**
      * 返回模型对应的表名
@@ -81,4 +81,6 @@ public class DatabaseModel {
     public void addModelAttribute(ModelAttribute modelAttribute) {
         this.model.add(modelAttribute);
     }
+
+
 }

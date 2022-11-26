@@ -14,6 +14,8 @@ public class PrimaryKeyAttribute extends ModelAttribute {
 
     private IdGenerateHandler idGenerateHandler;
 
+
+
     public IdType getIdType() {
         return idType;
     }
