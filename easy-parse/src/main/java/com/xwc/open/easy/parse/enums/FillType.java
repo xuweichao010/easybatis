@@ -1,0 +1,1 @@
+package com.xwc.open.easy.parse.enums;/** * 创建人：徐卫超 * 时间：2019/8/3 17:25 * 功能：用于标识在合适进行数据填充 * 备注： */public enum FillType {    /**     * 新增时会进行填充的字段     */    ADD,    /**     * 修改时会进行的字段填充     */    MODIFY,    /**     * 新增或修改时候会更新     */    CHANGE;}

@@ -34,7 +34,7 @@ public class TableMeta {
     /**
      * 普通属性信息
      */
-    private Set<Mapping> columnMetaList = new HashSet<>(32);
+    private Set<Mapping> columnMetas = new HashSet<>(32);
     /**
      * 填充字段信息
      */
@@ -62,6 +62,6 @@ public class TableMeta {
     }
 
     public void addColumn(Mapping mapping) {
-        this.columnMetaList.add(mapping);
+        this.columnMetas.add(mapping);
     }
 }
