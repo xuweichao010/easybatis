@@ -3,6 +3,8 @@ package com.xwc.easy.core.method;
 import com.xwc.easy.core.table.method.MethodEntity;
 import com.xwc.open.easy.parse.supports.EasyMapper;
 
+import java.util.List;
+
 /**
  * 类描述：
  * 作者：徐卫超 (cc)
@@ -10,11 +12,13 @@ import com.xwc.open.easy.parse.supports.EasyMapper;
  */
 public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 
-    int commonInsert(MethodEntity e);
+    int genericsEntityParameterAttribute(E e);
 
-    int commonUpdate(MethodEntity e);
+    int genericsCollectionEntityParameterAttribute(List<E> e);
 
-    int commonDel(K id);
+    List<E> genericsCollectionPrimaryKeyParameterAttribute(List<K> ids);
 
-    int commonGet(K id);
+    int genericsPrimaryKeyParameterAttribute(K id);
+
+
 }

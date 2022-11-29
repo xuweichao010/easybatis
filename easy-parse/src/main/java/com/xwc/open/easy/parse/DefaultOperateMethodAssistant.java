@@ -41,6 +41,7 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
         return methodMeta;
     }
 
+
     private void parseMethod(Method method, OperateMethodMeta methodMeta) {
         Parameter[] parameters = method.getParameters();
         List<String> paramNames = ParamNameUtil.getParamNames(method);
@@ -55,7 +56,7 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
     }
 
     private ParameterAttribute parseParameter(Parameter parameter, String parameterName, OperateMethodMeta methodMeta) {
-        if (parameter.getParameterizedType() instanceof TypeVariable) {
+        if (parameter.getParameterizedType() instanceof TypeVariable) { // 处理泛型
             if (isEntityParam(parameter.getParameterizedType(), methodMeta.getDatabaseMeta().getSource())) {
                 return parameterAttribute(new EntityParameterAttribute(methodMeta.getDatabaseMeta()), parameter, parameterName);
             } else if (isKeyParam(parameter.getParameterizedType())) {
@@ -64,7 +65,7 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
             } else {
                 throw new CheckDatabaseModelException("泛型类型不匹配");
             }
-        } else if (parameter.getParameterizedType() instanceof ParameterizedType) { // 处理接口中的集合类型
+        } else if (parameter.getParameterizedType() instanceof ParameterizedType) { //处理集合 Map、Collection
             ParameterizedType parameterizedType = (ParameterizedType) parameter.getParameterizedType();
             if (Collection.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())) {
                 if (isEntityParam(parameterizedType.getActualTypeArguments()[0], methodMeta.getDatabaseMeta().getSource())) {
@@ -74,17 +75,17 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
                     return parameterAttribute(new CollectionPrimaryKeyParameterAttribute(methodMeta.getDatabaseMeta().getPrimaryKey()),
                             parameter, parameterName);
                 } else {
+                    // 这里需不需要进行类型处理 有可能是自定义对象 没有想到比较好的场景来需要自定义对象数组集合来处理数据,因为泛型实体已经满足了必要的需求
                     return parameterAttribute(new CollectionParameterAttribute(), parameter, parameterName);
                 }
             } else {
-                // TODO 这里需不需要进行类型处理 有可能是自定义对象 但是现在还没规划自定义的对象 后期可以考虑扩展
-                return parameterAttribute(new CollectionParameterAttribute(), parameter, parameterName);
+
+                return parameterAttribute(new MapParameterAttribute(methodMeta.getDatabaseMeta().getPrimaryKey()), parameter, parameterName);
             }
         } else {
             if (isEntityParam(parameter.getParameterizedType(), methodMeta.getDatabaseMeta().getSource())) {
                 return parameterAttribute(new EntityParameterAttribute(methodMeta.getDatabaseMeta()), parameter, parameterName);
             } else if (Reflection.isCustomObject(parameter.getType())) {
-                // TODO 需要解析对象的pars
                 return parameterAttribute(new ObjectParameterAttribute(parameter.getType()), parameter, parameterName);
             } else {
                 return parameterAttribute(new BaseParameterAttribute(), parameter, parameterName);
@@ -97,7 +98,6 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
         if (parameter != null) {
             attribute.addAnnotations(registerAnnotation(parameter.getAnnotations()));
         }
-        attribute.setColumn(configuration.getColumnNameConverter().convert(parameterName));
         attribute.setParameterName(parameterName);
         attribute.setPath(Collections.singletonList(parameterName).toArray(new String[]{}));
         return attribute;

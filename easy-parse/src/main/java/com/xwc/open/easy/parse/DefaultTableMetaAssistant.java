@@ -35,6 +35,7 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
 
     private TableMeta doTableMeta(Class<?> clazz) {
         TableMeta model = new TableMeta();
+        model.setSource(clazz);
         model.setTableName(tableName(clazz));
         List<Field> fields = Reflection.getField(clazz);
         for (Field field : fields) {

@@ -1,7 +1,11 @@
 package com.xwc.easy.core.method;
 
 import com.xwc.easy.core.table.method.MethodEntity;
+import com.xwc.easy.core.table.method.MethodEntityQuery;
 import com.xwc.open.easy.parse.supports.EasyMapper;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 类描述：
@@ -10,11 +14,15 @@ import com.xwc.open.easy.parse.supports.EasyMapper;
  */
 public interface TestBaseMapper extends BaseMapper<MethodEntity, Long> {
 
-    int insert(MethodEntity entity);
+    int customEntityParameterAttribute(MethodEntity entity);
 
-    int update(MethodEntity entity);
+    int customCollectionEntityParameterAttribute(List<MethodEntity> entity);
 
-    int delete(Long id);
+    int baseParameterAttribute(Long id);
 
-    int query(Long id);
+    List<MethodEntity> collectionParameterAttribute(List<Long> ids);
+
+    int objectParameterAttribute(MethodEntityQuery query);
+
+    int mapParameterAttribute(Map<Object, Object> map);
 }

@@ -20,10 +20,6 @@ public abstract class ParameterAttribute {
      */
     private String parameterName;
     /**
-     * 属性名称
-     */
-    private String column;
-    /**
      * 属性路径 从根路径开始
      */
     private String[] path;
@@ -76,14 +72,6 @@ public abstract class ParameterAttribute {
 
     public void setParameterName(String parameterName) {
         this.parameterName = parameterName;
-    }
-
-    public String getColumn() {
-        return column;
-    }
-
-    public void setColumn(String column) {
-        this.column = column;
     }
 
     public String[] getPath() {
