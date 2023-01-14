@@ -1,10 +1,7 @@
 package com.xwc.open.easy.parse.model;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 类描述：
@@ -21,16 +18,16 @@ public class OperateMethodMeta {
     /**
      * 方法的参数信息
      */
-    private final Set<ParameterAttribute> parameterAttributes = new HashSet<>();
+    private final List<ParameterAttribute> parameterAttributes = new ArrayList<>();
 
     /**
      * 当需要进行填充属性的时候或者逻辑删除的时候，因为这些参数不会在方法上声明，需要把这些参数描述成虚拟的；
      */
-    private final Set<ParameterAttribute> virtualParameterAttributes = new HashSet<>();
+    private final List<ParameterAttribute> virtualParameterAttributes = new ArrayList<>();
     /**
-     * 方法生需要进行忽略的参数 被
+     * 方法生需要进行忽略的参数
      */
-    private final Set<ParameterAttribute> ignoreParameterAttributes = new HashSet<>();
+    private final List<ParameterAttribute> ignoreParameterAttributes = new ArrayList<>();
 
     /**
      * 方法上自带的注解
@@ -56,13 +53,16 @@ public class OperateMethodMeta {
         this.ignoreParameterAttributes.add(parameterAttribute);
     }
 
-    /**
-     * 添加一个虚拟的参数属性
-     *
-     * @param parameterAttribute 参数属性
-     */
-    public void addVirtualParameterAttributes(ParameterAttribute parameterAttribute) {
-        this.virtualParameterAttributes.add(parameterAttribute);
+    public List<ParameterAttribute> getParameterAttributes() {
+        return parameterAttributes;
+    }
+
+    public List<ParameterAttribute> getIgnoreParameterAttributes() {
+        return ignoreParameterAttributes;
+    }
+
+    public int paramSize() {
+        return ignoreParameterAttributes.size() + parameterAttributes.size();
     }
 
 
@@ -102,13 +102,6 @@ public class OperateMethodMeta {
         this.methodName = methodName;
     }
 
-    public Set<ParameterAttribute> getParameterAttributes() {
-        return parameterAttributes;
-    }
-
-    public Set<ParameterAttribute> getVirtualParameterAttributes() {
-        return virtualParameterAttributes;
-    }
 
     public Map<Class<?>, Annotation> getAnnotations() {
         return annotations;

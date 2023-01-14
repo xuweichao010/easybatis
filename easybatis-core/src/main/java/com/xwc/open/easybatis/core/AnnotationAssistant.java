@@ -241,6 +241,7 @@ public class AnnotationAssistant {
         }
     }
 
+
     private ParamMate parseParameter(Parameter parameter, String paramName, MethodMeta methodMeta) {
         Class<?> entityClass = methodMeta.getTableMetadata().getSource();
         //处理接口泛型 泛型的两种情况是 主键或者是实体

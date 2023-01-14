@@ -221,7 +221,7 @@ public class DefaultTableMetaAssistantTest {
         Assert.assertTrue(fillAttribute.isSelectIgnore());
         Assert.assertEquals("createUserId", fillAttribute.getIdentification());
         Assert.assertEquals("create_user_id", fillAttribute.getColumn());
-        Assert.assertEquals(FillType.MODIFY, fillAttribute.getType());
+        Assert.assertEquals(FillType.INSERT, fillAttribute.getType());
     }
 
 
@@ -238,7 +238,7 @@ public class DefaultTableMetaAssistantTest {
         Assert.assertTrue(fillAttribute.isSelectIgnore());
         Assert.assertEquals("username", fillAttribute.getIdentification());
         Assert.assertEquals("create_user_id", fillAttribute.getColumn());
-        Assert.assertEquals(FillType.MODIFY, fillAttribute.getType());
+        Assert.assertEquals(FillType.INSERT_UPDATE, fillAttribute.getType());
     }
 
     /**

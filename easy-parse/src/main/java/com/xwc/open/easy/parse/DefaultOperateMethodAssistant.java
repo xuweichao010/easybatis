@@ -41,7 +41,12 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
         return methodMeta;
     }
 
-
+    /**
+     * 解析方法上的元信息
+     *
+     * @param method     方法对象
+     * @param methodMeta 方法的元信息
+     */
     private void parseMethod(Method method, OperateMethodMeta methodMeta) {
         Parameter[] parameters = method.getParameters();
         List<String> paramNames = ParamNameUtil.getParamNames(method);
@@ -55,6 +60,14 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
         }
     }
 
+    /**
+     * 解析参数类型所属类型 该类型 输入 ParamMate类型的子类
+     *
+     * @param parameter     参数
+     * @param parameterName 参数名称
+     * @param methodMeta    方法的元信息
+     * @return 返回一个参数类型
+     */
     private ParameterAttribute parseParameter(Parameter parameter, String parameterName, OperateMethodMeta methodMeta) {
         if (parameter.getParameterizedType() instanceof TypeVariable) { // 处理泛型
             if (isEntityParam(parameter.getParameterizedType(), methodMeta.getDatabaseMeta().getSource())) {
@@ -96,7 +109,7 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
 
     private ParameterAttribute parameterAttribute(ParameterAttribute attribute, Parameter parameter, String parameterName) {
         if (parameter != null) {
-            attribute.addAnnotations(registerAnnotation(parameter.getAnnotations()));
+            attribute.addAnnotations(AnnotationUtils.registerAnnotation(parameter.getAnnotations(), Syntax.class));
         }
         attribute.setParameterName(parameterName);
         attribute.setPath(Collections.singletonList(parameterName).toArray(new String[]{}));
@@ -108,21 +121,10 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
         OperateMethodMeta methodMeta = new OperateMethodMeta();
         methodMeta.setMethodName(method.getName());
         //缓存和系统有关的所有注解
-        methodMeta.addAnnotations(registerAnnotation(method.getDeclaredAnnotations()));
+        methodMeta.addAnnotations(AnnotationUtils.registerAnnotation(method.getDeclaredAnnotations(), Syntax.class));
         return methodMeta;
     }
 
-    /**
-     * 识别和系统中所有有关的注解 这些注解都引用 @link com.xwc.open.easy.core.annotations.Syntax 方法
-     *
-     * @param annotations 需要识别的注解
-     * @return 返回满足要求注解
-     */
-    private List<Annotation> registerAnnotation(Annotation[] annotations) {
-        return Arrays.stream(annotations)
-                .filter(annotation -> AnnotationUtils.findAnnotation(annotation.getClass(), Syntax.class) != null)
-                .collect(Collectors.toList());
-    }
 
     /**
      * 判断类型是否为实体类型

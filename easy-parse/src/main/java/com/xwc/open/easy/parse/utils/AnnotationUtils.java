@@ -1,10 +1,13 @@
 package com.xwc.open.easy.parse.utils;
 
+import com.xwc.open.easy.parse.annotations.Syntax;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -39,6 +42,19 @@ public class AnnotationUtils {
         }
         return null;
 
+    }
+
+    /**
+     * 返回annotations注解数组中有携带了marker类型的注解
+     *
+     * @param annotations 需要识别的注解
+     * @param marker      携带的注解信息
+     * @return 返回满足要求注解
+     */
+    public static List<Annotation> registerAnnotation(Annotation[] annotations, Class<? extends Annotation> marker) {
+        return Arrays.stream(annotations)
+                .filter(annotation -> AnnotationUtils.findAnnotation(annotation.getClass(), marker) != null)
+                .collect(Collectors.toList());
     }
 
 

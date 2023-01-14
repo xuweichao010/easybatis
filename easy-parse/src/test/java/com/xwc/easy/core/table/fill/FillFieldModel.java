@@ -9,7 +9,7 @@ import com.xwc.open.easy.parse.enums.FillType;
  * 时间 2022/11/25 22:48
  */
 public class FillFieldModel {
-    @FillColumn(selectIgnore = true, type = FillType.MODIFY)
+    @FillColumn(selectIgnore = true, type = FillType.INSERT)
     private String createUserId;
 
     public String getCreateUserId() {

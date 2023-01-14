@@ -1,7 +1,7 @@
 package com.xwc.open.easy.parse.utils;
 
 
-
+import com.xwc.open.easy.parse.exceptions.EasyException;
 import com.xwc.open.easy.parse.supports.EasyMapper;
 
 import java.lang.reflect.Field;
@@ -106,6 +106,16 @@ public class Reflection {
             }
         }
         return null;
+    }
+
+    public static Method chooseMethod(Class<?> classType, String methodName) {
+        Method[] declaredMethod = classType.getMethods();
+        for (Method method : declaredMethod) {
+            if (method.getName().equals(methodName)) {
+                return method;
+            }
+        }
+        throw new EasyException("找不到方法");
     }
 
     public static boolean isPrimitive(Object obj) {

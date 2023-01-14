@@ -1,6 +1,8 @@
 package com.xwc.open.easy.parse.model;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * 类描述：模型属性映射
@@ -37,6 +39,8 @@ public class ModelAttribute {
      * 插入忽略
      */
     private boolean insertIgnore;
+
+    private List<Annotation> annotations;
 
     public String getField() {
         return field;
@@ -92,5 +96,13 @@ public class ModelAttribute {
 
     public void setInsertIgnore(boolean insertIgnore) {
         this.insertIgnore = insertIgnore;
+    }
+
+    public List<Annotation> getAnnotations() {
+        return annotations;
+    }
+
+    public void setAnnotations(List<Annotation> annotations) {
+        this.annotations = annotations;
     }
 }

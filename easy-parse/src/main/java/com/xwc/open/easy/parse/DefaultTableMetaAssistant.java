@@ -47,7 +47,7 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
             } else if ((modelAttribute = fillAttribute(clazz, field)) != null) {
                 model.addFillAttribute((FillAttribute) modelAttribute);
             } else if ((modelAttribute = modelAttribute(clazz, field)) != null) {
-                model.addModelAttribute(modelAttribute);
+                model.addNormalAttribute(modelAttribute);
             }
         }
         return model;
@@ -220,6 +220,7 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
         }
         modelAttribute.setField(field.getName());
         modelAttribute.setColumn(configuration.getColumnNameConverter().convert(field.getName()));
+        modelAttribute.setAnnotations(AnnotationUtils.registerAnnotation(field.getAnnotations(), Syntax.class));
         return modelAttribute;
     }
 

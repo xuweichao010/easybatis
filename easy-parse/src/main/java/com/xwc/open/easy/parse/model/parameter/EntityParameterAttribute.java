@@ -10,12 +10,11 @@ import java.util.List;
  * 作者：徐卫超 (cc)
  * 时间 2022/11/25 23:31
  */
-public class EntityParameterAttribute extends ObjectParameterAttribute {
+public class EntityParameterAttribute extends BaseParameterAttribute {
 
     public TableMeta databaseMeta;
 
     public EntityParameterAttribute(TableMeta databaseMeta) {
-        super(databaseMeta.getSource());
         this.databaseMeta = databaseMeta;
     }
 }

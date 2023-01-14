@@ -23,11 +23,11 @@ public class TableMeta {
     /**
      * 普通属性信息
      */
-    private final Set<ModelAttribute> model = new HashSet<>();
+    private final List<ModelAttribute> normalAttr = new ArrayList<>();
     /**
      * 填充字段信息
      */
-    private final Set<FillAttribute> fills = new HashSet<>();
+    private final List<FillAttribute> fills = new ArrayList<>();
     /**
      * 逻辑字段
      */
@@ -54,7 +54,7 @@ public class TableMeta {
     }
 
 
-    public Set<FillAttribute> getFills() {
+    public List<FillAttribute> getFills() {
         return fills;
     }
 
@@ -78,9 +78,11 @@ public class TableMeta {
         this.fills.add(modelAttribute);
     }
 
-    public void addModelAttribute(ModelAttribute modelAttribute) {
-        this.model.add(modelAttribute);
+    public void addNormalAttribute(ModelAttribute modelAttribute) {
+        this.normalAttr.add(modelAttribute);
     }
 
-
+    public List<ModelAttribute> getNormalAttr() {
+        return normalAttr;
+    }
 }
