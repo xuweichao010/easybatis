@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.entity;
 
 import com.xwc.open.easy.parse.annotations.Id;
+import com.xwc.open.easy.parse.annotations.Table;
 import com.xwc.open.easy.parse.enums.IdType;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import lombok.Data;
  * 时间 2023/1/12 17:43
  */
 @Data
+@Table("t_user")
 public class FillUser extends BaseFillEntity {
 
     /**
@@ -43,9 +45,5 @@ public class FillUser extends BaseFillEntity {
      */
     private Integer job;
 
-    /**
-     * 是否有效 0:有效 1:无效
-     */
-    private Integer valid;
 
 }

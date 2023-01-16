@@ -1,10 +1,7 @@
 package com.xwc.open.easybatis.supports;
 
 import com.xwc.open.easy.parse.enums.IdType;
-import com.xwc.open.easy.parse.model.ModelAttribute;
-import com.xwc.open.easy.parse.model.OperateMethodMeta;
-import com.xwc.open.easy.parse.model.ParameterAttribute;
-import com.xwc.open.easy.parse.model.TableMeta;
+import com.xwc.open.easy.parse.model.*;
 import com.xwc.open.easy.parse.model.parameter.CollectionEntityParameterAttribute;
 import com.xwc.open.easy.parse.model.parameter.EntityParameterAttribute;
 import com.xwc.open.easy.parse.model.parameter.MapParameterAttribute;
@@ -65,11 +62,8 @@ public class DefaultEasyBatisSourceGenerator implements MyBatisSourceGenerator {
             if (operateMethodMeta.getParameterAttributes().size() != 1) {
                 throw new ParamCheckException("构建的INSERT语句时 参数列表错误");
             }
-            ParameterAttribute parameterAttribute = operateMethodMeta.getParameterAttributes().get(1);
-            if (parameterAttribute instanceof ObjectParameterAttribute) {
-                int size = operateMethodMeta.getDatabaseMeta().getFills().size() + (operateMethodMeta.getDatabaseMeta().getLogic() == null ? 0 : 1);
-                return size > 0;
-            } else if (parameterAttribute instanceof EntityParameterAttribute) {
+            ParameterAttribute parameterAttribute = operateMethodMeta.getParameterAttributes().get(0);
+            if (parameterAttribute instanceof EntityParameterAttribute) {
                 return false;
             } else {
                 throw new ParamCheckException("构建的INSERT语句时 不支持的参数类型：" + parameterAttribute.getParameterName());
@@ -86,32 +80,52 @@ public class DefaultEasyBatisSourceGenerator implements MyBatisSourceGenerator {
             SqlCommandType sqlCommandType) {
 
         List<MybatisParameterAttribute> list = new ArrayList<>();
+        int paramIndex = parameterAttribute.getIndex() * 1000;
         // 主键只有在插入的时候可以被放入到SQL中
-        if (tableMeta.getPrimaryKey().getIdType() != IdType.AUTO && sqlCommandType == SqlCommandType.INSERT) {
-            list.add(
-                    convertModelAttribute(parameterAttribute, tableMeta.getPrimaryKey(), 1, isMultiParam));
+        if (!isModelAttributeIgnore(tableMeta.getPrimaryKey(), sqlCommandType)) {
+            list.add(convertModelAttribute(parameterAttribute,
+                    tableMeta.getPrimaryKey(),
+                    paramIndex,
+                    isMultiParam));
         }
         List<ModelAttribute> normalAttr = tableMeta.getNormalAttr();
         for (int i = 0; i < normalAttr.size(); i++) {
             ModelAttribute modelAttribute = normalAttr.get(i);
-            list.add(convertModelAttribute(parameterAttribute, modelAttribute, 1000 + i, isMultiParam));
+            if (!this.isModelAttributeIgnore(modelAttribute, sqlCommandType)) {
+                list.add(convertModelAttribute(parameterAttribute, modelAttribute, paramIndex + 200 + i, isMultiParam));
+            }
         }
-        for (int i = 0; i < normalAttr.size(); i++) {
-            ModelAttribute modelAttribute = normalAttr.get(i);
-            list.add(
-                    convertModelAttribute(parameterAttribute, modelAttribute, 1000 + i, isMultiParam));
+        List<FillAttribute> fillAttr = tableMeta.getFills();
+        for (int i = 0; i < fillAttr.size(); i++) {
+            ModelAttribute modelAttribute = fillAttr.get(i);
+            if (!this.isModelAttributeIgnore(modelAttribute, sqlCommandType)) {
+                list.add(convertModelAttribute(parameterAttribute, modelAttribute, paramIndex + 200 + i, isMultiParam));
+            }
+        }
+
+        LogicAttribute logic = tableMeta.getLogic();
+        if (logic != null && !isModelAttributeIgnore(logic, sqlCommandType)) {
+            list.add(convertModelAttribute(parameterAttribute, logic, paramIndex + 300, isMultiParam));
         }
         return list;
-
     }
 
+    public boolean isModelAttributeIgnore(ModelAttribute modelAttribute, SqlCommandType sqlCommandType) {
+        if (sqlCommandType == SqlCommandType.INSERT && modelAttribute.isInsertIgnore()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     private MybatisParameterAttribute convertModelAttribute(ParameterAttribute parameterAttribute,
                                                             ModelAttribute modelAttribute,
-                                                            int modelAttributeIndex, boolean isMultiParam) {
+                                                            int modelAttributeIndex,
+                                                            boolean isMultiParam) {
         MybatisParameterAttribute attribute = new MybatisParameterAttribute();
         attribute.setIndex(modelAttributeIndex);
         attribute.setColumn(modelAttribute.getColumn());
+        attribute.setParameterName(modelAttribute.getField());
         if (isMultiParam) {
             attribute.setPath(new String[]{parameterAttribute.getParameterName(), modelAttribute.getField()});
         } else {

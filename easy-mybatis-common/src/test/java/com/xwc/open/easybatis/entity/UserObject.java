@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @Table("t_user")
-public class FillLogicUser extends BaseFillAndLogicEntity {
+public class UserObject extends BaseEntity {
 
     /**
      * 用户id
@@ -44,5 +44,10 @@ public class FillLogicUser extends BaseFillAndLogicEntity {
      * 职位 1-总监 2-经理 1-主管 3-销售 4-行政 5-技术员 6-财务
      */
     private Integer job;
+
+    /**
+     * 是否有效 0:有效 1:无效
+     */
+    private Integer valid;
 
 }
