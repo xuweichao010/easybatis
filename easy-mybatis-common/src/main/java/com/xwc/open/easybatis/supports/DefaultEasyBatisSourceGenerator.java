@@ -1,9 +1,11 @@
 package com.xwc.open.easybatis.supports;
 
 import com.xwc.open.easy.parse.model.*;
+import com.xwc.open.easy.parse.model.parameter.CollectionEntityParameterAttribute;
 import com.xwc.open.easy.parse.model.parameter.EntityParameterAttribute;
 import com.xwc.open.easy.parse.model.parameter.MapParameterAttribute;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
+import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.MyBatisSourceGenerator;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.exceptions.ParamCheckException;
@@ -62,7 +64,8 @@ public class DefaultEasyBatisSourceGenerator implements MyBatisSourceGenerator {
         if (batisColumnAttributes == null) {
             throw new ParamCheckException("INSERT 语句没有写入数据的类型");
         }
-        return doInsert(operateMethodMeta.getDatabaseMeta(), batisColumnAttributes, entityParameterAttribute);
+        return MyBatisSnippetUtils.script(doInsert(operateMethodMeta.getDatabaseMeta(), batisColumnAttributes,
+                entityParameterAttribute));
     }
 
     private String doInsert(TableMeta tableMeta, List<BatisColumnAttribute> batisColumnAttributes,
@@ -158,13 +161,13 @@ public class DefaultEasyBatisSourceGenerator implements MyBatisSourceGenerator {
         attribute.setIndex(modelAttributeIndex);
         attribute.setColumn(modelAttribute.getColumn());
         attribute.setParameterName(modelAttribute.getField());
-        if (isMultiParam) {
+        if (isMultiParam || parameterAttribute instanceof CollectionEntityParameterAttribute) {
             attribute.setPath(new String[]{parameterAttribute.getParameterName(), modelAttribute.getField()});
         } else {
             attribute.setPath(new String[]{modelAttribute.getField()});
         }
         attribute.addAnnotations(modelAttribute.getAnnotations());
-        attribute.setMulti(isMultiParam);
+        attribute.setMulti(isMultiParam || parameterAttribute instanceof CollectionEntityParameterAttribute);
         return attribute;
     }
 

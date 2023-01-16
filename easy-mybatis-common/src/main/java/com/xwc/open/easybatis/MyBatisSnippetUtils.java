@@ -16,8 +16,14 @@ public class MyBatisSnippetUtils {
 
     static final String FOREACH_OBJECT = "<foreach item='%s' index='%s' collection='%s' separator=',' > %s </foreach>";
 
-    public static String foreachObject(String itemName, String indexName, String collectionName, String value) {
-        return String.format(FOREACH_OBJECT, itemName, indexName, collectionName, value);
+    static final String SCRIPT = "<script> %s </script>";
+
+    public static String foreachObject(String itemName, String indexName, String collectionName, String content) {
+        return String.format(FOREACH_OBJECT, itemName, indexName, collectionName, content);
+    }
+
+    public static String script(String content) {
+        return String.format(SCRIPT, content);
     }
 
 

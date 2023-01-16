@@ -2,6 +2,7 @@ package com.xwc.open.easy.parse.model;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 类描述：
@@ -32,7 +33,7 @@ public class OperateMethodMeta {
     /**
      * 方法上自带的注解
      */
-    private Map<Class<?>, Annotation> annotations;
+    private final Map<Class<? extends Annotation>, Annotation> annotations = new ConcurrentHashMap<>();
 
     /**
      * 这个方法和对应数据模型 需要根据数据模型获取一些信息 例如泛型的主键信息 泛型的数据模型构建对象参数信息
@@ -91,7 +92,7 @@ public class OperateMethodMeta {
     }
 
     public void addAnnotations(List<Annotation> annotations) {
-        annotations.forEach(annotation -> this.annotations.put(annotation.getClass(), annotation));
+        annotations.forEach(annotation -> this.annotations.put(annotation.annotationType(), annotation));
     }
 
     public String getMethodName() {
@@ -103,7 +104,7 @@ public class OperateMethodMeta {
     }
 
 
-    public Map<Class<?>, Annotation> getAnnotations() {
+    public Map<Class<? extends Annotation>, Annotation> getAnnotations() {
         return annotations;
     }
 

@@ -59,7 +59,7 @@ public abstract class ParameterAttribute {
     }
 
     public void addAnnotations(List<Annotation> annotations) {
-        annotations.forEach(annotation -> this.annotations.put(annotation.getClass(), annotation));
+        annotations.forEach(annotation -> this.annotations.put(annotation.annotationType(), annotation));
     }
 
     public int getIndex() {

@@ -53,7 +53,7 @@ public class AnnotationUtils {
      */
     public static List<Annotation> registerAnnotation(Annotation[] annotations, Class<? extends Annotation> marker) {
         return Arrays.stream(annotations)
-                .filter(annotation -> AnnotationUtils.findAnnotation(annotation.getClass(), marker) != null)
+                .filter(annotation -> AnnotationUtils.findAnnotation(annotation.annotationType(), marker) != null)
                 .collect(Collectors.toList());
     }
 
@@ -80,6 +80,8 @@ public class AnnotationUtils {
         }
         return annotation;
     }
+
+
 
     public static Object getValue(Annotation annotation, String name) {
         if (annotation != null && name != null) {
