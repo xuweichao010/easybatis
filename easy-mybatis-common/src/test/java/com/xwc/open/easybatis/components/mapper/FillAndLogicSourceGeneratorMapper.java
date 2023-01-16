@@ -18,7 +18,7 @@ import java.util.List;
 public interface FillAndLogicSourceGeneratorMapper extends EasyMapper<FillLogicUser, String> {
 
     @InsertSql
-    int simpleInsert(FillLogicUser user);
+    int insert(FillLogicUser user);
 
     @InsertSql
     int insertIgnore(@Ignore String tableName, FillLogicUser user);

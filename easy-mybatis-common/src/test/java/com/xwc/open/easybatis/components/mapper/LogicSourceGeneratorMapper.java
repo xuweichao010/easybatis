@@ -19,7 +19,7 @@ import java.util.List;
 public interface LogicSourceGeneratorMapper extends EasyMapper<LogicUser, String> {
 
     @InsertSql
-    int simpleInsert(LogicUser user);
+    int insert(LogicUser user);
 
     @InsertSql
     int insertIgnore(@Ignore String tableName, LogicUser user);

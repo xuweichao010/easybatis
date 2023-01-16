@@ -1,15 +1,18 @@
 package com.xwc.open.easybatis.supports;
 
-import com.xwc.open.easy.parse.enums.IdType;
 import com.xwc.open.easy.parse.model.*;
-import com.xwc.open.easy.parse.model.parameter.CollectionEntityParameterAttribute;
 import com.xwc.open.easy.parse.model.parameter.EntityParameterAttribute;
 import com.xwc.open.easy.parse.model.parameter.MapParameterAttribute;
-import com.xwc.open.easy.parse.model.parameter.ObjectParameterAttribute;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.MyBatisSourceGenerator;
-import com.xwc.open.easybatis.binding.MybatisParameterAttribute;
+import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.exceptions.ParamCheckException;
+import com.xwc.open.easybatis.snippet.column.DefaultInsertColumn;
+import com.xwc.open.easybatis.snippet.column.InsertColumnSnippet;
+import com.xwc.open.easybatis.snippet.from.DefaultInsertFrom;
+import com.xwc.open.easybatis.snippet.from.SqlFromSnippet;
+import com.xwc.open.easybatis.snippet.values.DefaultInsertValues;
+import com.xwc.open.easybatis.snippet.values.InsertValuesSnippet;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.util.ArrayList;
@@ -23,10 +26,17 @@ import java.util.Set;
  */
 public class DefaultEasyBatisSourceGenerator implements MyBatisSourceGenerator {
 
-    private final EasyBatisConfiguration easyMyBatisConfiguration;
+    private final EasyBatisConfiguration easyBatisConfiguration;
+
+    private SqlFromSnippet insertSqlFrom = new DefaultInsertFrom();
+
+    private InsertColumnSnippet insertColumnSnippet = new DefaultInsertColumn(new DefaultColumnPlaceholder());
+
+    private InsertValuesSnippet insertValuesSnippet = new DefaultInsertValues(new MybatisPlaceholder());
+
 
     public DefaultEasyBatisSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration) {
-        this.easyMyBatisConfiguration = easyMyBatisConfiguration;
+        this.easyBatisConfiguration = easyMyBatisConfiguration;
     }
 
     @Override
@@ -37,7 +47,29 @@ public class DefaultEasyBatisSourceGenerator implements MyBatisSourceGenerator {
     @Override
     public String insert(OperateMethodMeta operateMethodMeta) {
         boolean multi = isMulti(operateMethodMeta, SqlCommandType.INSERT);
-        return null;
+        List<BatisColumnAttribute> batisColumnAttributes = null;
+        EntityParameterAttribute entityParameterAttribute = null;
+        for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
+            if (entityParameterAttribute == null && parameterAttribute instanceof EntityParameterAttribute) {
+                batisColumnAttributes = flatEntityParameterAttribute(parameterAttribute,
+                        operateMethodMeta.getDatabaseMeta(), multi, SqlCommandType.INSERT);
+                entityParameterAttribute = (EntityParameterAttribute) parameterAttribute;
+                entityParameterAttribute.setMulti(multi);
+            } else {
+                throw new ParamCheckException("INSERT 语句不支持该类型的参数：" + parameterAttribute.getParameterName());
+            }
+        }
+        if (batisColumnAttributes == null) {
+            throw new ParamCheckException("INSERT 语句没有写入数据的类型");
+        }
+        return doInsert(operateMethodMeta.getDatabaseMeta(), batisColumnAttributes, entityParameterAttribute);
+    }
+
+    private String doInsert(TableMeta tableMeta, List<BatisColumnAttribute> batisColumnAttributes,
+                            EntityParameterAttribute entityParameterAttribute) {
+        return insertSqlFrom.from(tableMeta) +
+                insertColumnSnippet.columns(batisColumnAttributes) + " VALUES " +
+                insertValuesSnippet.values(entityParameterAttribute, batisColumnAttributes);
     }
 
     @Override
@@ -73,13 +105,13 @@ public class DefaultEasyBatisSourceGenerator implements MyBatisSourceGenerator {
     }
 
 
-    public List<MybatisParameterAttribute> flatEntityParameterAttribute(
+    public List<BatisColumnAttribute> flatEntityParameterAttribute(
             ParameterAttribute parameterAttribute,
             TableMeta tableMeta,
             boolean isMultiParam,
             SqlCommandType sqlCommandType) {
 
-        List<MybatisParameterAttribute> list = new ArrayList<>();
+        List<BatisColumnAttribute> list = new ArrayList<>();
         int paramIndex = parameterAttribute.getIndex() * 1000;
         // 主键只有在插入的时候可以被放入到SQL中
         if (!isModelAttributeIgnore(tableMeta.getPrimaryKey(), sqlCommandType)) {
@@ -118,11 +150,11 @@ public class DefaultEasyBatisSourceGenerator implements MyBatisSourceGenerator {
         }
     }
 
-    private MybatisParameterAttribute convertModelAttribute(ParameterAttribute parameterAttribute,
-                                                            ModelAttribute modelAttribute,
-                                                            int modelAttributeIndex,
-                                                            boolean isMultiParam) {
-        MybatisParameterAttribute attribute = new MybatisParameterAttribute();
+    private BatisColumnAttribute convertModelAttribute(ParameterAttribute parameterAttribute,
+                                                       ModelAttribute modelAttribute,
+                                                       int modelAttributeIndex,
+                                                       boolean isMultiParam) {
+        BatisColumnAttribute attribute = new BatisColumnAttribute();
         attribute.setIndex(modelAttributeIndex);
         attribute.setColumn(modelAttribute.getColumn());
         attribute.setParameterName(modelAttribute.getField());
@@ -132,6 +164,7 @@ public class DefaultEasyBatisSourceGenerator implements MyBatisSourceGenerator {
             attribute.setPath(new String[]{modelAttribute.getField()});
         }
         attribute.addAnnotations(modelAttribute.getAnnotations());
+        attribute.setMulti(isMultiParam);
         return attribute;
     }
 

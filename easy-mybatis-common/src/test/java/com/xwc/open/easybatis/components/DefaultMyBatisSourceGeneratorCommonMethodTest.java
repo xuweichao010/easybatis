@@ -2,16 +2,12 @@ package com.xwc.open.easybatis.components;
 
 import com.xwc.open.easy.parse.exceptions.EasyException;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
-import com.xwc.open.easy.parse.model.ParameterAttribute;
 import com.xwc.open.easy.parse.model.parameter.EntityParameterAttribute;
 import com.xwc.open.easy.parse.supports.impl.CamelConverterUnderscore;
 import com.xwc.open.easy.parse.supports.impl.NoneNameConverter;
 import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
-import com.xwc.open.easybatis.binding.MybatisParameterAttribute;
-import com.xwc.open.easybatis.components.mapper.FillAndLogicSourceGeneratorMapper;
-import com.xwc.open.easybatis.components.mapper.FillSourceGeneratorMapper;
-import com.xwc.open.easybatis.components.mapper.LogicSourceGeneratorMapper;
+import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.components.mapper.SimpleSourceGeneratorMapper;
 import com.xwc.open.easybatis.supports.DefaultEasyBatisSourceGenerator;
 import org.apache.ibatis.io.Resources;
@@ -35,7 +31,7 @@ import java.util.stream.Collectors;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/14 10:47
  */
-public class DefaultMyBatisSourceGeneratorTest {
+public class DefaultMyBatisSourceGeneratorCommonMethodTest {
 
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
@@ -54,7 +50,7 @@ public class DefaultMyBatisSourceGeneratorTest {
 
     @Test
     public void InsertIsMultiTest() {
-        Assert.assertFalse(isMultiTest(SimpleSourceGeneratorMapper.class, "simpleInsert", SqlCommandType.INSERT));
+        Assert.assertFalse(isMultiTest(SimpleSourceGeneratorMapper.class, "insert", SqlCommandType.INSERT));
         Assert.assertTrue(isMultiTest(SimpleSourceGeneratorMapper.class, "insertIgnore", SqlCommandType.INSERT));
         Assert.assertFalse(isMultiTest(SimpleSourceGeneratorMapper.class, "insertBatch", SqlCommandType.INSERT));
         Assert.assertTrue(isMultiTest(SimpleSourceGeneratorMapper.class, "insertBatchIgnore", SqlCommandType.INSERT));
@@ -67,15 +63,15 @@ public class DefaultMyBatisSourceGeneratorTest {
 
     @Test
     public void flatEntityParameterAttributeTest() {
-        List<MybatisParameterAttribute> simpleInsert = flatEntityParameterAttribute(SimpleSourceGeneratorMapper.class,
+        List<BatisColumnAttribute> simpleInsert = flatEntityParameterAttribute(SimpleSourceGeneratorMapper.class,
                 "simpleInsert", SqlCommandType.INSERT);
         Assert.assertEquals(13, simpleInsert.size());
 
     }
 
 
-    private List<MybatisParameterAttribute> flatEntityParameterAttribute(Class<?> interfaceClass, String methodName,
-                                                                         SqlCommandType sqlCommandType) {
+    private List<BatisColumnAttribute> flatEntityParameterAttribute(Class<?> interfaceClass, String methodName,
+                                                                    SqlCommandType sqlCommandType) {
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta =
                 easyBatisConfiguration.getOperateMethodAssistant().getOperateMethodMeta(interfaceClass
@@ -83,7 +79,7 @@ public class DefaultMyBatisSourceGeneratorTest {
         DefaultEasyBatisSourceGenerator defaultEasyBatisSourceGenerator =
                 new DefaultEasyBatisSourceGenerator(easyBatisConfiguration);
         boolean multi = defaultEasyBatisSourceGenerator.isMulti(operateMethodMeta, sqlCommandType);
-        List<MybatisParameterAttribute> operateParameterAttributes =
+        List<BatisColumnAttribute> operateParameterAttributes =
                 operateMethodMeta.getParameterAttributes().stream().map(parameterAttribute -> {
                     if (parameterAttribute instanceof EntityParameterAttribute) {
                         return defaultEasyBatisSourceGenerator.flatEntityParameterAttribute(parameterAttribute,
@@ -92,13 +88,13 @@ public class DefaultMyBatisSourceGeneratorTest {
                         throw new EasyException("错误的数据类型");
                     }
                 }).flatMap(Collection::stream).collect(Collectors.toList());
-        operateParameterAttributes.forEach(mybatisParameterAttribute -> {
+        operateParameterAttributes.forEach(BatisParameterAttribute -> {
             if (configuration.isMapUnderscoreToCamelCase()) {
-                Assert.assertEquals(camelConverterUnderscore.convert(mybatisParameterAttribute.getParameterName()),
-                        mybatisParameterAttribute.getColumn());
+                Assert.assertEquals(camelConverterUnderscore.convert(BatisParameterAttribute.getParameterName()),
+                        BatisParameterAttribute.getColumn());
             } else {
-                Assert.assertEquals(noneNameConverter.convert(mybatisParameterAttribute.getParameterName()),
-                        mybatisParameterAttribute.getColumn());
+                Assert.assertEquals(noneNameConverter.convert(BatisParameterAttribute.getParameterName()),
+                        BatisParameterAttribute.getColumn());
             }
         });
 

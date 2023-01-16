@@ -18,7 +18,7 @@ import java.util.List;
 public interface FillSourceGeneratorMapper extends EasyMapper<FillUser, String> {
 
     @InsertSql
-    int simpleInsert(FillUser normalUser);
+    int insert(FillUser normalUser);
 
     @InsertSql
     int insertIgnore(@Ignore String tableName, FillUser user);

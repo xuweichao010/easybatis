@@ -8,7 +8,7 @@ import com.xwc.open.easy.parse.model.PrimaryKeyAttribute;
  * 作者：徐卫超 (cc)
  * 时间 2022/11/25 23:32
  */
-public class MybatisParameterAttribute extends ParameterAttribute {
+public class BatisColumnAttribute extends ParameterAttribute {
 
     /**
      *

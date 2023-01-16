@@ -12,6 +12,10 @@ import java.util.Map;
  */
 public abstract class ParameterAttribute {
     /**
+     * 是否是多参数
+     */
+    private boolean multi;
+    /**
      * 参数存在的位置
      */
     private int index;
@@ -80,5 +84,13 @@ public abstract class ParameterAttribute {
 
     public void setPath(String[] path) {
         this.path = path;
+    }
+
+    public boolean isMulti() {
+        return multi;
+    }
+
+    public void setMulti(boolean multi) {
+        this.multi = multi;
     }
 }
