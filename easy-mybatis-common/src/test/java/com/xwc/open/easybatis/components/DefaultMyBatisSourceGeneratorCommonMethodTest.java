@@ -8,7 +8,7 @@ import com.xwc.open.easy.parse.supports.impl.NoneNameConverter;
 import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
-import com.xwc.open.easybatis.components.mapper.SimpleSourceGeneratorMapper;
+import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
 import com.xwc.open.easybatis.supports.DefaultEasyBatisSourceGenerator;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.SqlCommandType;

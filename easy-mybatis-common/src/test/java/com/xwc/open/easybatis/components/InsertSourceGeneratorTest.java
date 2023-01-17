@@ -1,15 +1,10 @@
 package com.xwc.open.easybatis.components;
 
-import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
-import com.xwc.open.easy.parse.supports.impl.CamelConverterUnderscore;
-import com.xwc.open.easy.parse.supports.impl.NoneNameConverter;
 import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
-import com.xwc.open.easybatis.MyBatisSourceGenerator;
-import com.xwc.open.easybatis.annotaions.InsertSql;
-import com.xwc.open.easybatis.components.mapper.SimpleSourceGeneratorMapper;
-import com.xwc.open.easybatis.entity.NormalUser;
+import com.xwc.open.easybatis.EasyBatisSourceGenerator;
+import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
 import com.xwc.open.easybatis.supports.DefaultEasyBatisSourceGenerator;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
@@ -22,7 +17,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.List;
 
 /**
  * 类描述：
@@ -34,7 +28,7 @@ public class InsertSourceGeneratorTest {
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
     EasyBatisConfiguration easyBatisConfiguration;
-    MyBatisSourceGenerator sourceGenerator;
+    EasyBatisSourceGenerator sourceGenerator;
 
     @Before
     public void before() throws IOException {

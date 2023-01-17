@@ -6,7 +6,7 @@ import com.xwc.open.easy.parse.model.parameter.EntityParameterAttribute;
 import com.xwc.open.easy.parse.model.parameter.MapParameterAttribute;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
-import com.xwc.open.easybatis.MyBatisSourceGenerator;
+import com.xwc.open.easybatis.EasyBatisSourceGenerator;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.exceptions.ParamCheckException;
 import com.xwc.open.easybatis.snippet.column.DefaultInsertColumn;
@@ -26,7 +26,7 @@ import java.util.Set;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/12 15:05
  */
-public class DefaultEasyBatisSourceGenerator implements MyBatisSourceGenerator {
+public class DefaultEasyBatisSourceGenerator implements EasyBatisSourceGenerator {
 
     private final EasyBatisConfiguration easyBatisConfiguration;
 

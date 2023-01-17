@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.components.mapper;
+package com.xwc.open.easybatis.mapper;
 
 import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.supports.EasyMapper;

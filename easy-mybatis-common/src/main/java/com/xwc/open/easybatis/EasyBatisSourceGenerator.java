@@ -8,7 +8,7 @@ import com.xwc.open.easy.parse.model.TableMeta;
  * 作者：徐卫超 (cc)
  * 时间 2022/12/2 10:20
  */
-public interface MyBatisSourceGenerator {
+public interface EasyBatisSourceGenerator {
 
     /**
      * 查询语句构建

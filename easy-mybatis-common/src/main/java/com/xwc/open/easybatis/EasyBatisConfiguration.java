@@ -2,8 +2,11 @@ package com.xwc.open.easybatis;
 
 
 import com.xwc.open.easy.parse.EasyConfiguration;
+import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easy.parse.supports.impl.CamelConverterUnderscore;
 import com.xwc.open.easy.parse.supports.impl.NoneNameConverter;
+import com.xwc.open.easybatis.snippet.values.EasyMapperRegister;
+import org.apache.ibatis.binding.MapperRegistry;
 import org.apache.ibatis.session.Configuration;
 
 /**
@@ -13,7 +16,10 @@ import org.apache.ibatis.session.Configuration;
  */
 public class EasyBatisConfiguration extends EasyConfiguration {
 
-    private final Configuration configuration;
+    protected final Configuration configuration;
+
+    protected final EasyMapperRegister mapperRegistry = new EasyMapperRegister(this);
+
 
     public EasyBatisConfiguration(Configuration configuration) {
         this.configuration = configuration;
@@ -24,5 +30,18 @@ public class EasyBatisConfiguration extends EasyConfiguration {
             this.setColumnNameConverter(new NoneNameConverter());
             this.setTableNameConverter(new NoneNameConverter());
         }
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void addMapper(Class<?> type) {
+        configuration.addMapper(type);
+        mapperRegistry.addMapper(type);
+    }
+
+    public void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
+        this.configuration.setMapUnderscoreToCamelCase(mapUnderscoreToCamelCase);
     }
 }
