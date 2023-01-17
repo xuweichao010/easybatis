@@ -34,6 +34,10 @@ public class FillLogicUser extends BaseFillAndLogicEntity {
      * 用户名
      */
     private String name;
+    /**
+     * 数据类型
+     */
+    private Integer dataType = 2;
 
     /**
      * 用户年龄

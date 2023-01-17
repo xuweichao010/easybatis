@@ -65,7 +65,7 @@ public class DefaultMyBatisSourceGeneratorCommonMethodTest {
     public void flatEntityParameterAttributeTest() {
         List<BatisColumnAttribute> simpleInsert = flatEntityParameterAttribute(SimpleSourceGeneratorMapper.class,
                 "insert", SqlCommandType.INSERT);
-        Assert.assertEquals(13, simpleInsert.size());
+        Assert.assertEquals(14, simpleInsert.size());
 
     }
 

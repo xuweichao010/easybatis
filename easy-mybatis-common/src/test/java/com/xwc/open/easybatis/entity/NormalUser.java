@@ -39,6 +39,11 @@ public class NormalUser extends BaseEntity {
     private String name;
 
     /**
+     * 数据类型
+     */
+    private Integer dataType = 2;
+
+    /**
      * 用户年龄
      */
     private Integer age;
@@ -54,9 +59,11 @@ public class NormalUser extends BaseEntity {
         NormalUser normalUser = new NormalUser();
         normalUser.setId(UUID.randomUUID().toString().replace("-", ""));
         normalUser.orgCode = "xxxx" + random.nextInt(300);
+        normalUser.orgName = "测试分组" + random.nextInt(300);
         normalUser.name = "xxx" + new Random().nextInt(10000);
         normalUser.age = random.nextInt(100);
         normalUser.job = random.nextInt(7);
+        normalUser.setValid(1);
         return normalUser;
     }
 

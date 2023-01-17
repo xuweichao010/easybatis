@@ -36,6 +36,11 @@ public class FillUser extends BaseFillEntity {
     private String name;
 
     /**
+     * 数据类型
+     */
+    private Integer dataType = 2;
+
+    /**
      * 用户年龄
      */
     private Integer age;
