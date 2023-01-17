@@ -48,7 +48,7 @@ public class InsertSourceGeneratorTest {
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`age`,`job`,`valid`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`) VALUES (#{id},#{orgCode},#{orgName},#{name},#{age},#{job},#{valid},#{createTime},#{createId},#{createName},#{updateTime},#{updateId},#{updateName}) </script>";
+        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES (#{id},#{orgCode},#{orgName},#{name},#{age},#{job},#{createTime},#{createId},#{createName},#{updateTime},#{updateId},#{updateName},#{valid}) </script>";
         Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
     }
 
@@ -59,7 +59,7 @@ public class InsertSourceGeneratorTest {
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`age`,`job`,`valid`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`) VALUES (#{user.id},#{user.orgCode},#{user.orgName},#{user.name},#{user.age},#{user.job},#{user.valid},#{user.createTime},#{user.createId},#{user.createName},#{user.updateTime},#{user.updateId},#{user.updateName}) </script>";
+        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES (#{user.id},#{user.orgCode},#{user.orgName},#{user.name},#{user.age},#{user.job},#{user.createTime},#{user.createId},#{user.createName},#{user.updateTime},#{user.updateId},#{user.updateName},#{user.valid}) </script>";
         Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
     }
 
@@ -70,7 +70,7 @@ public class InsertSourceGeneratorTest {
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`age`,`job`,`valid`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`) VALUES <foreach item='users' index='index' collection='collection' separator=',' > (#{users.id},#{users.orgCode},#{users.orgName},#{users.name},#{users.age},#{users.job},#{users.valid},#{users.createTime},#{users.createId},#{users.createName},#{users.updateTime},#{users.updateId},#{users.updateName}) </foreach> </script>";
+        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES <foreach item='users' index='index' collection='collection' separator=',' > (#{users.id},#{users.orgCode},#{users.orgName},#{users.name},#{users.age},#{users.job},#{users.createTime},#{users.createId},#{users.createName},#{users.updateTime},#{users.updateId},#{users.updateName},#{users.valid}) </foreach> </script>";
         Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
     }
 
@@ -81,8 +81,7 @@ public class InsertSourceGeneratorTest {
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`age`,`job`,`valid`," +
-                "`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`) VALUES <foreach item='users' index='index' collection='users' separator=',' > (#{users.id},#{users.orgCode},#{users.orgName},#{users.name},#{users.age},#{users.job},#{users.valid},#{users.createTime},#{users.createId},#{users.createName},#{users.updateTime},#{users.updateId},#{users.updateName}) </foreach> </script>";
+        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES <foreach item='users' index='index' collection='users' separator=',' > (#{users.id},#{users.orgCode},#{users.orgName},#{users.name},#{users.age},#{users.job},#{users.createTime},#{users.createId},#{users.createName},#{users.updateTime},#{users.updateId},#{users.updateName},#{users.valid}) </foreach> </script>";
         Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
     }
 }

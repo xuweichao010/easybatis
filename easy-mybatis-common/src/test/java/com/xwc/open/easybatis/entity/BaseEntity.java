@@ -42,4 +42,9 @@ public class BaseEntity {
      * 更新用户名
      */
     private String updateName;
+
+    /**
+     * 是否有效 0:有效 1:无效
+     */
+    private Integer valid;
 }

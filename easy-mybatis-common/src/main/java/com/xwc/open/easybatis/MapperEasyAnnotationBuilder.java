@@ -69,9 +69,9 @@ public class MapperEasyAnnotationBuilder {
 
     public void parse() {
         String resource = type.toString();
-        if (!configuration.isResourceLoaded(resource)) {
-            loadXmlResource();
-            configuration.addLoadedResource(resource);
+        if (!easyBatisConfiguration.isResourceLoaded(resource)) {
+            // loadXmlResource(); 不需要加载xml
+            easyBatisConfiguration.addLoadedResource(resource);
             assistant.setCurrentNamespace(type.getName());
             parseCache();
             parseCacheRef();
@@ -576,7 +576,7 @@ public class MapperEasyAnnotationBuilder {
 //            return buildSqlSourceFromStrings(((Select) annotation).value(), parameterType, languageDriver);
         } else if (annotation instanceof Update) {
 //            return buildSqlSourceFromStrings(((Update) annotation).value(), parameterType, languageDriver);
-        } else if (annotation instanceof Insert) {
+        } else if (annotation instanceof InsertSql) {
             String insertSql = easyBatisSourceGenerator.insert(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{insertSql}, parameterType, languageDriver);
         } else if (annotation instanceof Delete) {
@@ -634,29 +634,17 @@ public class MapperEasyAnnotationBuilder {
         AnnotationWrapper(Annotation annotation) {
             super();
             this.annotation = annotation;
-            if (annotation instanceof Select) {
-                databaseId = ((Select) annotation).databaseId();
+            if (annotation instanceof SelectSql) {
+                databaseId = ((SelectSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.SELECT;
-            } else if (annotation instanceof Update) {
+            } else if (annotation instanceof UpdateSql) {
                 databaseId = ((Update) annotation).databaseId();
                 sqlCommandType = SqlCommandType.UPDATE;
-            } else if (annotation instanceof Insert) {
-                databaseId = ((Insert) annotation).databaseId();
+            } else if (annotation instanceof InsertSql) {
+                databaseId = ((InsertSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.INSERT;
-            } else if (annotation instanceof Delete) {
+            } else if (annotation instanceof DeleteSql) {
                 databaseId = ((Delete) annotation).databaseId();
-                sqlCommandType = SqlCommandType.DELETE;
-            } else if (annotation instanceof SelectProvider) {
-                databaseId = ((SelectProvider) annotation).databaseId();
-                sqlCommandType = SqlCommandType.SELECT;
-            } else if (annotation instanceof UpdateProvider) {
-                databaseId = ((UpdateProvider) annotation).databaseId();
-                sqlCommandType = SqlCommandType.UPDATE;
-            } else if (annotation instanceof InsertProvider) {
-                databaseId = ((InsertProvider) annotation).databaseId();
-                sqlCommandType = SqlCommandType.INSERT;
-            } else if (annotation instanceof DeleteProvider) {
-                databaseId = ((DeleteProvider) annotation).databaseId();
                 sqlCommandType = SqlCommandType.DELETE;
             } else {
                 sqlCommandType = SqlCommandType.UNKNOWN;

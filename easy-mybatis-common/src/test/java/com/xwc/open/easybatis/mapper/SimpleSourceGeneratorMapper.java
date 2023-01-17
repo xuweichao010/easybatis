@@ -28,6 +28,6 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     @InsertSql
     int insertBatchIgnore(@Ignore String tableName, List<NormalUser> users);
 
-    @InsertSql
+    //@InsertSql
     int insertObject(UserObject userObject);
 }

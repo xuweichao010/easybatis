@@ -5,6 +5,9 @@ import com.xwc.open.easy.parse.annotations.Table;
 import com.xwc.open.easy.parse.enums.IdType;
 import lombok.Data;
 
+import java.util.Random;
+import java.util.UUID;
+
 /**
  * 类描述：
  * 作者：徐卫超 (cc)
@@ -17,7 +20,7 @@ public class NormalUser extends BaseEntity {
     /**
      * 用户id
      */
-    @Id(type = IdType.UUID)
+    @Id(type = IdType.INPUT)
     private String id;
 
     /**
@@ -45,9 +48,17 @@ public class NormalUser extends BaseEntity {
      */
     private Integer job;
 
-    /**
-     * 是否有效 0:有效 1:无效
-     */
-    private Integer valid;
+
+    public static NormalUser randomUser() {
+        Random random = new Random();
+        NormalUser normalUser = new NormalUser();
+        normalUser.setId(UUID.randomUUID().toString().replace("-", ""));
+        normalUser.orgCode = "xxxx" + random.nextInt(300);
+        normalUser.name = "xxx" + new Random().nextInt(10000);
+        normalUser.age = random.nextInt(100);
+        normalUser.job = random.nextInt(7);
+        return normalUser;
+    }
+
 
 }
