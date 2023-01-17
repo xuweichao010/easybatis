@@ -1,10 +1,9 @@
 package com.xwc.open.easybatis;
 
 import com.xwc.open.easybatis.entity.NormalUser;
+import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
-import com.xwc.open.easybatis.supports.DefaultEasyBatisSourceGenerator;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -14,6 +13,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  * 类描述：
@@ -26,6 +26,8 @@ public class MapperEasyAnnotationBuilderTest {
     SqlSessionFactory sqlSessionFactory;
     EasyBatisConfiguration easyBatisConfiguration;
     SqlSession sqlSession;
+    SimpleSourceGeneratorMapper simpleSourceGeneratorMapper;
+    GenericsBaseMapper genericsBaseMapper;
 
     @Before
     public void before() throws IOException {
@@ -35,12 +37,51 @@ public class MapperEasyAnnotationBuilderTest {
         this.easyBatisConfiguration = new EasyBatisConfiguration(sqlSessionFactory.getConfiguration());
         this.easyBatisConfiguration.setMapUnderscoreToCamelCase(true);
         this.easyBatisConfiguration.addMapper(SimpleSourceGeneratorMapper.class);
+        this.easyBatisConfiguration.addMapper(GenericsBaseMapper.class);
+        this.simpleSourceGeneratorMapper = this.easyBatisConfiguration.getMapper(SimpleSourceGeneratorMapper.class,
+                sqlSession);
+        this.genericsBaseMapper = this.easyBatisConfiguration.getMapper(GenericsBaseMapper.class, sqlSession);
+
     }
 
     @Test
     public void simpleInsert() {
-        SimpleSourceGeneratorMapper mapper = this.easyBatisConfiguration.getMapper(SimpleSourceGeneratorMapper.class, sqlSession);
-        mapper.insert(NormalUser.randomUser());
+        simpleSourceGeneratorMapper.insert(NormalUser.randomUser());
+    }
+
+    @Test
+    public void simpleInsertIgnore() {
+        simpleSourceGeneratorMapper.insertIgnore("", NormalUser.randomUser());
+    }
+
+    @Test
+    public void simpleInsertBatch() {
+        simpleSourceGeneratorMapper.insertBatch(Arrays.asList(NormalUser.randomUser(), NormalUser.randomUser()));
+    }
+
+    @Test
+    public void simpleInsertBatchIgnore() {
+        simpleSourceGeneratorMapper.insertBatchIgnore("", Arrays.asList(NormalUser.randomUser(), NormalUser.randomUser()));
+    }
+
+    @Test
+    public void genericsInsert() {
+        genericsBaseMapper.insert(NormalUser.randomUser());
+    }
+
+    @Test
+    public void genericsInsertIgnore() {
+        genericsBaseMapper.insertIgnore("", NormalUser.randomUser());
+    }
+
+    @Test
+    public void genericsInsertBatch() {
+        genericsBaseMapper.insertBatch(Arrays.asList(NormalUser.randomUser(), NormalUser.randomUser()));
+    }
+
+    @Test
+    public void genericsInsertBatchIgnore() {
+        genericsBaseMapper.insertBatchIgnore("", Arrays.asList(NormalUser.randomUser(), NormalUser.randomUser()));
     }
 
 
