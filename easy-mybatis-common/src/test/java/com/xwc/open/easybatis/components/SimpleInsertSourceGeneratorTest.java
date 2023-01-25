@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/16 16:01
  */
-public class InsertSourceGeneratorTest {
+public class SimpleInsertSourceGeneratorTest {
 
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
@@ -42,14 +42,14 @@ public class InsertSourceGeneratorTest {
 
 
     @Test
-    public void simpleInsert() {
+    public void simpleFindAll() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "insert";
+        String methodName = "findAll";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES (#{id},#{orgCode},#{orgName},#{name},#{dataType},#{age},#{job},#{createTime},#{createId},#{createName},#{updateTime},#{updateId},#{updateName},#{valid}) </script>";
-        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
 
     @Test

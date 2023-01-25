@@ -37,7 +37,7 @@ public class DefaultSelectFrom implements SelectFromSnippet {
             modelAttributes.add(tableMeta.getPrimaryKey());
         }
 
-        if (!tableMeta.getLogic().isSelectIgnore()) {
+        if (tableMeta.getLogic() != null && !tableMeta.getLogic().isSelectIgnore()) {
             modelAttributes.add(tableMeta.getLogic());
         }
         for (FillAttribute fill : tableMeta.getFills()) {

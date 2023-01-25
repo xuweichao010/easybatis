@@ -41,6 +41,8 @@ public class MapperEasyAnnotationInsertBuilderTest {
         this.simpleSourceGeneratorMapper = this.easyBatisConfiguration.getMapper(SimpleSourceGeneratorMapper.class,
                 sqlSession);
         this.genericsBaseMapper = this.easyBatisConfiguration.getMapper(GenericsBaseMapper.class, sqlSession);
+        simpleSourceGeneratorMapper.delTestData();
+        genericsBaseMapper.delTestData();
 
     }
 
@@ -87,6 +89,8 @@ public class MapperEasyAnnotationInsertBuilderTest {
 
     @After
     public void after() {
+        simpleSourceGeneratorMapper.delTestData();
+        genericsBaseMapper.delTestData();
         sqlSession.commit();
         sqlSession.close();
     }

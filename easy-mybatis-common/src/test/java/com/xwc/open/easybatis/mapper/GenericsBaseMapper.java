@@ -4,6 +4,7 @@ import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.entity.NormalUser;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -16,6 +17,9 @@ import java.util.List;
 
 @Mapper
 public interface GenericsBaseMapper extends BaseMapper<NormalUser, String> {
+
+    @Delete("DELETE FROM t_user WHERE data_type =2")
+    int delTestData();
 
 
 }

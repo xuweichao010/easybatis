@@ -573,8 +573,9 @@ public class MapperEasyAnnotationBuilder {
     private SqlSource buildSqlSource(Annotation annotation, Class<?> parameterType, LanguageDriver languageDriver,
                                      Method method) {
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant().getOperateMethodMeta(type, method);
-        if (annotation instanceof Select) {
-//            return buildSqlSourceFromStrings(((Select) annotation).value(), parameterType, languageDriver);
+        if (annotation instanceof SelectSql) {
+            String selectSql = easyBatisSourceGenerator.select(operateMethodMeta);
+            return buildSqlSourceFromStrings(new String[]{selectSql}, parameterType, languageDriver);
         } else if (annotation instanceof Update) {
 //            return buildSqlSourceFromStrings(((Update) annotation).value(), parameterType, languageDriver);
         } else if (annotation instanceof InsertSql) {

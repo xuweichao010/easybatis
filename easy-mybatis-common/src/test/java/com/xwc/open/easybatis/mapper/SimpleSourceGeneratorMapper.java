@@ -6,6 +6,7 @@ import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.annotaions.SelectSql;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.entity.UserObject;
+import org.apache.ibatis.annotations.Delete;
 
 import java.util.List;
 
@@ -34,4 +35,11 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
 
     @SelectSql
     NormalUser findOne(String id);
+
+    @SelectSql
+    List<NormalUser> findAll();
+
+
+    @Delete("DELETE FROM t_user WHERE data_type =2")
+    int delTestData();
 }
