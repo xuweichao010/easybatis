@@ -1,27 +1,22 @@
 package com.xwc.open.easybatis;
 
-import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 /**
  * 类描述：
  * 作者：徐卫超 (cc)
- * 时间 2023/1/17 10:16
+ * 时间 2023/1/17 13:30
  */
-public class MapperEasyAnnotationBuilderTest {
-
+public class MapperEasyAnnotationQueryBuilderTest {
 
     SqlSessionFactory sqlSessionFactory;
     EasyBatisConfiguration easyBatisConfiguration;
@@ -43,53 +38,4 @@ public class MapperEasyAnnotationBuilderTest {
         this.genericsBaseMapper = this.easyBatisConfiguration.getMapper(GenericsBaseMapper.class, sqlSession);
 
     }
-
-    @Test
-    public void simpleInsert() {
-        simpleSourceGeneratorMapper.insert(NormalUser.randomUser());
-    }
-
-    @Test
-    public void simpleInsertIgnore() {
-        simpleSourceGeneratorMapper.insertIgnore("", NormalUser.randomUser());
-    }
-
-    @Test
-    public void simpleInsertBatch() {
-        simpleSourceGeneratorMapper.insertBatch(Arrays.asList(NormalUser.randomUser(), NormalUser.randomUser()));
-    }
-
-    @Test
-    public void simpleInsertBatchIgnore() {
-        simpleSourceGeneratorMapper.insertBatchIgnore("", Arrays.asList(NormalUser.randomUser(), NormalUser.randomUser()));
-    }
-
-    @Test
-    public void genericsInsert() {
-        genericsBaseMapper.insert(NormalUser.randomUser());
-    }
-
-    @Test
-    public void genericsInsertIgnore() {
-        genericsBaseMapper.insertIgnore("", NormalUser.randomUser());
-    }
-
-    @Test
-    public void genericsInsertBatch() {
-        genericsBaseMapper.insertBatch(Arrays.asList(NormalUser.randomUser(), NormalUser.randomUser()));
-    }
-
-    @Test
-    public void genericsInsertBatchIgnore() {
-        genericsBaseMapper.insertBatchIgnore("", Arrays.asList(NormalUser.randomUser(), NormalUser.randomUser()));
-    }
-
-
-    @After
-    public void after() {
-        sqlSession.commit();
-        sqlSession.close();
-    }
-
-
 }

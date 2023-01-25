@@ -3,9 +3,8 @@ package com.xwc.open.easybatis.snippet.values;
 import com.xwc.open.easy.parse.model.parameter.CollectionEntityParameterAttribute;
 import com.xwc.open.easy.parse.model.parameter.EntityParameterAttribute;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
-import com.xwc.open.easybatis.Placeholder;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
-import com.xwc.open.easybatis.supports.MybatisPlaceholder;
+import com.xwc.open.easybatis.supports.BatisPlaceholder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,9 +15,9 @@ import java.util.stream.Collectors;
  * 时间 2023/1/16 14:07
  */
 public class DefaultInsertValues implements InsertValuesSnippet {
-    private Placeholder placeholder;
+    private BatisPlaceholder placeholder;
 
-    public DefaultInsertValues(Placeholder placeholder) {
+    public DefaultInsertValues(BatisPlaceholder placeholder) {
         this.placeholder = placeholder;
     }
 

@@ -1,7 +1,5 @@
 package com.xwc.open.easybatis.supports;
 
-import com.xwc.open.easy.parse.model.ParameterAttribute;
-import com.xwc.open.easybatis.Placeholder;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 
 /**
@@ -9,11 +7,11 @@ import com.xwc.open.easybatis.binding.BatisColumnAttribute;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/16 15:34
  */
-public class DefaultColumnPlaceholder implements Placeholder {
+public class DefaultColumnPlaceholder implements ColumnPlaceholder {
     private static final String HOLDER = "`";
 
     @Override
-    public String holder(BatisColumnAttribute batisColumnAttribute) {
-        return HOLDER + batisColumnAttribute.getColumn() + HOLDER;
+    public String holder(String column) {
+        return HOLDER + column + HOLDER;
     }
 }

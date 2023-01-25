@@ -8,7 +8,7 @@ import com.xwc.open.easy.parse.model.TableMeta;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/16 13:45
  */
-public interface SqlFromSnippet {
+public interface SelectFromSnippet {
 
-    String from(TableMeta tableMeta);
+    String from(OperateMethodMeta tableMeta);
 }

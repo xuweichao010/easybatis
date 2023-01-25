@@ -1,7 +1,7 @@
 package com.xwc.open.easybatis.snippet.column;
 
-import com.xwc.open.easybatis.Placeholder;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
+import com.xwc.open.easybatis.supports.ColumnPlaceholder;
 import com.xwc.open.easybatis.supports.DefaultColumnPlaceholder;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * 时间 2023/1/16 14:07
  */
 public class DefaultInsertColumn implements InsertColumnSnippet {
-    Placeholder placeholder;
+    ColumnPlaceholder placeholder;
 
     public DefaultInsertColumn(DefaultColumnPlaceholder defaultColumnPlaceholder) {
         placeholder = defaultColumnPlaceholder;
@@ -22,6 +22,7 @@ public class DefaultInsertColumn implements InsertColumnSnippet {
     @Override
     public String columns(List<BatisColumnAttribute> columnAttribute) {
         return "(" + columnAttribute.stream()
+                .map(BatisColumnAttribute::getColumn)
                 .map(placeholder::holder)
                 .collect(Collectors.joining(",")) + ")";
     }

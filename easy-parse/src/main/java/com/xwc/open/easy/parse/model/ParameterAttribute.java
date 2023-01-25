@@ -1,9 +1,7 @@
 package com.xwc.open.easy.parse.model;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 类描述：用于存储方法中的参数的各种信息 提供给后面的构建器来使用
@@ -60,6 +58,10 @@ public abstract class ParameterAttribute {
 
     public void addAnnotations(List<Annotation> annotations) {
         annotations.forEach(annotation -> this.annotations.put(annotation.annotationType(), annotation));
+    }
+
+    public List<Annotation> annotations() {
+        return new ArrayList<>(annotations.values());
     }
 
     public int getIndex() {

@@ -3,6 +3,7 @@ package com.xwc.open.easybatis.mapper;
 import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.annotaions.InsertSql;
+import com.xwc.open.easybatis.annotaions.SelectSql;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.entity.UserObject;
 
@@ -30,4 +31,7 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
 
     //@InsertSql
     int insertObject(UserObject userObject);
+
+    @SelectSql
+    NormalUser findOne(String id);
 }

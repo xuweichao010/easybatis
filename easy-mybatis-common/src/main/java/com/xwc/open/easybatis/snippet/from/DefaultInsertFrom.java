@@ -7,7 +7,7 @@ import com.xwc.open.easy.parse.model.TableMeta;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/16 13:46
  */
-public class DefaultInsertFrom implements SqlFromSnippet {
+public class DefaultInsertFrom implements InsertFromSnippet {
 
     @Override
     public String from(TableMeta tableMeta) {

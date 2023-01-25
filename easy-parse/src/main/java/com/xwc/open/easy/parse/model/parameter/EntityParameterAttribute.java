@@ -10,7 +10,7 @@ import java.util.List;
  * 作者：徐卫超 (cc)
  * 时间 2022/11/25 23:31
  */
-public class EntityParameterAttribute extends BaseParameterAttribute {
+public class EntityParameterAttribute extends ParameterAttribute {
 
     public TableMeta databaseMeta;
 

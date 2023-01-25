@@ -6,6 +6,7 @@ import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.annotaions.SelectSql;
 import com.xwc.open.easybatis.annotaions.UpdateSql;
 import com.xwc.open.easybatis.supports.DefaultEasyBatisSourceGenerator;
+import com.xwc.open.easybatis.supports.EasyBatisSourceGenerator;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.binding.MapperMethod;

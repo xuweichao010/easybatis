@@ -3,7 +3,7 @@ package com.xwc.open.easybatis.components;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
-import com.xwc.open.easybatis.EasyBatisSourceGenerator;
+import com.xwc.open.easybatis.supports.EasyBatisSourceGenerator;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
 import com.xwc.open.easybatis.supports.DefaultEasyBatisSourceGenerator;
 import org.apache.ibatis.io.Resources;
