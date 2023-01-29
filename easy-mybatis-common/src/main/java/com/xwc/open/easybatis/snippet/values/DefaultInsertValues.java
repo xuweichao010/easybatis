@@ -36,7 +36,7 @@ public class DefaultInsertValues implements InsertValuesSnippet {
     }
 
     private String insertOne(List<BatisColumnAttribute> batisColumnAttributes) {
-        return "(" + batisColumnAttributes.stream().map(placeholder::holder).collect(Collectors.joining(
+        return " (" + batisColumnAttributes.stream().map(placeholder::holder).collect(Collectors.joining(
                 ",")) + ")";
     }
 }

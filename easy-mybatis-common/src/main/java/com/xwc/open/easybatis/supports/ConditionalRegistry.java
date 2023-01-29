@@ -26,5 +26,7 @@ public interface ConditionalRegistry {
      * @param columnAttribute 条件参数
      * @return 返回参数上的条件注解 注解可能为空
      */
-    Annotation choose(BatisColumnAttribute columnAttribute);
+    Annotation chooseAnnotation(BatisColumnAttribute columnAttribute);
+
+    ConditionalSnippet chooseSnippet(Class<? extends Annotation> annotation);
 }

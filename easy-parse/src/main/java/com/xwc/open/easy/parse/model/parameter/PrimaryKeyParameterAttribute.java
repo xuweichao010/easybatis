@@ -17,4 +17,7 @@ public class PrimaryKeyParameterAttribute extends ParameterAttribute {
         this.primaryKey = primaryKey;
     }
 
+    public PrimaryKeyAttribute getPrimaryKey() {
+        return primaryKey;
+    }
 }

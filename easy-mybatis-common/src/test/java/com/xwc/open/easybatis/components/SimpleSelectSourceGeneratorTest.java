@@ -42,14 +42,25 @@ public class SimpleSelectSourceGeneratorTest {
 
 
     @Test
-    public void simpleInsert() {
+    public void simpleFindOne() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "insert";
+        String methodName = "findOne";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES (#{id},#{orgCode},#{orgName},#{name},#{dataType},#{age},#{job},#{createTime},#{createId},#{createName},#{updateTime},#{updateId},#{updateName},#{valid}) </script>";
-        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE 1 = 1 AND id = #{id} </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleFindOneDynamic() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "findOneDynamic";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user <where>  <if test='id != null'> AND id = #{id} </if> </where> </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
 
 }

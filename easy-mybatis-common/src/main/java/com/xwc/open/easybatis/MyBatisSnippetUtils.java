@@ -14,11 +14,13 @@ public class MyBatisSnippetUtils {
     static final String FOREACH_BASE =
             " <foreach item='%s' index='%s' collection='%s' open= '(' close =')' separator=','> %s </foreach> ";
 
-    static final String FOREACH_OBJECT = "<foreach item='%s' index='%s' collection='%s' separator=',' > %s </foreach>";
+    static final String FOREACH_OBJECT = " <foreach item='%s' index='%s' collection='%s' separator=',' >%s </foreach>";
 
     static final String SCRIPT = "<script> %s </script>";
 
-    static final String IF_OBJECT = "<if test='%s != null'> %s </if>";
+    static final String IF_OBJECT = " <if test='%s != null'> %s </if>";
+
+    static final String WHERE = " <where> %s </where>";
 
     public static String foreachObject(String itemName, String indexName, String collectionName, String content) {
         return String.format(FOREACH_OBJECT, itemName, indexName, collectionName, content);
@@ -33,4 +35,7 @@ public class MyBatisSnippetUtils {
     }
 
 
+    public static String where(String sqlConditions) {
+        return String.format(WHERE, sqlConditions);
+    }
 }

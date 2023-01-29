@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 时间 2023/1/17 13:53
  */
 public class DefaultConditionalRegistry implements ConditionalRegistry {
-    private Map<Class<? extends Annotation>, Object> conditionalMap = new ConcurrentHashMap<>();
+    private Map<Class<? extends Annotation>, ConditionalSnippet> conditionalMap = new ConcurrentHashMap<>();
 
     @Override
     public void register(Class<? extends Annotation> annotationClass, ConditionalSnippet conditionalSnippet) {
@@ -22,7 +22,7 @@ public class DefaultConditionalRegistry implements ConditionalRegistry {
     }
 
     @Override
-    public Annotation choose(BatisColumnAttribute columnAttribute) {
+    public Annotation chooseAnnotation(BatisColumnAttribute columnAttribute) {
         Annotation useAnnotation = null;
         for (Annotation annotation : columnAttribute.annotations()) {
             if (conditionalMap.containsKey(annotation.annotationType())) {
@@ -32,7 +32,14 @@ public class DefaultConditionalRegistry implements ConditionalRegistry {
                 useAnnotation = annotation;
             }
         }
-        return null;
+        return useAnnotation;
     }
+
+    @Override
+    public ConditionalSnippet chooseSnippet(Class<? extends Annotation> annotation) {
+        return conditionalMap.get(annotation);
+    }
+
+
 }
 

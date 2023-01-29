@@ -28,7 +28,7 @@ public abstract class ParameterAttribute {
     /**
      * 是否是动态属性 决定了sql的构建方式是否是动态
      */
-    private boolean dynamic;
+    private boolean methodDynamic;
 
     /**
      * 方法上自带的注解
@@ -41,8 +41,8 @@ public abstract class ParameterAttribute {
      * @param clazz 注解的Class文件
      * @return 返回包含的注解对象 当没有的时候返回 null
      */
-    public Annotation findAnnotation(Class<? extends Annotation> clazz) {
-        return annotations.get(clazz);
+    public <T extends Annotation> T findAnnotation(Class<T> clazz) {
+        return (T) annotations.get(clazz);
     }
 
     /**
@@ -100,11 +100,11 @@ public abstract class ParameterAttribute {
         this.multi = multi;
     }
 
-    public boolean isDynamic() {
-        return dynamic;
+    public boolean isMethodDynamic() {
+        return methodDynamic;
     }
 
-    public void setDynamic(boolean dynamic) {
-        this.dynamic = dynamic;
+    public void setMethodDynamic(boolean methodDynamic) {
+        this.methodDynamic = methodDynamic;
     }
 }

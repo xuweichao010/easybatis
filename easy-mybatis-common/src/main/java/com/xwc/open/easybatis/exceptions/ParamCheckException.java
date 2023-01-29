@@ -5,7 +5,7 @@ package com.xwc.open.easybatis.exceptions;
  * 作者：徐卫超 (cc)
  * 时间 2022/12/2 10:49
  */
-public class ParamCheckException extends EasyMybatisException {
+public class ParamCheckException extends CheckException {
     public ParamCheckException() {
     }
 
