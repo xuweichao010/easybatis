@@ -1,15 +1,21 @@
 package com.xwc.open.easybatis;
 
+import com.xwc.open.easy.parse.model.OperateMethodMeta;
+import com.xwc.open.easy.parse.utils.Reflection;
+import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 
 /**
  * 类描述：
@@ -36,6 +42,42 @@ public class MapperEasyAnnotationQueryBuilderTest {
         this.simpleSourceGeneratorMapper = this.easyBatisConfiguration.getMapper(SimpleSourceGeneratorMapper.class,
                 sqlSession);
         this.genericsBaseMapper = this.easyBatisConfiguration.getMapper(GenericsBaseMapper.class, sqlSession);
-
     }
+
+    @Test
+    public void simpleFindOne() {
+        NormalUser normalUser = simpleSourceGeneratorMapper.findOne("37bd0225cc94400db744aac8dee8a001");
+        if (normalUser == null) {
+            Assert.fail();
+        }
+        Assert.assertEquals("曹操", normalUser.getName());
+    }
+
+    @Test
+    public void simpleFindOneDynamic() {
+        NormalUser normalUser = simpleSourceGeneratorMapper.findOneDynamic("37bd0225cc94400db744aac8dee8a001");
+        if (normalUser == null) {
+            Assert.fail();
+        }
+        Assert.assertEquals("曹操", normalUser.getName());
+    }
+
+    @Test
+    public void simpleFindOneIgnore() {
+        NormalUser normalUser = simpleSourceGeneratorMapper.findOneIgnore(null, "37bd0225cc94400db744aac8dee8a001");
+        if (normalUser == null) {
+            Assert.fail();
+        }
+        Assert.assertEquals("曹操", normalUser.getName());
+    }
+
+    @Test
+    public void simpleFindOneDynamicIgnore() {
+        NormalUser normalUser = simpleSourceGeneratorMapper.findOneDynamicIgnore(null, "37bd0225cc94400db744aac8dee8a001");
+        if (normalUser == null) {
+            Assert.fail();
+        }
+        Assert.assertEquals("曹操", normalUser.getName());
+    }
+
 }
