@@ -3,6 +3,7 @@ package com.xwc.open.easybatis.mapper;
 import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.annotaions.InsertSql;
+import com.xwc.open.easybatis.annotaions.SelectSql;
 
 import java.util.List;
 
@@ -24,4 +25,10 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 
     @InsertSql
     int insertBatchIgnore(@Ignore String tableName, List<E> users);
+
+    @SelectSql
+    E selectKey(K key);
+
+    @SelectSql
+    E selectKeyIgnore(@Ignore String tableName, K id);
 }

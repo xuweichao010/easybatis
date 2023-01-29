@@ -16,6 +16,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * 类描述：
@@ -74,6 +75,24 @@ public class MapperEasyAnnotationQueryBuilderTest {
     @Test
     public void simpleFindOneDynamicIgnore() {
         NormalUser normalUser = simpleSourceGeneratorMapper.findOneDynamicIgnore(null, "37bd0225cc94400db744aac8dee8a001");
+        if (normalUser == null) {
+            Assert.fail();
+        }
+        Assert.assertEquals("曹操", normalUser.getName());
+    }
+
+    @Test
+    public void genericsSelectKey() {
+        NormalUser normalUser = genericsBaseMapper.selectKey("37bd0225cc94400db744aac8dee8a001");
+        if (normalUser == null) {
+            Assert.fail();
+        }
+        Assert.assertEquals("曹操", normalUser.getName());
+    }
+
+    @Test
+    public void genericsSelectKeyIgnore() {
+        NormalUser normalUser = genericsBaseMapper.selectKeyIgnore(null, "37bd0225cc94400db744aac8dee8a001");
         if (normalUser == null) {
             Assert.fail();
         }
