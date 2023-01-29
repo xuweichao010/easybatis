@@ -9,5 +9,7 @@ import com.xwc.open.easybatis.binding.BatisColumnAttribute;
  */
 public interface BatisPlaceholder {
 
-    String holder(BatisColumnAttribute column);
+    String holder(BatisColumnAttribute columnAttribute);
+
+    String path(BatisColumnAttribute columnAttribute);
 }

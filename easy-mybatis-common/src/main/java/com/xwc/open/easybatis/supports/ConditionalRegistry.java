@@ -18,7 +18,7 @@ public interface ConditionalRegistry {
      * @param annotationClass    条件的注解
      * @param conditionalSnippet 条件的处理方式
      */
-    void register(Class<? super Annotation> annotationClass, ConditionalSnippet conditionalSnippet);
+    void register(Class<? extends Annotation> annotationClass, ConditionalSnippet conditionalSnippet);
 
     /**
      * 通过参数 BatisColumnAttribute 获取执行片段

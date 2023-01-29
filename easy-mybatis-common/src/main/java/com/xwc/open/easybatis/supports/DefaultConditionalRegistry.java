@@ -14,10 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * 时间 2023/1/17 13:53
  */
 public class DefaultConditionalRegistry implements ConditionalRegistry {
-    private Map<Class<? super Annotation>, ConditionalSnippet> conditionalMap = new ConcurrentHashMap<>();
+    private Map<Class<? extends Annotation>, Object> conditionalMap = new ConcurrentHashMap<>();
 
     @Override
-    public void register(Class<? super Annotation> annotationClass, ConditionalSnippet conditionalSnippet) {
+    public void register(Class<? extends Annotation> annotationClass, ConditionalSnippet conditionalSnippet) {
         conditionalMap.put(annotationClass, conditionalSnippet);
     }
 

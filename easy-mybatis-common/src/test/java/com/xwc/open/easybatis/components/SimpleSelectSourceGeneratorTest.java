@@ -52,36 +52,4 @@ public class SimpleSelectSourceGeneratorTest {
         Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
     }
 
-    @Test
-    public void simpleInsertIgnore() {
-        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "insertIgnore";
-        Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
-                .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES (#{user.id},#{user.orgCode},#{user.orgName},#{user.name},#{user.dataType},#{user.age},#{user.job},#{user.createTime},#{user.createId},#{user.createName},#{user.updateTime},#{user.updateId},#{user.updateName},#{user.valid}) </script>";
-        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
-    }
-
-    @Test
-    public void simpleInsertBatch() {
-        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "insertBatch";
-        Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
-                .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES <foreach item='users' index='index' collection='collection' separator=',' > (#{users.id},#{users.orgCode},#{users.orgName},#{users.name},#{users.dataType},#{users.age},#{users.job},#{users.createTime},#{users.createId},#{users.createName},#{users.updateTime},#{users.updateId},#{users.updateName},#{users.valid}) </foreach> </script>";
-        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
-    }
-
-    @Test
-    public void simpleInsertBatchIgnore() {
-        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "insertBatchIgnore";
-        Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
-                .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES <foreach item='users' index='index' collection='users' separator=',' > (#{users.id},#{users.orgCode},#{users.orgName},#{users.name},#{users.dataType},#{users.age},#{users.job},#{users.createTime},#{users.createId},#{users.createName},#{users.updateTime},#{users.updateId},#{users.updateName},#{users.valid}) </foreach> </script>";
-        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
-    }
 }

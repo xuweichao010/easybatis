@@ -18,8 +18,14 @@ public class MyBatisSnippetUtils {
 
     static final String SCRIPT = "<script> %s </script>";
 
+    static final String IF_OBJECT = "<if test='%s != null'> %s </if>";
+
     public static String foreachObject(String itemName, String indexName, String collectionName, String content) {
         return String.format(FOREACH_OBJECT, itemName, indexName, collectionName, content);
+    }
+
+    public static String ifObject(String paramName, String conditionSql) {
+        return String.format(IF_OBJECT, paramName, conditionSql);
     }
 
     public static String script(String content) {

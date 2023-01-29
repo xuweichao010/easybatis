@@ -25,6 +25,10 @@ public abstract class ParameterAttribute {
      * 属性路径 从根路径开始
      */
     private String[] path;
+    /**
+     * 是否是动态属性 决定了sql的构建方式是否是动态
+     */
+    private boolean dynamic;
 
     /**
      * 方法上自带的注解
@@ -94,5 +98,13 @@ public abstract class ParameterAttribute {
 
     public void setMulti(boolean multi) {
         this.multi = multi;
+    }
+
+    public boolean isDynamic() {
+        return dynamic;
+    }
+
+    public void setDynamic(boolean dynamic) {
+        this.dynamic = dynamic;
     }
 }

@@ -14,11 +14,16 @@ public class MybatisPlaceholder implements BatisPlaceholder {
 
     @Override
     public String holder(BatisColumnAttribute batisColumnAttribute) {
-        if (batisColumnAttribute.isMulti()) {
-            return OPEN + String.join(".", batisColumnAttribute.getPath()) + CLOSE;
-        } else {
-            return OPEN + batisColumnAttribute.getParameterName() + CLOSE;
-        }
+        return OPEN + path(batisColumnAttribute) + CLOSE;
 
+    }
+
+    @Override
+    public String path(BatisColumnAttribute columnAttribute) {
+        if (columnAttribute.isMulti()) {
+            return String.join(".", columnAttribute.getPath());
+        } else {
+            return columnAttribute.getParameterName();
+        }
     }
 }
