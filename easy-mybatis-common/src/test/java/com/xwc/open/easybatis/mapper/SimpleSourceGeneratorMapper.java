@@ -38,7 +38,13 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     NormalUser findOne(String id);
 
     @SelectSql
+    NormalUser findOneIgnore(@Ignore String tableName, String id);
+
+    @SelectSql
     NormalUser findOneDynamic(@Equal(dynamic = true) String id);
+
+    @SelectSql
+    NormalUser findOneDynamicIgnore(@Ignore String tableName, @Equal(dynamic = true) String id);
 
     @SelectSql
     List<NormalUser> findAll();

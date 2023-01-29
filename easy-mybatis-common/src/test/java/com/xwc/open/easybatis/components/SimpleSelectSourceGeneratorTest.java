@@ -63,4 +63,26 @@ public class SimpleSelectSourceGeneratorTest {
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
 
+    @Test
+    public void simpleFindOneIgnore() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "findOneIgnore";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE 1 = 1 AND id = #{id} </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleFindOneDynamicIgnore() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "findOneDynamicIgnore";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user <where>  <if test='id != null'> AND id = #{id} </if> </where> </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
 }
