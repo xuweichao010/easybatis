@@ -87,7 +87,6 @@ public class MapperEasyAnnotationInsertBuilderTest {
         genericsBaseMapper.insertBatchIgnore("", Arrays.asList(NormalUser.randomUser(), NormalUser.randomUser()));
     }
 
-
     @After
     public void after() {
         simpleSourceGeneratorMapper.delTestData();
