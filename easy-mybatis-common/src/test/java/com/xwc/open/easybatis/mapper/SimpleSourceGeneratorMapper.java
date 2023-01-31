@@ -51,13 +51,13 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     List<NormalUser> findAll();
 
     @SelectSql
-    List<NormalUser> between(@Between(of = "ageTo") String age, String ageTo);
+    List<NormalUser> between(@Between(of = "ageTo") int age, int ageTo);
 
     @SelectSql
-    List<NormalUser> betweenIgnore(@Ignore String tableName, @Between(of = "ageTo") String age, String ageTo);
+    List<NormalUser> betweenIgnore(@Ignore String tableName, @Between(of = "ageTo") int age, int ageTo);
 
     @SelectSql
-    List<NormalUser> betweenDynamic(@Between(of = "ageTo", dynamic = true) String age, String ageTo);
+    List<NormalUser> betweenDynamic(@Between(of = "ageTo", dynamic = true) Integer age, Integer ageTo);
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")

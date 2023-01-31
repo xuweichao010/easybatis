@@ -28,7 +28,7 @@ public class MyBatisSnippetUtils {
     }
 
     public static String ifNonCondition(String paramName1, String paramName2, String conditionSql) {
-        return String.format(IF_CONDITION, paramName1 + " != null AND " + paramName2 + " != null", conditionSql);
+        return String.format(IF_CONDITION, paramName1 + " != null and " + paramName2 + " != null", conditionSql);
     }
 
     public static String script(String content) {

@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * 类描述：
@@ -94,6 +95,33 @@ public class MapperEasyAnnotationQueryBuilderTest {
             Assert.fail();
         }
         Assert.assertEquals("曹操", normalUser.getName());
+    }
+
+    @Test
+    public void simpleBetween() {
+        List<NormalUser> betweenAge = simpleSourceGeneratorMapper.between(20, 40);
+        if (betweenAge.isEmpty()) {
+            Assert.fail();
+        }
+        Assert.assertEquals(28, betweenAge.size());
+    }
+
+    @Test
+    public void simpleBetweenIgnore() {
+        List<NormalUser> betweenAge = simpleSourceGeneratorMapper.betweenIgnore(null, 20, 40);
+        if (betweenAge.isEmpty()) {
+            Assert.fail();
+        }
+        Assert.assertEquals(28, betweenAge.size());
+    }
+
+    @Test
+    public void simpleBetweenDynamic() {
+        List<NormalUser> betweenAge = simpleSourceGeneratorMapper.betweenDynamic(20, null);
+        if (betweenAge.isEmpty()) {
+            Assert.fail();
+        }
+        Assert.assertEquals(31, betweenAge.size());
     }
 
 }
