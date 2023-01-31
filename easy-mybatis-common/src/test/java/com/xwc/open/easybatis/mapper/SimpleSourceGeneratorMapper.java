@@ -78,10 +78,14 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     List<NormalUser> dynamicOrderDesc(@Desc boolean age);
 
     @SelectSql
-    List<NormalUser> orderDescDynamic(@Desc(dynamic = true) boolean age);
+    List<NormalUser> orderDescDynamic(@Desc(dynamic = true) Boolean age);
 
     @SelectSql
-    List<NormalUser> orderAscDynamic(@Asc(dynamic = true) boolean age);
+    List<NormalUser> orderAscDynamic(@Asc(dynamic = true) Boolean age);
+
+    @SelectSql
+    List<NormalUser> orderMixture(@Asc(dynamic = true) Boolean age, @Desc boolean orgCode,
+                                  @Asc(dynamic = true) Boolean job);
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")

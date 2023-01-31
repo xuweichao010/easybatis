@@ -66,7 +66,7 @@ public class DefaultOrderSnippet implements OrderSnippet {
                     return MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(attribute), columnOrder);
                 }
                 return columnOrder;
-            }).collect(Collectors.joining());
+            }).collect(Collectors.joining(" "));
             return MyBatisSnippetUtils.trimSuffixOverrides(ORDER_BY, ",", orderSnippet);
         }
     }

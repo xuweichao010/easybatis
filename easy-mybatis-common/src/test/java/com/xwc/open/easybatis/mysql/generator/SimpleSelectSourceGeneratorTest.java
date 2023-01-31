@@ -186,6 +186,17 @@ public class SimpleSelectSourceGeneratorTest {
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
 
+    @Test
+    public void simpleOrderMixture() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "orderMixture";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user<trim prefix= ' ORDER BY ' suffixOverrides= ','>  <if test='age != null'> age ASC,  </if> org_code DESC,   <if test='job != null'> job ASC,  </if> </trim> </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
 
 
 

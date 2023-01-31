@@ -169,5 +169,26 @@ public class MapperEasyAnnotationQueryBuilderTest {
         Assert.assertEquals(31, order.size());
     }
 
+    @Test
+    public void simpleOrderMixture() {
+        List<NormalUser> order = simpleSourceGeneratorMapper.orderMixture(null, true, null);
+        if (order.isEmpty()) {
+            Assert.fail();
+        }
+        Assert.assertEquals(31, order.size());
+
+        order = simpleSourceGeneratorMapper.orderMixture(true, true, null);
+        if (order.isEmpty()) {
+            Assert.fail();
+        }
+        Assert.assertEquals(31, order.size());
+
+        order = simpleSourceGeneratorMapper.orderMixture(null, true, true);
+        if (order.isEmpty()) {
+            Assert.fail();
+        }
+        Assert.assertEquals(31, order.size());
+    }
+
 
 }
