@@ -4,6 +4,7 @@ import com.xwc.open.easy.parse.model.*;
 import com.xwc.open.easy.parse.model.parameter.*;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
+import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
@@ -12,6 +13,7 @@ import com.xwc.open.easybatis.snippet.column.DefaultInsertColumn;
 import com.xwc.open.easybatis.snippet.column.DefaultSelectColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.InsertColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.SelectColumnSnippet;
+import com.xwc.open.easybatis.snippet.conditional.BetweenConditionalSnippet;
 import com.xwc.open.easybatis.snippet.conditional.EqualsConditionalSnippet;
 import com.xwc.open.easybatis.snippet.from.DefaultInsertFrom;
 import com.xwc.open.easybatis.snippet.from.DefaultSelectFrom;
@@ -64,6 +66,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         this.selectSqlFrom = new DefaultSelectFrom(this.selectColumnSnippet);
         this.conditionalRegistry = new DefaultConditionalRegistry();
         this.conditionalRegistry.register(Equal.class, new EqualsConditionalSnippet(new MybatisPlaceholder()));
+        this.conditionalRegistry.register(Between.class, new BetweenConditionalSnippet(new MybatisPlaceholder()));
         this.whereSnippet = new DefaultWhereSnippet(this.conditionalRegistry, new MybatisPlaceholder());
     }
 

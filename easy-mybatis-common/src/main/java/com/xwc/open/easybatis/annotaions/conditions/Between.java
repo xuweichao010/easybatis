@@ -13,9 +13,8 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Syntax(30001)
-public @interface RightLike {
-
+@Syntax()
+public @interface Between {
 
     /**
      * 属性和数据表之间的列关系
@@ -31,7 +30,6 @@ public @interface RightLike {
      */
     boolean dynamic() default false;
 
-
     /**
      * 条件别名
      * 在JOIN条件中使用
@@ -39,5 +37,12 @@ public @interface RightLike {
      * @return 返回属性的别名
      */
     String alias() default "";
+
+    /**
+     * 关联属性
+     *
+     * @return
+     */
+    String of() default "";
 
 }

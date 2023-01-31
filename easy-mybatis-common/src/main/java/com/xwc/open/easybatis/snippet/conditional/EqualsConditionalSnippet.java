@@ -23,7 +23,7 @@ public class EqualsConditionalSnippet implements SingleConditionalSnippet {
         Equal equal = columnAttribute.findAnnotation(Equal.class);
         String conditionSql = "AND " + columnAttribute.getColumn() + " = " + placeholder.holder(columnAttribute);
         if (columnAttribute.isMethodDynamic() || (equal != null && equal.dynamic())) {
-            return MyBatisSnippetUtils.ifObject(placeholder.path(columnAttribute),
+            return MyBatisSnippetUtils.ifNonNullObject(placeholder.path(columnAttribute),
                     conditionSql);
         } else {
             return conditionSql;

@@ -4,6 +4,7 @@ import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.annotaions.SelectSql;
+import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.entity.UserObject;
@@ -48,6 +49,15 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
 
     @SelectSql
     List<NormalUser> findAll();
+
+    @SelectSql
+    List<NormalUser> between(@Between(of = "ageTo") String age, String ageTo);
+
+    @SelectSql
+    List<NormalUser> betweenIgnore(@Ignore String tableName, @Between(of = "ageTo") String age, String ageTo);
+
+    @SelectSql
+    List<NormalUser> betweenDynamic(@Between(of = "ageTo", dynamic = true) String age, String ageTo);
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 类描述：
+ * 类描述：sql语句构建器 管理不通厂商的SQL语句构建构建功能
  * 作者：徐卫超 (cc)
  * 时间 2023/1/30 12:13
  */

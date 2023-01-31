@@ -13,9 +13,8 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Syntax(30001)
+@Syntax()
 public @interface Equal {
-
 
     /**
      * 属性和数据表之间的列关系
@@ -30,7 +29,6 @@ public @interface Equal {
      * @return 标识是否使用动态查询
      */
     boolean dynamic() default false;
-
 
     /**
      * 条件别名

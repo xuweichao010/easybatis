@@ -1,10 +1,5 @@
 package com.xwc.open.easybatis;
 
-import com.xwc.open.easy.parse.model.ParameterAttribute;
-import com.xwc.open.easybatis.binding.BatisColumnAttribute;
-
-import java.util.List;
-
 /**
  * 类描述：
  * 作者：徐卫超 (cc)
@@ -20,14 +15,20 @@ public class MyBatisSnippetUtils {
 
     static final String IF_OBJECT = " <if test='%s != null'> %s </if>";
 
+    static final String IF_CONDITION = " <if test='%s'> %s </if>";
+
     static final String WHERE = " <where> %s </where>";
 
     public static String foreachObject(String itemName, String indexName, String collectionName, String content) {
         return String.format(FOREACH_OBJECT, itemName, indexName, collectionName, content);
     }
 
-    public static String ifObject(String paramName, String conditionSql) {
+    public static String ifNonNullObject(String paramName, String conditionSql) {
         return String.format(IF_OBJECT, paramName, conditionSql);
+    }
+
+    public static String ifNonCondition(String paramName1, String paramName2, String conditionSql) {
+        return String.format(IF_CONDITION, paramName1 + " != null AND " + paramName2 + " != null", conditionSql);
     }
 
     public static String script(String content) {
