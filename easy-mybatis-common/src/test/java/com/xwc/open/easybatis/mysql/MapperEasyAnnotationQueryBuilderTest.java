@@ -1,7 +1,6 @@
-package com.xwc.open.easybatis;
+package com.xwc.open.easybatis.mysql;
 
-import com.xwc.open.easy.parse.model.OperateMethodMeta;
-import com.xwc.open.easy.parse.utils.Reflection;
+import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
@@ -15,8 +14,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.util.Arrays;
 
 /**
  * 类描述：

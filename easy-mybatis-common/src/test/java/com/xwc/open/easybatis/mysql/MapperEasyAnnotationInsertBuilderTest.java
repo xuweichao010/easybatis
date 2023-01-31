@@ -1,5 +1,6 @@
-package com.xwc.open.easybatis;
+package com.xwc.open.easybatis.mysql;
 
+import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;

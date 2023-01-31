@@ -21,7 +21,6 @@ import com.xwc.open.easybatis.snippet.values.DefaultInsertValues;
 import com.xwc.open.easybatis.snippet.values.InsertValuesSnippet;
 import com.xwc.open.easybatis.snippet.where.DefaultWhereSnippet;
 import com.xwc.open.easybatis.snippet.where.WhereSnippet;
-import jdk.nashorn.internal.objects.annotations.Where;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ import java.util.stream.Collectors;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/12 15:05
  */
-public class DefaultEasyBatisSourceGenerator implements EasyBatisSourceGenerator {
+public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
 
     private EasyBatisConfiguration easyBatisConfiguration;
 
@@ -56,7 +55,7 @@ public class DefaultEasyBatisSourceGenerator implements EasyBatisSourceGenerator
     private WhereSnippet whereSnippet;
 
 
-    public DefaultEasyBatisSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration) {
+    public DefaultSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration) {
         this.easyBatisConfiguration = easyMyBatisConfiguration;
         this.insertSqlFrom = new DefaultInsertFrom();
         this.insertColumnSnippet = new DefaultInsertColumn(new DefaultColumnPlaceholder());

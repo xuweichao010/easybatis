@@ -1,11 +1,11 @@
-package com.xwc.open.easybatis.components;
+package com.xwc.open.easybatis.mysql.generator;
 
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
-import com.xwc.open.easybatis.supports.EasyBatisSourceGenerator;
+import com.xwc.open.easybatis.supports.SqlSourceGenerator;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
-import com.xwc.open.easybatis.supports.DefaultEasyBatisSourceGenerator;
+import com.xwc.open.easybatis.supports.DefaultSqlSourceGenerator;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -28,7 +28,7 @@ public class SimpleInsertSourceGeneratorTest {
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
     EasyBatisConfiguration easyBatisConfiguration;
-    EasyBatisSourceGenerator sourceGenerator;
+    SqlSourceGenerator sourceGenerator;
 
     @Before
     public void before() throws IOException {
@@ -37,7 +37,7 @@ public class SimpleInsertSourceGeneratorTest {
         this.configuration = sqlSessionFactory.getConfiguration();
         this.configuration.setMapUnderscoreToCamelCase(true);
         this.easyBatisConfiguration = new EasyBatisConfiguration(configuration);
-        this.sourceGenerator = new DefaultEasyBatisSourceGenerator(easyBatisConfiguration);
+        this.sourceGenerator = new DefaultSqlSourceGenerator(easyBatisConfiguration);
     }
 
 
