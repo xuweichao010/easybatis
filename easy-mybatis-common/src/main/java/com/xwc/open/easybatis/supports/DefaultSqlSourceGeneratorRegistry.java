@@ -3,12 +3,7 @@ package com.xwc.open.easybatis.supports;
 import com.xwc.open.easy.parse.utils.StringUtils;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.exceptions.NotFoundException;
-import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
-import org.apache.ibatis.session.Configuration;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
