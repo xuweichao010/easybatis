@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/16 16:01
  */
-public class SimpleSelectSourceGeneratorTest {
+public class SimpleConditionSourceGeneratorTest {
 
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
