@@ -13,7 +13,6 @@ import java.lang.annotation.Annotation;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,7 +37,7 @@ public class DefaultOrderSnippet implements OrderSnippet {
 
     @Override
     public String order(OperateMethodMeta operateMethodMeta, List<BatisColumnAttribute> batisColumnAttributes) {
-        return null;
+        return doOrder(operateMethodMeta, batisColumnAttributes);
     }
 
     public String doOrder(OperateMethodMeta operateMethodMeta, List<BatisColumnAttribute> batisColumnAttributes) {
@@ -57,7 +56,6 @@ public class DefaultOrderSnippet implements OrderSnippet {
         if (orderBatisColumn.isEmpty()) {
             return "";
         } else {
-            AtomicBoolean dynamic = new AtomicBoolean(false);
             String orderSnippet = orderBatisColumn.stream().map(attribute -> {
                 Annotation annotation = chooseOrder(attribute);
                 String column = attribute.useColumn(annotation);
@@ -65,13 +63,11 @@ public class DefaultOrderSnippet implements OrderSnippet {
                 String order = annotation instanceof Asc ? "ASC" : "DESC";
                 String columnOrder = column + " " + order + ", ";
                 if (orderDynamic) {
-                    dynamic.set(true);
                     return MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(attribute), columnOrder);
                 }
                 return columnOrder;
-            }).collect(Collectors.joining(""));
-            return dynamic.get() ? MyBatisSnippetUtils.trimSuffixOverrides(ORDER_BY, ",", orderSnippet) :
-                    ORDER_BY + orderSnippet;
+            }).collect(Collectors.joining());
+            return MyBatisSnippetUtils.trimSuffixOverrides(ORDER_BY, ",", orderSnippet);
         }
     }
 

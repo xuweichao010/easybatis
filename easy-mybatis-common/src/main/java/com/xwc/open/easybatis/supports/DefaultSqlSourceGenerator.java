@@ -92,9 +92,9 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
                 parameterAttribute.setMulti(multi);
                 batisColumnAttributes.addAll(entityParameterAttribute);
             } else if (parameterAttribute instanceof BaseParameterAttribute) {
-                batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi));
+                batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic));
             } else if (parameterAttribute instanceof PrimaryKeyParameterAttribute) {
-                batisColumnAttributes.add(convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi));
+                batisColumnAttributes.add(convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi, methodDynamic));
             } else if (parameterAttribute instanceof ObjectParameterAttribute) {
 
             } else {
@@ -258,7 +258,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
     }
 
     private BatisColumnAttribute convertParameterAttribute(ParameterAttribute parameterAttribute,
-                                                           boolean isMultiParam) {
+                                                           boolean isMultiParam, boolean methodDynamic) {
         BatisColumnAttribute attribute = new BatisColumnAttribute();
         attribute.setIndex(parameterAttribute.getIndex() * 1000);
         attribute.setColumn(easyBatisConfiguration.getColumnNameConverter().convert(parameterAttribute.getParameterName()));
@@ -266,11 +266,13 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         attribute.setPath(new String[]{parameterAttribute.getParameterName()});
         attribute.addAnnotations(parameterAttribute.annotations());
         attribute.setMulti(isMultiParam);
+        attribute.setMethodDynamic(methodDynamic);
         return attribute;
     }
 
-    private BatisColumnAttribute convertPrimaryKeyParameterAttribute(PrimaryKeyParameterAttribute parameterAttribute, boolean multi) {
-        BatisColumnAttribute attribute = convertParameterAttribute(parameterAttribute, multi);
+    private BatisColumnAttribute convertPrimaryKeyParameterAttribute(PrimaryKeyParameterAttribute parameterAttribute,
+                                                                     boolean multi, boolean methodDynamic) {
+        BatisColumnAttribute attribute = convertParameterAttribute(parameterAttribute, multi, methodDynamic);
         attribute.setColumn(parameterAttribute.getPrimaryKey().getColumn());
         return attribute;
     }

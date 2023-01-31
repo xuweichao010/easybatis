@@ -6,6 +6,10 @@ import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.annotaions.SelectSql;
 import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
+import com.xwc.open.easybatis.annotaions.order.Asc;
+import com.xwc.open.easybatis.annotaions.order.Desc;
+import com.xwc.open.easybatis.annotaions.order.OrderBy;
+import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.entity.UserObject;
 import org.apache.ibatis.annotations.Delete;
@@ -58,6 +62,26 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
 
     @SelectSql
     List<NormalUser> betweenDynamic(@Between(of = "ageTo", dynamic = true) Integer age, Integer ageTo);
+
+    @SelectSql()
+    @OrderBy("age desc")
+    List<NormalUser> methodOrder();
+
+    @SelectSql
+    List<NormalUser> orderDesc(@Desc boolean age);
+
+    @SelectSql
+    List<NormalUser> orderAsc(@Asc boolean age);
+
+    @SelectSql
+    @Dynamic
+    List<NormalUser> dynamicOrderDesc(@Desc boolean age);
+
+    @SelectSql
+    List<NormalUser> orderDescDynamic(@Desc(dynamic = true) boolean age);
+
+    @SelectSql
+    List<NormalUser> orderAscDynamic(@Asc(dynamic = true) boolean age);
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")

@@ -124,4 +124,50 @@ public class MapperEasyAnnotationQueryBuilderTest {
         Assert.assertEquals(31, betweenAge.size());
     }
 
+    @Test
+    public void simpleMethodOrder() {
+        List<NormalUser> order = simpleSourceGeneratorMapper.methodOrder();
+        if (order.isEmpty()) {
+            Assert.fail();
+        }
+        Assert.assertEquals(31, order.size());
+    }
+
+    @Test
+    public void simpleParamOrderAsc() {
+        List<NormalUser> order = simpleSourceGeneratorMapper.orderDesc(true);
+        if (order.isEmpty()) {
+            Assert.fail();
+        }
+        Assert.assertEquals(31, order.size());
+    }
+
+    @Test
+    public void simpleDynamicOrderDesc() {
+        List<NormalUser> order = simpleSourceGeneratorMapper.dynamicOrderDesc(true);
+        if (order.isEmpty()) {
+            Assert.fail();
+        }
+        Assert.assertEquals(31, order.size());
+    }
+
+    @Test
+    public void simpleOrderDescDynamic() {
+        List<NormalUser> order = simpleSourceGeneratorMapper.orderDescDynamic(true);
+        if (order.isEmpty()) {
+            Assert.fail();
+        }
+        Assert.assertEquals(31, order.size());
+    }
+
+    @Test
+    public void simpleOrderAscDynamic() {
+        List<NormalUser> order = simpleSourceGeneratorMapper.orderAscDynamic(true);
+        if (order.isEmpty()) {
+            Assert.fail();
+        }
+        Assert.assertEquals(31, order.size());
+    }
+
+
 }
