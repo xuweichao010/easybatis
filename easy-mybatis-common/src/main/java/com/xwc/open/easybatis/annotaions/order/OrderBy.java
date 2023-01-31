@@ -5,7 +5,8 @@ import com.xwc.open.easy.parse.annotations.Syntax;
 import java.lang.annotation.*;
 
 /**
- * 类描述：排序注解 使用在方法上 这个注解和 参数注解order asc  desc 注解之间会存在冲突
+ * 类描述：固定排序注解，该注解只能使用在方法上 这个注解和参数排序注解@Order、@Asc、@Desc注解之间会存在冲突
+ * 如果在一个方法上出现@OrderBy和其他排序注解 只处理@OrderBy注解 参数排序注解不会参与到SQL语句的构建中
  * 作者：徐卫超 (cc)
  * 时间 2023/1/31 11:10
  */
@@ -21,8 +22,4 @@ public @interface OrderBy {
      * 框架不会对这部分语句进行任何处理 一般应用于固定的排序规则
      */
     String value() default "";
-
-
-
-
 }

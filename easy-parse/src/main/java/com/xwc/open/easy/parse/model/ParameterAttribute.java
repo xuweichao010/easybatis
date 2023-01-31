@@ -1,7 +1,10 @@
 package com.xwc.open.easy.parse.model;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 类描述：用于存储方法中的参数的各种信息 提供给后面的构建器来使用
@@ -44,6 +47,9 @@ public abstract class ParameterAttribute {
     public <T extends Annotation> T findAnnotation(Class<T> clazz) {
         return (T) annotations.get(clazz);
     }
+
+
+
 
     /**
      * 判断 方法上是否有这个注解

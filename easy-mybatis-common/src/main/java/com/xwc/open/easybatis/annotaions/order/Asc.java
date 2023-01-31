@@ -23,12 +23,6 @@ public @interface Asc {
     String value() default "";
 
 
-    /**
-     * 属性的排序规则 默认升序
-     *Order
-     * @return
-     */
-    Sorted sorted() default Sorted.ASC;
 
 
     /**

@@ -19,6 +19,8 @@ public class MyBatisSnippetUtils {
 
     static final String WHERE = " <where> %s </where>";
 
+    static final String TRIM_SUFFIX_OVERRIDES = "<trim prefix= '%s' suffixOverrides= '%s'> %s </trim>";
+
     public static String foreachObject(String itemName, String indexName, String collectionName, String content) {
         return String.format(FOREACH_OBJECT, itemName, indexName, collectionName, content);
     }
@@ -38,5 +40,9 @@ public class MyBatisSnippetUtils {
 
     public static String where(String sqlConditions) {
         return String.format(WHERE, sqlConditions);
+    }
+
+    public static String trimSuffixOverrides(String prefix, String suffixOverrides, String sql) {
+        return String.format(TRIM_SUFFIX_OVERRIDES, prefix, suffixOverrides, sql);
     }
 }

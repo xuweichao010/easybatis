@@ -19,6 +19,8 @@ import com.xwc.open.easybatis.snippet.from.DefaultInsertFrom;
 import com.xwc.open.easybatis.snippet.from.DefaultSelectFrom;
 import com.xwc.open.easybatis.snippet.from.InsertFromSnippet;
 import com.xwc.open.easybatis.snippet.from.SelectFromSnippet;
+import com.xwc.open.easybatis.snippet.order.DefaultOrderSnippet;
+import com.xwc.open.easybatis.snippet.order.OrderSnippet;
 import com.xwc.open.easybatis.snippet.values.DefaultInsertValues;
 import com.xwc.open.easybatis.snippet.values.InsertValuesSnippet;
 import com.xwc.open.easybatis.snippet.where.DefaultWhereSnippet;
@@ -56,6 +58,8 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
 
     private WhereSnippet whereSnippet;
 
+    private OrderSnippet orderSnippet;
+
 
     public DefaultSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration) {
         this.easyBatisConfiguration = easyMyBatisConfiguration;
@@ -68,11 +72,11 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         this.conditionalRegistry.register(Equal.class, new EqualsConditionalSnippet(new MybatisPlaceholder()));
         this.conditionalRegistry.register(Between.class, new BetweenConditionalSnippet(new MybatisPlaceholder()));
         this.whereSnippet = new DefaultWhereSnippet(this.conditionalRegistry, new MybatisPlaceholder());
+        this.orderSnippet = new DefaultOrderSnippet(new MybatisPlaceholder());
     }
 
     @Override
     public String select(OperateMethodMeta operateMethodMeta) {
-
         return MyBatisSnippetUtils.script(doSelect(operateMethodMeta));
     }
 
@@ -94,10 +98,12 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
             } else if (parameterAttribute instanceof ObjectParameterAttribute) {
 
             } else {
-                throw new ParamCheckException("SELECt 语句不支持该类型的参数：" + parameterAttribute.getParameterName());
+                throw new ParamCheckException("SELECT 语句不支持该类型的参数：" + parameterAttribute.getParameterName());
             }
         }
-        return this.selectSqlFrom.from(operateMethodMeta) + this.whereSnippet.where(batisColumnAttributes);
+        return this.selectSqlFrom.from(operateMethodMeta) +
+                this.whereSnippet.where(batisColumnAttributes) +
+                this.orderSnippet.order(operateMethodMeta, batisColumnAttributes);
     }
 
 

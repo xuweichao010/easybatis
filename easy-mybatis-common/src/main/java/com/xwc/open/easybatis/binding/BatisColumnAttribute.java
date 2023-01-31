@@ -1,7 +1,11 @@
 package com.xwc.open.easybatis.binding;
 
 import com.xwc.open.easy.parse.model.ParameterAttribute;
-import com.xwc.open.easy.parse.model.PrimaryKeyAttribute;
+import com.xwc.open.easy.parse.utils.AnnotationUtils;
+import com.xwc.open.easy.parse.utils.StringUtils;
+import com.xwc.open.easybatis.annotaions.AnnotationAttributeProtocol;
+
+import java.lang.annotation.Annotation;
 
 /**
  * 类描述：描述已经处理的参数结果
@@ -21,5 +25,24 @@ public class BatisColumnAttribute extends ParameterAttribute {
 
     public void setColumn(String column) {
         this.column = column;
+    }
+
+    public boolean useDynamic(Annotation annotation) {
+        if (isMethodDynamic()) {
+            return true;
+        } else if (annotation != null) {
+            Object value = AnnotationUtils.getValue(annotation, AnnotationAttributeProtocol.DYNAMIC);
+            return value != null && (boolean) value;
+        }
+        return false;
+    }
+
+    public String useColumn(Annotation annotation) {
+        Object value = AnnotationUtils.getValue(annotation, AnnotationAttributeProtocol.VALUE);
+        if (value != null && StringUtils.hasText(value.toString())) {
+            return value.toString();
+        } else {
+            return column;
+        }
     }
 }

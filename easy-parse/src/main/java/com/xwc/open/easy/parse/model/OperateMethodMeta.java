@@ -1,7 +1,9 @@
 package com.xwc.open.easy.parse.model;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -73,8 +75,8 @@ public class OperateMethodMeta {
      * @param clazz 注解的Class文件
      * @return 返回包含的注解对象 当没有的时候返回 null
      */
-    public Annotation findAnnotation(Class<? extends Annotation> clazz) {
-        return annotations.get(clazz);
+    public <T extends Annotation> T findAnnotation(Class<T> clazz) {
+        return (T) annotations.get(clazz);
     }
 
     /**

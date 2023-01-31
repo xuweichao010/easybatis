@@ -2,7 +2,7 @@ package com.xwc.open.easybatis.snippet.where;
 
 import com.xwc.open.easy.parse.utils.AnnotationUtils;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
-import com.xwc.open.easybatis.annotaions.conditions.ConditionAttributeProtocol;
+import com.xwc.open.easybatis.annotaions.AnnotationAttributeProtocol;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.exceptions.CheckException;
@@ -16,7 +16,6 @@ import com.xwc.open.easybatis.supports.ConditionalRegistry;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -51,7 +50,7 @@ public class DefaultWhereSnippet implements WhereSnippet {
                         if (columnAttribute.isMethodDynamic() && !dynamic.get()) {
                             dynamic.set(true);
                         }
-                        Object dynamicAttr = AnnotationUtils.getValue(annotation, ConditionAttributeProtocol.DYNAMIC);
+                        Object dynamicAttr = AnnotationUtils.getValue(annotation, AnnotationAttributeProtocol.DYNAMIC);
                         if (dynamicAttr instanceof Boolean && (boolean) dynamicAttr) {
                             dynamic.set(true);
                         }
@@ -74,7 +73,7 @@ public class DefaultWhereSnippet implements WhereSnippet {
                 conditionAttributes.stream().collect(Collectors.groupingBy(columnAttribute -> {
                     Annotation conditionAnnotation = conditionalRegistry.chooseAnnotation(columnAttribute);
                     if (conditionAnnotation != null) {
-                        Object value = AnnotationUtils.getValue(conditionAnnotation, ConditionAttributeProtocol.OF);
+                        Object value = AnnotationUtils.getValue(conditionAnnotation, AnnotationAttributeProtocol.OF);
                         return Objects.isNull(value) ? SingleConditionalSnippet.class : MultiConditionalSnippet.class;
                     } else {
                         return SingleConditionalSnippet.class;
@@ -98,7 +97,7 @@ public class DefaultWhereSnippet implements WhereSnippet {
                             throw new NotFoundException("没有找到需要的片段处理器");
                         }
                         if (conditionalSnippet instanceof MultiConditionalSnippet) {
-                            Object value = AnnotationUtils.getValue(annotation, ConditionAttributeProtocol.OF);
+                            Object value = AnnotationUtils.getValue(annotation, AnnotationAttributeProtocol.OF);
                             String of = String.valueOf(value);
                             BatisColumnAttribute ofAttribute = singleConditionalSnippetMap.remove(of);
                             if (ofAttribute == null) {
