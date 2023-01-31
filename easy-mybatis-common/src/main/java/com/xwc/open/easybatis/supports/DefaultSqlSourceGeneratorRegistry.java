@@ -64,8 +64,7 @@ public class DefaultSqlSourceGeneratorRegistry implements SqlSourceGeneratorRegi
         try {
             Class<?> aClass = Class.forName("com.mysql.cj.jdbc.Driver");
             return DriverDatabaseIdProvider.MYSQL;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException ignored) {
         }
         return null;
     }
