@@ -82,8 +82,8 @@ public class DefaultMyBatisSourceGeneratorCommonMethodTest {
         List<BatisColumnAttribute> operateParameterAttributes =
                 operateMethodMeta.getParameterAttributes().stream().map(parameterAttribute -> {
                     if (parameterAttribute instanceof EntityParameterAttribute) {
-                        return defaultEasyBatisSourceGenerator.flatEntityParameterAttribute(parameterAttribute,
-                                operateMethodMeta.getDatabaseMeta(), multi,false, sqlCommandType);
+                        return defaultEasyBatisSourceGenerator.analysisEntityParameterAttribute((EntityParameterAttribute) parameterAttribute,
+                                multi, false, sqlCommandType);
                     } else {
                         throw new EasyException("错误的数据类型");
                     }

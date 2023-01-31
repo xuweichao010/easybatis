@@ -31,6 +31,6 @@ public class DefaultPageSnippet implements PageSnippet {
 
     @Override
     public String page(List<BatisColumnAttribute> batisColumnAttributes) {
-        return null;
+        return "";
     }
 }

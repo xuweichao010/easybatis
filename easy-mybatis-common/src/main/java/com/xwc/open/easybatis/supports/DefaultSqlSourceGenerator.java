@@ -97,7 +97,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof EntityParameterAttribute) {
                 List<BatisColumnAttribute> entityParameterAttribute =
-                        analysisEntityParameterAttribute(parameterAttribute, operateMethodMeta.getDatabaseMeta(),
+                        analysisEntityParameterAttribute((EntityParameterAttribute) parameterAttribute,
                                 multi, methodDynamic, SqlCommandType.SELECT);
                 parameterAttribute.setMulti(multi);
                 batisColumnAttributes.addAll(entityParameterAttribute);
@@ -130,8 +130,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof EntityParameterAttribute) {
                 entityParameterAttribute = (EntityParameterAttribute) parameterAttribute;
-                batisColumnAttributes = analysisEntityParameterAttribute(parameterAttribute,
-                        operateMethodMeta.getDatabaseMeta(), multi, methodDynamic, SqlCommandType.INSERT);
+                batisColumnAttributes = analysisEntityParameterAttribute(entityParameterAttribute, multi, methodDynamic, SqlCommandType.INSERT);
                 parameterAttribute.setMulti(multi);
             } else {
                 throw new ParamCheckException("INSERT 语句不支持该类型的参数：" + parameterAttribute.getParameterName());
@@ -188,8 +187,8 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
     /**
      * 判断构建语句是否需要进行动态语句构建
      *
-     * @param operateMethodMeta
-     * @param sqlCommandType
+     * @param operateMethodMeta 操作方法的源信息
+     * @param sqlCommandType    操作类型
      * @return
      */
     public boolean isMethodDynamic(OperateMethodMeta operateMethodMeta, SqlCommandType sqlCommandType) {
@@ -201,6 +200,14 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
     }
 
 
+    /**
+     * 分析非实体对象的参数
+     *
+     * @param parameterAttribute 对象的参数源信息
+     * @param multi              方法是否是多个参数
+     * @param methodDynamic      方法是否具有动态属性
+     * @return 分析的结果
+     */
     private List<BatisColumnAttribute> analysisObjectAttribute(ObjectParameterAttribute parameterAttribute, boolean multi,
                                                                boolean methodDynamic) {
         List<Field> fields = Reflection.getField(parameterAttribute.getClass());
@@ -216,14 +223,21 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
 
     }
 
-
+    /**
+     * 分析实体对象的参数
+     *
+     * @param parameterAttribute 实体对象的参数源信息
+     * @param isMultiParam       方法是否是多个参数
+     * @param dynamic            方法是否具有动态属性
+     * @param sqlCommandType     操作类型
+     * @return 返回分析的结果
+     */
     public List<BatisColumnAttribute> analysisEntityParameterAttribute(
-            ParameterAttribute parameterAttribute,
-            TableMeta tableMeta,
+            EntityParameterAttribute parameterAttribute,
             boolean isMultiParam,
             boolean dynamic,
             SqlCommandType sqlCommandType) {
-
+        TableMeta tableMeta = parameterAttribute.getDatabaseMeta();
         List<BatisColumnAttribute> list = new ArrayList<>();
         int paramIndex = parameterAttribute.getIndex() * 1000;
         // 主键只有在插入的时候可以被放入到SQL中
@@ -256,7 +270,13 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         return list.stream().sorted(Comparator.comparingInt(BatisColumnAttribute::getIndex)).collect(Collectors.toList());
     }
 
-
+    /**
+     * 判断 ModelAttribute 属性是在SqlCommandType情况进行忽略
+     *
+     * @param modelAttribute 模型类型
+     * @param sqlCommandType sql操作类型
+     * @return 是否需要忽略
+     */
     public boolean isModelAttributeIgnore(ModelAttribute modelAttribute, SqlCommandType sqlCommandType) {
         if (sqlCommandType == SqlCommandType.INSERT && modelAttribute.isInsertIgnore()) {
             return true;

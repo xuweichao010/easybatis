@@ -1,9 +1,7 @@
 package com.xwc.open.easy.parse.model.parameter;
 
-import com.xwc.open.easy.parse.model.TableMeta;
 import com.xwc.open.easy.parse.model.ParameterAttribute;
-
-import java.util.List;
+import com.xwc.open.easy.parse.model.TableMeta;
 
 /**
  * 类描述：描述的这个对象是实体
@@ -16,5 +14,9 @@ public class EntityParameterAttribute extends ParameterAttribute {
 
     public EntityParameterAttribute(TableMeta databaseMeta) {
         this.databaseMeta = databaseMeta;
+    }
+
+    public TableMeta getDatabaseMeta() {
+        return databaseMeta;
     }
 }
