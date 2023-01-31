@@ -1,7 +1,6 @@
 package com.xwc.open.easybatis.supports;
 
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
-import com.xwc.open.easy.parse.model.TableMeta;
 
 /**
  * 类描述：创建一个sql语句

@@ -10,6 +10,8 @@ import com.xwc.open.easybatis.annotaions.order.Asc;
 import com.xwc.open.easybatis.annotaions.order.Desc;
 import com.xwc.open.easybatis.annotaions.order.OrderBy;
 import com.xwc.open.easybatis.annotaions.other.Dynamic;
+import com.xwc.open.easybatis.annotaions.page.Limit;
+import com.xwc.open.easybatis.annotaions.page.Offset;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.entity.UserObject;
 import org.apache.ibatis.annotations.Delete;
@@ -86,6 +88,13 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     @SelectSql
     List<NormalUser> orderMixture(@Asc(dynamic = true) Boolean age, @Desc boolean orgCode,
                                   @Asc(dynamic = true) Boolean job);
+
+    @SelectSql
+    List<NormalUser> page(@Limit Integer limit, @Offset Integer offset);
+
+
+    @SelectSql
+    List<NormalUser> limit(@Limit Integer limit);
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")

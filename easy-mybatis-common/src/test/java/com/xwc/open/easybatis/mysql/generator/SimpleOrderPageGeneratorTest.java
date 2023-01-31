@@ -42,14 +42,26 @@ public class SimpleOrderPageGeneratorTest {
 
 
     @Test
-    public void simpleLimit() {
+    public void simplePage() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "orderMixture";
+        String methodName = "page";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user<trim prefix= ' ORDER BY ' suffixOverrides= ','>  <if test='age != null'> age ASC,  </if> org_code DESC,   <if test='job != null'> job ASC,  </if> </trim> </script>";
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user LIMIT #{limit} OFFSET #{offset} </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
+
+    @Test
+    public void simpleLimit() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "limit";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user LIMIT #{limit} </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
 
 }

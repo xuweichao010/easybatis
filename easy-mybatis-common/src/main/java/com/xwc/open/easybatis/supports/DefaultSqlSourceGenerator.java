@@ -161,7 +161,14 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         return null;
     }
 
-
+    /**
+     * 推断这个方法是否需要进行多属性构建
+     * 已经在方法中的属性 还有事不在方法中的属性 被称为虚拟属性 都要被纳入判断返回内
+     *
+     * @param operateMethodMeta 查询的元方法
+     * @param sqlCommandType    sql类型
+     * @return 方法是否需要多属性构建
+     */
     public boolean isMulti(OperateMethodMeta operateMethodMeta, SqlCommandType sqlCommandType) {
         // 当参数是多个值的话一定是多参数
         int paramNum = operateMethodMeta.paramSize();
