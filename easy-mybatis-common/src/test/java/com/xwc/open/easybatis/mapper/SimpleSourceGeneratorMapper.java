@@ -9,6 +9,8 @@ import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.annotaions.order.Asc;
 import com.xwc.open.easybatis.annotaions.order.Desc;
 import com.xwc.open.easybatis.annotaions.order.OrderBy;
+import com.xwc.open.easybatis.annotaions.other.Count;
+import com.xwc.open.easybatis.annotaions.other.Distinct;
 import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.annotaions.page.Limit;
 import com.xwc.open.easybatis.annotaions.page.Offset;
@@ -110,6 +112,21 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     @SelectSql
     @Dynamic
     List<NormalUser> dynamicQueryObjectIgnore(@Ignore String tableName, NormalUserQueryDto query);
+
+    @SelectSql
+    @Count
+    Long queryObjectCount(NormalUserQueryDto query);
+
+
+    @SelectSql("age")
+    @Distinct
+    List<Integer> queryObjectDistinct(NormalUserQueryDto query);
+
+
+    @SelectSql("age")
+    @Distinct
+    @Count
+    Long queryObjectCountDistinct(NormalUserQueryDto query);
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")

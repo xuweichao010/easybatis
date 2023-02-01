@@ -119,7 +119,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         }
         StringBuilder sql = new StringBuilder(this.selectSqlFrom.from(operateMethodMeta))
                 .append(this.whereSnippet.where(batisColumnAttributes));
-        if (operateMethodMeta.containsAnnotation(Count.class)) {
+        if (!operateMethodMeta.containsAnnotation(Count.class)) {
             sql.append(this.orderSnippet.order(operateMethodMeta, batisColumnAttributes))
                     .append(this.pageSnippet.page(batisColumnAttributes));
         }

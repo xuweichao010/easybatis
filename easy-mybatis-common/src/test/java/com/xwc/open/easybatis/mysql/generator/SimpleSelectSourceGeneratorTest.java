@@ -87,6 +87,40 @@ public class SimpleSelectSourceGeneratorTest {
     }
 
 
+    @Test
+    public void simpleQueryObjectCount() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "queryObjectCount";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT  COUNT(*) FROM t_user <where> AND `org_code` = #{orgCode} AND `org_name` = #{orgName}  <if test='name != null'> AND `name` = #{name} </if> AND `age` BETWEEN #{age} AND #{ageTo}  <if test='job != null'> AND `job` = #{job} </if> </where> </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleQueryObjectDistinct() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "queryObjectDistinct";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT DISTINCT(age) FROM t_user <where> AND `org_code` = #{orgCode} AND `org_name` = #{orgName}  <if test='name != null'> AND `name` = #{name} </if> AND `age` BETWEEN #{age} AND #{ageTo}  <if test='job != null'> AND `job` = #{job} </if> </where> LIMIT #{limit} OFFSET #{offset} </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleQueryObjectCountDistinct() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "queryObjectCountDistinct";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT COUNT(DISTINCT(age)) FROM t_user <where> AND `org_code` = #{orgCode} AND `org_name` = #{orgName}  <if test='name != null'> AND `name` = #{name} </if> AND `age` BETWEEN #{age} AND #{ageTo}  <if test='job != null'> AND `job` = #{job} </if> </where> </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+
     public void simple() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "queryObject";
