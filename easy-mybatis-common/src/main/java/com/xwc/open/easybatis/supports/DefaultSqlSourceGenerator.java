@@ -10,6 +10,7 @@ import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
+import com.xwc.open.easybatis.annotaions.other.Count;
 import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.exceptions.ParamCheckException;
@@ -116,10 +117,13 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
                 throw new ParamCheckException("SELECT 语句不支持该类型的参数：" + parameterAttribute.getParameterName());
             }
         }
-        return this.selectSqlFrom.from(operateMethodMeta) +
-                this.whereSnippet.where(batisColumnAttributes) +
-                this.orderSnippet.order(operateMethodMeta, batisColumnAttributes) +
-                this.pageSnippet.page(batisColumnAttributes);
+        StringBuilder sql = new StringBuilder(this.selectSqlFrom.from(operateMethodMeta))
+                .append(this.whereSnippet.where(batisColumnAttributes));
+        if (operateMethodMeta.containsAnnotation(Count.class)) {
+            sql.append(this.orderSnippet.order(operateMethodMeta, batisColumnAttributes))
+                    .append(this.pageSnippet.page(batisColumnAttributes));
+        }
+        return sql.toString();
     }
 
 

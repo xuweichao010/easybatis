@@ -1,7 +1,7 @@
 package com.xwc.open.easybatis.snippet.column;
 
 import com.xwc.open.easy.parse.model.ModelAttribute;
-import com.xwc.open.easybatis.binding.BatisColumnAttribute;
+import com.xwc.open.easy.parse.model.OperateMethodMeta;
 
 import java.util.List;
 
@@ -12,5 +12,5 @@ import java.util.List;
  */
 public interface SelectColumnSnippet {
 
-    String columns(List<ModelAttribute> columnAttribute);
+    String columns(OperateMethodMeta operateMethodMeta, List<ModelAttribute> columnAttribute);
 }

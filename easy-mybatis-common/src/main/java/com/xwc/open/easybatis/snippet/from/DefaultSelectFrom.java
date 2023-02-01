@@ -4,8 +4,6 @@ import com.xwc.open.easy.parse.model.FillAttribute;
 import com.xwc.open.easy.parse.model.ModelAttribute;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.model.TableMeta;
-import com.xwc.open.easybatis.annotaions.SelectSql;
-import com.xwc.open.easybatis.snippet.column.DefaultSelectColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.SelectColumnSnippet;
 
 import java.util.ArrayList;
@@ -26,9 +24,9 @@ public class DefaultSelectFrom implements SelectFromSnippet {
 
 
     @Override
-    public String from(OperateMethodMeta tableMeta) {
-        List<ModelAttribute> modelAttributes = selectColumnAttribute(tableMeta.getDatabaseMeta());
-        return "SELECT " + selectColumnSnippet.columns(modelAttributes) + " FROM " + tableMeta.getDatabaseMeta().getTableName();
+    public String from(OperateMethodMeta operateMethodMeta) {
+        List<ModelAttribute> modelAttributes = selectColumnAttribute(operateMethodMeta.getDatabaseMeta());
+        return "SELECT " + selectColumnSnippet.columns(operateMethodMeta, modelAttributes) + " FROM " + operateMethodMeta.getDatabaseMeta().getTableName();
     }
 
     public List<ModelAttribute> selectColumnAttribute(TableMeta tableMeta) {
