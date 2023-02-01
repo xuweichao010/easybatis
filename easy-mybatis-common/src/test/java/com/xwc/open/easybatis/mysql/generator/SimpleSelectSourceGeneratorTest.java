@@ -121,6 +121,17 @@ public class SimpleSelectSourceGeneratorTest {
     }
 
 
+    @Test
+    public void simpleQueryMultiObject() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "queryMultiObject";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user <where> AND `org_code` = #{query.orgCode} AND `org_name` = #{query.orgName}  <if test='query.name != null'> AND `name` = #{query.name} </if> AND `age` BETWEEN #{query.age} AND #{query.ageTo}  <if test='query.job != null'> AND `job` = #{query.job} </if> </where> LIMIT #{page.limit} OFFSET #{page.offset} </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
     public void simple() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "queryObject";

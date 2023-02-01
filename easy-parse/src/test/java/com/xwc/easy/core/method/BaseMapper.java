@@ -1,6 +1,5 @@
 package com.xwc.easy.core.method;
 
-import com.xwc.easy.core.table.method.MethodEntity;
 import com.xwc.open.easy.parse.supports.EasyMapper;
 
 import java.util.List;
@@ -19,6 +18,4 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
     List<E> genericsCollectionPrimaryKeyParameterAttribute(List<K> ids);
 
     int genericsPrimaryKeyParameterAttribute(K id);
-
-
 }

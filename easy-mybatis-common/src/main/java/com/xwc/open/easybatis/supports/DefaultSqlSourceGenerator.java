@@ -126,7 +126,6 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         return sql.toString();
     }
 
-
     @Override
     public String insert(OperateMethodMeta operateMethodMeta) {
         boolean multi = isMulti(operateMethodMeta, SqlCommandType.INSERT);
@@ -196,7 +195,6 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         return paramNum > 1;
     }
 
-
     /**
      * 判断构建语句是否需要进行动态语句构建
      *
@@ -211,7 +209,6 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
             return false;
         }
     }
-
 
     /**
      * 分析非实体对象的参数

@@ -12,8 +12,4 @@ import java.lang.reflect.Method;
 public interface OperateMethodAssistant {
 
     OperateMethodMeta getOperateMethodMeta(Class<?> clazz, Method method);
-
-
-
-
 }

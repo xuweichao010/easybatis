@@ -15,7 +15,6 @@ public abstract class DriverDatabaseIdProvider implements Comparator<DriverDatab
 
     abstract int order();
 
-
     @Override
     public int compare(DriverDatabaseIdProvider o1, DriverDatabaseIdProvider o2) {
         return o1.order() - o2.order();

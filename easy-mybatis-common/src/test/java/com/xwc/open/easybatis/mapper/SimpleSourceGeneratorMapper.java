@@ -14,7 +14,9 @@ import com.xwc.open.easybatis.annotaions.other.Distinct;
 import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.annotaions.page.Limit;
 import com.xwc.open.easybatis.annotaions.page.Offset;
-import com.xwc.open.easybatis.dto.NormalUserQueryDto;
+import com.xwc.open.easybatis.dto.NormalUseQueryDto;
+import com.xwc.open.easybatis.dto.NormalUserPageQueryDto;
+import com.xwc.open.easybatis.dto.PageQueryDto;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.entity.UserObject;
 import org.apache.ibatis.annotations.Delete;
@@ -100,33 +102,36 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     List<NormalUser> limit(@Limit Integer limit);
 
     @SelectSql
-    List<NormalUser> queryObject(NormalUserQueryDto query);
+    List<NormalUser> queryObject(NormalUserPageQueryDto query);
 
     @SelectSql
-    List<NormalUser> queryObjectIgnore(@Ignore String tableName, NormalUserQueryDto query);
-
-    @SelectSql
-    @Dynamic
-    List<NormalUser> dynamicQueryObject(NormalUserQueryDto query);
+    List<NormalUser> queryObjectIgnore(@Ignore String tableName, NormalUserPageQueryDto query);
 
     @SelectSql
     @Dynamic
-    List<NormalUser> dynamicQueryObjectIgnore(@Ignore String tableName, NormalUserQueryDto query);
+    List<NormalUser> dynamicQueryObject(NormalUserPageQueryDto query);
+
+    @SelectSql
+    @Dynamic
+    List<NormalUser> dynamicQueryObjectIgnore(@Ignore String tableName, NormalUserPageQueryDto query);
 
     @SelectSql
     @Count
-    Long queryObjectCount(NormalUserQueryDto query);
+    Long queryObjectCount(NormalUserPageQueryDto query);
 
 
     @SelectSql("age")
     @Distinct
-    List<Integer> queryObjectDistinct(NormalUserQueryDto query);
+    List<Integer> queryObjectDistinct(NormalUserPageQueryDto query);
 
 
     @SelectSql("age")
     @Distinct
     @Count
-    Long queryObjectCountDistinct(NormalUserQueryDto query);
+    Long queryObjectCountDistinct(NormalUserPageQueryDto query);
+
+    @SelectSql
+    List<NormalUser> queryMultiObject(NormalUseQueryDto query, PageQueryDto page);
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")

@@ -2,8 +2,6 @@ package com.xwc.open.easybatis.dto;
 
 import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
-import com.xwc.open.easybatis.annotaions.page.Limit;
-import com.xwc.open.easybatis.annotaions.page.Offset;
 import lombok.Data;
 
 /**
@@ -13,7 +11,7 @@ import lombok.Data;
  */
 
 @Data
-public class NormalUserQueryDto {
+public class NormalUseQueryDto {
     /**
      * 机构编码
      */
@@ -47,14 +45,18 @@ public class NormalUserQueryDto {
     @Equal(dynamic = true)
     private Integer job;
 
-    /**
-     *
-     */
-    @Limit
-    private int limit = 10;
 
-    @Offset
-    private int offset = 0;
+
+    public static NormalUseQueryDto createAllConditionQueryObject() {
+        NormalUseQueryDto query = new NormalUseQueryDto();
+        query.orgCode = "200";
+        query.orgName = "东汉";
+        query.name = "曹操";
+        query.age = 30;
+        query.ageTo = 70;
+        query.job = 1;
+        return query;
+    }
 
 
 }
