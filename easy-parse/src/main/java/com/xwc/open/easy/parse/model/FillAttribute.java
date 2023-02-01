@@ -19,6 +19,11 @@ public class FillAttribute extends ModelAttribute {
      */
     private String identification;
 
+
+    public boolean isUpdateFill() {
+        return this.type == FillType.UPDATE || this.type == FillType.INSERT_UPDATE;
+    }
+
     public FillType getType() {
         return type;
     }

@@ -4,6 +4,7 @@ import com.xwc.open.easy.parse.model.ParameterAttribute;
 import com.xwc.open.easy.parse.utils.AnnotationUtils;
 import com.xwc.open.easy.parse.utils.StringUtils;
 import com.xwc.open.easybatis.annotaions.AnnotationAttributeProtocol;
+import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.lang.annotation.Annotation;
 
@@ -19,12 +20,22 @@ public class BatisColumnAttribute extends ParameterAttribute {
      */
     private String column;
 
+    private SqlCommandType sqlCommandType;
+
     public String getColumn() {
         return column;
     }
 
     public void setColumn(String column) {
         this.column = column;
+    }
+
+    public SqlCommandType getSqlCommandType() {
+        return sqlCommandType;
+    }
+
+    public void setSqlCommandType(SqlCommandType sqlCommandType) {
+        this.sqlCommandType = sqlCommandType;
     }
 
     public boolean useDynamic(Annotation annotation) {

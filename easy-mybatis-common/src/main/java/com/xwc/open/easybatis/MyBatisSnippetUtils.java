@@ -13,6 +13,8 @@ public class MyBatisSnippetUtils {
 
     static final String SCRIPT = "<script> %s </script>";
 
+    static final String SET = " <set> %s <set>";
+
     static final String IF_OBJECT = " <if test='%s != null'> %s </if>";
 
     static final String IF_CONDITION = " <if test='%s'> %s </if>";
@@ -25,12 +27,12 @@ public class MyBatisSnippetUtils {
         return String.format(FOREACH_OBJECT, itemName, indexName, collectionName, content);
     }
 
-    public static String ifNonNullObject(String paramName, String conditionSql) {
-        return String.format(IF_OBJECT, paramName, conditionSql);
+    public static String ifNonNullObject(String paramName, String content) {
+        return String.format(IF_OBJECT, paramName, content);
     }
 
-    public static String ifNonCondition(String paramName1, String paramName2, String conditionSql) {
-        return String.format(IF_CONDITION, paramName1 + " != null and " + paramName2 + " != null", conditionSql);
+    public static String ifNonCondition(String paramName1, String paramName2, String content) {
+        return String.format(IF_CONDITION, paramName1 + " != null and " + paramName2 + " != null", content);
     }
 
     public static String script(String content) {
@@ -38,11 +40,15 @@ public class MyBatisSnippetUtils {
     }
 
 
-    public static String where(String sqlConditions) {
-        return String.format(WHERE, sqlConditions);
+    public static String where(String content) {
+        return String.format(WHERE, content);
     }
 
-    public static String trimSuffixOverrides(String prefix, String suffixOverrides, String sql) {
-        return String.format(TRIM_SUFFIX_OVERRIDES, prefix, suffixOverrides, sql);
+    public static String trimSuffixOverrides(String prefix, String suffixOverrides, String content) {
+        return String.format(TRIM_SUFFIX_OVERRIDES, prefix, suffixOverrides, content);
+    }
+
+    public static String set(String content) {
+        return String.format(SET, content);
     }
 }

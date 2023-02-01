@@ -24,5 +24,13 @@ public @interface SetParam {
      */
     String value() default "";
 
+    /**
+     * 条件别名
+     * 在JOIN情况下中使用
+     *
+     * @return 返回属性的别名
+     */
+    String alias() default "";
+
 
 }

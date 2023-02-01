@@ -18,11 +18,12 @@ import java.lang.annotation.*;
 public @interface UpdateSql {
 
     /**
-     * query对象查询查询时dynamic 自动为true
+     * 级联更新模式当为空的时候默认不开启，join值有内容的时候就会会处理成级联更新
      *
      * @return
      */
-    boolean dynamic() default false;
+    String join() default "";
+
 
     /**
      * @return A database id that correspond this statement

@@ -1,6 +1,7 @@
 package com.xwc.open.easy.parse.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 类描述：
@@ -57,6 +58,8 @@ public class TableMeta {
     public List<FillAttribute> getFills() {
         return fills;
     }
+
+
 
     public LogicAttribute getLogic() {
         return logic;

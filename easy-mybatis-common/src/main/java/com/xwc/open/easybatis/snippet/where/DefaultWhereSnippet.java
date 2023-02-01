@@ -13,6 +13,7 @@ import com.xwc.open.easybatis.snippet.conditional.MultiConditionalSnippet;
 import com.xwc.open.easybatis.snippet.conditional.SingleConditionalSnippet;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
 import com.xwc.open.easybatis.supports.ConditionalRegistry;
+import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -57,8 +58,10 @@ public class DefaultWhereSnippet implements WhereSnippet {
                         }
                         return true;
                     }
-                    // 这里是因为只有当带有 @Syntax的注解才会被放进去
-                    if (conditionalRegistry.chooseAnnotation(columnAttribute) != null || columnAttribute.annotations().isEmpty()) {
+                    // 这里是因为只有当带有 @Syntax的注解才会被放进去  SqlCommandType.SELECT 语句参数是没有注解默认为 Equal 更新语句为 SetParam
+                    if (columnAttribute.getSqlCommandType() == SqlCommandType.SELECT &&
+                            conditionalRegistry.chooseAnnotation(columnAttribute) == null &&
+                            columnAttribute.annotations().isEmpty()) {
                         if (columnAttribute.isMethodDynamic() && !dynamic.get()) {
                             dynamic.set(true);
                         }
