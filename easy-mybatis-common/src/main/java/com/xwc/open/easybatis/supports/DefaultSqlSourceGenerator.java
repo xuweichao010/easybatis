@@ -20,10 +20,7 @@ import com.xwc.open.easybatis.snippet.column.InsertColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.SelectColumnSnippet;
 import com.xwc.open.easybatis.snippet.conditional.BetweenConditionalSnippet;
 import com.xwc.open.easybatis.snippet.conditional.EqualsConditionalSnippet;
-import com.xwc.open.easybatis.snippet.from.DefaultInsertFrom;
-import com.xwc.open.easybatis.snippet.from.DefaultSelectFrom;
-import com.xwc.open.easybatis.snippet.from.InsertFromSnippet;
-import com.xwc.open.easybatis.snippet.from.SelectFromSnippet;
+import com.xwc.open.easybatis.snippet.from.*;
 import com.xwc.open.easybatis.snippet.order.DefaultOrderSnippet;
 import com.xwc.open.easybatis.snippet.order.OrderSnippet;
 import com.xwc.open.easybatis.snippet.page.DefaultPageSnippet;
@@ -72,6 +69,8 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
 
     private PageSnippet pageSnippet;
 
+    private UpdateFromSnippet updateFromSnippet;
+
 
     public DefaultSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration) {
         this.easyBatisConfiguration = easyMyBatisConfiguration;
@@ -86,6 +85,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         this.whereSnippet = new DefaultWhereSnippet(this.conditionalRegistry, new MybatisPlaceholder());
         this.orderSnippet = new DefaultOrderSnippet(new MybatisPlaceholder());
         this.pageSnippet = new DefaultPageSnippet(new MybatisPlaceholder());
+        this.updateFromSnippet = new DefaultUpdateFromSnippet();
     }
 
     @Override
@@ -158,7 +158,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
 
     @Override
     public String update(OperateMethodMeta operateMethodMeta) {
-        return null;
+        return this.updateFromSnippet.from(operateMethodMeta);
     }
 
     @Override
