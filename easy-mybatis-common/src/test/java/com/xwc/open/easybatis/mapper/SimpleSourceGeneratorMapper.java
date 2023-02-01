@@ -100,6 +100,17 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     @SelectSql
     List<NormalUser> queryObject(NormalUserQueryDto query);
 
+    @SelectSql
+    List<NormalUser> queryObjectIgnore(@Ignore String tableName, NormalUserQueryDto query);
+
+    @SelectSql
+    @Dynamic
+    List<NormalUser> dynamicQueryObject(NormalUserQueryDto query);
+
+    @SelectSql
+    @Dynamic
+    List<NormalUser> dynamicQueryObjectIgnore(@Ignore String tableName, NormalUserQueryDto query);
+
 
     @Delete("DELETE FROM t_user WHERE data_type =2")
     int delTestData();
