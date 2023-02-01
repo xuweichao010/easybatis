@@ -4,6 +4,7 @@ import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
+import com.xwc.open.easybatis.supports.ColumnPlaceholder;
 
 /**
  * 类描述：等值SQL片段
@@ -14,15 +15,18 @@ public class EqualsConditionalSnippet implements SingleConditionalSnippet {
 
     private BatisPlaceholder placeholder;
 
-    public EqualsConditionalSnippet(BatisPlaceholder placeholder) {
+    private ColumnPlaceholder columnPlaceholder;
+
+    public EqualsConditionalSnippet(BatisPlaceholder placeholder, ColumnPlaceholder columnPlaceholder) {
         this.placeholder = placeholder;
+        this.columnPlaceholder = columnPlaceholder;
     }
 
     @Override
     public String snippet(BatisColumnAttribute columnAttribute) {
         Equal equal = columnAttribute.findAnnotation(Equal.class);
-        String conditionSql = "AND " + columnAttribute.getColumn() + " = " + placeholder.holder(columnAttribute);
-        if (columnAttribute.isMethodDynamic() || (equal != null && equal.dynamic())) {
+        String conditionSql = "AND " + columnPlaceholder.holder(columnAttribute.useColumn(equal)) + " = " + placeholder.holder(columnAttribute);
+        if (columnAttribute.useDynamic(equal)) {
             return MyBatisSnippetUtils.ifNonNullObject(placeholder.path(columnAttribute),
                     conditionSql);
         } else {

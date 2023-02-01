@@ -1,6 +1,7 @@
 package com.xwc.open.easybatis.snippet.where;
 
 import com.xwc.open.easy.parse.utils.AnnotationUtils;
+import com.xwc.open.easy.parse.utils.StringUtils;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.annotaions.AnnotationAttributeProtocol;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
@@ -98,7 +99,16 @@ public class DefaultWhereSnippet implements WhereSnippet {
                         }
                         if (conditionalSnippet instanceof MultiConditionalSnippet) {
                             Object value = AnnotationUtils.getValue(annotation, AnnotationAttributeProtocol.OF);
+                            if (!StringUtils.hasText(value)) {
+                                throw new CheckException(fromAttribute.getParameterName() + "中的" + annotation.annotationType() + "注解中的 of" + "属性无效");
+                            }
                             String of = String.valueOf(value);
+                            // 在多参数情况下 of 属性可能在同一层 需要进行路径匹配
+                            if (fromAttribute.isMulti() && fromAttribute.getPath().length > 1) {
+                                String[] ofPath = fromAttribute.getPath().clone();
+                                ofPath[ofPath.length - 1] = of;
+                                of = placeholder.join(ofPath);
+                            }
                             BatisColumnAttribute ofAttribute = singleConditionalSnippetMap.remove(of);
                             if (ofAttribute == null) {
                                 throw new CheckException("无法找到 " + annotation.annotationType() + "注解中的 of 属性");
@@ -143,7 +153,7 @@ public class DefaultWhereSnippet implements WhereSnippet {
         return dynamic.get() ? MyBatisSnippetUtils.where(sqlConditions) : " WHERE 1 = 1 " + sqlConditions;
     }
 
-    static class Condition implements Comparator<Condition> {
+    static class Condition implements Comparable<Condition> {
         private final int index;
 
         private final String conditionalSnippet;
@@ -161,9 +171,10 @@ public class DefaultWhereSnippet implements WhereSnippet {
             return conditionalSnippet;
         }
 
+
         @Override
-        public int compare(Condition o1, Condition o2) {
-            return o1.getIndex() - o2.getIndex();
+        public int compareTo(Condition o) {
+            return this.getIndex() - o.getIndex();
         }
     }
 }

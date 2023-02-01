@@ -13,4 +13,11 @@ public class StringUtils {
     public static boolean isEmpty(String str) {
         return str == null || str.isEmpty();
     }
+
+    public static boolean hasText(Object value) {
+        if (value != null) {
+            return hasText(String.valueOf(value));
+        }
+        return false;
+    }
 }

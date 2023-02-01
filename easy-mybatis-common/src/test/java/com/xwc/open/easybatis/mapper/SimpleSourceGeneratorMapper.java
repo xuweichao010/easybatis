@@ -12,6 +12,7 @@ import com.xwc.open.easybatis.annotaions.order.OrderBy;
 import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.annotaions.page.Limit;
 import com.xwc.open.easybatis.annotaions.page.Offset;
+import com.xwc.open.easybatis.dto.NormalUserQueryDto;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.entity.UserObject;
 import org.apache.ibatis.annotations.Delete;
@@ -96,7 +97,12 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     @SelectSql
     List<NormalUser> limit(@Limit Integer limit);
 
+    @SelectSql
+    List<NormalUser> queryObject(NormalUserQueryDto query);
+
 
     @Delete("DELETE FROM t_user WHERE data_type =2")
     int delTestData();
+
+
 }

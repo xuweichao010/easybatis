@@ -2,8 +2,6 @@ package com.xwc.open.easy.parse.model.parameter;
 
 import com.xwc.open.easy.parse.model.ParameterAttribute;
 
-import java.util.List;
-
 /**
  * 类描述：描述一个自定义对象集合
  * 作者：徐卫超 (cc)
@@ -16,4 +14,7 @@ public class ObjectParameterAttribute extends ParameterAttribute {
         this.objectClass = objectClass;
     }
 
+    public Class<?> getObjectClass() {
+        return objectClass;
+    }
 }

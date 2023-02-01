@@ -21,9 +21,14 @@ public class MybatisPlaceholder implements BatisPlaceholder {
     @Override
     public String path(BatisColumnAttribute columnAttribute) {
         if (columnAttribute.isMulti()) {
-            return String.join(".", columnAttribute.getPath());
+            return join(columnAttribute.getPath());
         } else {
             return columnAttribute.getParameterName();
         }
+    }
+
+    @Override
+    public String join(String[] path) {
+        return String.join(".", path);
     }
 }

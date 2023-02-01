@@ -49,7 +49,9 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
 
     private EasyBatisConfiguration easyBatisConfiguration;
 
-    private ColumnPlaceholder columnPlaceholder;
+    private ColumnPlaceholder columnPlaceholder = new DefaultColumnPlaceholder();
+
+    private BatisPlaceholder batisPlaceholder = new MybatisPlaceholder();
 
     private InsertFromSnippet insertSqlFrom;
 
@@ -78,8 +80,8 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         this.selectColumnSnippet = new DefaultSelectColumnSnippet(new DefaultColumnPlaceholder());
         this.selectSqlFrom = new DefaultSelectFrom(this.selectColumnSnippet);
         this.conditionalRegistry = new DefaultConditionalRegistry();
-        this.conditionalRegistry.register(Equal.class, new EqualsConditionalSnippet(new MybatisPlaceholder()));
-        this.conditionalRegistry.register(Between.class, new BetweenConditionalSnippet(new MybatisPlaceholder()));
+        this.conditionalRegistry.register(Equal.class, new EqualsConditionalSnippet(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(Between.class, new BetweenConditionalSnippet(batisPlaceholder, columnPlaceholder));
         this.whereSnippet = new DefaultWhereSnippet(this.conditionalRegistry, new MybatisPlaceholder());
         this.orderSnippet = new DefaultOrderSnippet(new MybatisPlaceholder());
         this.pageSnippet = new DefaultPageSnippet(new MybatisPlaceholder());
@@ -217,7 +219,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
      */
     private List<BatisColumnAttribute> analysisObjectAttribute(ObjectParameterAttribute parameterAttribute, boolean multi,
                                                                boolean methodDynamic) {
-        List<Field> fields = Reflection.getField(parameterAttribute.getClass());
+        List<Field> fields = Reflection.getField(parameterAttribute.getObjectClass());
         ArrayList<BatisColumnAttribute> attributes = new ArrayList<>();
         for (int i = 0; i < fields.size(); i++) {
             BatisColumnAttribute attribute = convertObjectAttribute(parameterAttribute, fields.get(i), i * 1000 + i, multi,

@@ -12,4 +12,6 @@ public interface BatisPlaceholder {
     String holder(BatisColumnAttribute columnAttribute);
 
     String path(BatisColumnAttribute columnAttribute);
+
+    String join(String[] path);
 }
