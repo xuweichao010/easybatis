@@ -68,6 +68,13 @@ public class MapperEasyAnnotationUpdateBuilderTest {
         Assert.assertEquals(dbUser.getOrgName(), updateUser.getOrgName());
     }
 
+    @Test
+    public void simpleUpdateParam() {
+        simpleSourceGeneratorMapper.updateParam(updateUser.getId(), "simpleUpdateParam");
+        NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertEquals("simpleUpdateParam", dbUser.getName());
+    }
+
 
     @After
     public void after() {

@@ -11,6 +11,7 @@ import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.annotaions.other.Count;
+import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.exceptions.ParamCheckException;
 import com.xwc.open.easybatis.snippet.column.DefaultInsertColumn;
@@ -245,7 +246,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
      * @return
      */
     public boolean isMethodDynamic(OperateMethodMeta operateMethodMeta, SqlCommandType sqlCommandType) {
-        return true;
+        return operateMethodMeta.findAnnotation(Dynamic.class) != null;
     }
 
     /**

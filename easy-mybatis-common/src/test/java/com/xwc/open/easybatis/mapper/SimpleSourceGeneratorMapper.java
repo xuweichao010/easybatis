@@ -141,8 +141,8 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     @Dynamic
     int updateDynamic(NormalUser normalUser);
 
-
-
+    @UpdateSql
+    int updateParam(@Equal String id, String name);
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")
