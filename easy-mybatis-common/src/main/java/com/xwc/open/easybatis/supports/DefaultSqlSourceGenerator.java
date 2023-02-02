@@ -11,7 +11,6 @@ import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.annotaions.other.Count;
-import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.exceptions.ParamCheckException;
 import com.xwc.open.easybatis.snippet.column.DefaultInsertColumn;
@@ -172,11 +171,16 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof EntityParameterAttribute) {
-                List<BatisColumnAttribute> entityParameterAttribute =
+                EntityParameterAttribute entityParameterAttribute = (EntityParameterAttribute) parameterAttribute;
+                List<BatisColumnAttribute> entityBatisColumnAttributes =
                         analysisEntityParameterAttribute((EntityParameterAttribute) parameterAttribute,
                                 multi, methodDynamic, SqlCommandType.UPDATE);
                 parameterAttribute.setMulti(multi);
-                batisColumnAttributes.addAll(entityParameterAttribute);
+                batisColumnAttributes.addAll(entityBatisColumnAttributes);
+                BatisColumnAttribute condition = convertModelAttribute(entityParameterAttribute,
+                        entityParameterAttribute.getDatabaseMeta().getPrimaryKey(),
+                        0, multi, methodDynamic, SqlCommandType.SELECT);
+                batisColumnAttributes.add(condition);
             } else if (parameterAttribute instanceof BaseParameterAttribute) {
                 batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic,
                         SqlCommandType.UPDATE));
@@ -241,11 +245,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
      * @return
      */
     public boolean isMethodDynamic(OperateMethodMeta operateMethodMeta, SqlCommandType sqlCommandType) {
-        if (sqlCommandType == SqlCommandType.INSERT || sqlCommandType == SqlCommandType.SELECT) {
-            return operateMethodMeta.findAnnotation(Dynamic.class) != null;
-        } else {
-            return false;
-        }
+        return true;
     }
 
     /**
@@ -330,9 +330,10 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
             return true;
         } else if (sqlCommandType == SqlCommandType.SELECT && modelAttribute.isSelectIgnore()) {
             return true;
-        } else {
-            return false;
+        } else if (sqlCommandType == SqlCommandType.UPDATE && modelAttribute.isUpdateIgnore()) {
+            return true;
         }
+        return false;
     }
 
     private BatisColumnAttribute convertModelAttribute(ParameterAttribute parameterAttribute,

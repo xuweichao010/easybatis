@@ -4,6 +4,7 @@ import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.annotaions.SelectSql;
+import com.xwc.open.easybatis.annotaions.UpdateSql;
 import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.annotaions.order.Asc;
@@ -132,6 +133,16 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
 
     @SelectSql
     List<NormalUser> queryMultiObject(NormalUseQueryDto query, PageQueryDto page);
+
+    @UpdateSql
+    int update(NormalUser normalUser);
+
+    @UpdateSql
+    @Dynamic
+    int updateDynamic(NormalUser normalUser);
+
+
+
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")

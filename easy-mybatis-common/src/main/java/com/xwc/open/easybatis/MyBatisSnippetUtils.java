@@ -13,7 +13,7 @@ public class MyBatisSnippetUtils {
 
     static final String SCRIPT = "<script> %s </script>";
 
-    static final String SET = " <set> %s <set>";
+    static final String SET = " <set> %s </set>";
 
     static final String IF_OBJECT = " <if test='%s != null'> %s </if>";
 

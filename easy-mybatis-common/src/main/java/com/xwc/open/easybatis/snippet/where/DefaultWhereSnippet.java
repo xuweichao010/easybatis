@@ -153,7 +153,15 @@ public class DefaultWhereSnippet implements WhereSnippet {
         // 对条件排序
         String sqlConditions = conditions.stream().sorted().map(Condition::getConditionalSnippet)
                 .collect(Collectors.joining(" "));
-        return dynamic.get() ? MyBatisSnippetUtils.where(sqlConditions) : " WHERE 1 = 1 " + sqlConditions;
+        return dynamic.get() ? MyBatisSnippetUtils.where(sqlConditions) : " WHERE " + tryDelAndPrefix(sqlConditions);
+    }
+
+    public String tryDelAndPrefix(String sql) {
+        if (sql.trim().startsWith("AND")) {
+            return sql.trim().substring(sql.indexOf("AND") + 4);
+        } else {
+            return sql;
+        }
     }
 
     static class Condition implements Comparable<Condition> {

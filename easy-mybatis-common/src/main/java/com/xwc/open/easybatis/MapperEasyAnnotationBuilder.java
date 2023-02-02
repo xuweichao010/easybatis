@@ -577,8 +577,10 @@ public class MapperEasyAnnotationBuilder {
             SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((SelectSql) annotation).databaseId());
             String selectSql = sqlSourceGenerator.select(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{selectSql}, parameterType, languageDriver);
-        } else if (annotation instanceof Update) {
-//            return buildSqlSourceFromStrings(((Update) annotation).value(), parameterType, languageDriver);
+        } else if (annotation instanceof UpdateSql) {
+            SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((UpdateSql) annotation).databaseId());
+            String selectSql = sqlSourceGenerator.update(operateMethodMeta);
+            return buildSqlSourceFromStrings(new String[]{selectSql}, parameterType, languageDriver);
         } else if (annotation instanceof InsertSql) {
             SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((InsertSql) annotation).databaseId());
             String insertSql = sqlSourceGenerator.insert(operateMethodMeta);
@@ -642,7 +644,7 @@ public class MapperEasyAnnotationBuilder {
                 databaseId = ((SelectSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.SELECT;
             } else if (annotation instanceof UpdateSql) {
-                databaseId = ((Update) annotation).databaseId();
+                databaseId = ((UpdateSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.UPDATE;
             } else if (annotation instanceof InsertSql) {
                 databaseId = ((InsertSql) annotation).databaseId();
