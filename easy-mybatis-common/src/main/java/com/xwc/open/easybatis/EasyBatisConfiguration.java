@@ -4,6 +4,7 @@ package com.xwc.open.easybatis;
 import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easy.parse.supports.impl.CamelConverterUnderscore;
 import com.xwc.open.easy.parse.supports.impl.NoneNameConverter;
+import com.xwc.open.easybatis.plugin.EasyInterceptor;
 import com.xwc.open.easybatis.snippet.values.EasyMapperRegister;
 import com.xwc.open.easybatis.supports.DefaultSqlSourceGeneratorRegistry;
 import com.xwc.open.easybatis.supports.DriverDatabaseIdProvider;
@@ -37,6 +38,7 @@ public class EasyBatisConfiguration extends EasyConfiguration {
     public EasyBatisConfiguration(Configuration configuration) {
         this.configuration = configuration;
         this.setMapUnderscoreToCamelCase(configuration.isMapUnderscoreToCamelCase());
+        this.configuration.addInterceptor(new EasyInterceptor());
     }
 
     public Configuration getConfiguration() {
