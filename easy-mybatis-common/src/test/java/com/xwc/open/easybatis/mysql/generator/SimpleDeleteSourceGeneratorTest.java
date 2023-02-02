@@ -12,6 +12,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +40,50 @@ public class SimpleDeleteSourceGeneratorTest {
         this.sourceGenerator = new DefaultSqlSourceGenerator(easyBatisConfiguration);
     }
 
+    @Test
+    public void simpleDel() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "del";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  DELETE FROM t_user WHERE `id` = #{id} </script>";
+        Assert.assertEquals(expected, sourceGenerator.delete(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleDynamicDel() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "dynamicDel";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  DELETE FROM t_user <where>  <if test='name != null'> AND `name` = #{name} </if>  <if test='id != null'> AND `id` = #{id} </if> </where> </script>";
+        Assert.assertEquals(expected, sourceGenerator.delete(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleDelObject() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "delObject";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  DELETE FROM t_user WHERE `id` = #{id} AND `org_code` = #{orgCodeAlias} AND `org_name` = #{orgName} AND `name` = #{name} </script>";
+        Assert.assertEquals(expected, sourceGenerator.delete(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleDelDynamicObjectIgnore() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "delDynamicObjectIgnore";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  DELETE FROM t_user <where>  <if test='object.id != null'> AND `id` = #{object.id} </if>  <if test='object.orgCodeAlias != null'> AND `org_code` = #{object.orgCodeAlias} </if>  <if test='object.orgName != null'> AND `org_name` = #{object.orgName} </if>  <if test='object.name != null'> AND `name` = #{object.name} </if> </where> </script>";
+        Assert.assertEquals(expected, sourceGenerator.delete(operateMethodMeta));
+    }
+
 
     public void simple() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
@@ -47,7 +92,7 @@ public class SimpleDeleteSourceGeneratorTest {
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "";
-        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
+        Assert.assertEquals(expected, sourceGenerator.delete(operateMethodMeta));
     }
 
 

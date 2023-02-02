@@ -2,6 +2,7 @@ package com.xwc.open.easybatis.mapper;
 
 import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.supports.EasyMapper;
+import com.xwc.open.easybatis.annotaions.DeleteSql;
 import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.annotaions.SelectSql;
 import com.xwc.open.easybatis.annotaions.UpdateSql;
@@ -18,10 +19,7 @@ import com.xwc.open.easybatis.annotaions.page.Offset;
 import com.xwc.open.easybatis.annotaions.set.SetParam;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.entity.UserObject;
-import com.xwc.open.easybatis.model.NormalUseQueryDto;
-import com.xwc.open.easybatis.model.NormalUserPageQueryDto;
-import com.xwc.open.easybatis.model.NormalUserUpdateObject;
-import com.xwc.open.easybatis.model.PageQueryDto;
+import com.xwc.open.easybatis.model.*;
 import org.apache.ibatis.annotations.Delete;
 
 import java.util.List;
@@ -170,6 +168,20 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     @UpdateSql
     @Dynamic
     int dynamicUpdateMixture(@Equal String name, NormalUserUpdateObject object);
+
+    @DeleteSql
+    int del(String id);
+
+    @DeleteSql
+    @Dynamic
+    int dynamicDel(String id, String name);
+
+    @DeleteSql
+    int delObject(NormalUserDeleteObject object);
+
+    @DeleteSql
+    @Dynamic
+    int delDynamicObjectIgnore(@Ignore String tableName, NormalUserDeleteObject object);
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")
