@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.dto;
+package com.xwc.open.easybatis.model;
 
 import com.xwc.open.easybatis.annotaions.page.Limit;
 import com.xwc.open.easybatis.annotaions.page.Offset;

@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.dto;
+package com.xwc.open.easybatis.model;
 
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import lombok.Data;
@@ -28,4 +28,15 @@ public class NormalUserUpdateObject {
      * 用户名
      */
     private String name;
+
+    public static NormalUserUpdateObject createName(String id, String name, String orgCode, String orgName) {
+        NormalUserUpdateObject tar = new NormalUserUpdateObject();
+        tar.setId(id);
+        tar.name = name;
+        tar.orgCode = orgCode;
+        tar.orgName = orgName;
+        return tar;
+    }
+
+
 }

@@ -1,12 +1,12 @@
 package com.xwc.open.easybatis.mysql;
 
 import com.xwc.open.easybatis.EasyBatisConfiguration;
-import com.xwc.open.easybatis.dto.NormalUseQueryDto;
-import com.xwc.open.easybatis.dto.NormalUserPageQueryDto;
-import com.xwc.open.easybatis.dto.PageQueryDto;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
+import com.xwc.open.easybatis.model.NormalUseQueryDto;
+import com.xwc.open.easybatis.model.NormalUserPageQueryDto;
+import com.xwc.open.easybatis.model.PageQueryDto;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

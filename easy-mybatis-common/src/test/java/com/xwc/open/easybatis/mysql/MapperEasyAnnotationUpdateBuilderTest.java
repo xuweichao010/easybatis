@@ -4,6 +4,7 @@ import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
+import com.xwc.open.easybatis.model.NormalUserUpdateObject;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -29,7 +30,6 @@ public class MapperEasyAnnotationUpdateBuilderTest {
     SqlSession sqlSession;
     SimpleSourceGeneratorMapper simpleSourceGeneratorMapper;
     GenericsBaseMapper genericsBaseMapper;
-    NormalUser updateUser = NormalUser.randomUser();
 
     @Before
     public void before() throws IOException {
@@ -45,12 +45,19 @@ public class MapperEasyAnnotationUpdateBuilderTest {
         this.genericsBaseMapper = this.easyBatisConfiguration.getMapper(GenericsBaseMapper.class, sqlSession);
         simpleSourceGeneratorMapper.delTestData();
         genericsBaseMapper.delTestData();
-        simpleSourceGeneratorMapper.insert(updateUser);
 
+
+    }
+
+    private NormalUser createUser() {
+        NormalUser updateUser = NormalUser.randomUser();
+        simpleSourceGeneratorMapper.insert(updateUser);
+        return updateUser;
     }
 
     @Test
     public void simpleUpdate() {
+        NormalUser updateUser = createUser();
         updateUser.setName("simpleUpdate");
         simpleSourceGeneratorMapper.update(updateUser);
         NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
@@ -59,6 +66,7 @@ public class MapperEasyAnnotationUpdateBuilderTest {
 
     @Test
     public void simpleUpdateDynamic() {
+        NormalUser updateUser = createUser();
         NormalUser updateDynamic = new NormalUser();
         updateDynamic.setName("simpleUpdateDynamic");
         updateDynamic.setId(updateUser.getId());
@@ -70,6 +78,7 @@ public class MapperEasyAnnotationUpdateBuilderTest {
 
     @Test
     public void simpleUpdateParam() {
+        NormalUser updateUser = createUser();
         simpleSourceGeneratorMapper.updateParam(updateUser.getId(), "simpleUpdateParam");
         NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
         Assert.assertEquals("simpleUpdateParam", dbUser.getName());
@@ -78,6 +87,7 @@ public class MapperEasyAnnotationUpdateBuilderTest {
 
     @Test
     public void simpleUpdateParamDynamic() {
+        NormalUser updateUser = createUser();
         simpleSourceGeneratorMapper.updateParamDynamic(updateUser.getId(), "simpleUpdateParamDynamic", null);
         NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
         Assert.assertEquals("simpleUpdateParamDynamic", dbUser.getName());
@@ -86,10 +96,66 @@ public class MapperEasyAnnotationUpdateBuilderTest {
 
     @Test
     public void simpleDynamicUpdateParam() {
+        NormalUser updateUser = createUser();
         simpleSourceGeneratorMapper.updateParamDynamic(updateUser.getId(), null, 100);
         NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
         Assert.assertEquals(100, (int) dbUser.getAge());
         Assert.assertEquals(dbUser.getName(), updateUser.getName());
+    }
+
+
+    @Test
+    public void simpleUpdateObject() {
+        NormalUser updateUser = createUser();
+        NormalUserUpdateObject updateObject = NormalUserUpdateObject.createName(updateUser.getId(),
+                "simpleUpdateObject", null, null);
+        simpleSourceGeneratorMapper.updateObject(updateObject);
+        NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertNull(dbUser.getOrgName());
+        Assert.assertNull(dbUser.getOrgCode());
+        Assert.assertEquals(updateObject.getName(), dbUser.getName());
+    }
+
+    @Test
+    public void simpleUpdateObjectIgnore() {
+        NormalUser updateUser = createUser();
+        NormalUserUpdateObject updateObject = NormalUserUpdateObject.createName(updateUser.getId(),
+                "simpleUpdateObjectIgnore", null, null);
+        simpleSourceGeneratorMapper.updateObjectIgnore(null, updateObject);
+        NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertNull(dbUser.getOrgName());
+        Assert.assertNull(dbUser.getOrgCode());
+        Assert.assertEquals(updateObject.getName(), dbUser.getName());
+    }
+
+    @Test
+    public void simpleDynamicUpdateObject() {
+        NormalUser updateUser = createUser();
+        NormalUserUpdateObject updateObject = NormalUserUpdateObject.createName(updateUser.getId(),
+                "simpleDynamicUpdateObject", null, null);
+        simpleSourceGeneratorMapper.dynamicUpdateObject(updateObject);
+        NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertEquals(updateUser.getOrgName(), dbUser.getOrgName());
+        Assert.assertEquals(updateUser.getOrgCode(), dbUser.getOrgCode());
+        Assert.assertEquals(updateObject.getName(), dbUser.getName());
+    }
+
+    @Test
+    public void simpleDynamicUpdateMixture() {
+        NormalUser updateUser = createUser();
+        NormalUserUpdateObject updateObject = NormalUserUpdateObject.createName(updateUser.getId(),
+                "simpleDynamicUpdateMixture", null, null);
+        simpleSourceGeneratorMapper.dynamicUpdateMixture(updateUser.getName(), updateObject);
+        NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertEquals(updateUser.getOrgName(), dbUser.getOrgName());
+        Assert.assertEquals(updateUser.getOrgCode(), dbUser.getOrgCode());
+        Assert.assertEquals(updateObject.getName(), dbUser.getName());
+
+        simpleSourceGeneratorMapper.dynamicUpdateMixture(null, updateObject);
+        dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertEquals(updateUser.getOrgName(), dbUser.getOrgName());
+        Assert.assertEquals(updateUser.getOrgCode(), dbUser.getOrgCode());
+        Assert.assertEquals(updateObject.getName(), dbUser.getName());
     }
 
 

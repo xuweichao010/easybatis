@@ -16,12 +16,12 @@ import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.annotaions.page.Limit;
 import com.xwc.open.easybatis.annotaions.page.Offset;
 import com.xwc.open.easybatis.annotaions.set.SetParam;
-import com.xwc.open.easybatis.dto.NormalUseQueryDto;
-import com.xwc.open.easybatis.dto.NormalUserPageQueryDto;
-import com.xwc.open.easybatis.dto.NormalUserUpdateObject;
-import com.xwc.open.easybatis.dto.PageQueryDto;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.entity.UserObject;
+import com.xwc.open.easybatis.model.NormalUseQueryDto;
+import com.xwc.open.easybatis.model.NormalUserPageQueryDto;
+import com.xwc.open.easybatis.model.NormalUserUpdateObject;
+import com.xwc.open.easybatis.model.PageQueryDto;
 import org.apache.ibatis.annotations.Delete;
 
 import java.util.List;
@@ -159,10 +159,17 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     @UpdateSql
     int updateObject(NormalUserUpdateObject object);
 
+    @UpdateSql
+    int updateObjectIgnore(@Ignore String tableName, NormalUserUpdateObject object);
+
 
     @UpdateSql
     @Dynamic
     int dynamicUpdateObject(NormalUserUpdateObject object);
+
+    @UpdateSql
+    @Dynamic
+    int dynamicUpdateMixture(@Equal String name, NormalUserUpdateObject object);
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")

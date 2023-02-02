@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.dto;
+package com.xwc.open.easybatis.model;
 
 import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
