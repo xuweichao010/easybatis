@@ -86,6 +86,17 @@ public class SimpleUpdateSourceGeneratorTest {
         Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
     }
 
+    @Test
+    public void simpleDynamicUpdateParam() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "dynamicUpdateParam";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  UPDATE t_user <set>  <if test='name != null'> `name`=#{name}, </if>  <if test='ageAlias != null'> `age`=#{ageAlias}, </if> </set> <where>  <if test='id != null'> AND `id` = #{id} </if> </where> </script>";
+        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
+    }
+
 
     @Test
     public void simpleUpdateObject() {

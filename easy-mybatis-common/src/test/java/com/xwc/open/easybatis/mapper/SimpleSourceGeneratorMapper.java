@@ -150,6 +150,12 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     int updateParamDynamic(@Equal() String id, @SetParam(dynamic = true) String name,
                            @SetParam(dynamic = true, value = "age") Integer ageAlias);
 
+
+    @UpdateSql
+    @Dynamic
+    int dynamicUpdateParam(@Equal String id, @SetParam() String name,
+                           @SetParam(value = "age") Integer ageAlias);
+
     @UpdateSql
     int updateObject(NormalUserUpdateObject object);
 

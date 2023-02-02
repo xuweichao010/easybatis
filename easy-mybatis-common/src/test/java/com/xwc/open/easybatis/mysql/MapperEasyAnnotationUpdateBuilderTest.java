@@ -76,6 +76,23 @@ public class MapperEasyAnnotationUpdateBuilderTest {
     }
 
 
+    @Test
+    public void simpleUpdateParamDynamic() {
+        simpleSourceGeneratorMapper.updateParamDynamic(updateUser.getId(), "simpleUpdateParamDynamic", null);
+        NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertEquals("simpleUpdateParamDynamic", dbUser.getName());
+        Assert.assertEquals(dbUser.getAge(), updateUser.getAge());
+    }
+
+    @Test
+    public void simpleDynamicUpdateParam() {
+        simpleSourceGeneratorMapper.updateParamDynamic(updateUser.getId(), null, 100);
+        NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertEquals(100, (int) dbUser.getAge());
+        Assert.assertEquals(dbUser.getName(), updateUser.getName());
+    }
+
+
     @After
     public void after() {
         simpleSourceGeneratorMapper.delTestData();
