@@ -15,8 +15,10 @@ import com.xwc.open.easybatis.annotaions.other.Distinct;
 import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.annotaions.page.Limit;
 import com.xwc.open.easybatis.annotaions.page.Offset;
+import com.xwc.open.easybatis.annotaions.set.SetParam;
 import com.xwc.open.easybatis.dto.NormalUseQueryDto;
 import com.xwc.open.easybatis.dto.NormalUserPageQueryDto;
+import com.xwc.open.easybatis.dto.NormalUserUpdateObject;
 import com.xwc.open.easybatis.dto.PageQueryDto;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.entity.UserObject;
@@ -142,7 +144,19 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     int updateDynamic(NormalUser normalUser);
 
     @UpdateSql
-    int updateParam(@Equal String id, String name);
+    int updateParam(@Equal() String id, String name);
+
+    @UpdateSql
+    int updateParamDynamic(@Equal() String id, @SetParam(dynamic = true) String name,
+                           @SetParam(dynamic = true, value = "age") Integer ageAlias);
+
+    @UpdateSql
+    int updateObject(NormalUserUpdateObject object);
+
+
+    @UpdateSql
+    @Dynamic
+    int dynamicUpdateObject(NormalUserUpdateObject object);
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")

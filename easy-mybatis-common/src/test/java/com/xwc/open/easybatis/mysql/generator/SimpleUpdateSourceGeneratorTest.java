@@ -59,7 +59,7 @@ public class SimpleUpdateSourceGeneratorTest {
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  UPDATE t_user <set>  <if test='orgCode != null'> `org_code`=#{orgCode}, </if>  <if test='orgName != null'> `org_name`=#{orgName}, </if>  <if test='name != null'> `name`=#{name}, </if>  <if test='dataType != null'> `data_type`=#{dataType}, </if>  <if test='age != null'> `age`=#{age}, </if>  <if test='job != null'> `job`=#{job}, </if>  <if test='createTime != null'> `create_time`=#{createTime}, </if>  <if test='createId != null'> `create_id`=#{createId}, </if>  <if test='createName != null'> `create_name`=#{createName}, </if>  <if test='updateTime != null'> `update_time`=#{updateTime}, </if>  <if test='updateId != null'> `update_id`=#{updateId}, </if>  <if test='updateName != null'> `update_name`=#{updateName}, </if>  <if test='valid != null'> `valid`=#{valid}, </if> </set> <where>  <if test='id != null'> AND `id` = #{id} </if> </where> </script>";
+        String expected = "<script>  UPDATE t_user <set>  <if test='orgCode != null'> `org_code`=#{orgCode}, </if>  <if test='orgName != null'> `org_name`=#{orgName}, </if>  <if test='name != null'> `name`=#{name}, </if>  <if test='dataType != null'> `data_type`=#{dataType}, </if>  <if test='age != null'> `age`=#{age}, </if>  <if test='job != null'> `job`=#{job}, </if>  <if test='createTime != null'> `create_time`=#{createTime}, </if>  <if test='createId != null'> `create_id`=#{createId}, </if>  <if test='createName != null'> `create_name`=#{createName}, </if>  <if test='updateTime != null'> `update_time`=#{updateTime}, </if>  <if test='updateId != null'> `update_id`=#{updateId}, </if>  <if test='updateName != null'> `update_name`=#{updateName}, </if>  <if test='valid != null'> `valid`=#{valid}, </if> </set> WHERE `id` = #{id} </script>";
         Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
     }
 
@@ -75,6 +75,17 @@ public class SimpleUpdateSourceGeneratorTest {
         Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
     }
 
+    @Test
+    public void simpleUpdateParamDynamic() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "updateParamDynamic";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  UPDATE t_user <set>  <if test='name != null'> `name`=#{name}, </if>  <if test='ageAlias != null'> `age`=#{ageAlias}, </if> </set> WHERE `id` = #{id} </script>";
+        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
+    }
+
 
     @Test
     public void simpleUpdateObject() {
@@ -83,7 +94,7 @@ public class SimpleUpdateSourceGeneratorTest {
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "";
+        String expected = "<script>  UPDATE t_user <set> `org_code`=#{orgCode}, `org_name`=#{orgName}, `name`=#{name}, </set> WHERE `id` = #{id} </script>";
         Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
     }
 

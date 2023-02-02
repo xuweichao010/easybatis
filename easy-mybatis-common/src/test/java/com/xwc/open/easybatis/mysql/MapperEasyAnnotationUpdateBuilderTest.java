@@ -62,7 +62,7 @@ public class MapperEasyAnnotationUpdateBuilderTest {
         NormalUser updateDynamic = new NormalUser();
         updateDynamic.setName("simpleUpdateDynamic");
         updateDynamic.setId(updateUser.getId());
-        simpleSourceGeneratorMapper.update(updateDynamic);
+        simpleSourceGeneratorMapper.updateDynamic(updateDynamic);
         NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
         Assert.assertEquals(updateDynamic.getName(), dbUser.getName());
         Assert.assertEquals(dbUser.getOrgName(), updateUser.getOrgName());

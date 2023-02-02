@@ -180,7 +180,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
                 batisColumnAttributes.addAll(entityBatisColumnAttributes);
                 BatisColumnAttribute condition = convertModelAttribute(entityParameterAttribute,
                         entityParameterAttribute.getDatabaseMeta().getPrimaryKey(),
-                        0, multi, methodDynamic, SqlCommandType.SELECT);
+                        0, multi, false, SqlCommandType.SELECT);
                 batisColumnAttributes.add(condition);
             } else if (parameterAttribute instanceof BaseParameterAttribute) {
                 batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic,

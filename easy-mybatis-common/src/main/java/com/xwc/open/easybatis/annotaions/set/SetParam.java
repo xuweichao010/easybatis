@@ -25,6 +25,13 @@ public @interface SetParam {
     String value() default "";
 
     /**
+     * query对象查询查询时dynamic 自动为true
+     *
+     * @return 标识是否使用动态查询
+     */
+    boolean dynamic() default false;
+
+    /**
      * 条件别名
      * 在JOIN情况下中使用
      *

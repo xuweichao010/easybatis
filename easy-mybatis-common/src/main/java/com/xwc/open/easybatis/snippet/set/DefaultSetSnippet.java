@@ -46,7 +46,7 @@ public class DefaultSetSnippet implements SetSnippet {
         return setParams.stream().map(set -> {
             SetParam annotation = set.findAnnotation(SetParam.class);
             String setSql = columnPlaceholder.holder(set.useColumn(annotation)) + "=" + placeholder.holder(set) + ",";
-            if (set.isMethodDynamic()) {
+            if (set.useDynamic(annotation)) {
                 setSql = MyBatisSnippetUtils.ifNonNullObject(placeholder.path(set), setSql);
             }
             return setSql;
