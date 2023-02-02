@@ -585,8 +585,10 @@ public class MapperEasyAnnotationBuilder {
             SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((InsertSql) annotation).databaseId());
             String insertSql = sqlSourceGenerator.insert(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{insertSql}, parameterType, languageDriver);
-        } else if (annotation instanceof Delete) {
-//            return buildSqlSourceFromStrings(((Delete) annotation).value(), parameterType, languageDriver);
+        } else if (annotation instanceof DeleteSql) {
+            SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((DeleteSql) annotation).databaseId());
+            String delSql = sqlSourceGenerator.delete(operateMethodMeta);
+            return buildSqlSourceFromStrings(new String[]{delSql}, parameterType, languageDriver);
         } else if (annotation instanceof SelectKey) {
 //            return buildSqlSourceFromStrings(((SelectKey) annotation).statement(), parameterType, languageDriver);
         }
@@ -650,7 +652,7 @@ public class MapperEasyAnnotationBuilder {
                 databaseId = ((InsertSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.INSERT;
             } else if (annotation instanceof DeleteSql) {
-                databaseId = ((Delete) annotation).databaseId();
+                databaseId = ((DeleteSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.DELETE;
             } else {
                 sqlCommandType = SqlCommandType.UNKNOWN;

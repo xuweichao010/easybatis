@@ -75,6 +75,8 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
 
     private SetSnippet setSnippet;
 
+    private DeleteFromSnippet deleteFromSnippet;
+
 
     public DefaultSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration) {
         this.easyBatisConfiguration = easyMyBatisConfiguration;
@@ -91,6 +93,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         this.pageSnippet = new DefaultPageSnippet(new MybatisPlaceholder());
         this.updateFromSnippet = new DefaultUpdateFromSnippet();
         this.setSnippet = new DefaultSetSnippet(batisPlaceholder, columnPlaceholder);
+        this.deleteFromSnippet = new DefaultDeleteFromSnippet();
     }
 
     @Override
@@ -201,7 +204,32 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
 
     @Override
     public String delete(OperateMethodMeta operateMethodMeta) {
+        if (operateMethodMeta.getDatabaseMeta().getLogic() == null) {
+            return MyBatisSnippetUtils.script(doDelete(operateMethodMeta));
+        }
         return null;
+    }
+
+    private String doDelete(OperateMethodMeta operateMethodMeta) {
+        boolean multi = isMulti(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean methodDynamic = isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
+        List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
+        for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
+            if (parameterAttribute instanceof BaseParameterAttribute) {
+                batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic,
+                        SqlCommandType.SELECT));
+            } else if (parameterAttribute instanceof PrimaryKeyParameterAttribute) {
+                batisColumnAttributes.add(convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
+            } else if (parameterAttribute instanceof ObjectParameterAttribute) {
+                List<BatisColumnAttribute> objectAttributes =
+                        analysisObjectAttribute((ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT);
+                parameterAttribute.setMulti(multi);
+                batisColumnAttributes.addAll(objectAttributes);
+            } else {
+                throw new ParamCheckException("DELETE 语句不支持该类型的参数：" + parameterAttribute.getParameterName());
+            }
+        }
+        return deleteFromSnippet.from(operateMethodMeta) + whereSnippet.where(batisColumnAttributes);
     }
 
     /**
