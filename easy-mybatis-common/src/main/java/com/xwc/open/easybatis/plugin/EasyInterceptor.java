@@ -149,9 +149,11 @@ public class EasyInterceptor implements Interceptor {
         if (value instanceof Map) {
             return (Map<String, Object>) value;
         }
-        ParameterAttribute parameterAttribute = operateMethodMeta.getParameterAttributes().get(0);
         HashMap<String, Object> params = new HashMap<>();
-        params.put(parameterAttribute.getParameterName(), value);
+        if(!operateMethodMeta.getParameterAttributes().isEmpty()){
+            ParameterAttribute parameterAttribute = operateMethodMeta.getParameterAttributes().get(0);
+            params.put(parameterAttribute.getParameterName(), value);
+        }
         return params;
     }
 
