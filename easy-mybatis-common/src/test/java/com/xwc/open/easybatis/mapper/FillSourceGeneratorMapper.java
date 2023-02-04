@@ -9,9 +9,9 @@ import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.annotaions.set.SetParam;
 import com.xwc.open.easybatis.entity.FillUser;
-import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.model.NormalUserUpdateObject;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import java.util.List;
 public interface FillSourceGeneratorMapper extends EasyMapper<FillUser, String> {
 
     @SelectSql
-    NormalUser findOne(String id);
+    FillUser findOne(String id);
 
 
     @InsertSql
@@ -69,12 +69,11 @@ public interface FillSourceGeneratorMapper extends EasyMapper<FillUser, String> 
 
     @UpdateSql
     @Dynamic
-    int dynamicUpdateObject(NormalUserUpdateObject object);
+    int dynamicUpdateObject(@Param("object") NormalUserUpdateObject object);
 
     @UpdateSql
     @Dynamic
     int dynamicUpdateMixture(@Equal String name, NormalUserUpdateObject object);
-
 
 
     @Delete("DELETE FROM t_user WHERE data_type =2")

@@ -75,6 +75,53 @@ public class FillUpdateSourceGeneratorTest {
         Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
     }
 
+    @Test
+    public void fillUpdateParamDynamic() {
+        Class<?> interfaceClass = FillSourceGeneratorMapper.class;
+        String methodName = "updateParamDynamic";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  UPDATE t_user <set>  <if test='name != null'> `name`=#{name}, </if>  <if test='ageAlias != null'> `age`=#{ageAlias}, </if> `update_time`=#{updateTime}, `update_id`=#{updateId}, `update_name`=#{updateName}, </set> WHERE `id` = #{id} </script>";
+        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
+    }
+
+
+    @Test
+    public void fillUpdateObject() {
+        Class<?> interfaceClass = FillSourceGeneratorMapper.class;
+        String methodName = "updateObjectIgnore";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  UPDATE t_user <set> `org_code`=#{object.orgCode}, `org_name`=#{object.orgName}, `name`=#{object.name}, `update_time`=#{updateTime}, `update_id`=#{updateId}, `update_name`=#{updateName}, </set> WHERE `id` = #{object.id} </script>";
+        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
+    }
+
+    @Test
+    public void fillDynamicUpdateObject() {
+        Class<?> interfaceClass = FillSourceGeneratorMapper.class;
+        String methodName = "dynamicUpdateObject";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "";
+        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
+    }
+
+
+    @Test
+    public void fillDynamicUpdateMixture() {
+        Class<?> interfaceClass = FillSourceGeneratorMapper.class;
+        String methodName = "dynamicUpdateMixture";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  UPDATE t_user <set>  <if test='object.orgCode != null'> `org_code`=#{object.orgCode}, </if>  <if test='object.orgName != null'> `org_name`=#{object.orgName}, </if>  <if test='object.name != null'> `name`=#{object.name}, </if> `update_time`=#{updateTime}, `update_id`=#{updateId}, `update_name`=#{updateName}, </set> <where>  <if test='name != null'> AND `name` = #{name} </if>  <if test='object.id != null'> AND `id` = #{object.id} </if> </where> </script>";
+        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
+    }
+
+
     public void fill() {
         Class<?> interfaceClass = FillSourceGeneratorMapper.class;
         String methodName = "updateDynamic";

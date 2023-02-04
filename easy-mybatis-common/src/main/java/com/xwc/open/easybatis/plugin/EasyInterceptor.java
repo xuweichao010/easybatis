@@ -12,6 +12,7 @@ import com.xwc.open.easybatis.fill.FillAttributeHandler;
 import com.xwc.open.easybatis.fill.FillWrapper;
 import com.xwc.open.easybatis.fill.MapFillWrapper;
 import com.xwc.open.easybatis.fill.ObjectFillWrapper;
+import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -23,10 +24,12 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 @Intercepts(
         {
-                @Signature(type = StatementHandler.class, method = "parameterize", args = {Statement.class})
+                @Signature(type = StatementHandler.class, method = "parameterize", args = {Statement.class}),
+                @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})
         }
 )
 public class EasyInterceptor implements Interceptor {
@@ -42,18 +45,25 @@ public class EasyInterceptor implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+        Object target = invocation.getTarget();
         MetaObject metaObject = SystemMetaObject.forObject(invocation.getTarget());
         MappedStatement mappedStatement = mappedStatement(metaObject);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodMeta(mappedStatement.getId());
+
         SqlCommandType sqlCommandType = mappedStatement.getSqlCommandType();
         if (operateMethodMeta == null) {
             return invocation.proceed();
         }
-        Map<String, Object> map = methodParams(operateMethodMeta, metaObject);
-        fill(map, operateMethodMeta, sqlCommandType);
-        logic(map, operateMethodMeta, sqlCommandType);
-        if (map.size() > 1) {
+        if (target instanceof Executors) {
+            Map<String, Object> map = methodParams(operateMethodMeta, metaObject);
             metaObject.setValue(PARAM_OBJECT, map);
+        } else {
+            Map<String, Object> map = methodParams(operateMethodMeta, metaObject);
+            fill(map, operateMethodMeta, sqlCommandType);
+            logic(map, operateMethodMeta, sqlCommandType);
+            if (map.size() > 1) {
+                metaObject.setValue(PARAM_OBJECT, map);
+            }
         }
         return invocation.proceed();
     }
@@ -140,7 +150,10 @@ public class EasyInterceptor implements Interceptor {
 
     @Override
     public Object plugin(Object target) {
-        return Plugin.wrap(target, this);
+        if (target instanceof Executor || target instanceof StatementHandler) {
+            return Plugin.wrap(target, this);
+        }
+        return target;
 
     }
 

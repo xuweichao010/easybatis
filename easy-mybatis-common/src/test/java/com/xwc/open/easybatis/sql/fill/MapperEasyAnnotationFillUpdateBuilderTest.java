@@ -2,9 +2,9 @@ package com.xwc.open.easybatis.sql.fill;
 
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.entity.FillUser;
-import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.mapper.FillSourceGeneratorMapper;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
+import com.xwc.open.easybatis.model.NormalUserUpdateObject;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -52,7 +52,7 @@ public class MapperEasyAnnotationFillUpdateBuilderTest {
     public void fillUpdate() {
         FillUser fillUser = createUser();
         fillSourceGeneratorMapper.update(fillUser);
-        NormalUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
         Assert.assertNotNull(dbUser.getUpdateTime());
         Assert.assertEquals(fillUser.getUpdateName(), dbUser.getUpdateName());
         Assert.assertEquals(fillUser.getUpdateId(), dbUser.getUpdateId());
@@ -64,7 +64,7 @@ public class MapperEasyAnnotationFillUpdateBuilderTest {
     public void fillUpdateDynamic() {
         FillUser fillUser = createUser();
         fillSourceGeneratorMapper.updateDynamic(fillUser);
-        NormalUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
         Assert.assertNotNull(dbUser.getUpdateTime());
         Assert.assertEquals(fillUser.getUpdateName(), dbUser.getUpdateName());
         Assert.assertEquals(fillUser.getUpdateId(), dbUser.getUpdateId());
@@ -75,7 +75,83 @@ public class MapperEasyAnnotationFillUpdateBuilderTest {
     public void fillUpdateParam() {
         FillUser fillUser = createUser();
         fillSourceGeneratorMapper.updateParam(fillUser.getId(), fillUser.getName());
-        NormalUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        Assert.assertNotNull(dbUser.getUpdateTime());
+        Assert.assertEquals("updateName", dbUser.getUpdateName());
+        Assert.assertEquals("-2", dbUser.getUpdateId());
+    }
+
+
+    @Test
+    public void simpleUpdateParamDynamic() {
+        FillUser fillUser = createUser();
+        fillSourceGeneratorMapper.updateParamDynamic(fillUser.getId(), "simpleUpdateParamDynamic", null);
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        Assert.assertNotNull(dbUser.getUpdateTime());
+        Assert.assertEquals("updateName", dbUser.getUpdateName());
+        Assert.assertEquals("-2", dbUser.getUpdateId());
+    }
+
+    @Test
+    public void simpleDynamicUpdateParam() {
+        FillUser fillUser = createUser();
+        fillSourceGeneratorMapper.updateParamDynamic(fillUser.getId(), null, 100);
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        Assert.assertNotNull(dbUser.getUpdateTime());
+        Assert.assertEquals("updateName", dbUser.getUpdateName());
+        Assert.assertEquals("-2", dbUser.getUpdateId());
+    }
+
+
+    @Test
+    public void simpleUpdateObject() {
+        FillUser updateUser = createUser();
+        NormalUserUpdateObject updateObject = NormalUserUpdateObject.createName(updateUser.getId(),
+                "simpleUpdateObject", null, null);
+        fillSourceGeneratorMapper.updateObject(updateObject);
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertNotNull(dbUser.getUpdateTime());
+        Assert.assertEquals("updateName", dbUser.getUpdateName());
+        Assert.assertEquals("-2", dbUser.getUpdateId());
+    }
+
+    @Test
+    public void simpleUpdateObjectIgnore() {
+        FillUser updateUser = createUser();
+        NormalUserUpdateObject updateObject = NormalUserUpdateObject.createName(updateUser.getId(),
+                "simpleUpdateObjectIgnore", null, null);
+        fillSourceGeneratorMapper.updateObjectIgnore(null, updateObject);
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertNotNull(dbUser.getUpdateTime());
+        Assert.assertEquals("updateName", dbUser.getUpdateName());
+        Assert.assertEquals("-2", dbUser.getUpdateId());
+    }
+
+    @Test
+    public void simpleDynamicUpdateObject() {
+        FillUser updateUser = createUser();
+        NormalUserUpdateObject updateObject = NormalUserUpdateObject.createName(updateUser.getId(),
+                "simpleDynamicUpdateObject", null, null);
+        fillSourceGeneratorMapper.dynamicUpdateObject(updateObject);
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertNotNull(dbUser.getUpdateTime());
+        Assert.assertEquals("updateName", dbUser.getUpdateName());
+        Assert.assertEquals("-2", dbUser.getUpdateId());
+    }
+
+    @Test
+    public void simpleDynamicUpdateMixture() {
+        FillUser updateUser = createUser();
+        NormalUserUpdateObject updateObject = NormalUserUpdateObject.createName(updateUser.getId(),
+                "simpleDynamicUpdateMixture", null, null);
+        fillSourceGeneratorMapper.dynamicUpdateMixture(updateUser.getName(), updateObject);
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(updateUser.getId());
+        Assert.assertNotNull(dbUser.getUpdateTime());
+        Assert.assertEquals("updateName", dbUser.getUpdateName());
+        Assert.assertEquals("-2", dbUser.getUpdateId());
+
+        fillSourceGeneratorMapper.dynamicUpdateMixture(null, updateObject);
+        dbUser = fillSourceGeneratorMapper.findOne(updateUser.getId());
         Assert.assertNotNull(dbUser.getUpdateTime());
         Assert.assertEquals("updateName", dbUser.getUpdateName());
         Assert.assertEquals("-2", dbUser.getUpdateId());

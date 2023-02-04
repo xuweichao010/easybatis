@@ -2,7 +2,6 @@ package com.xwc.open.easybatis.sql.fill;
 
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.entity.FillUser;
-import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.mapper.FillSourceGeneratorMapper;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import org.apache.ibatis.io.Resources;
@@ -53,7 +52,7 @@ public class MapperEasyAnnotationFillInsertBuilderTest {
     public void fillInsert() {
         FillUser fillUser = FillUser.randomUser();
         fillSourceGeneratorMapper.insert(fillUser);
-        NormalUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
         Assert.assertTrue(fillUser.getCreateId() != null && fillUser.getCreateId().equals(dbUser.getCreateId()));
         Assert.assertTrue(fillUser.getCreateName() != null && fillUser.getCreateName().equals(dbUser.getCreateName()));
         Assert.assertTrue(fillUser.getCreateTime() != null && dbUser.getCreateTime() != null);
@@ -65,7 +64,7 @@ public class MapperEasyAnnotationFillInsertBuilderTest {
     public void fillInsertIgnore() {
         FillUser fillUser = FillUser.randomUser();
         fillSourceGeneratorMapper.insertIgnore(null, fillUser);
-        NormalUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
         Assert.assertTrue(fillUser.getCreateId() != null && fillUser.getCreateId().equals(dbUser.getCreateId()));
         Assert.assertTrue(fillUser.getCreateName() != null && fillUser.getCreateName().equals(dbUser.getCreateName()));
         Assert.assertTrue(fillUser.getCreateTime() != null && dbUser.getCreateTime() != null);
@@ -76,7 +75,7 @@ public class MapperEasyAnnotationFillInsertBuilderTest {
     public void simpleInsertBatch() {
         FillUser fillUser = FillUser.randomUser();
         fillSourceGeneratorMapper.insertBatch(Collections.singletonList(fillUser));
-        NormalUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
         Assert.assertTrue(fillUser.getCreateId() != null && fillUser.getCreateId().equals(dbUser.getCreateId()));
         Assert.assertTrue(fillUser.getCreateName() != null && fillUser.getCreateName().equals(dbUser.getCreateName()));
         Assert.assertTrue(fillUser.getCreateTime() != null && dbUser.getCreateTime() != null);
@@ -87,7 +86,7 @@ public class MapperEasyAnnotationFillInsertBuilderTest {
     public void simpleInsertBatchIgnore() {
         FillUser fillUser = FillUser.randomUser();
         fillSourceGeneratorMapper.insertBatchIgnore(null, Collections.singletonList(fillUser));
-        NormalUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
         Assert.assertTrue(fillUser.getCreateId() != null && fillUser.getCreateId().equals(dbUser.getCreateId()));
         Assert.assertTrue(fillUser.getCreateName() != null && fillUser.getCreateName().equals(dbUser.getCreateName()));
         Assert.assertTrue(fillUser.getCreateTime() != null && dbUser.getCreateTime() != null);

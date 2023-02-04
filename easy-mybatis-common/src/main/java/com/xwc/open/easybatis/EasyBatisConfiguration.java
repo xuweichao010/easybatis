@@ -7,11 +7,7 @@ import com.xwc.open.easy.parse.supports.impl.CamelConverterUnderscore;
 import com.xwc.open.easy.parse.supports.impl.NoneNameConverter;
 import com.xwc.open.easybatis.fill.FillAttributeHandler;
 import com.xwc.open.easybatis.plugin.EasyInterceptor;
-import com.xwc.open.easybatis.snippet.values.EasyMapperRegister;
-import com.xwc.open.easybatis.supports.DefaultSqlSourceGeneratorRegistry;
-import com.xwc.open.easybatis.supports.DriverDatabaseIdProvider;
-import com.xwc.open.easybatis.supports.SqlSourceGenerator;
-import com.xwc.open.easybatis.supports.SqlSourceGeneratorRegistry;
+import com.xwc.open.easybatis.supports.*;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 

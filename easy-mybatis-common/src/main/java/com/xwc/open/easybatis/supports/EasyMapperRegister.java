@@ -1,17 +1,11 @@
-package com.xwc.open.easybatis.snippet.values;
+package com.xwc.open.easybatis.supports;
 
 import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.MapperEasyAnnotationBuilder;
-import org.apache.ibatis.binding.BindingException;
-import org.apache.ibatis.binding.MapperProxyFactory;
-import org.apache.ibatis.binding.MapperRegistry;
-import org.apache.ibatis.builder.annotation.MapperAnnotationBuilder;
-import org.apache.ibatis.io.ResolverUtil;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSession;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 类描述：
@@ -21,7 +15,7 @@ import java.util.*;
 public class EasyMapperRegister {
 
     private final EasyBatisConfiguration config;
-    private final HashSet<Class<?>> knownMappers = new HashSet<>();
+    private final Map<Class<?>, EasyMapperProxyFactory<?>> knownMappers = new HashMap<>();
 
     public EasyMapperRegister(EasyBatisConfiguration config) {
         this.config = config;
@@ -29,7 +23,7 @@ public class EasyMapperRegister {
 
 
     public <T> boolean hasMapper(Class<T> type) {
-        return knownMappers.contains(type);
+        return knownMappers.containsKey(type);
     }
 
     public <T> void addMapper(Class<T> type) {
@@ -39,6 +33,7 @@ public class EasyMapperRegister {
             }
             boolean loadCompleted = false;
             try {
+                knownMappers.put(type, new EasyMapperProxyFactory<>(type));
                 MapperEasyAnnotationBuilder parser = new MapperEasyAnnotationBuilder(config, type);
                 parser.parse();
                 loadCompleted = true;
