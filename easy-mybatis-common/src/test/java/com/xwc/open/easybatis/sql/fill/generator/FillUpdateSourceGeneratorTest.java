@@ -122,15 +122,4 @@ public class FillUpdateSourceGeneratorTest {
     }
 
 
-    public void fill() {
-        Class<?> interfaceClass = FillSourceGeneratorMapper.class;
-        String methodName = "updateDynamic";
-        Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
-                .getOperateMethodMeta(interfaceClass, method);
-        String expected = "";
-        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
-    }
-
-
 }

@@ -29,7 +29,6 @@ import java.util.concurrent.Executors;
 @Intercepts(
         {
                 @Signature(type = StatementHandler.class, method = "parameterize", args = {Statement.class}),
-                @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})
         }
 )
 public class EasyInterceptor implements Interceptor {
@@ -154,7 +153,6 @@ public class EasyInterceptor implements Interceptor {
             return Plugin.wrap(target, this);
         }
         return target;
-
     }
 
     @SuppressWarnings("unchecked")

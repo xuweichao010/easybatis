@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.sql.base.generator;
+package com.xwc.open.easybatis.sql.simple.generator;
 
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.utils.Reflection;
@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/16 16:01
  */
-public class SimpleSelectSourceGeneratorTest {
+public class SimpleConditionSourceGeneratorTest {
 
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
@@ -40,113 +40,121 @@ public class SimpleSelectSourceGeneratorTest {
         this.sourceGenerator = new DefaultSqlSourceGenerator(easyBatisConfiguration);
     }
 
+
     @Test
-    public void simpleFindAll() {
+    public void simpleFindOne() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "findAll";
+        String methodName = "findOne";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user </script>";
-        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
-    }
-
-
-
-    @Test
-    public void simpleQueryObject() {
-        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "queryObject";
-        Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
-                .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user <where> AND `org_code` = #{orgCode} AND `org_name` = #{orgName}  <if test='name != null'> AND `name` = #{name} </if> AND `age` BETWEEN #{age} AND #{ageTo}  <if test='job != null'> AND `job` = #{job} </if> </where> LIMIT #{limit} OFFSET #{offset} </script>";
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE `id` = #{id} </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
 
     @Test
-    public void simpleQueryObjectIgnore() {
+    public void simpleFindOneDynamic() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "queryObjectIgnore";
+        String methodName = "findOneDynamic";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user <where> AND `org_code` = #{query.orgCode} AND `org_name` = #{query.orgName}  <if test='query.name != null'> AND `name` = #{query.name} </if> AND `age` BETWEEN #{query.age} AND #{query.ageTo}  <if test='query.job != null'> AND `job` = #{query.job} </if> </where> LIMIT #{query.limit} OFFSET #{query.offset} </script>";
-        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
-    }
-
-
-    @Test
-    public void simpleDynamicQueryObject() {
-        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "dynamicQueryObject";
-        Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
-                .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user <where>  <if test='orgCode != null'> AND `org_code` = #{orgCode} </if>  <if test='orgName != null'> AND `org_name` = #{orgName} </if>  <if test='name != null'> AND `name` = #{name} </if>  <if test='age != null and ageTo != null'> AND `age` BETWEEN #{age} AND #{ageTo} </if>  <if test='job != null'> AND `job` = #{job} </if> </where> LIMIT #{limit} OFFSET #{offset} </script>";
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user <where>  <if test='id != null'> AND `id` = #{id} </if> </where> </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
 
     @Test
-    public void simpleDynamicQueryObjectIgnore() {
+    public void simpleFindOneIgnore() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "dynamicQueryObjectIgnore";
+        String methodName = "findOneIgnore";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user <where>  <if test='query.orgCode != null'> AND `org_code` = #{query.orgCode} </if>  <if test='query.orgName != null'> AND `org_name` = #{query.orgName} </if>  <if test='query.name != null'> AND `name` = #{query.name} </if>  <if test='query.age != null and query.ageTo != null'> AND `age` BETWEEN #{query.age} AND #{query.ageTo} </if>  <if test='query.job != null'> AND `job` = #{query.job} </if> </where> LIMIT #{query.limit} OFFSET #{query.offset} </script>";
-        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
-    }
-
-
-    @Test
-    public void simpleQueryObjectCount() {
-        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "queryObjectCount";
-        Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
-                .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script> SELECT  COUNT(*) FROM t_user <where> AND `org_code` = #{orgCode} AND `org_name` = #{orgName}  <if test='name != null'> AND `name` = #{name} </if> AND `age` BETWEEN #{age} AND #{ageTo}  <if test='job != null'> AND `job` = #{job} </if> </where> </script>";
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE `id` = #{id} </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
 
     @Test
-    public void simpleQueryObjectDistinct() {
+    public void simpleFindOneDynamicIgnore() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "queryObjectDistinct";
+        String methodName = "findOneDynamicIgnore";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script> SELECT DISTINCT(age) FROM t_user <where> AND `org_code` = #{orgCode} AND `org_name` = #{orgName}  <if test='name != null'> AND `name` = #{name} </if> AND `age` BETWEEN #{age} AND #{ageTo}  <if test='job != null'> AND `job` = #{job} </if> </where> LIMIT #{limit} OFFSET #{offset} </script>";
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user <where>  <if test='id != null'> AND `id` = #{id} </if> </where> </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
 
     @Test
-    public void simpleQueryObjectCountDistinct() {
+    public void simpleBetween() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "queryObjectCountDistinct";
+        String methodName = "between";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script> SELECT COUNT(DISTINCT(age)) FROM t_user <where> AND `org_code` = #{orgCode} AND `org_name` = #{orgName}  <if test='name != null'> AND `name` = #{name} </if> AND `age` BETWEEN #{age} AND #{ageTo}  <if test='job != null'> AND `job` = #{job} </if> </where> </script>";
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE `age` BETWEEN #{age} AND #{ageTo} </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
-
 
     @Test
-    public void simpleQueryMultiObject() {
+    public void simpleBetweenIgnore() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "queryMultiObject";
+        String methodName = "betweenIgnore";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user <where> AND `org_code` = #{query.orgCode} AND `org_name` = #{query.orgName}  <if test='query.name != null'> AND `name` = #{query.name} </if> AND `age` BETWEEN #{query.age} AND #{query.ageTo}  <if test='query.job != null'> AND `job` = #{query.job} </if> </where> LIMIT #{page.limit} OFFSET #{page.offset} </script>";
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE `age` BETWEEN #{age} AND #{ageTo} </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
+
+    @Test
+    public void simpleBetweenDynamic() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "betweenDynamic";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user <where>  <if test='age != null and ageTo != null'> AND `age` BETWEEN #{age} AND #{ageTo} </if> </where> </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleIn() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "in";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE `id` IN  <foreach item='item' collection='collection' open= '(' close =')' separator=','> #{item} </foreach> </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleInIgnore() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "inIgnore";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE `id` IN  <foreach item='item' collection='id' open= '(' close =')' separator=','> #{item} </foreach> </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleInObject() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "inObject";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE `age` IN  <foreach item='item' collection='ages' open= '(' close =')' separator=','> #{item} </foreach>  AND `id` = #{id} </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
 
     public void simple() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "queryObject";
+        String methodName = "in";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);

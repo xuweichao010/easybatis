@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.sql.base;
+package com.xwc.open.easybatis.sql.simple;
 
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.entity.NormalUser;

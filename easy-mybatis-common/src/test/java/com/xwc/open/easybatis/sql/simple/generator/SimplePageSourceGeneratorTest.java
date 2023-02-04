@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.sql.base.generator;
+package com.xwc.open.easybatis.sql.simple.generator;
 
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.utils.Reflection;
