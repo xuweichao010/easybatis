@@ -34,19 +34,18 @@ public class DefaultSelectFrom implements SelectFromSnippet {
         if (!tableMeta.getPrimaryKey().isSelectIgnore()) {
             modelAttributes.add(tableMeta.getPrimaryKey());
         }
-
-        if (tableMeta.getLogic() != null && !tableMeta.getLogic().isSelectIgnore()) {
-            modelAttributes.add(tableMeta.getLogic());
+        for (ModelAttribute modelAttribute : tableMeta.getNormalAttr()) {
+            if (!modelAttribute.isSelectIgnore()) {
+                modelAttributes.add(modelAttribute);
+            }
         }
         for (FillAttribute fill : tableMeta.getFills()) {
             if (!fill.isSelectIgnore()) {
                 modelAttributes.add(fill);
             }
         }
-        for (ModelAttribute modelAttribute : tableMeta.getNormalAttr()) {
-            if (!modelAttribute.isSelectIgnore()) {
-                modelAttributes.add(modelAttribute);
-            }
+        if (tableMeta.getLogic() != null && !tableMeta.getLogic().isSelectIgnore()) {
+            modelAttributes.add(tableMeta.getLogic());
         }
         return modelAttributes;
     }

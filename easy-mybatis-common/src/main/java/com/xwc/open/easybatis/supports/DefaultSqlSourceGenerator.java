@@ -97,7 +97,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         this.registryDefaultConditional();
     }
 
-    public void registryDefaultConditional(){
+    public void registryDefaultConditional() {
         this.conditionalRegistry.register(Equal.class, new EqualsConditionalSnippet(batisPlaceholder, columnPlaceholder));
         this.conditionalRegistry.register(Between.class, new BetweenConditionalSnippet(batisPlaceholder, columnPlaceholder));
         this.conditionalRegistry.register(In.class, new InConditionalSnippet(batisPlaceholder, columnPlaceholder));
@@ -180,6 +180,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         boolean multi = isMulti(operateMethodMeta, SqlCommandType.UPDATE);
         boolean methodDynamic = isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
+        boolean isFill = false;
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof EntityParameterAttribute) {
                 EntityParameterAttribute entityParameterAttribute = (EntityParameterAttribute) parameterAttribute;
@@ -192,6 +193,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
                         entityParameterAttribute.getDatabaseMeta().getPrimaryKey(),
                         0, multi, false, SqlCommandType.SELECT);
                 batisColumnAttributes.add(condition);
+                isFill = true;
             } else if (parameterAttribute instanceof BaseParameterAttribute) {
                 batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic,
                         SqlCommandType.UPDATE));
@@ -206,8 +208,18 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
                 throw new ParamCheckException("UPDATE 语句不支持该类型的参数：" + parameterAttribute.getParameterName());
             }
         }
+        if (!isFill) {
+            List<FillAttribute> fillAttributes = operateMethodMeta.getDatabaseMeta().updateFillAttributes();
+            int index = operateMethodMeta.getParameterAttributes().size();
+            for (FillAttribute fillAttribute : fillAttributes) {
+                ++index;
+                batisColumnAttributes.add(convertVirtualModelAttribute(fillAttribute, index, multi, false,
+                        SqlCommandType.UPDATE));
+            }
+        }
         return updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes) + whereSnippet.where(batisColumnAttributes);
     }
+
 
     @Override
     public String delete(OperateMethodMeta operateMethodMeta) {
@@ -268,7 +280,12 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
             if (operateMethodMeta.getDatabaseMeta().getLogic() != null) {
                 paramNum += 1;
             }
-            paramNum += operateMethodMeta.getDatabaseMeta().getFills().stream().filter(FillAttribute::isUpdateFill).count();
+            ParameterAttribute entityAttribute = operateMethodMeta.getParameterAttributes().stream()
+                    .filter(item -> item instanceof EntityParameterAttribute).findAny()
+                    .orElse(null);
+            if (entityAttribute == null) {
+                paramNum += operateMethodMeta.getDatabaseMeta().getFills().stream().filter(FillAttribute::isUpdateFill).count();
+            }
         }
         return paramNum > 1;
     }
@@ -344,7 +361,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
             ModelAttribute modelAttribute = fillAttr.get(i);
             if (!this.isModelAttributeIgnore(modelAttribute, sqlCommandType)) {
                 list.add(convertModelAttribute(parameterAttribute, modelAttribute, paramIndex + 300 + i, isMultiParam
-                        , dynamic, sqlCommandType));
+                        , false, sqlCommandType));
             }
         }
         LogicAttribute logic = tableMeta.getLogic();
@@ -372,6 +389,22 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         return false;
     }
 
+    private BatisColumnAttribute convertVirtualModelAttribute(ModelAttribute modelAttribute,
+                                                              int index,
+                                                              boolean isMultiParam,
+                                                              boolean methodDynamic, SqlCommandType sqlCommandType) {
+        BatisColumnAttribute attribute = new BatisColumnAttribute();
+        attribute.setIndex(index * 1000);
+        attribute.setColumn(modelAttribute.getColumn());
+        attribute.setParameterName(modelAttribute.getField());
+        attribute.setPath(new String[]{modelAttribute.getField()});
+        attribute.addAnnotations(modelAttribute.getAnnotations());
+        attribute.setMulti(isMultiParam);
+        attribute.setMethodDynamic(methodDynamic);
+        attribute.setSqlCommandType(sqlCommandType);
+        return attribute;
+    }
+
     private BatisColumnAttribute convertModelAttribute(ParameterAttribute parameterAttribute,
                                                        ModelAttribute modelAttribute,
                                                        int modelAttributeIndex,
@@ -392,6 +425,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         attribute.setSqlCommandType(sqlCommandType);
         return attribute;
     }
+
 
     private BatisColumnAttribute convertParameterAttribute(ParameterAttribute parameterAttribute,
                                                            boolean isMultiParam, boolean methodDynamic,

@@ -20,7 +20,7 @@ public class AnnotationFillAttribute implements FillAttributeHandler {
         } else if (identification.equals("createId")) {
             fillWrapper.setValue("createId", "-1");
         } else if (identification.equals("createName")) {
-            fillWrapper.setValue("createName", "system");
+            fillWrapper.setValue("createName", "createName");
         }
     }
 
@@ -28,10 +28,10 @@ public class AnnotationFillAttribute implements FillAttributeHandler {
     public void updateFill(String identification, String fillAttribute, FillWrapper fillWrapper) {
         if (identification.equals("updateTime")) {
             fillWrapper.setValue(fillAttribute, new Date());
-        } else if (identification.equals("createId")) {
-            fillWrapper.setValue("createId", "-1");
-        } else if (identification.equals("createName")) {
-            fillWrapper.setValue("createName", "system");
+        } else if (identification.equals("updateId")) {
+            fillWrapper.setValue("updateId", "-2");
+        } else if (identification.equals("updateName")) {
+            fillWrapper.setValue("updateName", "updateName");
         }
     }
 

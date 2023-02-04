@@ -17,7 +17,7 @@ public class FillLogicUser extends BaseFillAndLogicEntity {
     /**
      * 用户id
      */
-    @Id(type = IdType.UUID)
+    @Id(type = IdType.INPUT)
     private String id;
 
     /**
