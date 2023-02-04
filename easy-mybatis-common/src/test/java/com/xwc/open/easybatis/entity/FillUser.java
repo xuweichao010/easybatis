@@ -5,6 +5,9 @@ import com.xwc.open.easy.parse.annotations.Table;
 import com.xwc.open.easy.parse.enums.IdType;
 import lombok.Data;
 
+import java.util.Random;
+import java.util.UUID;
+
 /**
  * 类描述：
  * 作者：徐卫超 (cc)
@@ -49,6 +52,18 @@ public class FillUser extends BaseFillEntity {
      * 职位 1-总监 2-经理 1-主管 3-销售 4-行政 5-技术员 6-财务
      */
     private Integer job;
+
+    public static FillUser randomUser() {
+        Random random = new Random();
+        FillUser user = new FillUser();
+        user.setId(UUID.randomUUID().toString().replace("-", ""));
+        user.orgCode = "xxxx" + random.nextInt(300);
+        user.orgName = "测试分组" + random.nextInt(300);
+        user.name = "xxx" + new Random().nextInt(10000);
+        user.age = random.nextInt(100);
+        user.job = random.nextInt(7);
+        return user;
+    }
 
 
 }

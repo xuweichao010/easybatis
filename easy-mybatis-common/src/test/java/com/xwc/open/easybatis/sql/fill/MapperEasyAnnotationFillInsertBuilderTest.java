@@ -1,17 +1,22 @@
 package com.xwc.open.easybatis.sql.fill;
 
 import com.xwc.open.easybatis.EasyBatisConfiguration;
+import com.xwc.open.easybatis.entity.FillUser;
+import com.xwc.open.easybatis.entity.NormalUser;
+import com.xwc.open.easybatis.mapper.FillSourceGeneratorMapper;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
-import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 
 /**
  * 类描述：
@@ -24,7 +29,7 @@ public class MapperEasyAnnotationFillInsertBuilderTest {
     SqlSessionFactory sqlSessionFactory;
     EasyBatisConfiguration easyBatisConfiguration;
     SqlSession sqlSession;
-    SimpleSourceGeneratorMapper simpleSourceGeneratorMapper;
+    FillSourceGeneratorMapper fillSourceGeneratorMapper;
     GenericsBaseMapper genericsBaseMapper;
 
     @Before
@@ -34,23 +39,65 @@ public class MapperEasyAnnotationFillInsertBuilderTest {
         this.sqlSession = sqlSessionFactory.openSession();
         this.easyBatisConfiguration = new EasyBatisConfiguration(sqlSessionFactory.getConfiguration());
         this.easyBatisConfiguration.setMapUnderscoreToCamelCase(true);
-        this.easyBatisConfiguration.addMapper(SimpleSourceGeneratorMapper.class);
+        this.easyBatisConfiguration.addMapper(FillSourceGeneratorMapper.class);
         this.easyBatisConfiguration.addMapper(GenericsBaseMapper.class);
-        this.simpleSourceGeneratorMapper = this.easyBatisConfiguration.getMapper(SimpleSourceGeneratorMapper.class,
+        this.fillSourceGeneratorMapper = this.easyBatisConfiguration.getMapper(FillSourceGeneratorMapper.class,
                 sqlSession);
         this.genericsBaseMapper = this.easyBatisConfiguration.getMapper(GenericsBaseMapper.class, sqlSession);
-        simpleSourceGeneratorMapper.delTestData();
+        fillSourceGeneratorMapper.delTestData();
+        this.easyBatisConfiguration.addFillAttributeHandler(new AnnotationFillAttribute());
         genericsBaseMapper.delTestData();
+    }
 
+    @Test
+    public void fillInsert() {
+        FillUser fillUser = FillUser.randomUser();
+        fillSourceGeneratorMapper.insert(fillUser);
+        NormalUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        Assert.assertTrue(fillUser.getCreateId() != null && fillUser.getCreateId().equals(dbUser.getCreateId()));
+        Assert.assertTrue(fillUser.getCreateName() != null && fillUser.getCreateName().equals(dbUser.getCreateName()));
+        Assert.assertTrue(fillUser.getCreateTime() != null && dbUser.getCreateTime() != null);
+        Assert.assertTrue(fillUser.getUpdateTime() != null && dbUser.getUpdateTime() != null);
 
     }
 
+    @Test
+    public void fillInsertIgnore() {
+        FillUser fillUser = FillUser.randomUser();
+        fillSourceGeneratorMapper.insertIgnore(null, fillUser);
+        NormalUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        Assert.assertTrue(fillUser.getCreateId() != null && fillUser.getCreateId().equals(dbUser.getCreateId()));
+        Assert.assertTrue(fillUser.getCreateName() != null && fillUser.getCreateName().equals(dbUser.getCreateName()));
+        Assert.assertTrue(fillUser.getCreateTime() != null && dbUser.getCreateTime() != null);
+        Assert.assertTrue(fillUser.getUpdateTime() != null && dbUser.getUpdateTime() != null);
+    }
 
+    @Test
+    public void simpleInsertBatch() {
+        FillUser fillUser = FillUser.randomUser();
+        fillSourceGeneratorMapper.insertBatch(Collections.singletonList(fillUser));
+        NormalUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        Assert.assertTrue(fillUser.getCreateId() != null && fillUser.getCreateId().equals(dbUser.getCreateId()));
+        Assert.assertTrue(fillUser.getCreateName() != null && fillUser.getCreateName().equals(dbUser.getCreateName()));
+        Assert.assertTrue(fillUser.getCreateTime() != null && dbUser.getCreateTime() != null);
+        Assert.assertTrue(fillUser.getUpdateTime() != null && dbUser.getUpdateTime() != null);
+    }
+
+    @Test
+    public void simpleInsertBatchIgnore() {
+        FillUser fillUser = FillUser.randomUser();
+        fillSourceGeneratorMapper.insertBatchIgnore(null, Collections.singletonList(fillUser));
+        NormalUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+        Assert.assertTrue(fillUser.getCreateId() != null && fillUser.getCreateId().equals(dbUser.getCreateId()));
+        Assert.assertTrue(fillUser.getCreateName() != null && fillUser.getCreateName().equals(dbUser.getCreateName()));
+        Assert.assertTrue(fillUser.getCreateTime() != null && dbUser.getCreateTime() != null);
+        Assert.assertTrue(fillUser.getUpdateTime() != null && dbUser.getUpdateTime() != null);
+    }
 
 
     @After
     public void after() {
-        simpleSourceGeneratorMapper.delTestData();
+        fillSourceGeneratorMapper.delTestData();
         genericsBaseMapper.delTestData();
         sqlSession.commit();
         sqlSession.close();

@@ -1,0 +1,39 @@
+package com.xwc.open.easybatis.sql.fill;
+
+import com.xwc.open.easybatis.fill.FillAttributeHandler;
+import com.xwc.open.easybatis.fill.FillWrapper;
+
+import java.util.Date;
+
+/**
+ * 类描述：
+ * 作者：徐卫超 (cc)
+ * 时间 2023/2/3 13:26
+ */
+public class AnnotationFillAttribute implements FillAttributeHandler {
+
+
+    @Override
+    public void insertFill(String identification, String fillAttribute, FillWrapper fillWrapper) {
+        if (identification.equals("createTime") || identification.equals("updateTime")) {
+            fillWrapper.setValue(fillAttribute, new Date());
+        } else if (identification.equals("createId")) {
+            fillWrapper.setValue("createId", "-1");
+        } else if (identification.equals("createName")) {
+            fillWrapper.setValue("createName", "system");
+        }
+    }
+
+    @Override
+    public void updateFill(String identification, String fillAttribute, FillWrapper fillWrapper) {
+        if (identification.equals("updateTime")) {
+            fillWrapper.setValue(fillAttribute, new Date());
+        } else if (identification.equals("createId")) {
+            fillWrapper.setValue("createId", "-1");
+        } else if (identification.equals("createName")) {
+            fillWrapper.setValue("createName", "system");
+        }
+    }
+
+
+}

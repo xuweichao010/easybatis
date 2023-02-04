@@ -3,7 +3,10 @@ package com.xwc.open.easybatis.mapper;
 import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.annotaions.InsertSql;
+import com.xwc.open.easybatis.annotaions.SelectSql;
 import com.xwc.open.easybatis.entity.FillUser;
+import com.xwc.open.easybatis.entity.NormalUser;
+import org.apache.ibatis.annotations.Delete;
 
 import java.util.List;
 
@@ -14,6 +17,10 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface FillSourceGeneratorMapper extends EasyMapper<FillUser, String> {
+
+    @SelectSql
+    NormalUser findOne(String id);
+
 
     @InsertSql
     int insert(FillUser normalUser);
@@ -26,5 +33,10 @@ public interface FillSourceGeneratorMapper extends EasyMapper<FillUser, String> 
 
     @InsertSql
     int insertBatchIgnore(@Ignore String tableName, List<FillUser> users);
+
+
+
+    @Delete("DELETE FROM t_user WHERE data_type =2")
+    int delTestData();
 
 }

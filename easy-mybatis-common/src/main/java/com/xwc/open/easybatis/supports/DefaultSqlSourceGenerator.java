@@ -88,15 +88,19 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         this.selectColumnSnippet = new DefaultSelectColumnSnippet(new DefaultColumnPlaceholder());
         this.selectSqlFrom = new DefaultSelectFrom(this.selectColumnSnippet);
         this.conditionalRegistry = new DefaultConditionalRegistry();
-        this.conditionalRegistry.register(Equal.class, new EqualsConditionalSnippet(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(Between.class, new BetweenConditionalSnippet(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(In.class, new InConditionalSnippet(batisPlaceholder, columnPlaceholder));
         this.whereSnippet = new DefaultWhereSnippet(this.conditionalRegistry, new MybatisPlaceholder());
         this.orderSnippet = new DefaultOrderSnippet(new MybatisPlaceholder());
         this.pageSnippet = new DefaultPageSnippet(new MybatisPlaceholder());
         this.updateFromSnippet = new DefaultUpdateFromSnippet();
         this.setSnippet = new DefaultSetSnippet(batisPlaceholder, columnPlaceholder);
         this.deleteFromSnippet = new DefaultDeleteFromSnippet();
+        this.registryDefaultConditional();
+    }
+
+    public void registryDefaultConditional(){
+        this.conditionalRegistry.register(Equal.class, new EqualsConditionalSnippet(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(Between.class, new BetweenConditionalSnippet(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(In.class, new InConditionalSnippet(batisPlaceholder, columnPlaceholder));
     }
 
     @Override

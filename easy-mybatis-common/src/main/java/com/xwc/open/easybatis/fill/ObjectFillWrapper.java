@@ -44,9 +44,9 @@ public class ObjectFillWrapper implements FillWrapper {
             throw new EasyMybatisException("未被定义的填充属性");
         }
         try {
-            fillAttribute.getSetter().invoke(data);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new EasyMybatisException("设置填充属性错误" + name);
+            fillAttribute.getSetter().invoke(data, value);
+        } catch (Exception e) {
+            throw new EasyMybatisException("设置填充属性类型错误" + name);
         }
     }
 }

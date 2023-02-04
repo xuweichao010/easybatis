@@ -5,7 +5,6 @@ import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.supports.impl.CamelConverterUnderscore;
 import com.xwc.open.easy.parse.supports.impl.NoneNameConverter;
-import com.xwc.open.easybatis.fill.AnnotationFillAttribute;
 import com.xwc.open.easybatis.fill.FillAttributeHandler;
 import com.xwc.open.easybatis.plugin.EasyInterceptor;
 import com.xwc.open.easybatis.snippet.values.EasyMapperRegister;
@@ -43,11 +42,14 @@ public class EasyBatisConfiguration extends EasyConfiguration {
         this.configuration = configuration;
         this.setMapUnderscoreToCamelCase(configuration.isMapUnderscoreToCamelCase());
         this.configuration.addInterceptor(new EasyInterceptor(this));
-        this.fillAttributeHandlers.add(new AnnotationFillAttribute());
     }
 
     public List<FillAttributeHandler> getFillAttributeHandlers() {
         return fillAttributeHandlers;
+    }
+
+    public void addFillAttributeHandler(FillAttributeHandler fillAttributeHandler) {
+        this.fillAttributeHandlers.add(fillAttributeHandler);
     }
 
     public Configuration getConfiguration() {
