@@ -103,6 +103,22 @@ public class EasyParamNameResolver {
      * @return the named params
      */
     public Object getNamedParams(Object[] args) {
+        return getNamedParams(this.hasParamAnnotation, args);
+    }
+
+
+    /**
+     * <p>
+     * A single non-special parameter is returned without a name.
+     * Multiple parameters are named using the naming rule.
+     * In addition to the default names, this method also adds the generic names (param1, param2,
+     * ...).
+     * </p>
+     *
+     * @param args the args
+     * @return the named params
+     */
+    public Object getNamedParams(boolean hasParamAnnotation, Object[] args) {
         final int paramCount = names.size();
         if (args == null || paramCount == 0) {
             return null;
@@ -126,6 +142,7 @@ public class EasyParamNameResolver {
             return param;
         }
     }
+
 
     /**
      * Wrap to a {@link MapperMethod.ParamMap} if object is {@link Collection} or array.

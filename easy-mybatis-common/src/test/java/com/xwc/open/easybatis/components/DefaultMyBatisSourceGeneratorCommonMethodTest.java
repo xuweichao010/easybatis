@@ -10,6 +10,7 @@ import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
 import com.xwc.open.easybatis.supports.DefaultSqlSourceGenerator;
+import com.xwc.open.easybatis.supports.SqlSourceGenerator;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.session.Configuration;
@@ -78,7 +79,7 @@ public class DefaultMyBatisSourceGeneratorCommonMethodTest {
                         , method);
         DefaultSqlSourceGenerator defaultEasyBatisSourceGenerator =
                 new DefaultSqlSourceGenerator(easyBatisConfiguration);
-        boolean multi = defaultEasyBatisSourceGenerator.isMulti(operateMethodMeta, sqlCommandType);
+        boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, sqlCommandType);
         List<BatisColumnAttribute> operateParameterAttributes =
                 operateMethodMeta.getParameterAttributes().stream().map(parameterAttribute -> {
                     if (parameterAttribute instanceof EntityParameterAttribute) {
@@ -108,9 +109,7 @@ public class DefaultMyBatisSourceGeneratorCommonMethodTest {
         OperateMethodMeta simpleInsert =
                 easyBatisConfiguration.getOperateMethodAssistant().getOperateMethodMeta(interfaceClass
                         , method);
-        DefaultSqlSourceGenerator defaultEasyBatisSourceGenerator =
-                new DefaultSqlSourceGenerator(easyBatisConfiguration);
-        return defaultEasyBatisSourceGenerator.isMulti(simpleInsert, sqlCommandType);
+        return SqlSourceGenerator.isMulti(simpleInsert, sqlCommandType);
     }
 
 

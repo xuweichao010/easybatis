@@ -2,6 +2,7 @@ package com.xwc.open.easybatis.ibatis;
 
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
+import com.xwc.open.easybatis.supports.SqlSourceGenerator;
 import org.apache.ibatis.annotations.Flush;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.binding.BindingException;
@@ -10,7 +11,6 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.ParamNameResolver;
 import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
@@ -34,33 +34,37 @@ import java.util.Optional;
 public class EasyMapperMethod {
 
     private final SqlCommand command;
-    private final EasyMethodSignature method;
-    private final OperateMethodMeta operateMethodMeta;
-    private boolean multi = false;
+    private final MethodSignature method;
+    private final boolean multi;
 
     public EasyMapperMethod(Class<?> mapperInterface, Method method, EasyBatisConfiguration config) {
         this.command = new SqlCommand(config.getConfiguration(), mapperInterface, method);
-        this.method = new EasyMethodSignature(config.getConfiguration(), mapperInterface, method);
+        this.method = new MethodSignature(config.getConfiguration(), mapperInterface, method);
         final String mappedStatementId = mapperInterface.getName() + "." + method.getName();
-        this.operateMethodMeta = config.getOperateMethodMeta(mappedStatementId);
-
+        OperateMethodMeta operateMethodMeta = config.getOperateMethodMeta(mappedStatementId);
+        if (operateMethodMeta != null) {
+            this.multi = SqlSourceGenerator.isMulti(operateMethodMeta, command.getType());
+        } else {
+            this.multi = false;
+        }
     }
+
 
     public Object execute(SqlSession sqlSession, Object[] args) {
         Object result;
         switch (command.getType()) {
             case INSERT: {
-                Object param = method.convertArgsToSqlCommandParam(args);
+                Object param = method.convertArgsToSqlCommandParam(multi, args);
                 result = rowCountResult(sqlSession.insert(command.getName(), param));
                 break;
             }
             case UPDATE: {
-                Object param = method.convertArgsToSqlCommandParam(args);
+                Object param = method.convertArgsToSqlCommandParam(multi, args);
                 result = rowCountResult(sqlSession.update(command.getName(), param));
                 break;
             }
             case DELETE: {
-                Object param = method.convertArgsToSqlCommandParam(args);
+                Object param = method.convertArgsToSqlCommandParam(multi, args);
                 result = rowCountResult(sqlSession.delete(command.getName(), param));
                 break;
             }
@@ -275,7 +279,7 @@ public class EasyMapperMethod {
         private final String mapKey;
         private final Integer resultHandlerIndex;
         private final Integer rowBoundsIndex;
-        private final ParamNameResolver paramNameResolver;
+        private final EasyParamNameResolver paramNameResolver;
 
         public MethodSignature(Configuration configuration, Class<?> mapperInterface, Method method) {
             Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, mapperInterface);
@@ -294,11 +298,15 @@ public class EasyMapperMethod {
             this.returnsMap = this.mapKey != null;
             this.rowBoundsIndex = getUniqueParamIndex(method, RowBounds.class);
             this.resultHandlerIndex = getUniqueParamIndex(method, ResultHandler.class);
-            this.paramNameResolver = new ParamNameResolver(configuration, method);
+            this.paramNameResolver = new EasyParamNameResolver(configuration, method);
         }
 
         public Object convertArgsToSqlCommandParam(Object[] args) {
             return paramNameResolver.getNamedParams(args);
+        }
+
+        public Object convertArgsToSqlCommandParam(boolean multi, Object[] args) {
+            return paramNameResolver.getNamedParams(multi, args);
         }
 
         public boolean hasRowBounds() {
@@ -376,5 +384,7 @@ public class EasyMapperMethod {
             }
             return mapKey;
         }
+
+
     }
 }
