@@ -1,16 +1,22 @@
 package com.xwc.open.easybatis.sql.fill.generator;
 
+import com.xwc.open.easy.parse.model.OperateMethodMeta;
+import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
+import com.xwc.open.easybatis.mapper.FillSourceGeneratorMapper;
 import com.xwc.open.easybatis.supports.DefaultSqlSourceGenerator;
 import com.xwc.open.easybatis.supports.SqlSourceGenerator;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 
 /**
  * 类描述：
@@ -34,8 +40,49 @@ public class FillInsertSourceGeneratorTest {
         this.sourceGenerator = new DefaultSqlSourceGenerator(easyBatisConfiguration);
     }
 
-    public void fillInsert(){
+    @Test
+    public void simpleInsert() {
+        Class<?> interfaceClass = FillSourceGeneratorMapper.class;
+        String methodName = "insert";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "";
+        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
+    }
 
+
+    @Test
+    public void simpleInsertIgnore() {
+        Class<?> interfaceClass = FillSourceGeneratorMapper.class;
+        String methodName = "insertIgnore";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "";
+        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleInsertBatch() {
+        Class<?> interfaceClass = FillSourceGeneratorMapper.class;
+        String methodName = "insertBatch";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "";
+        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleInsertBatchIgnore() {
+        Class<?> interfaceClass = FillSourceGeneratorMapper.class;
+        String methodName = "insertBatchIgnore";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "";
+        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
     }
 
 }

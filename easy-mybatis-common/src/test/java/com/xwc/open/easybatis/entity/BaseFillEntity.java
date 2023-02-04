@@ -34,7 +34,7 @@ public class BaseFillEntity {
     /**
      * 创建时间
      */
-    @FillColumn(type = FillType.UPDATE)
+    @FillColumn(type = FillType.INSERT_UPDATE)
     private Date updateTime;
 
     /**

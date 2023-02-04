@@ -339,13 +339,13 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         for (int i = 0; i < fillAttr.size(); i++) {
             ModelAttribute modelAttribute = fillAttr.get(i);
             if (!this.isModelAttributeIgnore(modelAttribute, sqlCommandType)) {
-                list.add(convertModelAttribute(parameterAttribute, modelAttribute, paramIndex + 200 + i, isMultiParam
+                list.add(convertModelAttribute(parameterAttribute, modelAttribute, paramIndex + 300 + i, isMultiParam
                         , dynamic, sqlCommandType));
             }
         }
         LogicAttribute logic = tableMeta.getLogic();
         if (logic != null && !isModelAttributeIgnore(logic, sqlCommandType)) {
-            list.add(convertModelAttribute(parameterAttribute, logic, paramIndex + 300, isMultiParam, dynamic, sqlCommandType));
+            list.add(convertModelAttribute(parameterAttribute, logic, paramIndex + 400, isMultiParam, dynamic, sqlCommandType));
         }
         return list.stream().sorted(Comparator.comparingInt(BatisColumnAttribute::getIndex)).collect(Collectors.toList());
     }
