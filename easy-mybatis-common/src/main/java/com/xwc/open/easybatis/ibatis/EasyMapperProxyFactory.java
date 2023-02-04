@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.supports;
+package com.xwc.open.easybatis.ibatis;
 
 import org.apache.ibatis.binding.MapperProxy;
 import org.apache.ibatis.binding.MapperProxyFactory;

@@ -1,8 +1,7 @@
-package com.xwc.open.easybatis.supports;
+package com.xwc.open.easybatis.ibatis;
 
 import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
-import com.xwc.open.easybatis.MapperEasyAnnotationBuilder;
 
 import java.util.HashMap;
 import java.util.Map;

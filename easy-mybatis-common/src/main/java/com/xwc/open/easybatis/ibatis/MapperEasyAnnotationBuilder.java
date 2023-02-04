@@ -1,6 +1,7 @@
-package com.xwc.open.easybatis;
+package com.xwc.open.easybatis.ibatis;
 
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
+import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.annotaions.DeleteSql;
 import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.annotaions.SelectSql;

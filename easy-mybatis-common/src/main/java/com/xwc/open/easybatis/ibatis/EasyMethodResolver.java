@@ -1,8 +1,5 @@
-package com.xwc.open.easybatis;
+package com.xwc.open.easybatis.ibatis;
 
-import com.xwc.open.easy.parse.supports.EasyMapper;
-import com.xwc.open.easybatis.MapperEasyAnnotationBuilder;
-import org.apache.ibatis.builder.annotation.MapperAnnotationBuilder;
 import org.apache.ibatis.builder.annotation.MethodResolver;
 
 import java.lang.reflect.Method;
