@@ -19,13 +19,13 @@ public interface FillAttributeHandler {
      *
      * @param fillWrapper 元对象
      */
-    void insertFill(String fillName, FillWrapper fillWrapper);
+    void insertFill(String identification, String fillAttribute, FillWrapper fillWrapper);
 
     /**
      * 更新元对象字段填充（用于更新时对公共字段的填充）
      *
      * @param fillWrapper 元对象
      */
-    void updateFill(String fillName, FillWrapper fillWrapper);
+    void updateFill(String identification, String fillAttribute, FillWrapper fillWrapper);
 
 }

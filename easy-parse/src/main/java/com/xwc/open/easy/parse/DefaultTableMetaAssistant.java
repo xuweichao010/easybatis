@@ -1,6 +1,7 @@
 package com.xwc.open.easy.parse;
 
 import com.xwc.open.easy.parse.annotations.*;
+import com.xwc.open.easy.parse.enums.FillType;
 import com.xwc.open.easy.parse.enums.IdType;
 import com.xwc.open.easy.parse.exceptions.CheckDatabaseModelException;
 import com.xwc.open.easy.parse.model.*;
@@ -156,9 +157,6 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
         if (fillAttribute == null) {
             return null;
         }
-        if (StringUtils.hasText(fillColumn.identification())) {
-
-        }
         // 处理填充标识
         String identification = StringUtils.hasText(fillColumn.identification()) ? fillColumn.identification() : fillAttribute.getField();
         fillAttribute.setIdentification(identification);
@@ -168,9 +166,8 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
         if (StringUtils.hasText(fillColumn.value())) {
             fillAttribute.setColumn(fillColumn.value());
         }
-        if (StringUtils.hasText(fillColumn.value())) {
-            fillAttribute.setColumn(fillColumn.value());
-        }
+        fillAttribute.setUpdateIgnore(fillColumn.type() == FillType.INSERT);
+        fillAttribute.setInsertIgnore(fillColumn.type() == FillType.UPDATE);
         return fillAttribute;
     }
 

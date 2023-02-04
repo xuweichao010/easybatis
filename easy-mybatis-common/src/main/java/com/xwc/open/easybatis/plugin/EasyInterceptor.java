@@ -128,11 +128,12 @@ public class EasyInterceptor implements Interceptor {
     private void executorFill(FillAttribute fillAttribute, FillWrapper wrapper) {
         if (fillAttribute.getType() == FillType.INSERT || fillAttribute.getType() == FillType.INSERT_UPDATE) {
             easyBatisConfiguration.getFillAttributeHandlers()
-                    .forEach(fillAttributeHandler -> fillAttributeHandler.insertFill(fillAttribute.getField(), wrapper));
+                    .forEach(fillAttributeHandler -> fillAttributeHandler.insertFill(fillAttribute.getIdentification(), fillAttribute.getField(),
+                            wrapper));
         }
         if (fillAttribute.getType() == FillType.UPDATE || fillAttribute.getType() == FillType.INSERT_UPDATE) {
             easyBatisConfiguration.getFillAttributeHandlers()
-                    .forEach(fillAttributeHandler -> fillAttributeHandler.updateFill(fillAttribute.getField(), wrapper));
+                    .forEach(fillAttributeHandler -> fillAttributeHandler.updateFill(fillAttribute.getIdentification(), fillAttribute.getField(), wrapper));
         }
     }
 
@@ -150,7 +151,7 @@ public class EasyInterceptor implements Interceptor {
             return (Map<String, Object>) value;
         }
         HashMap<String, Object> params = new HashMap<>();
-        if(!operateMethodMeta.getParameterAttributes().isEmpty()){
+        if (!operateMethodMeta.getParameterAttributes().isEmpty()) {
             ParameterAttribute parameterAttribute = operateMethodMeta.getParameterAttributes().get(0);
             params.put(parameterAttribute.getParameterName(), value);
         }

@@ -7,13 +7,14 @@ package com.xwc.open.easybatis.fill;
  */
 public class AnnotationFillAttribute implements FillAttributeHandler {
 
+
     @Override
-    public void insertFill(String fillName, FillWrapper fillWrapper) {
+    public void insertFill(String identification, String fillAttribute, FillWrapper fillWrapper) {
 
     }
 
     @Override
-    public void updateFill(String fillName, FillWrapper fillWrapper) {
+    public void updateFill(String identification, String fillAttribute, FillWrapper fillWrapper) {
 
     }
 }

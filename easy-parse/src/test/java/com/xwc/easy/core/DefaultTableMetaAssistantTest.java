@@ -9,6 +9,7 @@ import com.xwc.easy.core.table.key.*;
 import com.xwc.easy.core.table.logic.LogicField;
 import com.xwc.easy.core.table.name.DataBaseModelAutoTableName;
 import com.xwc.easy.core.table.name.DataBaseModelTableName;
+import com.xwc.open.easy.parse.DefaultTableMetaAssistant;
 import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easy.parse.enums.FillType;
 import com.xwc.open.easy.parse.enums.IdType;
@@ -16,7 +17,6 @@ import com.xwc.open.easy.parse.model.FillAttribute;
 import com.xwc.open.easy.parse.model.LogicAttribute;
 import com.xwc.open.easy.parse.model.ModelAttribute;
 import com.xwc.open.easy.parse.model.PrimaryKeyAttribute;
-import com.xwc.open.easy.parse.DefaultTableMetaAssistant;
 import com.xwc.open.easy.parse.supports.impl.DefaultUUIDHandler;
 import com.xwc.open.easy.parse.supports.impl.NoneIdGenerateHandler;
 import com.xwc.open.easy.parse.supports.impl.NoneNameConverter;
@@ -218,10 +218,12 @@ public class DefaultTableMetaAssistantTest {
         Field field = Reflection.getField(FillFieldModel.class).stream()
                 .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         FillAttribute fillAttribute = assistant.fillAttribute(FillFieldModel.class, field);
-        Assert.assertTrue(fillAttribute.isSelectIgnore());
         Assert.assertEquals("createUserId", fillAttribute.getIdentification());
         Assert.assertEquals("create_user_id", fillAttribute.getColumn());
         Assert.assertEquals(FillType.INSERT, fillAttribute.getType());
+        Assert.assertFalse(fillAttribute.isInsertIgnore());
+        Assert.assertTrue(fillAttribute.isUpdateIgnore());
+        Assert.assertTrue(fillAttribute.isSelectIgnore());
     }
 
 
