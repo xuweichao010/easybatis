@@ -118,4 +118,49 @@ public class SimpleConditionSourceGeneratorTest {
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
     }
 
+    @Test
+    public void simpleIn() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "in";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE `id` IN  <foreach item='item' collection='collection' open= '(' close =')' separator=','> #{item} </foreach> </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleInIgnore() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "inIgnore";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE `id` IN  <foreach item='item' collection='id' open= '(' close =')' separator=','> #{item} </foreach> </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+    @Test
+    public void simpleInObject() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "inObject";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user WHERE `ages` IN  <foreach item='item' collection='ages' open= '(' close =')' separator=','> #{item} </foreach>  AND `id` = #{id} </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+
+    public void simple() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "in";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
+
 }

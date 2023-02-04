@@ -2,8 +2,11 @@ package com.xwc.open.easybatis;
 
 
 import com.xwc.open.easy.parse.EasyConfiguration;
+import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.supports.impl.CamelConverterUnderscore;
 import com.xwc.open.easy.parse.supports.impl.NoneNameConverter;
+import com.xwc.open.easybatis.fill.AnnotationFillAttribute;
+import com.xwc.open.easybatis.fill.FillAttributeHandler;
 import com.xwc.open.easybatis.plugin.EasyInterceptor;
 import com.xwc.open.easybatis.snippet.values.EasyMapperRegister;
 import com.xwc.open.easybatis.supports.DefaultSqlSourceGeneratorRegistry;
@@ -13,10 +16,7 @@ import com.xwc.open.easybatis.supports.SqlSourceGeneratorRegistry;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 类描述：
@@ -32,13 +32,22 @@ public class EasyBatisConfiguration extends EasyConfiguration {
 
     private final List<DriverDatabaseIdProvider> driverDatabaseIdProviders = new ArrayList<>();
 
+    private final Map<String, OperateMethodMeta> operateMethodMetaMaps = new HashMap<>();
+
+    private final List<FillAttributeHandler> fillAttributeHandlers = new ArrayList<>();
+
     protected final SqlSourceGeneratorRegistry registry = new DefaultSqlSourceGeneratorRegistry(this);
 
 
     public EasyBatisConfiguration(Configuration configuration) {
         this.configuration = configuration;
         this.setMapUnderscoreToCamelCase(configuration.isMapUnderscoreToCamelCase());
-        this.configuration.addInterceptor(new EasyInterceptor());
+        this.configuration.addInterceptor(new EasyInterceptor(this));
+        this.fillAttributeHandlers.add(new AnnotationFillAttribute());
+    }
+
+    public List<FillAttributeHandler> getFillAttributeHandlers() {
+        return fillAttributeHandlers;
     }
 
     public Configuration getConfiguration() {
@@ -65,6 +74,15 @@ public class EasyBatisConfiguration extends EasyConfiguration {
             this.setTableNameConverter(new NoneNameConverter());
         }
     }
+
+    public void addOperateMethodMeta(String id, OperateMethodMeta operateMethodMeta) {
+        operateMethodMetaMaps.put(id, operateMethodMeta);
+    }
+
+    public OperateMethodMeta getOperateMethodMeta(String id) {
+        return operateMethodMetaMaps.get(id);
+    }
+
 
     public List<DriverDatabaseIdProvider> getDriverDatabaseIdProviders() {
         return driverDatabaseIdProviders;

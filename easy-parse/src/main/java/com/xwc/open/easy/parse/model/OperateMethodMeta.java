@@ -43,6 +43,10 @@ public class OperateMethodMeta {
     private TableMeta databaseMeta;
 
 
+    public List<ParameterAttribute> getVirtualParameterAttributes() {
+        return virtualParameterAttributes;
+    }
+
     /**
      * 添加一个参数属性
      *

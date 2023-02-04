@@ -4,6 +4,7 @@ import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
+import com.xwc.open.easybatis.model.QueryInObject;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -14,7 +15,10 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 类描述：单元测试
@@ -123,4 +127,41 @@ public class MapperEasyAnnotationConditionBuilderTest {
         }
         Assert.assertEquals(31, betweenAge.size());
     }
+
+    @Test
+    public void simpleIn() {
+        List<String> ids = Collections.singletonList("37bd0225cc94400db744aac8dee8a001");
+        List<NormalUser> in = simpleSourceGeneratorMapper.in(ids);
+        NormalUser normalUser = in.stream().filter(item -> Objects.equals("曹操", item.getName()))
+                .findAny().orElse(null);
+        if (normalUser == null) {
+            Assert.fail();
+        }
+    }
+
+
+    @Test
+    public void simpleInIgnore() {
+        List<String> ids = Collections.singletonList("37bd0225cc94400db744aac8dee8a001");
+        List<NormalUser> in = simpleSourceGeneratorMapper.inIgnore(null, ids);
+        NormalUser normalUser = in.stream().filter(item -> Objects.equals("曹操", item.getName()))
+                .findAny().orElse(null);
+        if (normalUser == null) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void simpleInObject() {
+        QueryInObject queryInObject = new QueryInObject();
+        queryInObject.setId("37bd0225cc94400db744aac8dee8a001");
+        queryInObject.setAges(Arrays.asList(50, 51, 52));
+        List<NormalUser> in = simpleSourceGeneratorMapper.inObject(queryInObject);
+        NormalUser normalUser = in.stream().filter(item -> Objects.equals("曹操", item.getName()))
+                .findAny().orElse(null);
+        if (normalUser == null) {
+            Assert.fail();
+        }
+    }
+
 }

@@ -1,7 +1,10 @@
 package com.xwc.open.easy.parse.model;
 
+import com.xwc.open.easy.parse.enums.FillType;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 类描述：
@@ -59,6 +62,15 @@ public class TableMeta {
         return fills;
     }
 
+    public List<FillAttribute> updateFillAttributes() {
+        return fills.stream().filter(fillAttribute -> fillAttribute.getType() == FillType.UPDATE
+                || fillAttribute.getType() == FillType.INSERT_UPDATE).collect(Collectors.toList());
+    }
+
+    public List<FillAttribute> insertFillAttributes() {
+        return fills.stream().filter(fillAttribute -> fillAttribute.getType() == FillType.INSERT
+                || fillAttribute.getType() == FillType.INSERT_UPDATE).collect(Collectors.toList());
+    }
 
 
     public LogicAttribute getLogic() {

@@ -8,6 +8,7 @@ import com.xwc.open.easybatis.annotaions.SelectSql;
 import com.xwc.open.easybatis.annotaions.UpdateSql;
 import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
+import com.xwc.open.easybatis.annotaions.conditions.In;
 import com.xwc.open.easybatis.annotaions.order.Asc;
 import com.xwc.open.easybatis.annotaions.order.Desc;
 import com.xwc.open.easybatis.annotaions.order.OrderBy;
@@ -70,6 +71,15 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
 
     @SelectSql
     List<NormalUser> betweenDynamic(@Between(of = "ageTo", dynamic = true) Integer age, Integer ageTo);
+
+    @SelectSql
+    List<NormalUser> in(@In List<String> id);
+
+    @SelectSql
+    List<NormalUser> inIgnore(@Ignore String tableName, @In List<String> id);
+
+    @SelectSql
+    List<NormalUser> inObject(QueryInObject query);
 
     @SelectSql()
     @OrderBy("age desc")

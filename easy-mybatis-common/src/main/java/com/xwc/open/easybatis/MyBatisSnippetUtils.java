@@ -6,8 +6,8 @@ package com.xwc.open.easybatis;
  * 时间 2023/1/16 14:41
  */
 public class MyBatisSnippetUtils {
-    static final String FOREACH_BASE =
-            " <foreach item='%s' index='%s' collection='%s' open= '(' close =')' separator=','> %s </foreach> ";
+    static final String FOREACH_ITEM =
+            " <foreach item='%s' collection='%s' open= '(' close =')' separator=','> #{%s} </foreach> ";
 
     static final String FOREACH_OBJECT = " <foreach item='%s' index='%s' collection='%s' separator=',' >%s </foreach>";
 
@@ -22,6 +22,10 @@ public class MyBatisSnippetUtils {
     static final String WHERE = " <where> %s </where>";
 
     static final String TRIM_SUFFIX_OVERRIDES = "<trim prefix= '%s' suffixOverrides= '%s'> %s </trim>";
+
+    public static String foreachItem(String itemName, String collectionName) {
+        return String.format(FOREACH_ITEM, itemName, collectionName, itemName);
+    }
 
     public static String foreachObject(String itemName, String indexName, String collectionName, String content) {
         return String.format(FOREACH_OBJECT, itemName, indexName, collectionName, content);

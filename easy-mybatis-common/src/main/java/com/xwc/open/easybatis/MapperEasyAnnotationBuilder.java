@@ -5,7 +5,6 @@ import com.xwc.open.easybatis.annotaions.DeleteSql;
 import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.annotaions.SelectSql;
 import com.xwc.open.easybatis.annotaions.UpdateSql;
-import com.xwc.open.easybatis.supports.DefaultSqlSourceGenerator;
 import com.xwc.open.easybatis.supports.SqlSourceGenerator;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.*;
@@ -56,7 +55,6 @@ public class MapperEasyAnnotationBuilder {
     private final Configuration configuration;
     private final MapperBuilderAssistant assistant;
     private final Class<?> type;
-    private SqlSourceGenerator easyBatisSourceGenerator;
     private final EasyBatisConfiguration easyBatisConfiguration;
 
     public MapperEasyAnnotationBuilder(EasyBatisConfiguration configuration, Class<?> type) {
@@ -65,7 +63,6 @@ public class MapperEasyAnnotationBuilder {
         this.configuration = configuration.getConfiguration();
         this.assistant = new MapperBuilderAssistant(this.configuration, resource);
         this.type = type;
-        this.easyBatisSourceGenerator = new DefaultSqlSourceGenerator(configuration);
     }
 
     public void parse() {
@@ -254,10 +251,12 @@ public class MapperEasyAnnotationBuilder {
         final LanguageDriver languageDriver = getLanguageDriver(method);
 
         getAnnotationWrapper(method, true, statementAnnotationTypes).ifPresent(statementAnnotation -> {
-            final SqlSource sqlSource = buildSqlSource(statementAnnotation.getAnnotation(), parameterTypeClass, languageDriver, method);
+            final String mappedStatementId = type.getName() + "." + method.getName();
+            final SqlSource sqlSource = buildSqlSource(statementAnnotation.getAnnotation(), parameterTypeClass,
+                    languageDriver, method, mappedStatementId);
             final SqlCommandType sqlCommandType = statementAnnotation.getSqlCommandType();
             final Options options = getAnnotationWrapper(method, false, Options.class).map(x -> (Options) x.getAnnotation()).orElse(null);
-            final String mappedStatementId = type.getName() + "." + method.getName();
+
 
             final KeyGenerator keyGenerator;
             String keyProperty = null;
@@ -555,7 +554,7 @@ public class MapperEasyAnnotationBuilder {
         ResultSetType resultSetTypeEnum = null;
         String databaseId = selectKeyAnnotation.databaseId().isEmpty() ? null : selectKeyAnnotation.databaseId();
 
-        SqlSource sqlSource = buildSqlSource(selectKeyAnnotation, parameterTypeClass, languageDriver, null);
+        SqlSource sqlSource = buildSqlSource(selectKeyAnnotation, parameterTypeClass, languageDriver, null, baseStatementId);
         SqlCommandType sqlCommandType = SqlCommandType.SELECT;
 
         assistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType, fetchSize, timeout, parameterMap, parameterTypeClass, resultMap, resultTypeClass, resultSetTypeEnum,
@@ -571,8 +570,9 @@ public class MapperEasyAnnotationBuilder {
     }
 
     private SqlSource buildSqlSource(Annotation annotation, Class<?> parameterType, LanguageDriver languageDriver,
-                                     Method method) {
+                                     Method method, String mappedStatementId) {
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant().getOperateMethodMeta(type, method);
+        easyBatisConfiguration.addOperateMethodMeta(mappedStatementId, operateMethodMeta);
         if (annotation instanceof SelectSql) {
             SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((SelectSql) annotation).databaseId());
             String selectSql = sqlSourceGenerator.select(operateMethodMeta);

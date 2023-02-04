@@ -33,9 +33,9 @@ public class BaseFillAndLogicEntity {
     private String createName;
 
     /**
-     * 创建时间
+     * 更新时间
      */
-    @FillColumn(type = FillType.UPDATE)
+    @FillColumn(type = FillType.INSERT_UPDATE)
     private Date updateTime;
 
     /**
