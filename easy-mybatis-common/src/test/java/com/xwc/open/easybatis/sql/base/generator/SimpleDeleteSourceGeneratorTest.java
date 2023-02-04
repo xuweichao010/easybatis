@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.sql.generator;
+package com.xwc.open.easybatis.sql.base.generator;
 
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.utils.Reflection;
@@ -19,11 +19,11 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 
 /**
- * 类描述：
+ * 类描述：用于测试简单的查询
  * 作者：徐卫超 (cc)
  * 时间 2023/1/16 16:01
  */
-public class SimpleInsertSourceGeneratorTest {
+public class SimpleDeleteSourceGeneratorTest {
 
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
@@ -40,48 +40,60 @@ public class SimpleInsertSourceGeneratorTest {
         this.sourceGenerator = new DefaultSqlSourceGenerator(easyBatisConfiguration);
     }
 
-
     @Test
-    public void simpleFindAll() {
+    public void simpleDel() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "findAll";
+        String methodName = "del";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user </script>";
-        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+        String expected = "<script>  DELETE FROM t_user WHERE `id` = #{id} </script>";
+        Assert.assertEquals(expected, sourceGenerator.delete(operateMethodMeta));
     }
 
     @Test
-    public void simpleInsertIgnore() {
+    public void simpleDynamicDel() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "insertIgnore";
+        String methodName = "dynamicDel";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES (#{user.id},#{user.orgCode},#{user.orgName},#{user.name},#{user.dataType},#{user.age},#{user.job},#{user.createTime},#{user.createId},#{user.createName},#{user.updateTime},#{user.updateId},#{user.updateName},#{user.valid}) </script>";
-        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
+        String expected = "<script>  DELETE FROM t_user <where>  <if test='name != null'> AND `name` = #{name} </if>  <if test='id != null'> AND `id` = #{id} </if> </where> </script>";
+        Assert.assertEquals(expected, sourceGenerator.delete(operateMethodMeta));
     }
 
     @Test
-    public void simpleInsertBatch() {
+    public void simpleDelObject() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "insertBatch";
+        String methodName = "delObject";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES <foreach item='users' index='index' collection='collection' separator=',' > (#{users.id},#{users.orgCode},#{users.orgName},#{users.name},#{users.dataType},#{users.age},#{users.job},#{users.createTime},#{users.createId},#{users.createName},#{users.updateTime},#{users.updateId},#{users.updateName},#{users.valid}) </foreach> </script>";
-        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
+        String expected = "<script>  DELETE FROM t_user WHERE `id` = #{id} AND `org_code` = #{orgCodeAlias} AND `org_name` = #{orgName} AND `name` = #{name} </script>";
+        Assert.assertEquals(expected, sourceGenerator.delete(operateMethodMeta));
     }
 
     @Test
-    public void simpleInsertBatchIgnore() {
+    public void simpleDelDynamicObjectIgnore() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
-        String methodName = "insertBatchIgnore";
+        String methodName = "delDynamicObjectIgnore";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES <foreach item='users' index='index' collection='users' separator=',' > (#{users.id},#{users.orgCode},#{users.orgName},#{users.name},#{users.dataType},#{users.age},#{users.job},#{users.createTime},#{users.createId},#{users.createName},#{users.updateTime},#{users.updateId},#{users.updateName},#{users.valid}) </foreach> </script>";
-        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
+        String expected = "<script>  DELETE FROM t_user <where>  <if test='object.id != null'> AND `id` = #{object.id} </if>  <if test='object.orgCodeAlias != null'> AND `org_code` = #{object.orgCodeAlias} </if>  <if test='object.orgName != null'> AND `org_name` = #{object.orgName} </if>  <if test='object.name != null'> AND `name` = #{object.name} </if> </where> </script>";
+        Assert.assertEquals(expected, sourceGenerator.delete(operateMethodMeta));
     }
+
+
+    public void simple() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "";
+        Assert.assertEquals(expected, sourceGenerator.delete(operateMethodMeta));
+    }
+
+
 }

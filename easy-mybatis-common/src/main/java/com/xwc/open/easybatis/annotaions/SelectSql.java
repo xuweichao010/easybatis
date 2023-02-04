@@ -31,7 +31,6 @@ public @interface SelectSql {
      */
     String databaseId() default "";
 
-
     /**
      * 查询join模式当为空的时候默认不开启，join值有内容的时候就会会处理成连表查询
      *

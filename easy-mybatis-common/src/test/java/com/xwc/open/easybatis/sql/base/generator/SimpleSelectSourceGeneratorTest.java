@@ -1,4 +1,4 @@
-package com.xwc.open.easybatis.sql.generator;
+package com.xwc.open.easybatis.sql.base.generator;
 
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.utils.Reflection;
@@ -39,6 +39,18 @@ public class SimpleSelectSourceGeneratorTest {
         this.easyBatisConfiguration = new EasyBatisConfiguration(configuration);
         this.sourceGenerator = new DefaultSqlSourceGenerator(easyBatisConfiguration);
     }
+
+    @Test
+    public void simpleFindAll() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "findAll";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user </script>";
+        Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
+    }
+
 
 
     @Test
