@@ -83,7 +83,7 @@ public class MapperEasyAnnotationFillUpdateBuilderTest {
 
 
     @Test
-    public void simpleUpdateParamDynamic() {
+    public void fillUpdateParamDynamic() {
         FillUser fillUser = createUser();
         fillSourceGeneratorMapper.updateParamDynamic(fillUser.getId(), "simpleUpdateParamDynamic", null);
         FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
@@ -93,7 +93,7 @@ public class MapperEasyAnnotationFillUpdateBuilderTest {
     }
 
     @Test
-    public void simpleDynamicUpdateParam() {
+    public void fillDynamicUpdateParam() {
         FillUser fillUser = createUser();
         fillSourceGeneratorMapper.updateParamDynamic(fillUser.getId(), null, 100);
         FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());

@@ -57,12 +57,11 @@ public class EasyBatisConfiguration extends EasyConfiguration {
     }
 
     public void addMapper(Class<?> type) {
-        configuration.addMapper(type);
         mapperRegistry.addMapper(type);
     }
 
     public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
-        return configuration.getMapperRegistry().getMapper(type, sqlSession);
+        return mapperRegistry.getMapper(type, sqlSession);
     }
 
 
@@ -115,4 +114,6 @@ public class EasyBatisConfiguration extends EasyConfiguration {
     public void clearSqlSourceGenerator() {
         this.registry.clear();
     }
+
+
 }

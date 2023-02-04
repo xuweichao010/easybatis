@@ -11,7 +11,6 @@ import com.xwc.open.easybatis.annotaions.set.SetParam;
 import com.xwc.open.easybatis.entity.FillUser;
 import com.xwc.open.easybatis.model.NormalUserUpdateObject;
 import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -69,7 +68,7 @@ public interface FillSourceGeneratorMapper extends EasyMapper<FillUser, String> 
 
     @UpdateSql
     @Dynamic
-    int dynamicUpdateObject(@Param("object") NormalUserUpdateObject object);
+    int dynamicUpdateObject(NormalUserUpdateObject object);
 
     @UpdateSql
     @Dynamic

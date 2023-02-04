@@ -2,7 +2,12 @@ package com.xwc.open.easybatis.ibatis;
 
 import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
+import org.apache.ibatis.binding.BindingException;
+import org.apache.ibatis.builder.annotation.MapperAnnotationBuilder;
+import org.apache.ibatis.session.SqlSession;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,15 +37,44 @@ public class EasyMapperRegister {
             }
             boolean loadCompleted = false;
             try {
-                knownMappers.put(type, new EasyMapperProxyFactory<>(type));
-                MapperEasyAnnotationBuilder parser = new MapperEasyAnnotationBuilder(config, type);
-                parser.parse();
+                knownMappers.put(type, new EasyMapperProxyFactory<>(type, config));
+                MapperEasyAnnotationBuilder easyParser = new MapperEasyAnnotationBuilder(config, type);
+                easyParser.parse();
+                // It's important that the type is added before the parser is run
+                // otherwise the binding may automatically be attempted by the
+                // mapper parser. If the type is already known, it won't try.
+                MapperAnnotationBuilder batisParser = new MapperAnnotationBuilder(config.getConfiguration(), type);
+                batisParser.parse();
                 loadCompleted = true;
             } finally {
                 if (!loadCompleted) {
                     knownMappers.remove(type);
                 }
             }
+        }
+    }
+
+    /**
+     * Gets the mappers.
+     *
+     * @return the mappers
+     * @since 3.2.2
+     */
+    public Collection<Class<?>> getMappers() {
+        return Collections.unmodifiableCollection(knownMappers.keySet());
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
+        final EasyMapperProxyFactory<T> mapperProxyFactory = (EasyMapperProxyFactory<T>) knownMappers.get(type);
+        if (mapperProxyFactory == null) {
+            throw new BindingException("Type " + type + " is not known to the MapperRegistry.");
+        }
+        try {
+            return mapperProxyFactory.newInstance(sqlSession);
+        } catch (Exception e) {
+            throw new BindingException("Error getting mapper instance. Cause: " + e, e);
         }
     }
 }

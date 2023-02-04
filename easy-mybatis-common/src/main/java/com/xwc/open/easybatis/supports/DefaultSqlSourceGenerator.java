@@ -12,7 +12,6 @@ import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.annotaions.conditions.In;
 import com.xwc.open.easybatis.annotaions.other.Count;
-import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.exceptions.ParamCheckException;
 import com.xwc.open.easybatis.snippet.column.DefaultInsertColumn;
@@ -109,8 +108,8 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
     }
 
     private String doSelect(OperateMethodMeta operateMethodMeta) {
-        boolean multi = isMulti(operateMethodMeta, SqlCommandType.SELECT);
-        boolean methodDynamic = isMethodDynamic(operateMethodMeta, SqlCommandType.SELECT);
+        boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.SELECT);
+        boolean methodDynamic =  SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.SELECT);
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof EntityParameterAttribute) {
@@ -143,8 +142,8 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
 
     @Override
     public String insert(OperateMethodMeta operateMethodMeta) {
-        boolean multi = isMulti(operateMethodMeta, SqlCommandType.INSERT);
-        boolean methodDynamic = isMethodDynamic(operateMethodMeta, SqlCommandType.INSERT);
+        boolean multi =  SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.INSERT);
+        boolean methodDynamic =  SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.INSERT);
         List<BatisColumnAttribute> batisColumnAttributes = null;
         EntityParameterAttribute entityParameterAttribute = null;
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
@@ -177,8 +176,8 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
     }
 
     public String doUpdate(OperateMethodMeta operateMethodMeta) {
-        boolean multi = isMulti(operateMethodMeta, SqlCommandType.UPDATE);
-        boolean methodDynamic = isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean multi =  SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean methodDynamic =  SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         boolean isFill = false;
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
@@ -230,8 +229,8 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
     }
 
     private String doDelete(OperateMethodMeta operateMethodMeta) {
-        boolean multi = isMulti(operateMethodMeta, SqlCommandType.UPDATE);
-        boolean methodDynamic = isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean multi =  SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean methodDynamic =  SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof BaseParameterAttribute) {
@@ -251,55 +250,9 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         return deleteFromSnippet.from(operateMethodMeta) + whereSnippet.where(batisColumnAttributes);
     }
 
-    /**
-     * 推断这个方法是否需要进行多属性构建
-     * 已经在方法中的属性 还有事不在方法中的属性 被称为虚拟属性 都要被纳入判断返回内
-     *
-     * @param operateMethodMeta 查询的元方法
-     * @param sqlCommandType    sql类型
-     * @return 方法是否需要多属性构建
-     */
-    public boolean isMulti(OperateMethodMeta operateMethodMeta, SqlCommandType sqlCommandType) {
-        // 当参数是多个值的话一定是多参数
-        int paramNum = operateMethodMeta.paramSize();
-        if (sqlCommandType == SqlCommandType.SELECT) {
-            if (operateMethodMeta.getDatabaseMeta().getLogic() != null) {
-                paramNum += 1;
-            }
-        } else if (SqlCommandType.INSERT == sqlCommandType) {
-            if (operateMethodMeta.getParameterAttributes().size() != 1) {
-                throw new ParamCheckException("构建的INSERT语句时 参数列表错误");
-            }
-            ParameterAttribute parameterAttribute = operateMethodMeta.getParameterAttributes().get(0);
-            if (parameterAttribute instanceof EntityParameterAttribute) {
-                return paramNum > 1;
-            } else {
-                throw new ParamCheckException("构建的INSERT语句时 不支持的参数类型：" + parameterAttribute.getParameterName());
-            }
-        } else if (sqlCommandType == SqlCommandType.UPDATE) {
-            if (operateMethodMeta.getDatabaseMeta().getLogic() != null) {
-                paramNum += 1;
-            }
-            ParameterAttribute entityAttribute = operateMethodMeta.getParameterAttributes().stream()
-                    .filter(item -> item instanceof EntityParameterAttribute).findAny()
-                    .orElse(null);
-            if (entityAttribute == null) {
-                paramNum += operateMethodMeta.getDatabaseMeta().getFills().stream().filter(FillAttribute::isUpdateFill).count();
-            }
-        }
-        return paramNum > 1;
-    }
 
-    /**
-     * 判断构建语句是否需要进行动态语句构建
-     *
-     * @param operateMethodMeta 操作方法的源信息
-     * @param sqlCommandType    操作类型
-     * @return
-     */
-    public boolean isMethodDynamic(OperateMethodMeta operateMethodMeta, SqlCommandType sqlCommandType) {
-        return operateMethodMeta.findAnnotation(Dynamic.class) != null;
-    }
+
+
 
     /**
      * 分析非实体对象的参数

@@ -1,6 +1,6 @@
 package com.xwc.open.easybatis.ibatis;
 
-import org.apache.ibatis.binding.MapperMethod;
+import com.xwc.open.easybatis.EasyBatisConfiguration;
 import org.apache.ibatis.reflection.ExceptionUtil;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.util.MapUtil;
@@ -29,11 +29,14 @@ public class EasyMapperProxy<T> implements InvocationHandler, Serializable {
     private final SqlSession sqlSession;
     private final Class<T> mapperInterface;
     private final Map<Method, MapperMethodInvoker> methodCache;
+    private final EasyBatisConfiguration easyBatisConfiguration;
 
-    public EasyMapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache) {
+    public EasyMapperProxy(SqlSession sqlSession, EasyBatisConfiguration easyBatisConfiguration,
+                           Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache) {
         this.sqlSession = sqlSession;
         this.mapperInterface = mapperInterface;
         this.methodCache = methodCache;
+        this.easyBatisConfiguration = easyBatisConfiguration;
     }
 
     static {
@@ -91,7 +94,7 @@ public class EasyMapperProxy<T> implements InvocationHandler, Serializable {
                     }
                 } else {
                     // 传入自己的参数解析器
-                    return new PlainMethodInvoker(new EasyMapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
+                    return new PlainMethodInvoker(new EasyMapperMethod(mapperInterface, method, easyBatisConfiguration));
                 }
             });
         } catch (RuntimeException re) {
@@ -119,9 +122,9 @@ public class EasyMapperProxy<T> implements InvocationHandler, Serializable {
     }
 
     private static class PlainMethodInvoker implements MapperMethodInvoker {
-        private final MapperMethod mapperMethod;
+        private final EasyMapperMethod mapperMethod;
 
-        public PlainMethodInvoker(MapperMethod mapperMethod) {
+        public PlainMethodInvoker(EasyMapperMethod mapperMethod) {
             super();
             this.mapperMethod = mapperMethod;
         }
