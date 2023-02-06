@@ -16,21 +16,22 @@ import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.plugin.Invocation;
+import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
-@Intercepts(
-        {
-                @Signature(type = StatementHandler.class, method = "parameterize", args = {Statement.class}),
-        }
-)
+//@Intercepts(
+//        {
+//                @Signature(type = StatementHandler.class, method = "parameterize", args = {Statement.class}),
+//        }
+//)
 public class EasyInterceptor implements Interceptor {
 
     private EasyBatisConfiguration easyBatisConfiguration;

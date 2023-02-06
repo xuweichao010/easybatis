@@ -103,7 +103,7 @@ public class EasyParamNameResolver {
      * @return the named params
      */
     public Object getNamedParams(Object[] args) {
-        return getNamedParams(this.hasParamAnnotation, args);
+        return getNamedParams(false, args);
     }
 
 
@@ -118,11 +118,11 @@ public class EasyParamNameResolver {
      * @param args the args
      * @return the named params
      */
-    public Object getNamedParams(boolean hasParamAnnotation, Object[] args) {
+    public Object getNamedParams(boolean multi, Object[] args) {
         final int paramCount = names.size();
         if (args == null || paramCount == 0) {
             return null;
-        } else if (!hasParamAnnotation && paramCount == 1) {
+        } else if ((!hasParamAnnotation || multi) && paramCount == 1) {
             final Map<String, Object> param = new MapperMethod.ParamMap<>();
             Object value = args[names.firstKey()];
             return wrapToMapIfCollection(value, useActualParamName ? names.get(0) : null);
