@@ -87,14 +87,14 @@ public interface SqlSourceGenerator {
                 throw new ParamCheckException("构建的INSERT语句时 不支持的参数类型：" + parameterAttribute.getParameterName());
             }
         } else if (sqlCommandType == SqlCommandType.UPDATE) {
-            if (operateMethodMeta.getDatabaseMeta().getLogic() != null) {
-                paramNum += 1;
-            }
             ParameterAttribute entityAttribute = operateMethodMeta.getParameterAttributes().stream()
                     .filter(item -> item instanceof EntityParameterAttribute).findAny()
                     .orElse(null);
             if (entityAttribute == null) {
                 paramNum += operateMethodMeta.getDatabaseMeta().getFills().stream().filter(FillAttribute::isUpdateFill).count();
+                if (operateMethodMeta.getDatabaseMeta().getLogic() != null) {
+                    paramNum += 1;
+                }
             }
         }
         return paramNum > 1;

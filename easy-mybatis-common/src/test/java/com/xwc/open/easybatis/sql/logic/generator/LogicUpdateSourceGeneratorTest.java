@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * 作者：徐卫超 (cc)
  * 时间 2023/2/4 10:17
  */
-public class FillInsertSelectGeneratorTest {
+public class LogicUpdateSourceGeneratorTest {
 
     SqlSessionFactory sqlSessionFactory;
     Configuration configuration;
@@ -41,26 +41,49 @@ public class FillInsertSelectGeneratorTest {
     }
 
     @Test
-    public void logicInsert() {
+    public void logicUpdate() {
         Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
-        String methodName = "insert";
+        String methodName = "update";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES (#{id},#{orgCode},#{orgName},#{name},#{dataType},#{age},#{job},#{createTime},#{createId},#{createName},#{updateTime},#{updateId},#{updateName},#{valid}) </script>";
-        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
+        String expected = "<script>  UPDATE t_user <set> `org_code`=#{orgCode}, `org_name`=#{orgName}, `name`=#{name}, `data_type`=#{dataType}, `age`=#{age}, `job`=#{job}, `create_time`=#{createTime}, `create_id`=#{createId}, `create_name`=#{createName}, `update_time`=#{updateTime}, `update_id`=#{updateId}, `update_name`=#{updateName}, `valid`=#{valid}, </set> WHERE `id` = #{id} AND `valid` = #{valid} </script>";
+        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
+    }
+
+    @Test
+    public void logicUpdateParam() {
+        Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
+        String methodName = "updateParam";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  UPDATE t_user <set> `name`=#{name}, </set> WHERE `id` = #{id} AND `valid` = #{valid} </script>";
+        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
     }
 
     @Test
     public void logicInsertBatchIgnore() {
         Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
-        String methodName = "insertBatchIgnore";
+        String methodName = "updateObject";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
-        String expected = "<script>  INSERT INTO t_user(`id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid`) VALUES <foreach item='users' index='index' collection='users' separator=',' > (#{users.id},#{users.orgCode},#{users.orgName},#{users.name},#{users.dataType},#{users.age},#{users.job},#{users.createTime},#{users.createId},#{users.createName},#{users.updateTime},#{users.updateId},#{users.updateName},#{users.valid}) </foreach> </script>";
-        Assert.assertEquals(expected, sourceGenerator.insert(operateMethodMeta));
+        String expected = "<script>  UPDATE t_user <set> `org_code`=#{object.orgCode}, `org_name`=#{object.orgName}, `name`=#{object.name}, </set> WHERE `id` = #{object.id} AND `valid` = #{valid} </script>";
+        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
     }
+
+//    @Test
+//    public void logicUpdateObject() {
+//        Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
+//        String methodName = "updateObject";
+//        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+//        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+//                .getOperateMethodMeta(interfaceClass, method);
+//        String expected = "";
+//        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
+//    }
+
 
 
 }

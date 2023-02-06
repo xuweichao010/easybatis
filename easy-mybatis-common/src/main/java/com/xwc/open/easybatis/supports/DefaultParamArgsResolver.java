@@ -58,6 +58,8 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
             }
         } else {
             MapFillWrapper mapFillWrapper = new MapFillWrapper(namedParamMap);
+            // 过滤条件
+            mapFillWrapper.setValue(logic.getField(), logic.getValid());
         }
     }
 

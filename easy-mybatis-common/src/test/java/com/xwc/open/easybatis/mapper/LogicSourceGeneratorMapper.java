@@ -3,10 +3,13 @@ package com.xwc.open.easybatis.mapper;
 import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.annotaions.InsertSql;
-import com.xwc.open.easybatis.entity.FillLogicUser;
-import com.xwc.open.easybatis.entity.FillUser;
+import com.xwc.open.easybatis.annotaions.SelectSql;
+import com.xwc.open.easybatis.annotaions.UpdateSql;
+import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.entity.LogicUser;
 import com.xwc.open.easybatis.entity.NormalUser;
+import com.xwc.open.easybatis.model.NormalUserPageQueryDto;
+import com.xwc.open.easybatis.model.NormalUserUpdateObject;
 
 import java.util.List;
 
@@ -29,4 +32,27 @@ public interface LogicSourceGeneratorMapper extends EasyMapper<LogicUser, String
 
     @InsertSql
     int insertBatchIgnore(@Ignore String tableName, List<LogicUser> users);
+
+    @UpdateSql
+    int update(LogicUser normalUser);
+
+    @UpdateSql
+    int updateParam(@Equal() String id, String name);
+
+    @UpdateSql
+    int updateObject(NormalUserUpdateObject object);
+
+
+    @SelectSql
+    NormalUser findOne(String id);
+
+
+    @SelectSql
+    NormalUser findOneDynamicIgnore(@Ignore String tableName, @Equal(dynamic = true) String id);
+
+    @SelectSql
+    List<NormalUser> findAll();
+
+    @SelectSql
+    List<NormalUser> queryObject(NormalUserPageQueryDto query);
 }
