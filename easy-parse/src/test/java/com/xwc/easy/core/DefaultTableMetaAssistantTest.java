@@ -206,6 +206,9 @@ public class DefaultTableMetaAssistantTest {
         Assert.assertEquals(100, logicAttribute.getInvalid());
         Assert.assertEquals(101, logicAttribute.getValid());
         Assert.assertEquals("delete_flag", logicAttribute.getColumn());
+        Assert.assertTrue(logicAttribute.isSelectIgnore());
+        Assert.assertTrue(logicAttribute.isUpdateIgnore());
+        Assert.assertFalse(logicAttribute.isInsertIgnore());
     }
 
     /**
@@ -222,7 +225,7 @@ public class DefaultTableMetaAssistantTest {
         Assert.assertEquals("create_user_id", fillAttribute.getColumn());
         Assert.assertEquals(FillType.INSERT, fillAttribute.getType());
         Assert.assertFalse(fillAttribute.isInsertIgnore());
-        Assert.assertTrue(fillAttribute.isUpdateIgnore());
+        Assert.assertFalse(fillAttribute.isUpdateIgnore());
         Assert.assertTrue(fillAttribute.isSelectIgnore());
     }
 

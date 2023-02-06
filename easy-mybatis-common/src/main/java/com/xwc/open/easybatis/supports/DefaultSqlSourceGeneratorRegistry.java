@@ -13,18 +13,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * 时间 2023/1/30 12:13
  */
 public class DefaultSqlSourceGeneratorRegistry implements SqlSourceGeneratorRegistry {
-    private EasyBatisConfiguration configuration;
+    private final EasyBatisConfiguration configuration;
 
     private final Map<String, SqlSourceGenerator> driverSqlSourceGeneratorMap = new ConcurrentHashMap<>();
+    private final Map<String, ParamArgsResolver> driverParamArgsResolverMap = new ConcurrentHashMap<>();
 
 
     public DefaultSqlSourceGeneratorRegistry(EasyBatisConfiguration configuration) {
         this.configuration = configuration;
-        this.registry(DriverDatabaseIdProvider.MYSQL, new DefaultSqlSourceGenerator(configuration));
+        this.registry(DriverDatabaseIdProvider.MYSQL, new DefaultSqlSourceGenerator(configuration),
+                new DefaultParamArgsResolver(configuration));
     }
 
     @Override
-    public void registry(String databaseId, SqlSourceGenerator sourceGenerator) {
+    public void registry(String databaseId, SqlSourceGenerator sourceGenerator, ParamArgsResolver paramArgsResolver) {
         if (databaseId == null) {
             throw new NotFoundException("databaseId 不能为空");
         }
@@ -32,12 +34,13 @@ public class DefaultSqlSourceGeneratorRegistry implements SqlSourceGeneratorRegi
             throw new NotFoundException("SqlSourceGenerator 不能为空");
         }
         this.driverSqlSourceGeneratorMap.put(databaseId, sourceGenerator);
+        this.driverParamArgsResolverMap.put(databaseId, paramArgsResolver);
     }
 
     @Override
     public SqlSourceGenerator get(String databaseId) {
         if (!StringUtils.hasText(databaseId)) {
-            return defaultSqlSourceGenerator();
+            databaseId = configuration.getDefaultDatabaseId();
         }
         SqlSourceGenerator sqlSourceGenerator = driverSqlSourceGeneratorMap.get(databaseId);
         if (sqlSourceGenerator == null) {
@@ -46,28 +49,6 @@ public class DefaultSqlSourceGeneratorRegistry implements SqlSourceGeneratorRegi
         return sqlSourceGenerator;
     }
 
-    private SqlSourceGenerator defaultSqlSourceGenerator() {
-        for (DriverDatabaseIdProvider driverDatabaseIdProvider : configuration.getDriverDatabaseIdProviders()) {
-            String databaseId = driverDatabaseIdProvider.databaseId();
-            if (StringUtils.hasText(databaseId)) {
-                return get(databaseId);
-            }
-        }
-        String databaseId = getDriverDatabaseIdProvider();
-        if (StringUtils.hasText(databaseId)) {
-            return get(databaseId);
-        }
-        throw new NotFoundException("无法获取对应的数据库驱动");
-    }
-
-    private String getDriverDatabaseIdProvider() {
-        try {
-            Class<?> aClass = Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverDatabaseIdProvider.MYSQL;
-        } catch (ClassNotFoundException ignored) {
-        }
-        return null;
-    }
 
     @Override
     public void remove(String databaseId) {
@@ -77,5 +58,17 @@ public class DefaultSqlSourceGeneratorRegistry implements SqlSourceGeneratorRegi
     @Override
     public void clear() {
         driverSqlSourceGeneratorMap.clear();
+    }
+
+    @Override
+    public ParamArgsResolver getParamArgsResolver(String databaseId) {
+        if (!StringUtils.hasText(databaseId)) {
+            databaseId = configuration.getDefaultDatabaseId();
+        }
+        ParamArgsResolver paramArgsResolver = driverParamArgsResolverMap.get(databaseId);
+        if (paramArgsResolver == null) {
+            throw new NotFoundException("获取 ParamArgsResolver 为空");
+        }
+        return paramArgsResolver;
     }
 }

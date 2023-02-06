@@ -7,11 +7,13 @@ package com.xwc.open.easybatis.supports;
  */
 public interface SqlSourceGeneratorRegistry {
 
-    void registry(String databaseId, SqlSourceGenerator sourceGenerator);
+    void registry(String databaseId, SqlSourceGenerator sourceGenerator, ParamArgsResolver paramArgsResolver);
 
     SqlSourceGenerator get(String databaseId);
 
     void remove(String databaseId);
 
     void clear();
+
+    ParamArgsResolver getParamArgsResolver(String databaseId);
 }

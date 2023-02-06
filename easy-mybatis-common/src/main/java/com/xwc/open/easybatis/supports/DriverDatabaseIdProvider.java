@@ -11,9 +11,9 @@ public abstract class DriverDatabaseIdProvider implements Comparator<DriverDatab
 
     public static final String MYSQL = "mysql";
 
-    abstract String databaseId();
+    public abstract String databaseId();
 
-    abstract int order();
+    public abstract int order();
 
     @Override
     public int compare(DriverDatabaseIdProvider o1, DriverDatabaseIdProvider o2) {

@@ -1,10 +1,12 @@
 package com.xwc.open.easybatis.fill;
 
 import com.xwc.open.easy.parse.model.FillAttribute;
+import com.xwc.open.easy.parse.model.ModelAttribute;
 import com.xwc.open.easy.parse.model.TableMeta;
 import com.xwc.open.easybatis.exceptions.EasyMybatisException;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -15,18 +17,24 @@ import java.util.stream.Collectors;
  */
 
 public class ObjectFillWrapper implements FillWrapper {
-    private final Map<String, FillAttribute> fillAttributeMap;
+    private final Map<String, ModelAttribute> modelAttributeMap;
     private final Object data;
 
     public ObjectFillWrapper(TableMeta tableMeta, Object data) {
-        this.fillAttributeMap = tableMeta.getFills().stream()
+        this.modelAttributeMap = tableMeta.getFills().stream()
                 .collect(Collectors.toMap(FillAttribute::getField, val -> val));
         this.data = data;
     }
 
+    public ObjectFillWrapper(ModelAttribute modelAttribute, Object data) {
+        this.modelAttributeMap = new HashMap<>();
+        this.data = data;
+        this.modelAttributeMap.put(modelAttribute.getField(), modelAttribute);
+    }
+
     @Override
     public Object getValue(String name) {
-        FillAttribute fillAttribute = fillAttributeMap.get(name);
+        ModelAttribute fillAttribute = modelAttributeMap.get(name);
         if (fillAttribute == null) {
             throw new EasyMybatisException("未被定义的填充属性");
         }
@@ -39,12 +47,12 @@ public class ObjectFillWrapper implements FillWrapper {
 
     @Override
     public void setValue(String name, Object value) {
-        FillAttribute fillAttribute = fillAttributeMap.get(name);
-        if (fillAttribute == null) {
+        ModelAttribute modelAttribute = modelAttributeMap.get(name);
+        if (modelAttribute == null) {
             throw new EasyMybatisException("未被定义的填充属性");
         }
         try {
-            fillAttribute.getSetter().invoke(data, value);
+            modelAttribute.getSetter().invoke(data, value);
         } catch (Exception e) {
             throw new EasyMybatisException("设置填充属性类型错误" + name);
         }

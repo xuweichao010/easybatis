@@ -134,6 +134,7 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
         logicAttribute.setSelectIgnore(logic.selectIgnore());
         logicAttribute.setValid(logic.valid());
         logicAttribute.setInvalid(logic.invalid());
+        logicAttribute.setInsertIgnore(false);
         if (StringUtils.hasText(logic.value())) {
             logicAttribute.setColumn(logic.value());
         }

@@ -5,12 +5,10 @@ import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.supports.impl.CamelConverterUnderscore;
 import com.xwc.open.easy.parse.supports.impl.NoneNameConverter;
+import com.xwc.open.easy.parse.utils.StringUtils;
 import com.xwc.open.easybatis.fill.FillAttributeHandler;
 import com.xwc.open.easybatis.ibatis.EasyMapperRegister;
-import com.xwc.open.easybatis.supports.DefaultSqlSourceGeneratorRegistry;
-import com.xwc.open.easybatis.supports.DriverDatabaseIdProvider;
-import com.xwc.open.easybatis.supports.SqlSourceGenerator;
-import com.xwc.open.easybatis.supports.SqlSourceGeneratorRegistry;
+import com.xwc.open.easybatis.supports.*;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 
@@ -36,11 +34,34 @@ public class EasyBatisConfiguration extends EasyConfiguration {
 
     protected final SqlSourceGeneratorRegistry registry = new DefaultSqlSourceGeneratorRegistry(this);
 
+    private String defaultDatabaseId = null;
+
+    {
+        this.driverDatabaseIdProviders.addAll(Collections.singletonList(new MysqlDriverDatabaseIdProvider()));
+    }
 
     public EasyBatisConfiguration(Configuration configuration) {
         this.configuration = configuration;
         this.setMapUnderscoreToCamelCase(configuration.isMapUnderscoreToCamelCase());
-        //this.configuration.addInterceptor(new EasyInterceptor(this));
+        this.setDefaultDatabaseId(null);
+    }
+
+    public void setDefaultDatabaseId(String defaultDatabaseId) {
+        if (StringUtils.hasText(defaultDatabaseId)) {
+            this.defaultDatabaseId = defaultDatabaseId;
+        } else {
+            for (DriverDatabaseIdProvider provider : driverDatabaseIdProviders) {
+                String databaseId = provider.databaseId();
+                if (StringUtils.hasText(databaseId)) {
+                    this.defaultDatabaseId = databaseId;
+                    return;
+                }
+            }
+        }
+    }
+
+    public String getDefaultDatabaseId() {
+        return defaultDatabaseId;
     }
 
     public List<FillAttributeHandler> getFillAttributeHandlers() {
@@ -97,8 +118,8 @@ public class EasyBatisConfiguration extends EasyConfiguration {
     }
 
 
-    public void registrySqlSourceGenerator(String databaseId, SqlSourceGenerator sourceGenerator) {
-        this.registry.registry(databaseId, sourceGenerator);
+    public void registrySqlSourceGenerator(String databaseId, SqlSourceGenerator sourceGenerator, ParamArgsResolver paramArgsResolver) {
+        this.registry.registry(databaseId, sourceGenerator, paramArgsResolver);
     }
 
     public SqlSourceGenerator getSqlSourceGenerator(String databaseId) {
@@ -115,4 +136,7 @@ public class EasyBatisConfiguration extends EasyConfiguration {
     }
 
 
+    public ParamArgsResolver getParamArgsResolver(String databaseId) {
+        return this.registry.getParamArgsResolver(databaseId);
+    }
 }

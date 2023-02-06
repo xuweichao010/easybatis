@@ -1,36 +1,19 @@
 package com.xwc.open.easybatis.ibatis;
 
-import com.xwc.open.easy.parse.enums.FillType;
-import com.xwc.open.easy.parse.model.FillAttribute;
-import com.xwc.open.easy.parse.model.OperateMethodMeta;
-import com.xwc.open.easy.parse.model.ParameterAttribute;
-import com.xwc.open.easy.parse.model.TableMeta;
-import com.xwc.open.easy.parse.model.parameter.EntityParameterAttribute;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
-import com.xwc.open.easybatis.fill.FillAttributeHandler;
-import com.xwc.open.easybatis.fill.FillWrapper;
-import com.xwc.open.easybatis.fill.MapFillWrapper;
-import com.xwc.open.easybatis.fill.ObjectFillWrapper;
-import com.xwc.open.easybatis.supports.SqlSourceGenerator;
 import org.apache.ibatis.annotations.Flush;
-import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.binding.BindingException;
-import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.mapping.StatementType;
 import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +33,6 @@ public class EasyMapperMethod {
     public EasyMapperMethod(Class<?> mapperInterface, Method method, EasyBatisConfiguration config) {
         this.command = new SqlCommand(config.getConfiguration(), mapperInterface, method);
         this.method = new MethodSignature(config, mapperInterface, method, command.getType());
-
     }
 
 
@@ -272,234 +254,5 @@ public class EasyMapperMethod {
         }
     }
 
-    public static class MethodSignature {
 
-        private final boolean returnsMany;
-        private final boolean returnsMap;
-        private final boolean returnsVoid;
-        private final boolean returnsCursor;
-        private final boolean returnsOptional;
-        private final Class<?> returnType;
-        private final String mapKey;
-        private final Integer resultHandlerIndex;
-        private final Integer rowBoundsIndex;
-        private final EasyParamNameResolver paramNameResolver;
-        private final boolean multi;
-        private final OperateMethodMeta operateMethodMeta;
-        private EasyBatisConfiguration easyBatisConfiguration;
-        private SqlCommandType sqlCommandType;
-
-
-        public MethodSignature(EasyBatisConfiguration easyBatisConfiguration, Class<?> mapperInterface, Method method
-                , SqlCommandType sqlCommandType) {
-            Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, mapperInterface);
-            if (resolvedReturnType instanceof Class<?>) {
-                this.returnType = (Class<?>) resolvedReturnType;
-            } else if (resolvedReturnType instanceof ParameterizedType) {
-                this.returnType = (Class<?>) ((ParameterizedType) resolvedReturnType).getRawType();
-            } else {
-                this.returnType = method.getReturnType();
-            }
-            this.easyBatisConfiguration = easyBatisConfiguration;
-            Configuration configuration = easyBatisConfiguration.getConfiguration();
-            this.returnsVoid = void.class.equals(this.returnType);
-            this.returnsMany = configuration.getObjectFactory().isCollection(this.returnType) || this.returnType.isArray();
-            this.returnsCursor = Cursor.class.equals(this.returnType);
-            this.returnsOptional = Optional.class.equals(this.returnType);
-            this.mapKey = getMapKey(method);
-            this.returnsMap = this.mapKey != null;
-            this.rowBoundsIndex = getUniqueParamIndex(method, RowBounds.class);
-            this.resultHandlerIndex = getUniqueParamIndex(method, ResultHandler.class);
-            this.paramNameResolver = new EasyParamNameResolver(configuration, method);
-            final String mappedStatementId = mapperInterface.getName() + "." + method.getName();
-            this.operateMethodMeta = easyBatisConfiguration.getOperateMethodMeta(mappedStatementId);
-            if (operateMethodMeta != null) {
-                this.multi = SqlSourceGenerator.isMulti(operateMethodMeta, sqlCommandType);
-            } else {
-                this.multi = false;
-            }
-            this.sqlCommandType = sqlCommandType;
-        }
-
-        public Object convertArgsToSqlCommandParam(Object[] args) {
-            Object namedParams = paramNameResolver.getNamedParams(multi, args);
-            if (operateMethodMeta == null) {
-                return namedParams;
-            }
-            Map<String, Object> namedParamMap = methodParams(namedParams);
-            fill(namedParamMap, operateMethodMeta, sqlCommandType);
-            if (namedParamMap.size() > 1) {
-                return namedParamMap;
-            } else {
-                return namedParams;
-            }
-        }
-
-        /**
-         * 尝试填充数据
-         * 根据元数据和sql类型判断用户是否需要进行属性填充
-         *
-         * @param map               数据对象
-         * @param operateMethodMeta 需要填充的方法
-         * @param sqlCommandType    操作类型
-         */
-        private void fill(Map<String, Object> map, OperateMethodMeta operateMethodMeta, SqlCommandType sqlCommandType) {
-            List<FillAttribute> fillAttributes = null;
-            TableMeta tableMeta = operateMethodMeta.getDatabaseMeta();
-            if (sqlCommandType == SqlCommandType.INSERT) {
-                fillAttributes = tableMeta.insertFillAttributes();
-            } else if (sqlCommandType == SqlCommandType.UPDATE) {
-                fillAttributes = tableMeta.updateFillAttributes();
-            }
-            if (fillAttributes == null || easyBatisConfiguration.getFillAttributeHandlers().isEmpty()) {
-                return;
-            }
-            try {
-                easyBatisConfiguration.getFillAttributeHandlers().forEach(FillAttributeHandler::fillBefore);
-                doFill(map, operateMethodMeta, fillAttributes);
-            } finally {
-                easyBatisConfiguration.getFillAttributeHandlers().forEach(FillAttributeHandler::fillAfter);
-            }
-        }
-
-        /**
-         * 填充数据 根据参数来决定如何进行参数填充
-         *
-         * @param map
-         * @param operateMethodMeta
-         * @param fillAttributes
-         */
-        private void doFill(Map<String, Object> map, OperateMethodMeta operateMethodMeta,
-                            List<FillAttribute> fillAttributes) {
-            // 需要区分用对象填充还是参数填充 对象填充 参数是entity对象 参数填充 就是参数列表中没有entity对象
-            ParameterAttribute entityParam = operateMethodMeta.getParameterAttributes().stream()
-                    .filter(parameterAttribute -> parameterAttribute instanceof EntityParameterAttribute)
-                    .findAny().orElse(null);
-            if (entityParam != null) {
-                Object data = map.get(entityParam.getParameterName());
-                if (data instanceof List) {
-                    ((List<?>) data).forEach(item -> {
-                        ObjectFillWrapper objectFillWrapper = new ObjectFillWrapper(operateMethodMeta.getDatabaseMeta(), item);
-                        fillAttributes.forEach(fillAttribute -> executorFill(fillAttribute, objectFillWrapper));
-                    });
-                } else {
-                    ObjectFillWrapper objectFillWrapper = new ObjectFillWrapper(operateMethodMeta.getDatabaseMeta(), data);
-                    fillAttributes.forEach(fillAttribute -> executorFill(fillAttribute, objectFillWrapper));
-                }
-            } else {
-                MapFillWrapper mapFillWrapper = new MapFillWrapper(map);
-                fillAttributes.forEach(fillAttribute -> executorFill(fillAttribute, mapFillWrapper));
-            }
-        }
-
-        /**
-         * 执行参数填充
-         *
-         * @param fillAttribute 需要进行填充的属性
-         * @param wrapper       填充对象
-         */
-        private void executorFill(FillAttribute fillAttribute, FillWrapper wrapper) {
-            if (fillAttribute.getType() == FillType.INSERT || fillAttribute.getType() == FillType.INSERT_UPDATE) {
-                easyBatisConfiguration.getFillAttributeHandlers()
-                        .forEach(fillAttributeHandler -> fillAttributeHandler.insertFill(fillAttribute.getIdentification(), fillAttribute.getField(),
-                                wrapper));
-            }
-            if (fillAttribute.getType() == FillType.UPDATE || fillAttribute.getType() == FillType.INSERT_UPDATE) {
-                easyBatisConfiguration.getFillAttributeHandlers()
-                        .forEach(fillAttributeHandler -> fillAttributeHandler.updateFill(fillAttribute.getIdentification(), fillAttribute.getField(), wrapper));
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        public Map<String, Object> methodParams(Object value) {
-            if (value instanceof Map) {
-                return (Map<String, Object>) value;
-            }
-            final Map<String, Object> params = new MapperMethod.ParamMap<>();
-            if (!operateMethodMeta.getParameterAttributes().isEmpty()) {
-                ParameterAttribute parameterAttribute = operateMethodMeta.getParameterAttributes().get(0);
-                params.put(parameterAttribute.getParameterName(), value);
-            }
-            return params;
-        }
-
-
-        public boolean hasRowBounds() {
-            return rowBoundsIndex != null;
-        }
-
-        public RowBounds extractRowBounds(Object[] args) {
-            return hasRowBounds() ? (RowBounds) args[rowBoundsIndex] : null;
-        }
-
-        public boolean hasResultHandler() {
-            return resultHandlerIndex != null;
-        }
-
-        public ResultHandler extractResultHandler(Object[] args) {
-            return hasResultHandler() ? (ResultHandler) args[resultHandlerIndex] : null;
-        }
-
-        public Class<?> getReturnType() {
-            return returnType;
-        }
-
-        public boolean returnsMany() {
-            return returnsMany;
-        }
-
-        public boolean returnsMap() {
-            return returnsMap;
-        }
-
-        public boolean returnsVoid() {
-            return returnsVoid;
-        }
-
-        public boolean returnsCursor() {
-            return returnsCursor;
-        }
-
-        /**
-         * return whether return type is {@code java.util.Optional}.
-         *
-         * @return return {@code true}, if return type is {@code java.util.Optional}
-         * @since 3.5.0
-         */
-        public boolean returnsOptional() {
-            return returnsOptional;
-        }
-
-        private Integer getUniqueParamIndex(Method method, Class<?> paramType) {
-            Integer index = null;
-            final Class<?>[] argTypes = method.getParameterTypes();
-            for (int i = 0; i < argTypes.length; i++) {
-                if (paramType.isAssignableFrom(argTypes[i])) {
-                    if (index == null) {
-                        index = i;
-                    } else {
-                        throw new BindingException(method.getName() + " cannot have multiple " + paramType.getSimpleName() + " parameters");
-                    }
-                }
-            }
-            return index;
-        }
-
-        public String getMapKey() {
-            return mapKey;
-        }
-
-        private String getMapKey(Method method) {
-            String mapKey = null;
-            if (Map.class.isAssignableFrom(method.getReturnType())) {
-                final MapKey mapKeyAnnotation = method.getAnnotation(MapKey.class);
-                if (mapKeyAnnotation != null) {
-                    mapKey = mapKeyAnnotation.value();
-                }
-            }
-            return mapKey;
-        }
-
-
-    }
 }

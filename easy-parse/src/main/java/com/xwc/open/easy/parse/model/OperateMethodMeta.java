@@ -42,6 +42,11 @@ public class OperateMethodMeta {
      */
     private TableMeta databaseMeta;
 
+    /**
+     * 数据操作的唯一标识
+     */
+    private String databaseId;
+
 
     public List<ParameterAttribute> getVirtualParameterAttributes() {
         return virtualParameterAttributes;
@@ -126,4 +131,11 @@ public class OperateMethodMeta {
         return databaseMeta;
     }
 
+    public String getDatabaseId() {
+        return databaseId;
+    }
+
+    public void setDatabaseId(String databaseId) {
+        this.databaseId = databaseId;
+    }
 }

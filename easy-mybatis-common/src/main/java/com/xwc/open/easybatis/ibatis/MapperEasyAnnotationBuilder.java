@@ -575,18 +575,22 @@ public class MapperEasyAnnotationBuilder {
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant().getOperateMethodMeta(type, method);
         easyBatisConfiguration.addOperateMethodMeta(mappedStatementId, operateMethodMeta);
         if (annotation instanceof SelectSql) {
+            operateMethodMeta.setDatabaseId(((SelectSql) annotation).databaseId());
             SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((SelectSql) annotation).databaseId());
             String selectSql = sqlSourceGenerator.select(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{selectSql}, parameterType, languageDriver);
         } else if (annotation instanceof UpdateSql) {
+            operateMethodMeta.setDatabaseId(((UpdateSql) annotation).databaseId());
             SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((UpdateSql) annotation).databaseId());
             String selectSql = sqlSourceGenerator.update(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{selectSql}, parameterType, languageDriver);
         } else if (annotation instanceof InsertSql) {
+            operateMethodMeta.setDatabaseId(((InsertSql) annotation).databaseId());
             SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((InsertSql) annotation).databaseId());
             String insertSql = sqlSourceGenerator.insert(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{insertSql}, parameterType, languageDriver);
         } else if (annotation instanceof DeleteSql) {
+            operateMethodMeta.setDatabaseId(((DeleteSql) annotation).databaseId());
             SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((DeleteSql) annotation).databaseId());
             String delSql = sqlSourceGenerator.delete(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{delSql}, parameterType, languageDriver);
