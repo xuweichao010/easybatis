@@ -348,11 +348,12 @@ public class MapperEasyAnnotationBuilder {
     }
 
     private Class<?> getParameterType(Method method) {
+        OperateMethodMeta operateMethodMeta = this.easyBatisConfiguration.getOperateMethodAssistant().getOperateMethodMeta(this.type, method);
         Class<?> parameterType = null;
         Class<?>[] parameterTypes = method.getParameterTypes();
         for (Class<?> currentParameterType : parameterTypes) {
             if (!RowBounds.class.isAssignableFrom(currentParameterType) && !ResultHandler.class.isAssignableFrom(currentParameterType)) {
-                if (parameterType == null) {
+                if (parameterType == null && operateMethodMeta == null) {
                     parameterType = currentParameterType;
                 } else {
                     // issue #135

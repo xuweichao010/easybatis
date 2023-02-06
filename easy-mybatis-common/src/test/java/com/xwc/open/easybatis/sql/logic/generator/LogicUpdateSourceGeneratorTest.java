@@ -63,7 +63,7 @@ public class LogicUpdateSourceGeneratorTest {
     }
 
     @Test
-    public void logicInsertBatchIgnore() {
+    public void logicUpdateObject() {
         Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
         String methodName = "updateObject";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);

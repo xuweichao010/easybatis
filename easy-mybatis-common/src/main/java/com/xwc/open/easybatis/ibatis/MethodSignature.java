@@ -84,6 +84,8 @@ public class MethodSignature {
                 .methodParams(namedParamMap, operateMethodMeta, sqlCommandType);
         if (namedParamMap.size() > 1) {
             return namedParamMap;
+        } else if (namedParamMap.size() == 1) {
+            return namedParamMap.values().iterator().next();
         } else {
             return namedParams;
         }

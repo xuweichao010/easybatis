@@ -13,6 +13,7 @@ import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.model.NormalUserDeleteObject;
 import com.xwc.open.easybatis.model.NormalUserPageQueryDto;
 import com.xwc.open.easybatis.model.NormalUserUpdateObject;
+import org.apache.ibatis.annotations.Delete;
 
 import java.util.List;
 
@@ -51,6 +52,10 @@ public interface LogicSourceGeneratorMapper extends EasyMapper<LogicUser, String
 
 
     @SelectSql
+    NormalUser findOne2(String id, Integer age);
+
+
+    @SelectSql
     NormalUser findOneDynamicIgnore(@Ignore String tableName, @Equal(dynamic = true) String id);
 
     @SelectSql
@@ -69,4 +74,9 @@ public interface LogicSourceGeneratorMapper extends EasyMapper<LogicUser, String
     @DeleteSql
     @Dynamic
     int delDynamicObjectIgnore(@Ignore String tableName, NormalUserDeleteObject object);
+
+    @Delete("DELETE FROM t_user WHERE data_type =2")
+    int delTestData();
+
+
 }
