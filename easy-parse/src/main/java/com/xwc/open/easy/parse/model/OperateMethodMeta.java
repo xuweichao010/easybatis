@@ -61,6 +61,15 @@ public class OperateMethodMeta {
         this.parameterAttributes.add(parameterAttribute);
     }
 
+    /**
+     * 添加一个参数属性
+     *
+     * @param parameterAttribute 参数属性
+     */
+    public void addVirtualParameterAttribute(ParameterAttribute parameterAttribute) {
+        this.virtualParameterAttributes.add(parameterAttribute);
+    }
+
     public void addIgnoreParameterAttribute(ParameterAttribute parameterAttribute) {
         this.ignoreParameterAttributes.add(parameterAttribute);
     }
@@ -74,7 +83,7 @@ public class OperateMethodMeta {
     }
 
     public int paramSize() {
-        return ignoreParameterAttributes.size() + parameterAttributes.size();
+        return ignoreParameterAttributes.size() + parameterAttributes.size() + virtualParameterAttributes.size();
     }
 
 

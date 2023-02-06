@@ -20,6 +20,8 @@ public class BatisColumnAttribute extends ParameterAttribute {
      */
     private String column;
 
+    private Object virtualValue;
+
     private SqlCommandType sqlCommandType;
 
     public String getColumn() {
@@ -46,6 +48,14 @@ public class BatisColumnAttribute extends ParameterAttribute {
             return value != null && (boolean) value;
         }
         return false;
+    }
+
+    public Object getVirtualValue() {
+        return virtualValue;
+    }
+
+    public void setVirtualValue(Object virtualValue) {
+        this.virtualValue = virtualValue;
     }
 
     public String useColumn(Annotation annotation) {

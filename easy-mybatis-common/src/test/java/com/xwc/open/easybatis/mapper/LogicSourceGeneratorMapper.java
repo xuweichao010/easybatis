@@ -2,12 +2,15 @@ package com.xwc.open.easybatis.mapper;
 
 import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.supports.EasyMapper;
+import com.xwc.open.easybatis.annotaions.DeleteSql;
 import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.annotaions.SelectSql;
 import com.xwc.open.easybatis.annotaions.UpdateSql;
 import com.xwc.open.easybatis.annotaions.conditions.Equal;
+import com.xwc.open.easybatis.annotaions.other.Dynamic;
 import com.xwc.open.easybatis.entity.LogicUser;
 import com.xwc.open.easybatis.entity.NormalUser;
+import com.xwc.open.easybatis.model.NormalUserDeleteObject;
 import com.xwc.open.easybatis.model.NormalUserPageQueryDto;
 import com.xwc.open.easybatis.model.NormalUserUpdateObject;
 
@@ -55,4 +58,15 @@ public interface LogicSourceGeneratorMapper extends EasyMapper<LogicUser, String
 
     @SelectSql
     List<NormalUser> queryObject(NormalUserPageQueryDto query);
+
+
+    @DeleteSql
+    int del(String id);
+
+    @DeleteSql
+    int delObject(NormalUserDeleteObject object);
+
+    @DeleteSql
+    @Dynamic
+    int delDynamicObjectIgnore(@Ignore String tableName, NormalUserDeleteObject object);
 }

@@ -128,7 +128,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         int index = operateMethodMeta.getParameterAttributes().size();
         LogicAttribute logic = operateMethodMeta.getDatabaseMeta().getLogic();
         if (logic != null) {
-            batisColumnAttributes.add(convertVirtualModelAttribute(logic, ++index, multi, false,
+            batisColumnAttributes.add(convertModelAttribute(logic, ++index, multi, false,
                     SqlCommandType.SELECT));
         }
         StringBuilder sql = new StringBuilder(this.selectSqlFrom.from(operateMethodMeta))
@@ -219,13 +219,13 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         if (!isSetFill) {
             List<FillAttribute> fillAttributes = operateMethodMeta.getDatabaseMeta().updateFillAttributes();
             for (FillAttribute fillAttribute : fillAttributes) {
-                batisColumnAttributes.add(convertVirtualModelAttribute(fillAttribute, ++index, multi, false,
+                batisColumnAttributes.add(convertModelAttribute(fillAttribute, ++index, multi, false,
                         SqlCommandType.UPDATE));
             }
         }
         LogicAttribute logic = operateMethodMeta.getDatabaseMeta().getLogic();
         if (!isSetLogic && logic != null) {
-            batisColumnAttributes.add(convertVirtualModelAttribute(logic, ++index, multi, false,
+            batisColumnAttributes.add(convertModelAttribute(logic, ++index, multi, false,
                     SqlCommandType.SELECT));
         }
         return updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes) + whereSnippet.where(batisColumnAttributes);
@@ -234,10 +234,51 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
 
     @Override
     public String delete(OperateMethodMeta operateMethodMeta) {
+        LogicAttribute logic = operateMethodMeta.getDatabaseMeta().getLogic();
         if (operateMethodMeta.getDatabaseMeta().getLogic() == null) {
             return MyBatisSnippetUtils.script(doDelete(operateMethodMeta));
+        } else {
+            // 当对象实体中有逻辑删除标志位的时候 del语句会构建为Update语句
+            // del语句中没有update语句中的Set片段  所以要应用虚拟来参数来把这个参数加入到方法中
+            BatisColumnAttribute batisColumnAttribute = convertVirtualModelAttribute(logic.getColumn(),
+                    logic.getField() + "0", logic.getInvalid(), 1
+                    , false,
+                    false,
+                    SqlCommandType.UPDATE);
+            operateMethodMeta.addVirtualParameterAttribute(batisColumnAttribute);
+            return MyBatisSnippetUtils.script(doLogicDelete(operateMethodMeta, logic));
         }
-        return null;
+
+    }
+
+    private String doLogicDelete(OperateMethodMeta operateMethodMeta, LogicAttribute logic) {
+        boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean methodDynamic = SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
+        List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
+        for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
+            if (parameterAttribute instanceof BaseParameterAttribute) {
+                batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic,
+                        SqlCommandType.SELECT));
+            } else if (parameterAttribute instanceof PrimaryKeyParameterAttribute) {
+                batisColumnAttributes.add(convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
+            } else if (parameterAttribute instanceof ObjectParameterAttribute) {
+                List<BatisColumnAttribute> objectAttributes =
+                        analysisObjectAttribute((ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT);
+                parameterAttribute.setMulti(multi);
+                batisColumnAttributes.addAll(objectAttributes);
+            } else {
+                throw new ParamCheckException("DELETE 语句不支持该类型的参数：" + parameterAttribute.getParameterName());
+            }
+        }
+        int index = operateMethodMeta.getParameterAttributes().size();
+        batisColumnAttributes.add(convertModelAttribute(logic, ++index, multi, false,
+                SqlCommandType.SELECT));
+        for (ParameterAttribute virtualParameterAttribute : operateMethodMeta.getVirtualParameterAttributes()) {
+            if (virtualParameterAttribute instanceof BatisColumnAttribute) {
+                batisColumnAttributes.add((BatisColumnAttribute) virtualParameterAttribute);
+            }
+        }
+        return updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes) + whereSnippet.where(batisColumnAttributes);
     }
 
     private String doDelete(OperateMethodMeta operateMethodMeta) {
@@ -352,10 +393,26 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
         return false;
     }
 
-    private BatisColumnAttribute convertVirtualModelAttribute(ModelAttribute modelAttribute,
+    private BatisColumnAttribute convertVirtualModelAttribute(String column, String paramName, Object virtualValue,
                                                               int index,
                                                               boolean isMultiParam,
                                                               boolean methodDynamic, SqlCommandType sqlCommandType) {
+        BatisColumnAttribute attribute = new BatisColumnAttribute();
+        attribute.setIndex(index * 1000);
+        attribute.setColumn(column);
+        attribute.setVirtualValue(virtualValue);
+        attribute.setParameterName(paramName);
+        attribute.setPath(new String[]{paramName});
+        attribute.setMulti(isMultiParam);
+        attribute.setMethodDynamic(methodDynamic);
+        attribute.setSqlCommandType(sqlCommandType);
+        return attribute;
+    }
+
+    private BatisColumnAttribute convertModelAttribute(ModelAttribute modelAttribute,
+                                                       int index,
+                                                       boolean isMultiParam,
+                                                       boolean methodDynamic, SqlCommandType sqlCommandType) {
         BatisColumnAttribute attribute = new BatisColumnAttribute();
         attribute.setIndex(index * 1000);
         attribute.setColumn(modelAttribute.getColumn());
