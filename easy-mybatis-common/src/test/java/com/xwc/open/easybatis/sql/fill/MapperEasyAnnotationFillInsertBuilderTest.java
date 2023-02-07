@@ -3,7 +3,6 @@ package com.xwc.open.easybatis.sql.fill;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.entity.FillUser;
 import com.xwc.open.easybatis.mapper.FillSourceGeneratorMapper;
-import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -29,7 +28,6 @@ public class MapperEasyAnnotationFillInsertBuilderTest {
     EasyBatisConfiguration easyBatisConfiguration;
     SqlSession sqlSession;
     FillSourceGeneratorMapper fillSourceGeneratorMapper;
-    GenericsBaseMapper genericsBaseMapper;
 
     @Before
     public void before() throws IOException {
@@ -39,13 +37,10 @@ public class MapperEasyAnnotationFillInsertBuilderTest {
         this.easyBatisConfiguration = new EasyBatisConfiguration(sqlSessionFactory.getConfiguration());
         this.easyBatisConfiguration.setMapUnderscoreToCamelCase(true);
         this.easyBatisConfiguration.addMapper(FillSourceGeneratorMapper.class);
-        this.easyBatisConfiguration.addMapper(GenericsBaseMapper.class);
         this.fillSourceGeneratorMapper = this.easyBatisConfiguration.getMapper(FillSourceGeneratorMapper.class,
                 sqlSession);
-        this.genericsBaseMapper = this.easyBatisConfiguration.getMapper(GenericsBaseMapper.class, sqlSession);
         fillSourceGeneratorMapper.delTestData();
         this.easyBatisConfiguration.addFillAttributeHandler(new AnnotationFillAttribute());
-        genericsBaseMapper.delTestData();
     }
 
     @Test
@@ -97,7 +92,6 @@ public class MapperEasyAnnotationFillInsertBuilderTest {
     @After
     public void after() {
         fillSourceGeneratorMapper.delTestData();
-        genericsBaseMapper.delTestData();
         sqlSession.commit();
         sqlSession.close();
     }

@@ -2,16 +2,13 @@ package com.xwc.open.easybatis.sql.logic;
 
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.entity.LogicUser;
-import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.mapper.LogicSourceGeneratorMapper;
-import com.xwc.open.easybatis.model.NormalUserUpdateObject;
 import com.xwc.open.easybatis.sql.fill.AnnotationFillAttribute;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +20,7 @@ import java.io.InputStream;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/17 10:16
  */
-public class MapperEasyAnnotationLogicUpdateBuilderTest {
+public class MapperEasyAnnotationLogicDeleteBuilderTest {
 
 
     SqlSessionFactory sqlSessionFactory;
@@ -47,30 +44,20 @@ public class MapperEasyAnnotationLogicUpdateBuilderTest {
 
 
     @Test
-    public void logicUpdate() {
+    public void logicDel() {
         LogicUser logicUser = create();
-        logicUser.setName("logicUpdate");
-        logicSourceGeneratorMapper.update(logicUser);
-        NormalUser dbUser = logicSourceGeneratorMapper.findOne(logicUser.getId());
-        Assert.assertEquals(logicUser.getName(), dbUser.getName());
+        logicSourceGeneratorMapper.del(logicUser.getId());
     }
 
     @Test
-    public void logicUpdateParam() {
-        LogicUser logicUser = create();
-        logicSourceGeneratorMapper.updateParam(logicUser.getId(), "logicUpdateParam");
-        NormalUser dbUser = logicSourceGeneratorMapper.findOne(logicUser.getId());
-        Assert.assertEquals("logicUpdateParam", dbUser.getName());
+    public void logicDelObject() {
 
     }
 
+
     @Test
-    public void logicUpdateObject() {
-        LogicUser logicUser = create();
-        NormalUserUpdateObject updateObject = NormalUserUpdateObject.createName(logicUser.getId(), "logicUpdateObject", "", "31231");
-        logicSourceGeneratorMapper.updateObject(updateObject);
-        NormalUser dbUser = logicSourceGeneratorMapper.findOne(logicUser.getId());
-        Assert.assertEquals("logicUpdateObject", dbUser.getName());
+    public void logicDelDynamicObjectIgnore() {
+
     }
 
     public LogicUser create() {

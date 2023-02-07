@@ -25,7 +25,6 @@ public interface FillSourceGeneratorMapper extends EasyMapper<FillUser, String> 
     @SelectSql
     FillUser findOne(String id);
 
-
     @InsertSql
     int insert(FillUser normalUser);
 

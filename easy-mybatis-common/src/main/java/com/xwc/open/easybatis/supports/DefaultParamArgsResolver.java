@@ -4,6 +4,7 @@ import com.xwc.open.easy.parse.enums.FillType;
 import com.xwc.open.easy.parse.model.*;
 import com.xwc.open.easy.parse.model.parameter.EntityParameterAttribute;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
+import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.fill.FillAttributeHandler;
 import com.xwc.open.easybatis.fill.FillWrapper;
 import com.xwc.open.easybatis.fill.MapFillWrapper;
@@ -61,11 +62,15 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
             // 过滤条件
             mapFillWrapper.setValue(logic.getField(), logic.getValid());
         }
-    }
-
-    private void doLogic(Map<String, Object> namedParamMap, OperateMethodMeta operateMethodMeta, LogicAttribute logic
-            , SqlCommandType sqlCommandType) {
-
+        for (ParameterAttribute virtualParameterAttribute : operateMethodMeta.getVirtualParameterAttributes()) {
+            if (virtualParameterAttribute instanceof BatisColumnAttribute) {
+                BatisColumnAttribute batisColumnAttribute = (BatisColumnAttribute) virtualParameterAttribute;
+                MapFillWrapper mapFillWrapper = new MapFillWrapper(namedParamMap);
+                // 过滤条件
+                mapFillWrapper.setValue(virtualParameterAttribute.getParameterName(),
+                        batisColumnAttribute.getVirtualValue());
+            }
+        }
     }
 
 

@@ -1,6 +1,8 @@
 package com.xwc.open.easybatis.ibatis;
 
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
+import com.xwc.open.easy.parse.model.TableMeta;
+import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.annotaions.DeleteSql;
 import com.xwc.open.easybatis.annotaions.InsertSql;
@@ -57,6 +59,7 @@ public class MapperEasyAnnotationBuilder {
     private final MapperBuilderAssistant assistant;
     private final Class<?> type;
     private final EasyBatisConfiguration easyBatisConfiguration;
+    private TableMeta tableMeta;
 
     public MapperEasyAnnotationBuilder(EasyBatisConfiguration configuration, Class<?> type) {
         String resource = type.getName().replace('.', '/') + ".java (best guess)";
@@ -64,6 +67,7 @@ public class MapperEasyAnnotationBuilder {
         this.configuration = configuration.getConfiguration();
         this.assistant = new MapperBuilderAssistant(this.configuration, resource);
         this.type = type;
+        this.tableMeta = this.easyBatisConfiguration.getTableMetaAssistant().getTableMeta(Reflection.getEntityClass(type));
     }
 
     public void parse() {
@@ -353,7 +357,7 @@ public class MapperEasyAnnotationBuilder {
         Class<?>[] parameterTypes = method.getParameterTypes();
         for (Class<?> currentParameterType : parameterTypes) {
             if (!RowBounds.class.isAssignableFrom(currentParameterType) && !ResultHandler.class.isAssignableFrom(currentParameterType)) {
-                if (parameterType == null && operateMethodMeta == null) {
+                if (parameterType == null && tableMeta.getLogic() == null) {
                     parameterType = currentParameterType;
                 } else {
                     // issue #135
@@ -595,8 +599,6 @@ public class MapperEasyAnnotationBuilder {
             SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((DeleteSql) annotation).databaseId());
             String delSql = sqlSourceGenerator.delete(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{delSql}, parameterType, languageDriver);
-        } else if (annotation instanceof SelectKey) {
-//            return buildSqlSourceFromStrings(((SelectKey) annotation).statement(), parameterType, languageDriver);
         }
         return new ProviderSqlSource(assistant.getConfiguration(), annotation, type, method);
     }
@@ -658,8 +660,13 @@ public class MapperEasyAnnotationBuilder {
                 databaseId = ((InsertSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.INSERT;
             } else if (annotation instanceof DeleteSql) {
-                databaseId = ((DeleteSql) annotation).databaseId();
-                sqlCommandType = SqlCommandType.DELETE;
+                if (tableMeta.getLogic() == null) {
+                    databaseId = ((DeleteSql) annotation).databaseId();
+                    sqlCommandType = SqlCommandType.DELETE;
+                } else {
+                    databaseId = ((DeleteSql) annotation).databaseId();
+                    sqlCommandType = SqlCommandType.UPDATE;
+                }
             } else {
                 sqlCommandType = SqlCommandType.UNKNOWN;
                 if (annotation instanceof Options) {

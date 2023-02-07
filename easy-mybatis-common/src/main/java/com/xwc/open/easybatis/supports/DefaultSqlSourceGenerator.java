@@ -122,7 +122,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
                 parameterAttribute.setMulti(multi);
                 batisColumnAttributes.addAll(objectAttributes);
             } else {
-                throw new ParamCheckException("SELECT 语句不支持该类型的参数：" + parameterAttribute.getParameterName());
+                throw new ParamCheckException(operateMethodMeta.getMethodName() + "查询语句不支持该类型的参数：" + parameterAttribute.getParameterName());
             }
         }
         int index = operateMethodMeta.getParameterAttributes().size();

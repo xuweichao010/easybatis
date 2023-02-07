@@ -12,10 +12,12 @@ import com.xwc.open.easy.parse.utils.AnnotationUtils;
 import com.xwc.open.easy.parse.utils.ParamNameUtil;
 import com.xwc.open.easy.parse.utils.Reflection;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 类描述：默认的属性类型
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
  */
 public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
     private final EasyConfiguration configuration;
+
+    private Map<String, OperateMethodMeta> operateMethodMetaMap = new ConcurrentHashMap<>();
 
     public DefaultOperateMethodAssistant(EasyConfiguration easyConfiguration) {
         this.configuration = easyConfiguration;
@@ -34,11 +38,13 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
         if (clazz == null || method == null || !EasyMapper.class.isAssignableFrom(clazz)) {
             return null;
         }
-        OperateMethodMeta methodMeta = getMethodMeta(method);
-        TableMeta entityClass = configuration.getTableMetaAssistant().getTableMeta(Reflection.getEntityClass(clazz));
-        methodMeta.setDatabaseMeta(entityClass);
-        parseMethod(method, methodMeta);
-        return methodMeta;
+        return operateMethodMetaMap.computeIfAbsent(clazz.getName() + "." + method.getName(), val -> {
+            OperateMethodMeta methodMeta = getMethodMeta(method);
+            TableMeta entityClass = configuration.getTableMetaAssistant().getTableMeta(Reflection.getEntityClass(clazz));
+            methodMeta.setDatabaseMeta(entityClass);
+            parseMethod(method, methodMeta);
+            return methodMeta;
+        });
     }
 
     /**
