@@ -17,13 +17,6 @@ import java.lang.annotation.*;
 @Syntax(10001)
 public @interface UpdateSql {
 
-    /**
-     * 级联更新模式当为空的时候默认不开启，join值有内容的时候就会会处理成级联更新
-     *
-     * @return
-     */
-    String join() default "";
-
 
     /**
      * @return A database id that correspond this statement
