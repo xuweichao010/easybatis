@@ -7,8 +7,8 @@ import java.lang.annotation.*;
 /**
  * 创建人：徐卫超
  * 创建时间：2019/4/24  13:01
- * 业务：
- * 功能：
+ * 业务： 条件注解
+ * 功能： 包含查询 column IN (value1,value2...)
  */
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})

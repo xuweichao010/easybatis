@@ -8,9 +8,7 @@ import com.xwc.open.easy.parse.utils.AnnotationUtils;
 import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
-import com.xwc.open.easybatis.annotaions.conditions.Between;
-import com.xwc.open.easybatis.annotaions.conditions.Equal;
-import com.xwc.open.easybatis.annotaions.conditions.In;
+import com.xwc.open.easybatis.annotaions.conditions.*;
 import com.xwc.open.easybatis.annotaions.other.Count;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.exceptions.ParamCheckException;
@@ -18,9 +16,7 @@ import com.xwc.open.easybatis.snippet.column.DefaultInsertColumn;
 import com.xwc.open.easybatis.snippet.column.DefaultSelectColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.InsertColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.SelectColumnSnippet;
-import com.xwc.open.easybatis.snippet.conditional.BetweenConditionalSnippet;
-import com.xwc.open.easybatis.snippet.conditional.EqualsConditionalSnippet;
-import com.xwc.open.easybatis.snippet.conditional.InConditionalSnippet;
+import com.xwc.open.easybatis.snippet.conditional.*;
 import com.xwc.open.easybatis.snippet.from.*;
 import com.xwc.open.easybatis.snippet.order.DefaultOrderSnippet;
 import com.xwc.open.easybatis.snippet.order.OrderSnippet;
@@ -97,9 +93,36 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
     }
 
     public void registryDefaultConditional() {
-        this.conditionalRegistry.register(Equal.class, new EqualsConditionalSnippet(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(Between.class, new BetweenConditionalSnippet(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(In.class, new InConditionalSnippet(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(Equal.class,
+                new EqualsConditionalSnippet(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(NotEqual.class,
+                new NotEqualsConditionalSnippet(batisPlaceholder, columnPlaceholder));
+
+        this.conditionalRegistry.register(Like.class,
+                new LikeConditionalSnippet(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(LikeLeft.class,
+                new LikeLeftConditionalSnippet(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(LikeRight.class,
+                new LikeRightConditionalSnippet(batisPlaceholder, columnPlaceholder));
+
+        this.conditionalRegistry.register(IsNull.class,
+                new IsNullConditionalSnippet(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(IsNotNull.class,
+                new IsNotNullConditionalSnippet(batisPlaceholder, columnPlaceholder));
+
+//        this.conditionalRegistry.register(Like.class,
+//                new LikeConditionalSnippet(batisPlaceholder, columnPlaceholder));
+//        this.conditionalRegistry.register(LikeLeft.class,
+//                new LikeLeftConditionalSnippet(batisPlaceholder, columnPlaceholder));
+//        this.conditionalRegistry.register(LikeRight.class,
+//                new LikeRightConditionalSnippet(batisPlaceholder, columnPlaceholder));
+
+
+        this.conditionalRegistry.register(Between.class,
+                new BetweenConditionalSnippet(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(In.class,
+                new InConditionalSnippet(batisPlaceholder, columnPlaceholder));
+
     }
 
     @Override

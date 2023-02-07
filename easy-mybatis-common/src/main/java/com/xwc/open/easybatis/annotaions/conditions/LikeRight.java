@@ -8,13 +8,13 @@ import java.lang.annotation.*;
  * 创建人：徐卫超
  * 创建时间：2019/4/24  13:01
  * 业务： 条件注解
- * 功能： 范围标识 column BETWEEN value1 AND value2
+ * 功能： 右模糊匹配 column LIKE 'value%'
  */
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Syntax()
-public @interface Between {
+public @interface LikeRight {
 
     /**
      * 属性和数据表之间的列关系
