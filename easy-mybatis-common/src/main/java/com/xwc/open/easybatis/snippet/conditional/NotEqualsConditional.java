@@ -1,7 +1,7 @@
 package com.xwc.open.easybatis.snippet.conditional;
 
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
-import com.xwc.open.easybatis.annotaions.conditions.IsNull;
+import com.xwc.open.easybatis.annotaions.conditions.Equal;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
 import com.xwc.open.easybatis.supports.ColumnPlaceholder;
@@ -11,21 +11,22 @@ import com.xwc.open.easybatis.supports.ColumnPlaceholder;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/17 13:51
  */
-public class IsNotNullConditionalSnippet implements SingleConditionalSnippet {
+public class NotEqualsConditional implements SingleConditionalSnippet {
 
     private BatisPlaceholder placeholder;
 
     private ColumnPlaceholder columnPlaceholder;
 
-    public IsNotNullConditionalSnippet(BatisPlaceholder placeholder, ColumnPlaceholder columnPlaceholder) {
+    public NotEqualsConditional(BatisPlaceholder placeholder, ColumnPlaceholder columnPlaceholder) {
         this.placeholder = placeholder;
         this.columnPlaceholder = columnPlaceholder;
     }
 
     @Override
     public String snippet(BatisColumnAttribute columnAttribute) {
-        IsNull equal = columnAttribute.findAnnotation(IsNull.class);
-        String conditionSql = "AND " + columnPlaceholder.holder(columnAttribute.useColumn(equal)) + " IS NOT NULL ";
+        Equal equal = columnAttribute.findAnnotation(Equal.class);
+        String conditionSql = "AND " + columnPlaceholder.holder(columnAttribute.useColumn(equal))
+                + " != " + placeholder.holder(columnAttribute);
         if (columnAttribute.useDynamic(equal)) {
             return MyBatisSnippetUtils.ifNonNullObject(placeholder.path(columnAttribute),
                     conditionSql);

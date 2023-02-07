@@ -11,13 +11,13 @@ import com.xwc.open.easybatis.supports.ColumnPlaceholder;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/17 13:51
  */
-public class BetweenConditionalSnippet implements MultiConditionalSnippet {
+public class BetweenConditional implements MultiConditionalSnippet {
 
     private BatisPlaceholder placeholder;
 
     private ColumnPlaceholder columnPlaceholder;
 
-    public BetweenConditionalSnippet(BatisPlaceholder placeholder, ColumnPlaceholder columnPlaceholder) {
+    public BetweenConditional(BatisPlaceholder placeholder, ColumnPlaceholder columnPlaceholder) {
         this.placeholder = placeholder;
         this.columnPlaceholder = columnPlaceholder;
     }

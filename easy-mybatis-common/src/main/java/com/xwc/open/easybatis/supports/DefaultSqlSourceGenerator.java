@@ -16,7 +16,6 @@ import com.xwc.open.easybatis.snippet.column.DefaultInsertColumn;
 import com.xwc.open.easybatis.snippet.column.DefaultSelectColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.InsertColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.SelectColumnSnippet;
-import com.xwc.open.easybatis.snippet.conditional.*;
 import com.xwc.open.easybatis.snippet.from.*;
 import com.xwc.open.easybatis.snippet.order.DefaultOrderSnippet;
 import com.xwc.open.easybatis.snippet.order.OrderSnippet;
@@ -94,7 +93,7 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
 
     public void registryDefaultConditional() {
         this.conditionalRegistry.register(Equal.class,
-                new EqualsConditionalSnippet(batisPlaceholder, columnPlaceholder));
+                new EqualConditionalSnippet(batisPlaceholder, columnPlaceholder));
         this.conditionalRegistry.register(NotEqual.class,
                 new NotEqualsConditionalSnippet(batisPlaceholder, columnPlaceholder));
 
