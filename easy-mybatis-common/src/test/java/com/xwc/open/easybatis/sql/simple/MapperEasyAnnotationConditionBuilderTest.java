@@ -164,4 +164,66 @@ public class MapperEasyAnnotationConditionBuilderTest {
         }
     }
 
+    @Test
+    public void simpleNotEqual() {
+        List<NormalUser> normalUsers = simpleSourceGeneratorMapper.notEqual(30);
+        Assert.assertEquals(9, normalUsers.size());
+    }
+
+    @Test
+    public void simpleIsNull() {
+        List<NormalUser> normalUsers = simpleSourceGeneratorMapper.isNull(1);
+        Assert.assertEquals(0, normalUsers.size());
+    }
+
+    @Test
+    public void simpleIsNotNull() {
+        List<NormalUser> normalUsers = simpleSourceGeneratorMapper.isNotNull(1);
+        Assert.assertEquals(31, normalUsers.size());
+    }
+
+
+    @Test
+    public void simpleLike() {
+        List<NormalUser> normalUsers = simpleSourceGeneratorMapper.like("0000");
+        Assert.assertEquals(26, normalUsers.size());
+    }
+
+    @Test
+    public void simpleLikeRight() {
+        List<NormalUser> normalUsers = simpleSourceGeneratorMapper.like("200");
+        Assert.assertEquals(31, normalUsers.size());
+    }
+
+    @Test
+    public void simpleLikeLeft() {
+        List<NormalUser> normalUsers = simpleSourceGeneratorMapper.like("001");
+        Assert.assertEquals(13, normalUsers.size());
+    }
+
+    @Test
+    public void simpleGreaterThan() {
+        List<NormalUser> normalUsers = simpleSourceGeneratorMapper.greaterThan(30);
+        Assert.assertEquals(3, normalUsers.size());
+    }
+
+    @Test
+    public void simpleGreaterThanEqual() {
+        List<NormalUser> normalUsers = simpleSourceGeneratorMapper.greaterThanEqual(30);
+        Assert.assertEquals(25, normalUsers.size());
+    }
+
+    @Test
+    public void simpleLessThan() {
+        List<NormalUser> normalUsers = simpleSourceGeneratorMapper.lessThan(30);
+        Assert.assertEquals(6, normalUsers.size());
+    }
+
+    @Test
+    public void simpleLessThanEqual() {
+        List<NormalUser> normalUsers = simpleSourceGeneratorMapper.lessThanEqual(30);
+        Assert.assertEquals(28, normalUsers.size());
+    }
+
+
 }

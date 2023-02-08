@@ -26,7 +26,7 @@ public class LessThanEqualConditional implements SingleConditionalSnippet {
     public String snippet(BatisColumnAttribute columnAttribute) {
         LessThanEqual equal = columnAttribute.findAnnotation(LessThanEqual.class);
         String conditionSql = "AND " + columnPlaceholder.holder(columnAttribute.useColumn(equal))
-                + " <![CDATA[=<]]> " + placeholder.holder(columnAttribute);
+                + " <![CDATA[<=]]> " + placeholder.holder(columnAttribute);
         if (columnAttribute.useDynamic(equal)) {
             return MyBatisSnippetUtils.ifNonNullObject(placeholder.path(columnAttribute),
                     conditionSql);
