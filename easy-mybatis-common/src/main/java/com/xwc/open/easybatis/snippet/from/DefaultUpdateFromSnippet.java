@@ -1,8 +1,6 @@
 package com.xwc.open.easybatis.snippet.from;
 
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
-import com.xwc.open.easy.parse.utils.StringUtils;
-import com.xwc.open.easybatis.annotaions.UpdateSql;
 
 /**
  * 类描述：
@@ -14,11 +12,12 @@ public class DefaultUpdateFromSnippet implements UpdateFromSnippet {
     @Override
     public String from(OperateMethodMeta tableMeta) {
         // 逻辑删除注解使用的事DeleteSql 但是实际走的是更新逻辑 UpdateSql不一定存在
-        UpdateSql updateSql = tableMeta.findAnnotation(UpdateSql.class);
-        if (updateSql != null && StringUtils.hasText(updateSql.join())) {
-            return " UPDATE " + updateSql.join();
-        } else {
-            return " UPDATE " + tableMeta.getDatabaseMeta().getTableName();
-        }
+//        UpdateSql updateSql = tableMeta.findAnnotation(UpdateSql.class);
+//        if (updateSql != null) {
+//            return " UPDATE " + updateSql.join();
+//        } else {
+//            return " UPDATE " + tableMeta.getDatabaseMeta().getTableName();
+//        }
+        return " UPDATE " + tableMeta.getDatabaseMeta().getTableName();
     }
 }

@@ -38,13 +38,6 @@ public @interface LessThan {
      */
     String alias() default "";
 
-    /**
-     * 关联属性
-     * <p>
-     * 必须和@Between注解被标识的属性同时在参数上或者同一对象中
-     *
-     * @return
-     */
-    String of() default "";
+
 
 }

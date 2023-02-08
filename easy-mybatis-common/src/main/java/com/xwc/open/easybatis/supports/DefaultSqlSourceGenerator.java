@@ -16,6 +16,7 @@ import com.xwc.open.easybatis.snippet.column.DefaultInsertColumn;
 import com.xwc.open.easybatis.snippet.column.DefaultSelectColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.InsertColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.SelectColumnSnippet;
+import com.xwc.open.easybatis.snippet.conditional.*;
 import com.xwc.open.easybatis.snippet.from.*;
 import com.xwc.open.easybatis.snippet.order.DefaultOrderSnippet;
 import com.xwc.open.easybatis.snippet.order.OrderSnippet;
@@ -92,35 +93,39 @@ public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
     }
 
     public void registryDefaultConditional() {
+        // 比较查询
         this.conditionalRegistry.register(Equal.class,
-                new EqualConditionalSnippet(batisPlaceholder, columnPlaceholder));
+                new EqualConditional(batisPlaceholder, columnPlaceholder));
         this.conditionalRegistry.register(NotEqual.class,
-                new NotEqualsConditionalSnippet(batisPlaceholder, columnPlaceholder));
+                new NotEqualsConditional(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(GreaterThan.class,
+                new GreaterThanConditional(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(GreaterThanEqual.class,
+                new GreaterThanEqualConditional(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(LessThan.class,
+                new LessThanConditional(batisPlaceholder, columnPlaceholder));
+        this.conditionalRegistry.register(LessThanEqual.class,
+                new LessThanEqualConditional(batisPlaceholder, columnPlaceholder));
 
+        // 模糊查询
         this.conditionalRegistry.register(Like.class,
-                new LikeConditionalSnippet(batisPlaceholder, columnPlaceholder));
+                new LikeConditional(batisPlaceholder, columnPlaceholder));
         this.conditionalRegistry.register(LikeLeft.class,
-                new LikeLeftConditionalSnippet(batisPlaceholder, columnPlaceholder));
+                new LikeLeftConditional(batisPlaceholder, columnPlaceholder));
         this.conditionalRegistry.register(LikeRight.class,
-                new LikeRightConditionalSnippet(batisPlaceholder, columnPlaceholder));
+                new LikeRightConditional(batisPlaceholder, columnPlaceholder));
 
+        // 空判断
         this.conditionalRegistry.register(IsNull.class,
-                new IsNullConditionalSnippet(batisPlaceholder, columnPlaceholder));
+                new IsNullConditional(batisPlaceholder, columnPlaceholder));
         this.conditionalRegistry.register(IsNotNull.class,
-                new IsNotNullConditionalSnippet(batisPlaceholder, columnPlaceholder));
+                new IsNotNullConditional(batisPlaceholder, columnPlaceholder));
 
-//        this.conditionalRegistry.register(Like.class,
-//                new LikeConditionalSnippet(batisPlaceholder, columnPlaceholder));
-//        this.conditionalRegistry.register(LikeLeft.class,
-//                new LikeLeftConditionalSnippet(batisPlaceholder, columnPlaceholder));
-//        this.conditionalRegistry.register(LikeRight.class,
-//                new LikeRightConditionalSnippet(batisPlaceholder, columnPlaceholder));
-
-
+        // 范围查询
         this.conditionalRegistry.register(Between.class,
-                new BetweenConditionalSnippet(batisPlaceholder, columnPlaceholder));
+                new BetweenConditional(batisPlaceholder, columnPlaceholder));
         this.conditionalRegistry.register(In.class,
-                new InConditionalSnippet(batisPlaceholder, columnPlaceholder));
+                new InConditional(batisPlaceholder, columnPlaceholder));
 
     }
 

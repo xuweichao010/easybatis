@@ -1,7 +1,7 @@
 package com.xwc.open.easybatis.snippet.conditional;
 
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
-import com.xwc.open.easybatis.annotaions.conditions.Like;
+import com.xwc.open.easybatis.annotaions.conditions.LikeLeft;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
 import com.xwc.open.easybatis.supports.ColumnPlaceholder;
@@ -24,7 +24,7 @@ public class LikeLeftConditional implements SingleConditionalSnippet {
 
     @Override
     public String snippet(BatisColumnAttribute columnAttribute) {
-        Like like = columnAttribute.findAnnotation(Like.class);
+        LikeLeft like = columnAttribute.findAnnotation(LikeLeft.class);
         String conditionSql = "AND " + columnPlaceholder.holder(columnAttribute.useColumn(like))
                 + " LIKE CONCAT('%'," + placeholder.holder(columnAttribute) + ") ";
         if (columnAttribute.useDynamic(like)) {

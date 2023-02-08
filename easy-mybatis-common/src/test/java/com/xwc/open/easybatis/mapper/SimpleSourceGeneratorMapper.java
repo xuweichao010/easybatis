@@ -6,9 +6,7 @@ import com.xwc.open.easybatis.annotaions.DeleteSql;
 import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.annotaions.SelectSql;
 import com.xwc.open.easybatis.annotaions.UpdateSql;
-import com.xwc.open.easybatis.annotaions.conditions.Between;
-import com.xwc.open.easybatis.annotaions.conditions.Equal;
-import com.xwc.open.easybatis.annotaions.conditions.In;
+import com.xwc.open.easybatis.annotaions.conditions.*;
 import com.xwc.open.easybatis.annotaions.order.Asc;
 import com.xwc.open.easybatis.annotaions.order.Desc;
 import com.xwc.open.easybatis.annotaions.order.OrderBy;
@@ -146,6 +144,37 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
 
     @UpdateSql
     int update(NormalUser normalUser);
+
+    @SelectSql
+    List<NormalUser> notEqual(@NotEqual Integer age);
+
+    @SelectSql
+    List<NormalUser> isNull(@IsNull Integer age);
+
+    @SelectSql
+    List<NormalUser> isNotNull(@IsNotNull Integer age);
+
+    @SelectSql
+    List<NormalUser> like(@Like String orgCode);
+
+    @SelectSql
+    List<NormalUser> likeLeft(@LikeLeft String orgCode);
+
+    @SelectSql
+    List<NormalUser> likeRight(@LikeRight String orgCode);
+
+    @SelectSql
+    List<NormalUser> greaterThan(@GreaterThan Integer age);
+
+    @SelectSql
+    List<NormalUser> greaterThanEqual(@GreaterThanEqual Integer age);
+
+    @SelectSql
+    List<NormalUser> lessThan(@LessThan Integer age);
+
+    @SelectSql
+    List<NormalUser> lessThanEqual(@LessThanEqual Integer age);
+
 
     @UpdateSql
     @Dynamic
