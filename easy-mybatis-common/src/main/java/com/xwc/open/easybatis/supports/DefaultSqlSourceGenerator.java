@@ -13,7 +13,6 @@ import com.xwc.open.easybatis.annotaions.other.Count;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.exceptions.ParamCheckException;
 import com.xwc.open.easybatis.snippet.column.DefaultInsertColumn;
-import com.xwc.open.easybatis.snippet.column.DefaultSelectColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.InsertColumnSnippet;
 import com.xwc.open.easybatis.snippet.column.SelectColumnSnippet;
 import com.xwc.open.easybatis.snippet.conditional.*;
@@ -42,90 +41,124 @@ import java.util.stream.Collectors;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/12 15:05
  */
-public class DefaultSqlSourceGenerator implements SqlSourceGenerator {
+public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
 
-    private EasyBatisConfiguration easyBatisConfiguration;
+    private final EasyBatisConfiguration easyBatisConfiguration;
 
-    private ColumnPlaceholder columnPlaceholder = new DefaultColumnPlaceholder();
+    private final InsertFromSnippet insertSqlFrom;
 
-    private BatisPlaceholder batisPlaceholder = new MybatisPlaceholder();
+    private final InsertColumnSnippet insertColumnSnippet;
 
-    private InsertFromSnippet insertSqlFrom;
+    private final InsertValuesSnippet insertValuesSnippet;
 
-    private InsertColumnSnippet insertColumnSnippet;
+    private final SelectFromSnippet selectSqlFrom;
 
-    private InsertValuesSnippet insertValuesSnippet;
+    private final WhereSnippet whereSnippet;
 
-    private ConditionalRegistry conditionalRegistry;
+    private final OrderSnippet orderSnippet;
 
-    private SelectColumnSnippet selectColumnSnippet;
+    private final PageSnippet pageSnippet;
 
-    private SelectFromSnippet selectSqlFrom;
+    private final UpdateFromSnippet updateFromSnippet;
 
-    private WhereSnippet whereSnippet;
+    private final SetSnippet setSnippet;
 
-    private OrderSnippet orderSnippet;
+    private final DeleteFromSnippet deleteFromSnippet;
 
-    private PageSnippet pageSnippet;
 
-    private UpdateFromSnippet updateFromSnippet;
+    public DefaultSqlSourceGenerator(EasyBatisConfiguration easyBatisConfiguration,
+                                     InsertFromSnippet insertSqlFrom,
+                                     InsertColumnSnippet insertColumnSnippet,
+                                     InsertValuesSnippet insertValuesSnippet,
+                                     SelectFromSnippet selectSqlFrom,
+                                     WhereSnippet whereSnippet,
+                                     OrderSnippet orderSnippet,
+                                     PageSnippet pageSnippet,
+                                     UpdateFromSnippet updateFromSnippet,
+                                     SetSnippet setSnippet,
+                                     DeleteFromSnippet deleteFromSnippet) {
 
-    private SetSnippet setSnippet;
+        this.easyBatisConfiguration = easyBatisConfiguration;
+        this.insertSqlFrom = insertSqlFrom;
+        this.insertColumnSnippet = insertColumnSnippet;
+        this.insertValuesSnippet = insertValuesSnippet;
+        this.selectSqlFrom = selectSqlFrom;
+        this.whereSnippet = whereSnippet;
+        this.orderSnippet = orderSnippet;
+        this.pageSnippet = pageSnippet;
+        this.updateFromSnippet = updateFromSnippet;
+        this.setSnippet = setSnippet;
+        this.deleteFromSnippet = deleteFromSnippet;
+    }
 
-    private DeleteFromSnippet deleteFromSnippet;
+    public DefaultSqlSourceGenerator(SqlPlaceholder sqlPlaceholder,
+                                     BatisPlaceholder batisPlaceholder,
+                                     SelectColumnSnippet selectColumnSnippet,
+                                     ConditionalRegistry conditionalRegistry,
+                                     EasyBatisConfiguration easyBatisConfiguration,
+                                     InsertFromSnippet insertSqlFrom,
+                                     InsertColumnSnippet insertColumnSnippet,
+                                     InsertValuesSnippet insertValuesSnippet,
+                                     SelectFromSnippet selectSqlFrom,
+                                     WhereSnippet whereSnippet,
+                                     OrderSnippet orderSnippet,
+                                     PageSnippet pageSnippet,
+                                     UpdateFromSnippet updateFromSnippet,
+                                     SetSnippet setSnippet,
+                                     DeleteFromSnippet deleteFromSnippet) {
 
+        super(sqlPlaceholder, batisPlaceholder, selectColumnSnippet, conditionalRegistry);
+        this.easyBatisConfiguration = easyBatisConfiguration;
+        this.insertSqlFrom = insertSqlFrom;
+        this.insertColumnSnippet = insertColumnSnippet;
+        this.insertValuesSnippet = insertValuesSnippet;
+        this.selectSqlFrom = selectSqlFrom;
+        this.whereSnippet = whereSnippet;
+        this.orderSnippet = orderSnippet;
+        this.pageSnippet = pageSnippet;
+        this.updateFromSnippet = updateFromSnippet;
+        this.setSnippet = setSnippet;
+        this.deleteFromSnippet = deleteFromSnippet;
+    }
 
     public DefaultSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration) {
         this.easyBatisConfiguration = easyMyBatisConfiguration;
         this.insertSqlFrom = new DefaultInsertFrom();
-        this.insertColumnSnippet = new DefaultInsertColumn(new DefaultColumnPlaceholder());
-        this.insertValuesSnippet = new DefaultInsertValues(new MybatisPlaceholder());
-        this.selectColumnSnippet = new DefaultSelectColumnSnippet(new DefaultColumnPlaceholder());
-        this.selectSqlFrom = new DefaultSelectFrom(this.selectColumnSnippet);
-        this.conditionalRegistry = new DefaultConditionalRegistry();
-        this.whereSnippet = new DefaultWhereSnippet(this.conditionalRegistry, new MybatisPlaceholder());
-        this.orderSnippet = new DefaultOrderSnippet(new MybatisPlaceholder());
-        this.pageSnippet = new DefaultPageSnippet(new MybatisPlaceholder());
+        this.insertColumnSnippet = new DefaultInsertColumn(this);
+        this.insertValuesSnippet = new DefaultInsertValues(this);
+        this.selectSqlFrom = new DefaultSelectFrom(this);
+
+        this.whereSnippet = new DefaultWhereSnippet(this);
+        this.orderSnippet = new DefaultOrderSnippet(this);
+        this.pageSnippet = new DefaultPageSnippet(this);
         this.updateFromSnippet = new DefaultUpdateFromSnippet();
-        this.setSnippet = new DefaultSetSnippet(batisPlaceholder, columnPlaceholder);
+        this.setSnippet = new DefaultSetSnippet(this);
         this.deleteFromSnippet = new DefaultDeleteFromSnippet();
         this.registryDefaultConditional();
     }
 
     public void registryDefaultConditional() {
+        ConditionalRegistry conditionalRegistry = this.getConditionalRegistry();
         // 比较查询
-        this.conditionalRegistry.register(Equal.class,
-                new EqualConditional(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(NotEqual.class,
-                new NotEqualsConditional(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(GreaterThan.class,
-                new GreaterThanConditional(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(GreaterThanEqual.class,
-                new GreaterThanEqualConditional(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(LessThan.class,
-                new LessThanConditional(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(LessThanEqual.class,
-                new LessThanEqualConditional(batisPlaceholder, columnPlaceholder));
+        conditionalRegistry.register(Equal.class, new EqualConditional(this));
+        conditionalRegistry.register(NotEqual.class, new NotEqualsConditional(this));
+        conditionalRegistry.register(GreaterThan.class, new GreaterThanConditional(this));
+        conditionalRegistry.register(GreaterThanEqual.class, new GreaterThanEqualConditional(this));
+        conditionalRegistry.register(LessThan.class, new LessThanConditional(this));
+        conditionalRegistry.register(LessThanEqual.class, new LessThanEqualConditional(this));
 
         // 模糊查询
-        this.conditionalRegistry.register(Like.class,
-                new LikeConditional(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(LikeLeft.class,
-                new LikeLeftConditional(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(LikeRight.class,
-                new LikeRightConditional(batisPlaceholder, columnPlaceholder));
+        conditionalRegistry.register(Like.class, new LikeConditional(this));
+        conditionalRegistry.register(LikeLeft.class, new LikeLeftConditional(this));
+        conditionalRegistry.register(LikeRight.class, new LikeRightConditional(this));
 
         // 空判断
-        this.conditionalRegistry.register(IsNull.class,
-                new IsNullConditional(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(IsNotNull.class,
-                new IsNotNullConditional(batisPlaceholder, columnPlaceholder));
+        conditionalRegistry.register(IsNull.class, new IsNullConditional(this));
+        conditionalRegistry.register(IsNotNull.class, new IsNotNullConditional(this));
 
         // 范围查询
-        this.conditionalRegistry.register(Between.class,
-                new BetweenConditional(batisPlaceholder, columnPlaceholder));
-        this.conditionalRegistry.register(In.class,
-                new InConditional(batisPlaceholder, columnPlaceholder));
+        conditionalRegistry.register(Between.class, new BetweenConditional(this));
+        conditionalRegistry.register(In.class, new InConditional(this));
 
     }
 

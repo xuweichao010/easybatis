@@ -11,6 +11,7 @@ import com.xwc.open.easybatis.exceptions.NotFoundException;
 import com.xwc.open.easybatis.snippet.conditional.ConditionalSnippet;
 import com.xwc.open.easybatis.snippet.conditional.MultiConditionalSnippet;
 import com.xwc.open.easybatis.snippet.conditional.SingleConditionalSnippet;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
 import com.xwc.open.easybatis.supports.ConditionalRegistry;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -26,18 +27,17 @@ import java.util.stream.Collectors;
  * 时间 2023/1/29 15:17
  */
 public class DefaultWhereSnippet implements WhereSnippet {
-    final ConditionalRegistry conditionalRegistry;
-    final BatisPlaceholder placeholder;
+    private final AbstractBatisSourceGenerator sourceGenerator;
 
-    public DefaultWhereSnippet(ConditionalRegistry conditionalRegistry, BatisPlaceholder batisPlaceholder) {
-        this.conditionalRegistry = conditionalRegistry;
-        this.placeholder = batisPlaceholder;
+    public DefaultWhereSnippet(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
 
     @Override
     public String where(List<BatisColumnAttribute> batisColumnAttributes) {
         AtomicBoolean dynamic = new AtomicBoolean(false);
-
+        ConditionalRegistry conditionalRegistry = this.sourceGenerator.getConditionalRegistry();
+        BatisPlaceholder batisPlaceholder = this.sourceGenerator.getBatisPlaceholder();
         /**
          * 这里我们需要排除 order 、 group  page的情况
          *
@@ -86,7 +86,7 @@ public class DefaultWhereSnippet implements WhereSnippet {
         Map<String, BatisColumnAttribute> singleConditionalSnippetMap;
         if (conditionalSnippetMap.get(SingleConditionalSnippet.class) != null) {
             singleConditionalSnippetMap = conditionalSnippetMap.get(SingleConditionalSnippet.class)
-                    .stream().collect(Collectors.toMap(placeholder::path, val -> val));
+                    .stream().collect(Collectors.toMap(batisPlaceholder::path, val -> val));
         } else {
             singleConditionalSnippetMap = new HashMap<>();
         }
@@ -110,7 +110,7 @@ public class DefaultWhereSnippet implements WhereSnippet {
                             if (fromAttribute.isMulti() && fromAttribute.getPath().length > 1) {
                                 String[] ofPath = fromAttribute.getPath().clone();
                                 ofPath[ofPath.length - 1] = of;
-                                of = placeholder.join(ofPath);
+                                of = batisPlaceholder.join(ofPath);
                             }
                             BatisColumnAttribute ofAttribute = singleConditionalSnippetMap.remove(of);
                             if (ofAttribute == null) {

@@ -3,8 +3,9 @@ package com.xwc.open.easybatis.snippet.conditional;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.annotaions.conditions.Like;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
-import com.xwc.open.easybatis.supports.ColumnPlaceholder;
+import com.xwc.open.easybatis.supports.SqlPlaceholder;
 
 /**
  * 类描述：等值SQL片段
@@ -13,22 +14,22 @@ import com.xwc.open.easybatis.supports.ColumnPlaceholder;
  */
 public class LikeRightConditional implements SingleConditionalSnippet {
 
-    private BatisPlaceholder placeholder;
 
-    private ColumnPlaceholder columnPlaceholder;
+    private final AbstractBatisSourceGenerator sourceGenerator;
 
-    public LikeRightConditional(BatisPlaceholder placeholder, ColumnPlaceholder columnPlaceholder) {
-        this.placeholder = placeholder;
-        this.columnPlaceholder = columnPlaceholder;
+    public LikeRightConditional(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
 
     @Override
     public String snippet(BatisColumnAttribute columnAttribute) {
+        BatisPlaceholder batisPlaceholder = this.sourceGenerator.getBatisPlaceholder();
+        SqlPlaceholder sqlPlaceholder = this.sourceGenerator.getSqlPlaceholder();
         Like like = columnAttribute.findAnnotation(Like.class);
-        String conditionSql = "AND " + columnPlaceholder.holder(columnAttribute.useColumn(like))
-                + " LIKE CONCAT(" + placeholder.holder(columnAttribute) + ",'%') ";
+        String conditionSql = "AND " + sqlPlaceholder.holder(columnAttribute.useColumn(like))
+                + " LIKE CONCAT(" + batisPlaceholder.holder(columnAttribute) + ",'%') ";
         if (columnAttribute.useDynamic(like)) {
-            return MyBatisSnippetUtils.ifNonNullObject(placeholder.path(columnAttribute),
+            return MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(columnAttribute),
                     conditionSql);
         } else {
             return conditionSql;

@@ -4,7 +4,7 @@ import com.xwc.open.easy.parse.model.FillAttribute;
 import com.xwc.open.easy.parse.model.ModelAttribute;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.model.TableMeta;
-import com.xwc.open.easybatis.snippet.column.SelectColumnSnippet;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,17 +16,19 @@ import java.util.List;
  */
 public class DefaultSelectFrom implements SelectFromSnippet {
 
-    final SelectColumnSnippet selectColumnSnippet;
 
-    public DefaultSelectFrom(SelectColumnSnippet selectColumnSnippet) {
-        this.selectColumnSnippet = selectColumnSnippet;
+    private final AbstractBatisSourceGenerator sourceGenerator;
+
+    public DefaultSelectFrom(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
 
 
     @Override
     public String from(OperateMethodMeta operateMethodMeta) {
         List<ModelAttribute> modelAttributes = selectColumnAttribute(operateMethodMeta.getDatabaseMeta());
-        return "SELECT " + selectColumnSnippet.columns(operateMethodMeta, modelAttributes) + " FROM " + operateMethodMeta.getDatabaseMeta().getTableName();
+        return "SELECT " + sourceGenerator.getSelectColumnSnippet().columns(operateMethodMeta, modelAttributes) + " " +
+                "FROM " + operateMethodMeta.getDatabaseMeta().getTableName();
     }
 
     public List<ModelAttribute> selectColumnAttribute(TableMeta tableMeta) {

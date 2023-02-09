@@ -7,6 +7,7 @@ import com.xwc.open.easybatis.annotaions.order.Asc;
 import com.xwc.open.easybatis.annotaions.order.Desc;
 import com.xwc.open.easybatis.annotaions.order.OrderBy;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
 
 import java.lang.annotation.Annotation;
@@ -23,16 +24,16 @@ import java.util.stream.Stream;
  */
 public class DefaultOrderSnippet implements OrderSnippet {
 
-    public String ORDER_BY = " ORDER BY ";
+    public static final String ORDER_BY = " ORDER BY ";
 
     private static final Set<Class<? extends Annotation>> orderAnnotationTypes = Stream
             .of(Asc.class, Desc.class)
             .collect(Collectors.toSet());
 
-    private final BatisPlaceholder batisPlaceholder;
+    private final AbstractBatisSourceGenerator sourceGenerator;
 
-    public DefaultOrderSnippet(BatisPlaceholder batisPlaceholder) {
-        this.batisPlaceholder = batisPlaceholder;
+    public DefaultOrderSnippet(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
 
     @Override
@@ -50,6 +51,7 @@ public class DefaultOrderSnippet implements OrderSnippet {
     }
 
     private String orderAttribute(List<BatisColumnAttribute> batisColumnAttributes) {
+        BatisPlaceholder batisPlaceholder = sourceGenerator.getBatisPlaceholder();
         List<BatisColumnAttribute> orderBatisColumn = batisColumnAttributes
                 .stream().filter(attribute -> chooseOrder(attribute) != null)
                 .sorted(Comparator.comparingInt(BatisColumnAttribute::getIndex)).collect(Collectors.toList());

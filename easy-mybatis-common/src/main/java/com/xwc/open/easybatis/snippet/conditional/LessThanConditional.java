@@ -3,8 +3,9 @@ package com.xwc.open.easybatis.snippet.conditional;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.annotaions.conditions.LessThan;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
-import com.xwc.open.easybatis.supports.ColumnPlaceholder;
+import com.xwc.open.easybatis.supports.SqlPlaceholder;
 
 /**
  * 类描述：等值SQL片段
@@ -13,22 +14,22 @@ import com.xwc.open.easybatis.supports.ColumnPlaceholder;
  */
 public class LessThanConditional implements SingleConditionalSnippet {
 
-    private BatisPlaceholder placeholder;
 
-    private ColumnPlaceholder columnPlaceholder;
+    private final AbstractBatisSourceGenerator sourceGenerator;
 
-    public LessThanConditional(BatisPlaceholder placeholder, ColumnPlaceholder columnPlaceholder) {
-        this.placeholder = placeholder;
-        this.columnPlaceholder = columnPlaceholder;
+    public LessThanConditional(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
 
     @Override
     public String snippet(BatisColumnAttribute columnAttribute) {
+        BatisPlaceholder batisPlaceholder = this.sourceGenerator.getBatisPlaceholder();
+        SqlPlaceholder sqlPlaceholder = this.sourceGenerator.getSqlPlaceholder();
         LessThan equal = columnAttribute.findAnnotation(LessThan.class);
-        String conditionSql = "AND " + columnPlaceholder.holder(columnAttribute.useColumn(equal))
-                + " <![CDATA[<]]> " + placeholder.holder(columnAttribute);
+        String conditionSql = "AND " + sqlPlaceholder.holder(columnAttribute.useColumn(equal))
+                + " <![CDATA[<]]> " + batisPlaceholder.holder(columnAttribute);
         if (columnAttribute.useDynamic(equal)) {
-            return MyBatisSnippetUtils.ifNonNullObject(placeholder.path(columnAttribute),
+            return MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(columnAttribute),
                     conditionSql);
         } else {
             return conditionSql;

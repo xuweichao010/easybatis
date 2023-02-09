@@ -3,8 +3,9 @@ package com.xwc.open.easybatis.snippet.conditional;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.annotaions.conditions.In;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
-import com.xwc.open.easybatis.supports.ColumnPlaceholder;
+import com.xwc.open.easybatis.supports.SqlPlaceholder;
 
 /**
  * 类描述：等值SQL片段
@@ -13,24 +14,23 @@ import com.xwc.open.easybatis.supports.ColumnPlaceholder;
  */
 public class InConditional implements SingleConditionalSnippet {
 
-    private BatisPlaceholder placeholder;
+    private final AbstractBatisSourceGenerator sourceGenerator;
 
-    private ColumnPlaceholder columnPlaceholder;
-
-    public InConditional(BatisPlaceholder placeholder, ColumnPlaceholder columnPlaceholder) {
-        this.placeholder = placeholder;
-        this.columnPlaceholder = columnPlaceholder;
+    public InConditional(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
 
     @Override
     public String snippet(BatisColumnAttribute columnAttribute) {
+        BatisPlaceholder batisPlaceholder = this.sourceGenerator.getBatisPlaceholder();
+        SqlPlaceholder sqlPlaceholder = this.sourceGenerator.getSqlPlaceholder();
         In In = columnAttribute.findAnnotation(In.class);
         String path = columnAttribute.isMulti() || columnAttribute.getPath().length > 1 ?
-                placeholder.path(columnAttribute) : "collection";
+                batisPlaceholder.path(columnAttribute) : "collection";
         String conditionSql =
-                "AND " + columnPlaceholder.holder(columnAttribute.useColumn(In)) + " IN " + MyBatisSnippetUtils.foreachItem("item", path);
+                "AND " + sqlPlaceholder.holder(columnAttribute.useColumn(In)) + " IN " + MyBatisSnippetUtils.foreachItem("item", path);
         if (columnAttribute.useDynamic(In)) {
-            return MyBatisSnippetUtils.ifNonNullObject(placeholder.path(columnAttribute), conditionSql);
+            return MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(columnAttribute), conditionSql);
         } else {
             return conditionSql;
         }

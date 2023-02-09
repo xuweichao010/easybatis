@@ -3,8 +3,9 @@ package com.xwc.open.easybatis.snippet.conditional;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.annotaions.conditions.GreaterThanEqual;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
-import com.xwc.open.easybatis.supports.ColumnPlaceholder;
+import com.xwc.open.easybatis.supports.SqlPlaceholder;
 
 /**
  * 类描述：等值SQL片段
@@ -13,22 +14,21 @@ import com.xwc.open.easybatis.supports.ColumnPlaceholder;
  */
 public class GreaterThanEqualConditional implements SingleConditionalSnippet {
 
-    private BatisPlaceholder placeholder;
+    private final AbstractBatisSourceGenerator sourceGenerator;
 
-    private ColumnPlaceholder columnPlaceholder;
-
-    public GreaterThanEqualConditional(BatisPlaceholder placeholder, ColumnPlaceholder columnPlaceholder) {
-        this.placeholder = placeholder;
-        this.columnPlaceholder = columnPlaceholder;
+    public GreaterThanEqualConditional(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
 
     @Override
     public String snippet(BatisColumnAttribute columnAttribute) {
+        BatisPlaceholder batisPlaceholder = this.sourceGenerator.getBatisPlaceholder();
+        SqlPlaceholder sqlPlaceholder = this.sourceGenerator.getSqlPlaceholder();
         GreaterThanEqual equal = columnAttribute.findAnnotation(GreaterThanEqual.class);
-        String conditionSql = "AND " + columnPlaceholder.holder(columnAttribute.useColumn(equal))
-                + " <![CDATA[>=]]> " + placeholder.holder(columnAttribute);
+        String conditionSql = "AND " + sqlPlaceholder.holder(columnAttribute.useColumn(equal))
+                + " <![CDATA[>=]]> " + batisPlaceholder.holder(columnAttribute);
         if (columnAttribute.useDynamic(equal)) {
-            return MyBatisSnippetUtils.ifNonNullObject(placeholder.path(columnAttribute),
+            return MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(columnAttribute),
                     conditionSql);
         } else {
             return conditionSql;

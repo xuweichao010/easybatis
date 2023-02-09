@@ -4,6 +4,7 @@ import com.xwc.open.easy.parse.model.parameter.CollectionEntityParameterAttribut
 import com.xwc.open.easy.parse.model.parameter.EntityParameterAttribute;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
 
 import java.util.List;
@@ -15,28 +16,31 @@ import java.util.stream.Collectors;
  * 时间 2023/1/16 14:07
  */
 public class DefaultInsertValues implements InsertValuesSnippet {
-    private BatisPlaceholder placeholder;
+    private final AbstractBatisSourceGenerator sourceGenerator;
 
-    public DefaultInsertValues(BatisPlaceholder placeholder) {
-        this.placeholder = placeholder;
+    public DefaultInsertValues(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
 
     @Override
     public String values(EntityParameterAttribute parameterAttribute, List<BatisColumnAttribute> batisColumnAttributes) {
+        BatisPlaceholder batisPlaceholder = this.sourceGenerator.getBatisPlaceholder();
         boolean isCollections = parameterAttribute instanceof CollectionEntityParameterAttribute;
-        return isCollections ? insertCollection(parameterAttribute, batisColumnAttributes) : insertOne(batisColumnAttributes);
+        return isCollections ? insertCollection(parameterAttribute, batisColumnAttributes) :
+                insertOne(batisColumnAttributes, batisPlaceholder);
     }
 
     private String insertCollection(EntityParameterAttribute parameterAttribute,
                                     List<BatisColumnAttribute> batisColumnAttributes) {
+        BatisPlaceholder batisPlaceholder = this.sourceGenerator.getBatisPlaceholder();
         String collectionName = parameterAttribute.isMulti() ? parameterAttribute.getParameterName() : "collection";
-        String contentValue = insertOne(batisColumnAttributes);
+        String contentValue = insertOne(batisColumnAttributes, batisPlaceholder);
         return MyBatisSnippetUtils.foreachObject(parameterAttribute.getParameterName(), "index", collectionName,
                 contentValue);
     }
 
-    private String insertOne(List<BatisColumnAttribute> batisColumnAttributes) {
-        return " (" + batisColumnAttributes.stream().map(placeholder::holder).collect(Collectors.joining(
+    private String insertOne(List<BatisColumnAttribute> batisColumnAttributes, BatisPlaceholder batisPlaceholder) {
+        return " (" + batisColumnAttributes.stream().map(batisPlaceholder::holder).collect(Collectors.joining(
                 ",")) + ")";
     }
 }

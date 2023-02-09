@@ -3,8 +3,9 @@ package com.xwc.open.easybatis.snippet.set;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.annotaions.set.SetParam;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
-import com.xwc.open.easybatis.supports.ColumnPlaceholder;
+import com.xwc.open.easybatis.supports.SqlPlaceholder;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.util.List;
@@ -18,13 +19,10 @@ import java.util.stream.Collectors;
 public class DefaultSetSnippet implements SetSnippet {
 
 
-    private BatisPlaceholder placeholder;
+    private final AbstractBatisSourceGenerator sourceGenerator;
 
-    private ColumnPlaceholder columnPlaceholder;
-
-    public DefaultSetSnippet(BatisPlaceholder placeholder, ColumnPlaceholder columnPlaceholder) {
-        this.placeholder = placeholder;
-        this.columnPlaceholder = columnPlaceholder;
+    public DefaultSetSnippet(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
 
     @Override
@@ -43,11 +41,13 @@ public class DefaultSetSnippet implements SetSnippet {
     }
 
     public String doSet(List<BatisColumnAttribute> setParams) {
+        BatisPlaceholder batisPlaceholder = sourceGenerator.getBatisPlaceholder();
+        SqlPlaceholder sqlPlaceholder = sourceGenerator.getSqlPlaceholder();
         return setParams.stream().map(set -> {
             SetParam annotation = set.findAnnotation(SetParam.class);
-            String setSql = columnPlaceholder.holder(set.useColumn(annotation)) + "=" + placeholder.holder(set) + ",";
+            String setSql = sqlPlaceholder.holder(set.useColumn(annotation)) + "=" + batisPlaceholder.holder(set) + ",";
             if (set.useDynamic(annotation)) {
-                setSql = MyBatisSnippetUtils.ifNonNullObject(placeholder.path(set), setSql);
+                setSql = MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(set), setSql);
             }
             return setSql;
         }).collect(Collectors.joining(" "));

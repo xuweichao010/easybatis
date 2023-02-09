@@ -4,6 +4,7 @@ import com.xwc.open.easybatis.annotaions.page.Limit;
 import com.xwc.open.easybatis.annotaions.page.Offset;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
 import com.xwc.open.easybatis.exceptions.CheckException;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
 
 import java.lang.annotation.Annotation;
@@ -25,12 +26,12 @@ public class DefaultPageSnippet implements PageSnippet {
             .of(Limit.class, Offset.class)
             .collect(Collectors.toSet());
 
+    private final AbstractBatisSourceGenerator sourceGenerator;
 
-    private BatisPlaceholder placeholder;
-
-    public DefaultPageSnippet(BatisPlaceholder placeholder) {
-        this.placeholder = placeholder;
+    public DefaultPageSnippet(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
+
 
     @Override
     public String page(List<BatisColumnAttribute> batisColumnAttributes) {
@@ -47,6 +48,7 @@ public class DefaultPageSnippet implements PageSnippet {
 
 
     private String doPage(List<BatisColumnAttribute> pageBatisColumns) {
+        BatisPlaceholder batisPlaceholder = sourceGenerator.getBatisPlaceholder();
         Map<Class<? extends Annotation>, BatisColumnAttribute> pageMap = pageBatisColumns.stream()
                 .collect(Collectors.toMap(key -> chooseOrder(key).annotationType(), val -> val));
         BatisColumnAttribute limitAttribute = pageMap.get(Limit.class);
@@ -54,10 +56,10 @@ public class DefaultPageSnippet implements PageSnippet {
         if (limitAttribute == null) {
             throw new CheckException("缺少Limit注解");
         }
-        sqlSnippet += " LIMIT " + placeholder.holder(limitAttribute);
+        sqlSnippet += " LIMIT " + batisPlaceholder.holder(limitAttribute);
         BatisColumnAttribute offsetAttribute = pageMap.get(Offset.class);
         if (offsetAttribute != null) {
-            sqlSnippet += " OFFSET " + placeholder.holder(offsetAttribute);
+            sqlSnippet += " OFFSET " + batisPlaceholder.holder(offsetAttribute);
         }
         return sqlSnippet;
     }

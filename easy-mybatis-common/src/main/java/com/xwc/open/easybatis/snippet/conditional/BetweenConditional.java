@@ -3,8 +3,9 @@ package com.xwc.open.easybatis.snippet.conditional;
 import com.xwc.open.easybatis.MyBatisSnippetUtils;
 import com.xwc.open.easybatis.annotaions.conditions.Between;
 import com.xwc.open.easybatis.binding.BatisColumnAttribute;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
 import com.xwc.open.easybatis.supports.BatisPlaceholder;
-import com.xwc.open.easybatis.supports.ColumnPlaceholder;
+import com.xwc.open.easybatis.supports.SqlPlaceholder;
 
 /**
  * 类描述： Between SQL片段
@@ -13,23 +14,21 @@ import com.xwc.open.easybatis.supports.ColumnPlaceholder;
  */
 public class BetweenConditional implements MultiConditionalSnippet {
 
-    private BatisPlaceholder placeholder;
+    private final AbstractBatisSourceGenerator sourceGenerator;
 
-    private ColumnPlaceholder columnPlaceholder;
-
-    public BetweenConditional(BatisPlaceholder placeholder, ColumnPlaceholder columnPlaceholder) {
-        this.placeholder = placeholder;
-        this.columnPlaceholder = columnPlaceholder;
+    public BetweenConditional(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
-
 
     @Override
     public String snippet(BatisColumnAttribute fromAttribute, BatisColumnAttribute toAttribute) {
+        BatisPlaceholder batisPlaceholder = this.sourceGenerator.getBatisPlaceholder();
+        SqlPlaceholder sqlPlaceholder = this.sourceGenerator.getSqlPlaceholder();
         Between between = fromAttribute.findAnnotation(Between.class);
-        String conditionSql = "AND " + columnPlaceholder.holder(fromAttribute.useColumn(between)) + " BETWEEN " + placeholder.holder(fromAttribute) +
-                " AND " + placeholder.holder(toAttribute);
+        String conditionSql = "AND " + sqlPlaceholder.holder(fromAttribute.useColumn(between)) + " BETWEEN " + batisPlaceholder.holder(fromAttribute) +
+                " AND " + batisPlaceholder.holder(toAttribute);
         if (fromAttribute.isMethodDynamic() || between.dynamic()) {
-            return MyBatisSnippetUtils.ifNonCondition(placeholder.path(fromAttribute), placeholder.path(toAttribute), conditionSql);
+            return MyBatisSnippetUtils.ifNonCondition(batisPlaceholder.path(fromAttribute), batisPlaceholder.path(toAttribute), conditionSql);
         } else {
             return conditionSql;
         }

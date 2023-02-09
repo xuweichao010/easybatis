@@ -6,7 +6,8 @@ import com.xwc.open.easy.parse.utils.StringUtils;
 import com.xwc.open.easybatis.annotaions.SelectSql;
 import com.xwc.open.easybatis.annotaions.other.Count;
 import com.xwc.open.easybatis.annotaions.other.Distinct;
-import com.xwc.open.easybatis.supports.ColumnPlaceholder;
+import com.xwc.open.easybatis.supports.AbstractBatisSourceGenerator;
+import com.xwc.open.easybatis.supports.SqlPlaceholder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +18,10 @@ import java.util.stream.Collectors;
  * 时间 2023/1/25 20:21
  */
 public class DefaultSelectColumnSnippet implements SelectColumnSnippet {
-    ColumnPlaceholder placeholder;
+    private final AbstractBatisSourceGenerator sourceGenerator;
 
-    public DefaultSelectColumnSnippet(ColumnPlaceholder placeholder) {
-        this.placeholder = placeholder;
+    public DefaultSelectColumnSnippet(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
     }
 
     @Override
@@ -41,7 +42,8 @@ public class DefaultSelectColumnSnippet implements SelectColumnSnippet {
             if (count != null) {
                 return " COUNT(*)";
             } else {
-                return columnAttribute.stream().map(ModelAttribute::getColumn).map(placeholder::holder).collect(Collectors.joining(","));
+                SqlPlaceholder sqlPlaceholder = this.sourceGenerator.getSqlPlaceholder();
+                return columnAttribute.stream().map(ModelAttribute::getColumn).map(sqlPlaceholder::holder).collect(Collectors.joining(","));
             }
 
         }
