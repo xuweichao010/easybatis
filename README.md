@@ -6,6 +6,18 @@
 
 Easybatis 是一个Mybatis的增强工具,它在MyBatis的声明式的模式上增强，让我们操作数据层更加简单。
 
+#### 版本计划
+
+关于mybatis部分组件版本根据mybatis的主线版本走 并拓展 M版本 RC版本 GA版本
+
+| mybatis | mybatis-sql                             | Mybatis-Spring | mybatis-atuoConfigure | mybatis-sql-atuoConfigure            |
+| ------- | --------------------------------------- | -------------- | --------------------- | ------------------------------------ |
+| 3.5.+   | 3.5.11.M+<br/>3.5.11.RC+<br/>3.5.11.GA+ | 2.0+           | 2.1.x                 | 2.1.4.M+<br/>2.1.4.RC+<br/>2.1.4.GA+ |
+|         |                                         |                |                       |                                      |
+|         |                                         |                |                       |                                      |
+
+
+
 #### 特性
 - 只做对Mybatis的增强,它的引入不会对原有的mybatis项目产生影响
 - 该增强插件主要是针对Mybatis的Configuration做出改变注入sql，性能基本无损耗。
@@ -256,7 +268,7 @@ public class UserFilter {
 
 ##### EasyMapper
 
-​ 用于标识`easybatis` 需要增强的`mapper`,其中的 `E` 是实体对象的数据类型 ，`K`是主键的数据类型。这个接口是没有任何方法的。
+ 用于标识`easybatis` 需要增强的`mapper`,其中的 `E` 是实体对象的数据类型 ，`K`是主键的数据类型。这个接口是没有任何方法的。
 
 ```
 public interface EasyMapper<E,K> {
@@ -265,7 +277,7 @@ public interface EasyMapper<E,K> {
 
 ##### BaseMapper
 
-​ Easybatis 默认提供的CRUD的接口，如果是参数为K 标识这个参数为主键，如果参数为E 标识参数为数据实体。在整个工具内部是通过  **`@SelectSql`**、**`@UpdateSql`**
+ Easybatis 默认提供的CRUD的接口，如果是参数为K 标识这个参数为主键，如果参数为E 标识参数为数据实体。在整个工具内部是通过  **`@SelectSql`**、**`@UpdateSql`**
 、**`@InsertSql`**、**`@DeleteSql`**，来决定如何具体如何创建SQL的。**所以开发者可以根据自己的需求来构建自己的BaseMapper接口也是允许的，但你必须继承EasyMapper接口及相应的注解规范**。
 
 ```java
@@ -294,11 +306,11 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 
 #### BaseMapper
 
-​ 我们通过BaseMapper来了解一下我们框架是如何做增删改查的，我们继续使用 **`快速开始`** 定义的实体对象
+ 我们通过BaseMapper来了解一下我们框架是如何做增删改查的，我们继续使用 **`快速开始`** 定义的实体对象
 
 ##### selectKey
 
-​ 我们已经在快速开始演示了该方法的执行，这里就不在继续演示了。
+ 我们已经在快速开始演示了该方法的执行，这里就不在继续演示了。
 
 ##### insert 单条写入
 
@@ -525,7 +537,7 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
 
 ##### 总结:
 
-​ 通过上面的CRUD的操作，我们可以发现easybatis 主要是通过接口和注解来动态的构建SQL。来帮助我们在项目的运行时构建我们想要的SQL语句。
+ 通过上面的CRUD的操作，我们可以发现easybatis 主要是通过接口和注解来动态的构建SQL。来帮助我们在项目的运行时构建我们想要的SQL语句。
 
 #### 实体注解
 
@@ -801,7 +813,7 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
   构建一个插入语句
 
   | 属性       | 类型    | 默认值 | 是否必填 | 描述               |
-                | ---------- | ------- | ------ | -------- | ------------------ |
+  | ---------- | ------- | ------ | -------- | ------------------ |
   | databaseId | String  | false  | 否       | 预留属性           |
 
 - 案例
@@ -823,7 +835,7 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
   构建一个删除语句
 
   | 属性       | 类型    | 默认值 | 是否必填 | 描述               |
-                | ---------- | ------- | ------ | -------- | ------------------ |
+  | ---------- | ------- | ------ | -------- | ------------------ |
   | databaseId | String  | false  | 否       | 预留属性           |
 
 - 案例
@@ -901,7 +913,7 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
 
 #### 查询注解
 
-​ 这种注解主要应用在`@SelectSql`的查询方法上，是用来指定查询条件的，当方法的参数和查询对象中的属性没有查询注解时，默认为 `@Equal`  查询。
+ 这种注解主要应用在`@SelectSql`的查询方法上，是用来指定查询条件的，当方法的参数和查询对象中的属性没有查询注解时，默认为 `@Equal`  查询。
 
 ##### 案例演示
 
@@ -1337,10 +1349,10 @@ public class UserFilter {
 
 #### 审计功能
 
-​ 审计功能会帮我们去维护一些固定场景需要的字段。审计功能就是帮我们可以自动维护 创建数据的用户id、名字、时间
+ 审计功能会帮我们去维护一些固定场景需要的字段。审计功能就是帮我们可以自动维护 创建数据的用户id、名字、时间
 及修改数据的用户Id、名字、时间，但是需要你告诉easybatis框架如何获取这些数据，必须实现`AuditorContext` 接口当easybatis 需要数据时，他会主动调用这个接口实现。
 
-​ 审计功能就是帮助我们自动维护了一些信息，减少我们部分的开发工作量，他主要是通过mybatis的插件机制来完成的 可以参考 `ExecutorHandlerInterceptor`。
+ 审计功能就是帮助我们自动维护了一些信息，减少我们部分的开发工作量，他主要是通过mybatis的插件机制来完成的 可以参考 `ExecutorHandlerInterceptor`。
 
 ##### @CreateId
 

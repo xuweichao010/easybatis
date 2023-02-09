@@ -223,7 +223,7 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     int delDynamicObjectIgnore(@Ignore String tableName, NormalUserDeleteObject object);
 
 
-    @Delete("DELETE FROM t_user WHERE data_type =2")
+    @Delete(databaseId = "", value = "DELETE FROM t_user WHERE data_type =2")
     int delTestData();
 
 

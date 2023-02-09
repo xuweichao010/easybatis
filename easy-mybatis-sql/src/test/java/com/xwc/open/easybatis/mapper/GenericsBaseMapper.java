@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface GenericsBaseMapper extends BaseMapper<NormalUser, String> {
 
-    @Delete("DELETE FROM t_user WHERE data_type =2")
+    @Delete(databaseId = "", value = "DELETE FROM t_user WHERE data_type =2")
     int delTestData();
 
 

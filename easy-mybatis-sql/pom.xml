@@ -6,7 +6,7 @@
 
     <groupId>com.xwc.open</groupId>
     <artifactId>easy-mybatis-sql</artifactId>
-    <version>3.5.11.1-SNAPSHOT</version>
+    <version>3.5.11.M1</version>
 
     <build>
         <plugins>

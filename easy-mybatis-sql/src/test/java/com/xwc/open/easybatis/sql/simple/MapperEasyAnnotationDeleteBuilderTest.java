@@ -6,6 +6,7 @@ import com.xwc.open.easybatis.entity.NormalUser;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import com.xwc.open.easybatis.mapper.SimpleSourceGeneratorMapper;
 import com.xwc.open.easybatis.model.NormalUserDeleteObject;
+import com.xwc.open.easybatis.supports.DriverDatabaseIdProvider;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSession;
@@ -40,6 +41,7 @@ public class MapperEasyAnnotationDeleteBuilderTest {
         Environment environment = new SqlSessionFactoryBuilder().build(inputStream).getConfiguration().getEnvironment();
         this.easyBatisConfiguration = new EasyBatisConfiguration(new EasyConfiguration());
         this.easyBatisConfiguration.setEnvironment(environment);
+        this.easyBatisConfiguration.setDatabaseId(DriverDatabaseIdProvider.MYSQL);
         this.sqlSessionFactory = new DefaultSqlSessionFactory(this.easyBatisConfiguration);
         this.sqlSession = this.sqlSessionFactory.openSession();
         this.easyBatisConfiguration.addMapper(SimpleSourceGeneratorMapper.class);
