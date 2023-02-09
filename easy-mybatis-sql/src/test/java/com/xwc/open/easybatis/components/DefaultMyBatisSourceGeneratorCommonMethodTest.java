@@ -48,6 +48,7 @@ public class DefaultMyBatisSourceGeneratorCommonMethodTest {
         this.configuration = sqlSessionFactory.getConfiguration();
         this.configuration.setMapUnderscoreToCamelCase(true);
         this.easyBatisConfiguration = new EasyBatisConfiguration(new EasyConfiguration());
+        this.easyBatisConfiguration.setMapUnderscoreToCamelCase(true);
     }
 
     @Test

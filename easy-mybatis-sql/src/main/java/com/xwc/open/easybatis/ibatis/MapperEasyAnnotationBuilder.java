@@ -72,9 +72,9 @@ public class MapperEasyAnnotationBuilder {
 
     public void parse() {
         String resource = type.toString();
-        if (!configuration.isResourceLoaded(resource)) {
+        if (!configuration.isResourceEasyLoaded(resource)) {
             // loadXmlResource(); 不需要加载xml
-            configuration.addLoadedResource(resource);
+            configuration.addLoadedEasyResource(resource);
             assistant.setCurrentNamespace(type.getName());
             parseCache();
             parseCacheRef();

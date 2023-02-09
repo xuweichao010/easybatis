@@ -7,9 +7,11 @@ import com.xwc.open.easybatis.mapper.FillSourceGeneratorMapper;
 import com.xwc.open.easybatis.mapper.GenericsBaseMapper;
 import com.xwc.open.easybatis.model.NormalUserUpdateObject;
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,15 +37,16 @@ public class MapperEasyAnnotationFillUpdateBuilderTest {
     @Before
     public void before() throws IOException {
         InputStream inputStream = Resources.getResourceAsStream("mybatis-config.xml");
-        this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        this.sqlSession = sqlSessionFactory.openSession();
+        Environment environment = new SqlSessionFactoryBuilder().build(inputStream).getConfiguration().getEnvironment();
         this.easyBatisConfiguration = new EasyBatisConfiguration(new EasyConfiguration());
-        this.easyBatisConfiguration.setMapUnderscoreToCamelCase(true);
+        this.easyBatisConfiguration.setEnvironment(environment);
+        this.sqlSessionFactory = new DefaultSqlSessionFactory(this.easyBatisConfiguration);
+        this.sqlSession = this.sqlSessionFactory.openSession();
         this.easyBatisConfiguration.addMapper(FillSourceGeneratorMapper.class);
         this.easyBatisConfiguration.addMapper(GenericsBaseMapper.class);
         this.fillSourceGeneratorMapper = this.easyBatisConfiguration.getMapper(FillSourceGeneratorMapper.class,
-                sqlSession);
-        this.genericsBaseMapper = this.easyBatisConfiguration.getMapper(GenericsBaseMapper.class, sqlSession);
+                this.sqlSession);
+        this.genericsBaseMapper = this.easyBatisConfiguration.getMapper(GenericsBaseMapper.class, this.sqlSession);
         fillSourceGeneratorMapper.delTestData();
         this.easyBatisConfiguration.addFillAttributeHandler(new AnnotationFillAttribute());
         genericsBaseMapper.delTestData();

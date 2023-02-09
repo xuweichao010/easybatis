@@ -33,6 +33,8 @@ public class EasyBatisConfiguration extends Configuration {
 
     protected final SqlSourceGeneratorRegistry registry = new DefaultSqlSourceGeneratorRegistry(this);
 
+    protected final Set<String> loadedEasyResources = new HashSet<>();
+
     {
         this.driverDatabaseIdProviders.addAll(Collections.singletonList(new MysqlDriverDatabaseIdProvider()));
     }
@@ -46,6 +48,17 @@ public class EasyBatisConfiguration extends Configuration {
             easyConfiguration.setColumnNameConverter(new NoneNameConverter());
             easyConfiguration.setTableNameConverter(new NoneNameConverter());
         }
+        this.setDatabaseId(null);
+        this.setMapUnderscoreToCamelCase(true);
+    }
+
+
+    public void addLoadedEasyResource(String resource) {
+        loadedEasyResources.add(resource);
+    }
+
+    public boolean isResourceEasyLoaded(String resource) {
+        return loadedEasyResources.contains(resource);
     }
 
 
@@ -103,7 +116,7 @@ public class EasyBatisConfiguration extends Configuration {
 
 
     public void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
-        this.setMapUnderscoreToCamelCase(mapUnderscoreToCamelCase);
+        super.setMapUnderscoreToCamelCase(mapUnderscoreToCamelCase);
         if (mapUnderscoreToCamelCase) {
             this.easyConfiguration.setColumnNameConverter(new CamelConverterUnderscore());
             this.easyConfiguration.setTableNameConverter(new CamelConverterUnderscore());
