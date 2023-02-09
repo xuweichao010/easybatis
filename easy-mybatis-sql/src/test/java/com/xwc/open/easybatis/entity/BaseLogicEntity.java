@@ -1,8 +1,6 @@
 package com.xwc.open.easybatis.entity;
 
-import com.xwc.open.easy.parse.annotations.FillColumn;
 import com.xwc.open.easy.parse.annotations.Logic;
-import com.xwc.open.easy.parse.enums.FillType;
 import lombok.Data;
 
 import java.util.Date;

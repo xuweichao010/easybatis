@@ -65,32 +65,6 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
 
     private final DeleteFromSnippet deleteFromSnippet;
 
-
-    public DefaultSqlSourceGenerator(EasyBatisConfiguration easyBatisConfiguration,
-                                     InsertFromSnippet insertSqlFrom,
-                                     InsertColumnSnippet insertColumnSnippet,
-                                     InsertValuesSnippet insertValuesSnippet,
-                                     SelectFromSnippet selectSqlFrom,
-                                     WhereSnippet whereSnippet,
-                                     OrderSnippet orderSnippet,
-                                     PageSnippet pageSnippet,
-                                     UpdateFromSnippet updateFromSnippet,
-                                     SetSnippet setSnippet,
-                                     DeleteFromSnippet deleteFromSnippet) {
-
-        this.easyBatisConfiguration = easyBatisConfiguration;
-        this.insertSqlFrom = insertSqlFrom;
-        this.insertColumnSnippet = insertColumnSnippet;
-        this.insertValuesSnippet = insertValuesSnippet;
-        this.selectSqlFrom = selectSqlFrom;
-        this.whereSnippet = whereSnippet;
-        this.orderSnippet = orderSnippet;
-        this.pageSnippet = pageSnippet;
-        this.updateFromSnippet = updateFromSnippet;
-        this.setSnippet = setSnippet;
-        this.deleteFromSnippet = deleteFromSnippet;
-    }
-
     public DefaultSqlSourceGenerator(SqlPlaceholder sqlPlaceholder,
                                      BatisPlaceholder batisPlaceholder,
                                      SelectColumnSnippet selectColumnSnippet,
@@ -121,13 +95,18 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         this.deleteFromSnippet = deleteFromSnippet;
     }
 
+
     public DefaultSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration) {
+        this(easyMyBatisConfiguration, new DefaultSqlPlaceholder());
+    }
+
+    public DefaultSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration, SqlPlaceholder sqlPlaceholder) {
+        super(sqlPlaceholder);
         this.easyBatisConfiguration = easyMyBatisConfiguration;
         this.insertSqlFrom = new DefaultInsertFrom();
         this.insertColumnSnippet = new DefaultInsertColumn(this);
         this.insertValuesSnippet = new DefaultInsertValues(this);
         this.selectSqlFrom = new DefaultSelectFrom(this);
-
         this.whereSnippet = new DefaultWhereSnippet(this);
         this.orderSnippet = new DefaultOrderSnippet(this);
         this.pageSnippet = new DefaultPageSnippet(this);
@@ -136,6 +115,7 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         this.deleteFromSnippet = new DefaultDeleteFromSnippet();
         this.registryDefaultConditional();
     }
+
 
     public void registryDefaultConditional() {
         ConditionalRegistry conditionalRegistry = this.getConditionalRegistry();

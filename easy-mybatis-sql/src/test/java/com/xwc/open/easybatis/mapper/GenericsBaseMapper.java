@@ -1,13 +1,8 @@
 package com.xwc.open.easybatis.mapper;
 
-import com.xwc.open.easy.parse.annotations.Ignore;
-import com.xwc.open.easy.parse.supports.EasyMapper;
-import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.entity.NormalUser;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
 
 /**
  * 类描述：

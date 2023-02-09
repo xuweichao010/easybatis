@@ -4,8 +4,6 @@ import com.xwc.open.easy.parse.annotations.Ignore;
 import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.annotaions.InsertSql;
 import com.xwc.open.easybatis.entity.FillLogicUser;
-import com.xwc.open.easybatis.entity.FillUser;
-import com.xwc.open.easybatis.entity.NormalUser;
 
 import java.util.List;
 

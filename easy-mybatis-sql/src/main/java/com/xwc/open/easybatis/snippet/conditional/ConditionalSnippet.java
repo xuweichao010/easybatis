@@ -1,7 +1,5 @@
 package com.xwc.open.easybatis.snippet.conditional;
 
-import com.xwc.open.easybatis.binding.BatisColumnAttribute;
-
 /**
  * 类描述：单个过滤语法
  * 作者：徐卫超 (cc)

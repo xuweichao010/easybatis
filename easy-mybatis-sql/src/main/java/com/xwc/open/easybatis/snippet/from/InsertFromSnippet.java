@@ -1,6 +1,5 @@
 package com.xwc.open.easybatis.snippet.from;
 
-import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.model.TableMeta;
 
 /**
@@ -8,7 +7,7 @@ import com.xwc.open.easy.parse.model.TableMeta;
  * 作者：徐卫超 (cc)
  * 时间 2023/1/16 13:45
  */
-public interface SelectFromSnippet {
+public interface InsertFromSnippet {
 
-    String from(OperateMethodMeta tableMeta);
+    String from(TableMeta tableMeta);
 }
