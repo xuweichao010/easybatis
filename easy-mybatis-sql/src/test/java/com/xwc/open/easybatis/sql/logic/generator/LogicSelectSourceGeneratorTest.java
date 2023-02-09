@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.sql.logic.generator;
 
+import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
@@ -36,7 +37,7 @@ public class LogicSelectSourceGeneratorTest {
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.configuration = sqlSessionFactory.getConfiguration();
         this.configuration.setMapUnderscoreToCamelCase(true);
-        this.easyBatisConfiguration = new EasyBatisConfiguration(configuration);
+        this.easyBatisConfiguration = new EasyBatisConfiguration(new EasyConfiguration());
         this.sourceGenerator = new DefaultSqlSourceGenerator(easyBatisConfiguration);
     }
 
@@ -45,7 +46,7 @@ public class LogicSelectSourceGeneratorTest {
         Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
         String methodName = "findOne";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name` FROM t_user WHERE `id` = #{id} AND `valid` = #{valid} </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
@@ -56,7 +57,7 @@ public class LogicSelectSourceGeneratorTest {
         Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
         String methodName = "findOneDynamicIgnore";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name` FROM t_user <where>  <if test='id != null'> AND `id` = #{id} </if> AND `valid` = #{valid} </where> </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
@@ -67,7 +68,7 @@ public class LogicSelectSourceGeneratorTest {
         Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
         String methodName = "findAll";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name` FROM t_user WHERE `valid` = #{valid} </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
@@ -78,7 +79,7 @@ public class LogicSelectSourceGeneratorTest {
         Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
         String methodName = "queryObject";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name` FROM t_user <where> AND `org_code` = #{query.orgCode} AND `org_name` = #{query.orgName}  <if test='query.name != null'> AND `name` = #{query.name} </if> AND `age` BETWEEN #{query.age} AND #{query.ageTo}  <if test='query.job != null'> AND `job` = #{query.job} </if> AND `valid` = #{valid} </where> LIMIT #{query.limit} OFFSET #{query.offset} </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));

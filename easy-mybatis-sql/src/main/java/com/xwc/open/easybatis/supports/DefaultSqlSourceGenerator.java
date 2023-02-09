@@ -492,7 +492,7 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
                                                            SqlCommandType sqlCommandType) {
         BatisColumnAttribute attribute = new BatisColumnAttribute();
         attribute.setIndex(parameterAttribute.getIndex() * 1000);
-        attribute.setColumn(easyBatisConfiguration.getColumnNameConverter().convert(parameterAttribute.getParameterName()));
+        attribute.setColumn(easyBatisConfiguration.getEasyConfiguration().getColumnNameConverter().convert(parameterAttribute.getParameterName()));
         attribute.setParameterName(parameterAttribute.getParameterName());
         attribute.setPath(new String[]{parameterAttribute.getParameterName()});
         attribute.addAnnotations(parameterAttribute.annotations());
@@ -509,7 +509,7 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         }
         BatisColumnAttribute attribute = new BatisColumnAttribute();
         attribute.setIndex(index);
-        attribute.setColumn(easyBatisConfiguration.getColumnNameConverter().convert(field.getName()));
+        attribute.setColumn(easyBatisConfiguration.getEasyConfiguration().getColumnNameConverter().convert(field.getName()));
         attribute.setParameterName(field.getName());
         attribute.setPath(new String[]{objectParameterAttribute.getParameterName(), field.getName()});
         attribute.addAnnotations(AnnotationUtils.registerAnnotation(field.getAnnotations(), Syntax.class));

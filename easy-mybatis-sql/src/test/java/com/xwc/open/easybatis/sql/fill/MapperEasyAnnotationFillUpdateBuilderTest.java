@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.sql.fill;
 
+import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.entity.FillUser;
 import com.xwc.open.easybatis.mapper.FillSourceGeneratorMapper;
@@ -36,7 +37,7 @@ public class MapperEasyAnnotationFillUpdateBuilderTest {
         InputStream inputStream = Resources.getResourceAsStream("mybatis-config.xml");
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.sqlSession = sqlSessionFactory.openSession();
-        this.easyBatisConfiguration = new EasyBatisConfiguration(sqlSessionFactory.getConfiguration());
+        this.easyBatisConfiguration = new EasyBatisConfiguration(new EasyConfiguration());
         this.easyBatisConfiguration.setMapUnderscoreToCamelCase(true);
         this.easyBatisConfiguration.addMapper(FillSourceGeneratorMapper.class);
         this.easyBatisConfiguration.addMapper(GenericsBaseMapper.class);

@@ -4,12 +4,10 @@ import com.xwc.open.easy.parse.supports.EasyMapper;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.builder.annotation.MapperAnnotationBuilder;
+import org.apache.ibatis.io.ResolverUtil;
 import org.apache.ibatis.session.SqlSession;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 类描述：
@@ -31,19 +29,22 @@ public class EasyMapperRegister {
     }
 
     public <T> void addMapper(Class<T> type) {
-        if (type.isInterface() && EasyMapper.class.isAssignableFrom(type)) {
+        if (type.isInterface()) {
             if (hasMapper(type)) {
                 return;
             }
             boolean loadCompleted = false;
             try {
+                // 增强的mapper解析
                 knownMappers.put(type, new EasyMapperProxyFactory<>(type, config));
-                MapperEasyAnnotationBuilder easyParser = new MapperEasyAnnotationBuilder(config, type);
-                easyParser.parse();
+                if (EasyMapper.class.isAssignableFrom(type)) {
+                    MapperEasyAnnotationBuilder easyParser = new MapperEasyAnnotationBuilder(config, type);
+                    easyParser.parse();
+                }
                 // It's important that the type is added before the parser is run
                 // otherwise the binding may automatically be attempted by the
                 // mapper parser. If the type is already known, it won't try.
-                MapperAnnotationBuilder batisParser = new MapperAnnotationBuilder(config.getConfiguration(), type);
+                MapperAnnotationBuilder batisParser = new MapperAnnotationBuilder(config, type);
                 batisParser.parse();
                 loadCompleted = true;
             } finally {
@@ -53,17 +54,6 @@ public class EasyMapperRegister {
             }
         }
     }
-
-    /**
-     * Gets the mappers.
-     *
-     * @return the mappers
-     * @since 3.2.2
-     */
-    public Collection<Class<?>> getMappers() {
-        return Collections.unmodifiableCollection(knownMappers.keySet());
-    }
-
 
     @SuppressWarnings("unchecked")
     public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
@@ -76,5 +66,42 @@ public class EasyMapperRegister {
         } catch (Exception e) {
             throw new BindingException("Error getting mapper instance. Cause: " + e, e);
         }
+    }
+
+
+    /**
+     * Gets the mappers.
+     *
+     * @return the mappers
+     * @since 3.2.2
+     */
+    public Collection<Class<?>> getMappers() {
+        return Collections.unmodifiableCollection(knownMappers.keySet());
+    }
+
+    /**
+     * Adds the mappers.
+     *
+     * @param packageName the package name
+     * @param superType   the super type
+     * @since 3.2.2
+     */
+    public void addMappers(String packageName, Class<?> superType) {
+        ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
+        resolverUtil.find(new ResolverUtil.IsA(superType), packageName);
+        Set<Class<? extends Class<?>>> mapperSet = resolverUtil.getClasses();
+        for (Class<?> mapperClass : mapperSet) {
+            addMapper(mapperClass);
+        }
+    }
+
+    /**
+     * Adds the mappers.
+     *
+     * @param packageName the package name
+     * @since 3.2.2
+     */
+    public void addMappers(String packageName) {
+        addMappers(packageName, Object.class);
     }
 }

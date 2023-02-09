@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.sql.logic.generator;
 
+import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
@@ -36,7 +37,7 @@ public class LogicUpdateSourceGeneratorTest {
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.configuration = sqlSessionFactory.getConfiguration();
         this.configuration.setMapUnderscoreToCamelCase(true);
-        this.easyBatisConfiguration = new EasyBatisConfiguration(configuration);
+        this.easyBatisConfiguration = new EasyBatisConfiguration(new EasyConfiguration());
         this.sourceGenerator = new DefaultSqlSourceGenerator(easyBatisConfiguration);
     }
 
@@ -45,7 +46,7 @@ public class LogicUpdateSourceGeneratorTest {
         Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
         String methodName = "update";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script>  UPDATE t_user <set> `org_code`=#{orgCode}, `org_name`=#{orgName}, `name`=#{name}, `data_type`=#{dataType}, `age`=#{age}, `job`=#{job}, `create_time`=#{createTime}, `create_id`=#{createId}, `create_name`=#{createName}, `update_time`=#{updateTime}, `update_id`=#{updateId}, `update_name`=#{updateName}, `valid`=#{valid}, </set> WHERE `id` = #{id} AND `valid` = #{valid} </script>";
         Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
@@ -56,7 +57,7 @@ public class LogicUpdateSourceGeneratorTest {
         Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
         String methodName = "updateParam";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script>  UPDATE t_user <set> `name`=#{name}, </set> WHERE `id` = #{id} AND `valid` = #{valid} </script>";
         Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
@@ -67,7 +68,7 @@ public class LogicUpdateSourceGeneratorTest {
         Class<?> interfaceClass = LogicSourceGeneratorMapper.class;
         String methodName = "updateObject";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script>  UPDATE t_user <set> `org_code`=#{object.orgCode}, `org_name`=#{object.orgName}, `name`=#{object.name}, </set> WHERE `id` = #{object.id} AND `valid` = #{valid} </script>";
         Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
@@ -83,7 +84,6 @@ public class LogicUpdateSourceGeneratorTest {
 //        String expected = "";
 //        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
 //    }
-
 
 
 }

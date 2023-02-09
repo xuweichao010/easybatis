@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.sql.simple.generator;
 
+import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
@@ -36,7 +37,7 @@ public class SimpleOrderSourceGeneratorTest {
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.configuration = sqlSessionFactory.getConfiguration();
         this.configuration.setMapUnderscoreToCamelCase(true);
-        this.easyBatisConfiguration = new EasyBatisConfiguration(configuration);
+        this.easyBatisConfiguration = new EasyBatisConfiguration(new EasyConfiguration());
         this.sourceGenerator = new DefaultSqlSourceGenerator(easyBatisConfiguration);
     }
 
@@ -45,7 +46,7 @@ public class SimpleOrderSourceGeneratorTest {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "methodOrder";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user ORDER BY age desc </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
@@ -57,7 +58,7 @@ public class SimpleOrderSourceGeneratorTest {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "orderDesc";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user<trim prefix= ' ORDER BY ' suffixOverrides= ','> age DESC,  </trim> </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
@@ -68,7 +69,7 @@ public class SimpleOrderSourceGeneratorTest {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "orderAsc";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user<trim prefix= ' ORDER BY ' suffixOverrides= ','> age ASC,  </trim> </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
@@ -79,7 +80,7 @@ public class SimpleOrderSourceGeneratorTest {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "dynamicOrderDesc";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user<trim prefix= ' ORDER BY ' suffixOverrides= ','>  <if test='age != null'> age DESC,  </if> </trim> </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
@@ -90,7 +91,7 @@ public class SimpleOrderSourceGeneratorTest {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "orderDescDynamic";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user<trim prefix= ' ORDER BY ' suffixOverrides= ','>  <if test='age != null'> age DESC,  </if> </trim> </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
@@ -102,7 +103,7 @@ public class SimpleOrderSourceGeneratorTest {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "orderAscDynamic";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user<trim prefix= ' ORDER BY ' suffixOverrides= ','>  <if test='age != null'> age ASC,  </if> </trim> </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
@@ -113,7 +114,7 @@ public class SimpleOrderSourceGeneratorTest {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "orderMixture";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user<trim prefix= ' ORDER BY ' suffixOverrides= ','>  <if test='age != null'> age ASC,  </if> org_code DESC,   <if test='job != null'> job ASC,  </if> </trim> </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));

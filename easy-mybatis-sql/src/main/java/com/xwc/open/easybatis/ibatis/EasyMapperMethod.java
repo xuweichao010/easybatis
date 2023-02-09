@@ -31,7 +31,7 @@ public class EasyMapperMethod {
 
 
     public EasyMapperMethod(Class<?> mapperInterface, Method method, EasyBatisConfiguration config) {
-        this.command = new SqlCommand(config.getConfiguration(), mapperInterface, method);
+        this.command = new SqlCommand(config, mapperInterface, method);
         this.method = new MethodSignature(config, mapperInterface, method, command.getType());
     }
 

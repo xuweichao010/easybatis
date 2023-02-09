@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.ibatis;
 
+import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.model.TableMeta;
 import com.xwc.open.easy.parse.utils.Reflection;
@@ -29,7 +30,6 @@ import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.parsing.PropertyParser;
 import org.apache.ibatis.reflection.TypeParameterResolver;
 import org.apache.ibatis.scripting.LanguageDriver;
-import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.type.JdbcType;
@@ -55,26 +55,26 @@ public class MapperEasyAnnotationBuilder {
             .of(SelectSql.class, UpdateSql.class, InsertSql.class, DeleteSql.class)
             .collect(Collectors.toSet());
 
-    private final Configuration configuration;
+    private final EasyBatisConfiguration configuration;
     private final MapperBuilderAssistant assistant;
     private final Class<?> type;
-    private final EasyBatisConfiguration easyBatisConfiguration;
     private TableMeta tableMeta;
+    private final EasyConfiguration easyConfiguration;
 
     public MapperEasyAnnotationBuilder(EasyBatisConfiguration configuration, Class<?> type) {
         String resource = type.getName().replace('.', '/') + ".java (best guess)";
-        this.easyBatisConfiguration = configuration;
-        this.configuration = configuration.getConfiguration();
+        this.configuration = configuration;
+        this.easyConfiguration = configuration.getEasyConfiguration();
         this.assistant = new MapperBuilderAssistant(this.configuration, resource);
         this.type = type;
-        this.tableMeta = this.easyBatisConfiguration.getTableMetaAssistant().getTableMeta(Reflection.getEntityClass(type));
+        this.tableMeta = easyConfiguration.getTableMetaAssistant().getTableMeta(Reflection.getEntityClass(type));
     }
 
     public void parse() {
         String resource = type.toString();
-        if (!easyBatisConfiguration.isResourceLoaded(resource)) {
+        if (!configuration.isResourceLoaded(resource)) {
             // loadXmlResource(); 不需要加载xml
-            easyBatisConfiguration.addLoadedResource(resource);
+            configuration.addLoadedResource(resource);
             assistant.setCurrentNamespace(type.getName());
             parseCache();
             parseCacheRef();
@@ -352,7 +352,6 @@ public class MapperEasyAnnotationBuilder {
     }
 
     private Class<?> getParameterType(Method method) {
-        OperateMethodMeta operateMethodMeta = this.easyBatisConfiguration.getOperateMethodAssistant().getOperateMethodMeta(this.type, method);
         Class<?> parameterType = null;
         Class<?>[] parameterTypes = method.getParameterTypes();
         for (Class<?> currentParameterType : parameterTypes) {
@@ -577,26 +576,30 @@ public class MapperEasyAnnotationBuilder {
 
     private SqlSource buildSqlSource(Annotation annotation, Class<?> parameterType, LanguageDriver languageDriver,
                                      Method method, String mappedStatementId) {
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant().getOperateMethodMeta(type, method);
-        easyBatisConfiguration.addOperateMethodMeta(mappedStatementId, operateMethodMeta);
+        OperateMethodMeta operateMethodMeta = this.easyConfiguration.getOperateMethodAssistant().getOperateMethodMeta(type, method);
+        configuration.addOperateMethodMeta(mappedStatementId, operateMethodMeta);
         if (annotation instanceof SelectSql) {
             operateMethodMeta.setDatabaseId(((SelectSql) annotation).databaseId());
-            SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((SelectSql) annotation).databaseId());
+            SqlSourceGenerator sqlSourceGenerator =
+                    this.configuration.getSqlSourceGenerator(((SelectSql) annotation).databaseId());
             String selectSql = sqlSourceGenerator.select(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{selectSql}, parameterType, languageDriver);
         } else if (annotation instanceof UpdateSql) {
             operateMethodMeta.setDatabaseId(((UpdateSql) annotation).databaseId());
-            SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((UpdateSql) annotation).databaseId());
+            SqlSourceGenerator sqlSourceGenerator =
+                    this.configuration.getSqlSourceGenerator(((UpdateSql) annotation).databaseId());
             String selectSql = sqlSourceGenerator.update(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{selectSql}, parameterType, languageDriver);
         } else if (annotation instanceof InsertSql) {
             operateMethodMeta.setDatabaseId(((InsertSql) annotation).databaseId());
-            SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((InsertSql) annotation).databaseId());
+            SqlSourceGenerator sqlSourceGenerator =
+                    this.configuration.getSqlSourceGenerator(((InsertSql) annotation).databaseId());
             String insertSql = sqlSourceGenerator.insert(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{insertSql}, parameterType, languageDriver);
         } else if (annotation instanceof DeleteSql) {
             operateMethodMeta.setDatabaseId(((DeleteSql) annotation).databaseId());
-            SqlSourceGenerator sqlSourceGenerator = easyBatisConfiguration.getSqlSourceGenerator(((DeleteSql) annotation).databaseId());
+            SqlSourceGenerator sqlSourceGenerator =
+                    this.configuration.getSqlSourceGenerator(((DeleteSql) annotation).databaseId());
             String delSql = sqlSourceGenerator.delete(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{delSql}, parameterType, languageDriver);
         }

@@ -40,7 +40,7 @@ public class DefaultSqlSourceGeneratorRegistry implements SqlSourceGeneratorRegi
     @Override
     public SqlSourceGenerator get(String databaseId) {
         if (!StringUtils.hasText(databaseId)) {
-            databaseId = configuration.getDefaultDatabaseId();
+            databaseId = configuration.getDatabaseId();
         }
         SqlSourceGenerator sqlSourceGenerator = driverSqlSourceGeneratorMap.get(databaseId);
         if (sqlSourceGenerator == null) {
@@ -63,7 +63,7 @@ public class DefaultSqlSourceGeneratorRegistry implements SqlSourceGeneratorRegi
     @Override
     public ParamArgsResolver getParamArgsResolver(String databaseId) {
         if (!StringUtils.hasText(databaseId)) {
-            databaseId = configuration.getDefaultDatabaseId();
+            databaseId = configuration.getDatabaseId();
         }
         ParamArgsResolver paramArgsResolver = driverParamArgsResolverMap.get(databaseId);
         if (paramArgsResolver == null) {

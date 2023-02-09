@@ -10,7 +10,6 @@ import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.TypeParameterResolver;
-import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
@@ -54,16 +53,15 @@ public class MethodSignature {
             this.returnType = method.getReturnType();
         }
         this.easyBatisConfiguration = easyBatisConfiguration;
-        Configuration configuration = easyBatisConfiguration.getConfiguration();
         this.returnsVoid = void.class.equals(this.returnType);
-        this.returnsMany = configuration.getObjectFactory().isCollection(this.returnType) || this.returnType.isArray();
+        this.returnsMany = easyBatisConfiguration.getObjectFactory().isCollection(this.returnType) || this.returnType.isArray();
         this.returnsCursor = Cursor.class.equals(this.returnType);
         this.returnsOptional = Optional.class.equals(this.returnType);
         this.mapKey = getMapKey(method);
         this.returnsMap = this.mapKey != null;
         this.rowBoundsIndex = getUniqueParamIndex(method, RowBounds.class);
         this.resultHandlerIndex = getUniqueParamIndex(method, ResultHandler.class);
-        this.paramNameResolver = new EasyParamNameResolver(configuration, method);
+        this.paramNameResolver = new EasyParamNameResolver(easyBatisConfiguration, method);
         final String mappedStatementId = mapperInterface.getName() + "." + method.getName();
         this.operateMethodMeta = easyBatisConfiguration.getOperateMethodMeta(mappedStatementId);
         if (operateMethodMeta != null) {

@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.sql.simple.generator;
 
+import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.utils.Reflection;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
@@ -36,7 +37,7 @@ public class SimplePageSourceGeneratorTest {
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.configuration = sqlSessionFactory.getConfiguration();
         this.configuration.setMapUnderscoreToCamelCase(true);
-        this.easyBatisConfiguration = new EasyBatisConfiguration(configuration);
+        this.easyBatisConfiguration = new EasyBatisConfiguration(new EasyConfiguration());
         this.sourceGenerator = new DefaultSqlSourceGenerator(easyBatisConfiguration);
     }
 
@@ -46,7 +47,7 @@ public class SimplePageSourceGeneratorTest {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "page";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user LIMIT #{limit} OFFSET #{offset} </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));
@@ -57,7 +58,7 @@ public class SimplePageSourceGeneratorTest {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "limit";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
-        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getOperateMethodAssistant()
+        OperateMethodMeta operateMethodMeta =  easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name`,`valid` FROM t_user LIMIT #{limit} </script>";
         Assert.assertEquals(expected, sourceGenerator.select(operateMethodMeta));

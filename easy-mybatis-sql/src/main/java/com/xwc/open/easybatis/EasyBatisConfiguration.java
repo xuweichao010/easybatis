@@ -19,12 +19,11 @@ import java.util.*;
  * 作者：徐卫超 (cc)
  * 时间 2022/12/2 10:16
  */
-public class EasyBatisConfiguration extends EasyConfiguration {
+public class EasyBatisConfiguration extends Configuration {
 
-    protected final Configuration configuration;
+    protected final EasyConfiguration easyConfiguration;
 
     protected final EasyMapperRegister mapperRegistry = new EasyMapperRegister(this);
-    protected final Set<String> loadedResources = new HashSet<>();
 
     private final List<DriverDatabaseIdProvider> driverDatabaseIdProviders = new ArrayList<>();
 
@@ -34,34 +33,24 @@ public class EasyBatisConfiguration extends EasyConfiguration {
 
     protected final SqlSourceGeneratorRegistry registry = new DefaultSqlSourceGeneratorRegistry(this);
 
-    private String defaultDatabaseId = null;
-
     {
         this.driverDatabaseIdProviders.addAll(Collections.singletonList(new MysqlDriverDatabaseIdProvider()));
     }
 
-    public EasyBatisConfiguration(Configuration configuration) {
-        this.configuration = configuration;
-        this.setMapUnderscoreToCamelCase(configuration.isMapUnderscoreToCamelCase());
-        this.setDefaultDatabaseId(null);
-    }
-
-    public void setDefaultDatabaseId(String defaultDatabaseId) {
-        if (StringUtils.hasText(defaultDatabaseId)) {
-            this.defaultDatabaseId = defaultDatabaseId;
+    public EasyBatisConfiguration(EasyConfiguration easyConfiguration) {
+        this.easyConfiguration = easyConfiguration;
+        if (this.isMapUnderscoreToCamelCase()) {
+            easyConfiguration.setColumnNameConverter(new CamelConverterUnderscore());
+            easyConfiguration.setTableNameConverter(new CamelConverterUnderscore());
         } else {
-            for (DriverDatabaseIdProvider provider : driverDatabaseIdProviders) {
-                String databaseId = provider.databaseId();
-                if (StringUtils.hasText(databaseId)) {
-                    this.defaultDatabaseId = databaseId;
-                    return;
-                }
-            }
+            easyConfiguration.setColumnNameConverter(new NoneNameConverter());
+            easyConfiguration.setTableNameConverter(new NoneNameConverter());
         }
     }
 
-    public String getDefaultDatabaseId() {
-        return defaultDatabaseId;
+
+    public EasyConfiguration getEasyConfiguration() {
+        return easyConfiguration;
     }
 
     public List<FillAttributeHandler> getFillAttributeHandlers() {
@@ -72,29 +61,10 @@ public class EasyBatisConfiguration extends EasyConfiguration {
         this.fillAttributeHandlers.add(fillAttributeHandler);
     }
 
-    public Configuration getConfiguration() {
-        return configuration;
+    public EasyConfiguration getConfiguration() {
+        return easyConfiguration;
     }
 
-    public void addMapper(Class<?> type) {
-        mapperRegistry.addMapper(type);
-    }
-
-    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
-        return mapperRegistry.getMapper(type, sqlSession);
-    }
-
-
-    public void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
-        this.configuration.setMapUnderscoreToCamelCase(mapUnderscoreToCamelCase);
-        if (this.configuration.isMapUnderscoreToCamelCase()) {
-            this.setColumnNameConverter(new CamelConverterUnderscore());
-            this.setTableNameConverter(new CamelConverterUnderscore());
-        } else {
-            this.setColumnNameConverter(new NoneNameConverter());
-            this.setTableNameConverter(new NoneNameConverter());
-        }
-    }
 
     public void addOperateMethodMeta(String id, OperateMethodMeta operateMethodMeta) {
         operateMethodMetaMaps.put(id, operateMethodMeta);
@@ -104,17 +74,8 @@ public class EasyBatisConfiguration extends EasyConfiguration {
         return operateMethodMetaMaps.get(id);
     }
 
-
     public List<DriverDatabaseIdProvider> getDriverDatabaseIdProviders() {
         return driverDatabaseIdProviders;
-    }
-
-    public void addLoadedResource(String resource) {
-        loadedResources.add(resource);
-    }
-
-    public boolean isResourceLoaded(String resource) {
-        return loadedResources.contains(resource);
     }
 
 
@@ -139,4 +100,59 @@ public class EasyBatisConfiguration extends EasyConfiguration {
     public ParamArgsResolver getParamArgsResolver(String databaseId) {
         return this.registry.getParamArgsResolver(databaseId);
     }
+
+
+    public void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
+        this.setMapUnderscoreToCamelCase(mapUnderscoreToCamelCase);
+        if (mapUnderscoreToCamelCase) {
+            this.easyConfiguration.setColumnNameConverter(new CamelConverterUnderscore());
+            this.easyConfiguration.setTableNameConverter(new CamelConverterUnderscore());
+        } else {
+            this.easyConfiguration.setColumnNameConverter(new NoneNameConverter());
+            this.easyConfiguration.setTableNameConverter(new NoneNameConverter());
+        }
+    }
+
+    @Override
+    public String getDatabaseId() {
+        return super.getDatabaseId();
+    }
+
+    @Override
+    public void setDatabaseId(String databaseId) {
+        if (StringUtils.hasText(databaseId)) {
+            super.setDatabaseId(databaseId);
+        } else {
+            for (DriverDatabaseIdProvider provider : driverDatabaseIdProviders) {
+                databaseId = provider.databaseId();
+                if (StringUtils.hasText(databaseId)) {
+                    this.databaseId = databaseId;
+                    return;
+                }
+            }
+        }
+        super.setDatabaseId(databaseId);
+    }
+
+    public void addMappers(String packageName, Class<?> superType) {
+        mapperRegistry.addMappers(packageName, superType);
+    }
+
+    public void addMappers(String packageName) {
+        mapperRegistry.addMappers(packageName);
+    }
+
+    public <T> void addMapper(Class<T> type) {
+        mapperRegistry.addMapper(type);
+    }
+
+    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
+        return mapperRegistry.getMapper(type, sqlSession);
+    }
+
+    public boolean hasMapper(Class<?> type) {
+        return mapperRegistry.hasMapper(type);
+    }
+
+
 }

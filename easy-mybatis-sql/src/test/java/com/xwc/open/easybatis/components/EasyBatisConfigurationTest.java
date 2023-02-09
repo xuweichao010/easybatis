@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.components;
 
+import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
@@ -29,6 +30,6 @@ public class EasyBatisConfigurationTest {
 
     @Test
     public void create() {
-        EasyBatisConfiguration easyConfiguration = new EasyBatisConfiguration(configuration);
+        EasyBatisConfiguration easyConfiguration = new EasyBatisConfiguration(new EasyConfiguration());
     }
 }

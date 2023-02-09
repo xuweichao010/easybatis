@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.components;
 
+import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easy.parse.exceptions.EasyException;
 import com.xwc.open.easy.parse.model.OperateMethodMeta;
 import com.xwc.open.easy.parse.model.parameter.EntityParameterAttribute;
@@ -46,7 +47,7 @@ public class DefaultMyBatisSourceGeneratorCommonMethodTest {
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.configuration = sqlSessionFactory.getConfiguration();
         this.configuration.setMapUnderscoreToCamelCase(true);
-        this.easyBatisConfiguration = new EasyBatisConfiguration(configuration);
+        this.easyBatisConfiguration = new EasyBatisConfiguration(new EasyConfiguration());
     }
 
     @Test
@@ -75,7 +76,7 @@ public class DefaultMyBatisSourceGeneratorCommonMethodTest {
                                                                     SqlCommandType sqlCommandType) {
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta =
-                easyBatisConfiguration.getOperateMethodAssistant().getOperateMethodMeta(interfaceClass
+                easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant().getOperateMethodMeta(interfaceClass
                         , method);
         DefaultSqlSourceGenerator defaultEasyBatisSourceGenerator =
                 new DefaultSqlSourceGenerator(easyBatisConfiguration);
@@ -107,7 +108,7 @@ public class DefaultMyBatisSourceGeneratorCommonMethodTest {
     private boolean isMultiTest(Class<?> interfaceClass, String methodName, SqlCommandType sqlCommandType) {
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta simpleInsert =
-                easyBatisConfiguration.getOperateMethodAssistant().getOperateMethodMeta(interfaceClass
+                easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant().getOperateMethodMeta(interfaceClass
                         , method);
         return SqlSourceGenerator.isMulti(simpleInsert, sqlCommandType);
     }

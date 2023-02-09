@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.sql.logic;
 
+import com.xwc.open.easy.parse.EasyConfiguration;
 import com.xwc.open.easybatis.EasyBatisConfiguration;
 import com.xwc.open.easybatis.entity.LogicUser;
 import com.xwc.open.easybatis.mapper.LogicSourceGeneratorMapper;
@@ -36,7 +37,7 @@ public class MapperEasyAnnotationLogicInsertBuilderTest {
         InputStream inputStream = Resources.getResourceAsStream("mybatis-config.xml");
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         this.sqlSession = sqlSessionFactory.openSession();
-        this.easyBatisConfiguration = new EasyBatisConfiguration(sqlSessionFactory.getConfiguration());
+        this.easyBatisConfiguration = new EasyBatisConfiguration(new EasyConfiguration());
         this.easyBatisConfiguration.setMapUnderscoreToCamelCase(true);
         this.easyBatisConfiguration.addMapper(LogicSourceGeneratorMapper.class);
         this.logicSourceGeneratorMapper = this.easyBatisConfiguration.getMapper(LogicSourceGeneratorMapper.class,

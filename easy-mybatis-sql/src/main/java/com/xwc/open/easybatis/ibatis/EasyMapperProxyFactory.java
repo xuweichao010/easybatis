@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 作者：徐卫超 (cc)
  * 时间 2023/2/4 15:35
  */
-public class EasyMapperProxyFactory<T> {
+public class EasyMapperProxyFactory<T>  {
     private final Class<T> mapperInterface;
     private final EasyBatisConfiguration easyBatisConfiguration;
 
