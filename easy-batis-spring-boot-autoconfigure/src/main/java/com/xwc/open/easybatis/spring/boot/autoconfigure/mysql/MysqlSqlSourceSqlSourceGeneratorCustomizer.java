@@ -1,5 +1,6 @@
 package com.xwc.open.easybatis.spring.boot.autoconfigure.mysql;
 
+
 import com.xwc.open.easybatis.mysql.MysqlSqlSourceGenerator;
 
 /**

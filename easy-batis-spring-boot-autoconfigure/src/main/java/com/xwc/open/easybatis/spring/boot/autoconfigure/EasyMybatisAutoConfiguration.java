@@ -43,7 +43,7 @@ import java.util.stream.Stream;
 @org.springframework.context.annotation.Configuration
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class, MybatisAutoConfiguration.class})
 @ConditionalOnSingleCandidate(DataSource.class)
-@EnableConfigurationProperties(EasyBatisConfiguration.class)
+@EnableConfigurationProperties(EasyMybatisProperties.class)
 @AutoConfigureAfter({DataSourceAutoConfiguration.class, MybatisLanguageDriverAutoConfiguration.class,
         MybatisAutoConfiguration.class})
 public class EasyMybatisAutoConfiguration {

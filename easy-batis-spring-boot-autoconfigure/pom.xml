@@ -6,7 +6,7 @@
 
     <groupId>com.xwc.open</groupId>
     <artifactId>easy-batis-spring-boot-autoconfigure</artifactId>
-    <version>2.1.4.M1</version>
+    <version>2.1.4.M1—SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -23,13 +23,13 @@
         </dependency>
         <dependency>
             <groupId>com.xwc.open</groupId>
-            <artifactId>easy-mybatis-sql</artifactId>
-            <version>3.5.11.M1</version>
+            <artifactId>easy-batis-sql</artifactId>
+            <version>3.5.11.M1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.xwc.open</groupId>
-            <artifactId>easy-mybatis-mysql</artifactId>
-            <version>2.1.4.M1</version>
+            <artifactId>easy-batis-mysql</artifactId>
+            <version>3.5.11.M1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>

@@ -21,6 +21,7 @@ import org.apache.ibatis.session.Configuration;
 import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.context.annotation.Primary;
 
 /**
  * Configuration properties for MyBatis.
@@ -29,7 +30,8 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * @author Kazuki Shimizu
  */
 @ConfigurationProperties(prefix = CustomMybatisProperties.MYBATIS_PREFIX)
-public class EasyMybatisProperties extends CustomMybatisProperties {
+@Primary
+public class EasyMybatisProperties extends MybatisProperties {
 
 
     /**
