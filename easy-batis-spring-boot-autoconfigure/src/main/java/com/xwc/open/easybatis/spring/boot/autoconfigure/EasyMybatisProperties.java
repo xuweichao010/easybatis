@@ -28,8 +28,8 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * @author Eddú MeléndezE
  * @author Kazuki Shimizu
  */
-@ConfigurationProperties(prefix = MybatisProperties.MYBATIS_PREFIX)
-public class EasyMybatisProperties extends MybatisProperties {
+@ConfigurationProperties(prefix = CustomMybatisProperties.MYBATIS_PREFIX)
+public class EasyMybatisProperties extends CustomMybatisProperties {
 
 
     /**

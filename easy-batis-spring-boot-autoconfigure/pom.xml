@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.xwc.open</groupId>
-    <artifactId>easy-mybatis-mysql</artifactId>
+    <artifactId>easy-batis-spring-boot-autoconfigure</artifactId>
     <version>2.1.4.M1</version>
 
     <dependencies>
@@ -16,9 +16,26 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>com.xwc.open</groupId>
-            <artifactId>easy-mybatis-spring-boot-autoconfigure</artifactId>
+            <artifactId>easy-mybatis-sql</artifactId>
+            <version>3.5.11.M1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xwc.open</groupId>
+            <artifactId>easy-mybatis-mysql</artifactId>
             <version>2.1.4.M1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>2.0.7</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -33,5 +50,6 @@
             <version>2.4.6</version>
         </dependency>
     </dependencies>
+
 
 </project>

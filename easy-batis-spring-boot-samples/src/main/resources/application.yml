@@ -1,0 +1,13 @@
+server:
+  port: 9966
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 数据库配置
+    url:  jdbc:mysql://127.0.0.1:3306/easybatis
+    username: root
+    password: root
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

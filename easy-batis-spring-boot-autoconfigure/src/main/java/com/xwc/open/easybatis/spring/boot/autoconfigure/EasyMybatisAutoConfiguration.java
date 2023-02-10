@@ -21,6 +21,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandi
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.CollectionUtils;
@@ -42,14 +43,14 @@ import java.util.stream.Stream;
 @org.springframework.context.annotation.Configuration
 @ConditionalOnClass({SqlSessionFactory.class, SqlSessionFactoryBean.class, MybatisAutoConfiguration.class})
 @ConditionalOnSingleCandidate(DataSource.class)
-@EnableConfigurationProperties(EasyMybatisProperties.class)
+@EnableConfigurationProperties(EasyBatisConfiguration.class)
 @AutoConfigureAfter({DataSourceAutoConfiguration.class, MybatisLanguageDriverAutoConfiguration.class,
         MybatisAutoConfiguration.class})
 public class EasyMybatisAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(EasyMybatisAutoConfiguration.class);
 
-    private final MybatisProperties properties;
+    private final EasyMybatisProperties properties;
 
     private final Interceptor[] interceptors;
 
@@ -65,13 +66,13 @@ public class EasyMybatisAutoConfiguration {
 
     private final List<EasyConfigurationCustomizer> easyConfigurationCustomizers;
 
-    public EasyMybatisAutoConfiguration(EasyMybatisProperties properties,
+    public EasyMybatisAutoConfiguration(EasyMybatisProperties easyMybatisProperties,
                                         ObjectProvider<Interceptor[]> interceptorsProvider,
                                         ObjectProvider<TypeHandler[]> typeHandlersProvider, ObjectProvider<LanguageDriver[]> languageDriversProvider,
                                         ResourceLoader resourceLoader, ObjectProvider<DatabaseIdProvider> databaseIdProvider,
                                         ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
                                         ObjectProvider<List<EasyConfigurationCustomizer>> easyConfigurationCustomizersProvider) {
-        this.properties = properties;
+        this.properties = easyMybatisProperties;
         this.interceptors = interceptorsProvider.getIfAvailable();
         this.typeHandlers = typeHandlersProvider.getIfAvailable();
         this.languageDrivers = languageDriversProvider.getIfAvailable();
@@ -83,7 +84,7 @@ public class EasyMybatisAutoConfiguration {
 
 
     @Bean
-    public EasyConfiguration easyConfiguration(EasyMybatisProperties properties) {
+    public EasyConfiguration easyConfiguration() {
         EasyConfiguration easyConfiguration = new EasyConfiguration();
         easyConfiguration.setAutoTableName(properties.isAutoTableName());
         easyConfiguration.setGlobalIdType(properties.getGlobalIdType());
