@@ -103,14 +103,14 @@ public class EasyMybatisAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @Order(-1)
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource, EasyConfiguration easyConfiguration) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource, EasyBatisConfiguration configuration) throws Exception {
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         factory.setVfs(SpringBootVFS.class);
         if (StringUtils.hasText(this.properties.getConfigLocation())) {
             factory.setConfigLocation(this.resourceLoader.getResource(this.properties.getConfigLocation()));
         }
-        applyConfiguration(factory, easyConfiguration);
+        applyConfiguration(factory, configuration);
         if (this.properties.getConfigurationProperties() != null) {
             factory.setConfigurationProperties(this.properties.getConfigurationProperties());
         }
@@ -154,11 +154,7 @@ public class EasyMybatisAutoConfiguration {
         return factory.getObject();
     }
 
-    private void applyConfiguration(SqlSessionFactoryBean factory, EasyConfiguration easyConfiguration) {
-        Configuration configuration = this.properties.getConfiguration();
-        if (configuration == null && !StringUtils.hasText(this.properties.getConfigLocation())) {
-            configuration = new EasyBatisConfiguration(easyConfiguration);
-        }
+    private void applyConfiguration(SqlSessionFactoryBean factory, EasyBatisConfiguration configuration) {
         if (configuration != null && !CollectionUtils.isEmpty(this.configurationCustomizers)) {
             for (ConfigurationCustomizer customizer : this.configurationCustomizers) {
                 customizer.customize(configuration);
@@ -167,5 +163,14 @@ public class EasyMybatisAutoConfiguration {
         factory.setConfiguration(configuration);
     }
 
+
+    @Bean
+    public Configuration configuration() {
+        Configuration configuration = this.properties.getConfiguration();
+        if (configuration == null && !StringUtils.hasText(this.properties.getConfigLocation())) {
+            configuration = new EasyBatisConfiguration(new EasyConfiguration());
+        }
+        return configuration;
+    }
 
 }

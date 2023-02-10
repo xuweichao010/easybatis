@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class EasyBatisConfiguration extends Configuration {
 
-    protected final EasyConfiguration easyConfiguration;
+    protected EasyConfiguration easyConfiguration = new EasyConfiguration();
 
     protected final EasyMapperRegister mapperRegistry = new EasyMapperRegister(this);
 
@@ -39,6 +39,11 @@ public class EasyBatisConfiguration extends Configuration {
         this.driverDatabaseIdProviders.addAll(Collections.singletonList(new MysqlDriverDatabaseIdProvider()));
     }
 
+
+    public EasyBatisConfiguration() {
+
+    }
+
     public EasyBatisConfiguration(EasyConfiguration easyConfiguration) {
         this.easyConfiguration = easyConfiguration;
         if (this.isMapUnderscoreToCamelCase()) {
@@ -52,6 +57,9 @@ public class EasyBatisConfiguration extends Configuration {
         this.setMapUnderscoreToCamelCase(true);
     }
 
+    public void setEasyConfiguration(EasyConfiguration easyConfiguration) {
+        this.easyConfiguration = easyConfiguration;
+    }
 
     public void addLoadedEasyResource(String resource) {
         loadedEasyResources.add(resource);
