@@ -31,7 +31,7 @@ public class MySqlMybatisAutoConfiguration {
     }
 
     @Bean
-    public ConfigurationCustomizer configurationCustomizer(SqlSourceGenerator mysqlSourceGenerator) {
+    public ConfigurationCustomizer configurationCustomizer(MysqlSqlSourceGenerator mysqlSourceGenerator) {
         return new MySqlConfigurationCustomizer(mysqlSourceGenerator);
     }
 
