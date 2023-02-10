@@ -7,6 +7,9 @@ spring:
     url:  jdbc:mysql://127.0.0.1:3306/easybatis
     username: root
     password: root
+
+  main:
+    allow-bean-definition-overriding: true
 mybatis:
   mapper-locations: classpath:/mapper/*.xml
   configuration:

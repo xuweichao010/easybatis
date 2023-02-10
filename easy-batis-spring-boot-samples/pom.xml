@@ -15,6 +15,7 @@
     <artifactId>easy-batis-spring-boot-samples</artifactId>
     <version>2.1.4.M1-SNAPSHOT</version>
 
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -77,7 +78,6 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>test</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -89,14 +89,8 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <arguments>-parameters</arguments>
                 </configuration>
             </plugin>
         </plugins>

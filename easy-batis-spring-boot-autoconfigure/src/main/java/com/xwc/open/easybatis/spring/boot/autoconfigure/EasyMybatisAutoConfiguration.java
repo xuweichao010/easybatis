@@ -102,16 +102,14 @@ public class EasyMybatisAutoConfiguration {
 
 
     @Bean
-    @ConditionalOnMissingBean
-    @Order(-1)
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource, EasyBatisConfiguration configuration) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         factory.setVfs(SpringBootVFS.class);
         if (StringUtils.hasText(this.properties.getConfigLocation())) {
             factory.setConfigLocation(this.resourceLoader.getResource(this.properties.getConfigLocation()));
         }
-        applyConfiguration(factory, configuration);
+        applyConfiguration(factory);
         if (this.properties.getConfigurationProperties() != null) {
             factory.setConfigurationProperties(this.properties.getConfigurationProperties());
         }
@@ -155,23 +153,17 @@ public class EasyMybatisAutoConfiguration {
         return factory.getObject();
     }
 
-    private void applyConfiguration(SqlSessionFactoryBean factory, EasyBatisConfiguration configuration) {
+    private void applyConfiguration(SqlSessionFactoryBean factory) {
+        Configuration configuration = this.properties.getConfiguration();
+        if (configuration == null && !StringUtils.hasText(this.properties.getConfigLocation())) {
+            configuration = new EasyBatisConfiguration(new EasyConfiguration());
+        }
         if (configuration != null && !CollectionUtils.isEmpty(this.configurationCustomizers)) {
             for (ConfigurationCustomizer customizer : this.configurationCustomizers) {
                 customizer.customize(configuration);
             }
         }
         factory.setConfiguration(configuration);
-    }
-
-
-    @Bean
-    public Configuration configuration() {
-        Configuration configuration = this.properties.getConfiguration();
-        if (configuration == null && !StringUtils.hasText(this.properties.getConfigLocation())) {
-            configuration = new EasyBatisConfiguration(new EasyConfiguration());
-        }
-        return configuration;
     }
 
 }

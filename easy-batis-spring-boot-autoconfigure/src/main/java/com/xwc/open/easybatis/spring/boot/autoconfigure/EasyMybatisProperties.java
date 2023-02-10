@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Primary;
  */
 @ConfigurationProperties(prefix = CustomMybatisProperties.MYBATIS_PREFIX)
 @Primary
-public class EasyMybatisProperties extends MybatisProperties {
+public class EasyMybatisProperties extends CustomMybatisProperties {
 
 
     /**
