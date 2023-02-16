@@ -1,14 +1,12 @@
 package com.xwc.easy.core;
 
-import com.xwc.easy.core.method.BaseMapper;
+import cn.onetozero.easy.parse.model.parameter.*;
 import com.xwc.easy.core.method.TestBaseMapper;
-import com.xwc.open.easy.parse.DefaultTableMetaAssistant;
-import com.xwc.open.easy.parse.DefaultOperateMethodAssistant;
-import com.xwc.open.easy.parse.EasyConfiguration;
-import com.xwc.open.easy.parse.model.OperateMethodMeta;
-import com.xwc.open.easy.parse.model.ParameterAttribute;
-import com.xwc.open.easy.parse.model.parameter.*;
-import com.xwc.open.easy.parse.utils.Reflection;
+import cn.onetozero.easy.parse.DefaultTableMetaAssistant;
+import cn.onetozero.easy.parse.DefaultOperateMethodAssistant;
+import cn.onetozero.easy.parse.EasyConfiguration;
+import cn.onetozero.easy.parse.model.OperateMethodMeta;
+import cn.onetozero.easy.parse.model.ParameterAttribute;
 import org.junit.Assert;
 import org.junit.Test;
 

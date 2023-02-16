@@ -1,4 +1,4 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.xwc.open.easybatis.spring.boot.autoconfigure.EasyMybatisAutoConfiguration,\
-  com.xwc.open.easybatis.spring.boot.autoconfigure.mysql.MySqlMybatisAutoConfiguration
+  cn.onetozero.easybatis.spring.boot.autoconfigure.EasyMybatisAutoConfiguration,\
+  cn.onetozero.easybatis.spring.boot.autoconfigure.mysql.MySqlMybatisAutoConfiguration

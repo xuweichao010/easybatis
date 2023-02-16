@@ -1,6 +1,6 @@
 package com.xwc.easy.core.method;
 
-import com.xwc.open.easy.parse.supports.EasyMapper;
+import cn.onetozero.easy.parse.supports.EasyMapper;
 
 import java.util.List;
 

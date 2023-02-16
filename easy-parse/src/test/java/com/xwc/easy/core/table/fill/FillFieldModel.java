@@ -1,7 +1,7 @@
 package com.xwc.easy.core.table.fill;
 
-import com.xwc.open.easy.parse.annotations.FillColumn;
-import com.xwc.open.easy.parse.enums.FillType;
+import cn.onetozero.easy.parse.annotations.FillColumn;
+import cn.onetozero.easy.parse.enums.FillType;
 
 /**
  * 类描述：

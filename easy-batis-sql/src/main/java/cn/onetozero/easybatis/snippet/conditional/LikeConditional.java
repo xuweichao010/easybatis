@@ -1,0 +1,37 @@
+package cn.onetozero.easybatis.snippet.conditional;
+
+import cn.onetozero.easybatis.supports.AbstractBatisSourceGenerator;
+import cn.onetozero.easybatis.supports.BatisPlaceholder;
+import cn.onetozero.easybatis.supports.SqlPlaceholder;
+import cn.onetozero.easybatis.MyBatisSnippetUtils;
+import cn.onetozero.easybatis.annotaions.conditions.Like;
+import cn.onetozero.easybatis.binding.BatisColumnAttribute;
+
+/**
+ * 类描述：等值SQL片段
+ * 作者：徐卫超 (cc)
+ * 时间 2023/1/17 13:51
+ */
+public class LikeConditional implements SingleConditionalSnippet {
+
+    private final AbstractBatisSourceGenerator sourceGenerator;
+
+    public LikeConditional(AbstractBatisSourceGenerator sourceGenerator) {
+        this.sourceGenerator = sourceGenerator;
+    }
+
+    @Override
+    public String snippet(BatisColumnAttribute columnAttribute) {
+        BatisPlaceholder batisPlaceholder = this.sourceGenerator.getBatisPlaceholder();
+        SqlPlaceholder sqlPlaceholder = this.sourceGenerator.getSqlPlaceholder();
+        Like like = columnAttribute.findAnnotation(Like.class);
+        String conditionSql = "AND " + sqlPlaceholder.holder(columnAttribute.useColumn(like))
+                + " LIKE CONCAT('%'," + batisPlaceholder.holder(columnAttribute) + ",'%') ";
+        if (columnAttribute.useDynamic(like)) {
+            return MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(columnAttribute),
+                    conditionSql);
+        } else {
+            return conditionSql;
+        }
+    }
+}

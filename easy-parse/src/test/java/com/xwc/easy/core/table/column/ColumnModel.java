@@ -1,6 +1,6 @@
 package com.xwc.easy.core.table.column;
 
-import com.xwc.open.easy.parse.annotations.Column;
+import cn.onetozero.easy.parse.annotations.Column;
 
 /**
  * 类描述： 没有注解

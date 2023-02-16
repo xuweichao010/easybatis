@@ -1,8 +1,8 @@
 package com.xwc.easy.core.table.method;
 
-import com.xwc.open.easy.parse.annotations.Id;
-import com.xwc.open.easy.parse.annotations.Table;
-import com.xwc.open.easy.parse.enums.IdType;
+import cn.onetozero.easy.parse.annotations.Id;
+import cn.onetozero.easy.parse.annotations.Table;
+import cn.onetozero.easy.parse.enums.IdType;
 
 /**
  * 类描述：

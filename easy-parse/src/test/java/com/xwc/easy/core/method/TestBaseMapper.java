@@ -2,7 +2,6 @@ package com.xwc.easy.core.method;
 
 import com.xwc.easy.core.table.method.MethodEntity;
 import com.xwc.easy.core.table.method.MethodEntityQuery;
-import com.xwc.open.easy.parse.supports.EasyMapper;
 
 import java.util.List;
 import java.util.Map;

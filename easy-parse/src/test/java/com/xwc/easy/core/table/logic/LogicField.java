@@ -1,6 +1,6 @@
 package com.xwc.easy.core.table.logic;
 
-import com.xwc.open.easy.parse.annotations.Logic;
+import cn.onetozero.easy.parse.annotations.Logic;
 
 /**
  * 类描述：

@@ -1,6 +1,6 @@
 package com.xwc.easy.core.table.name;
 
-import com.xwc.open.easy.parse.annotations.Table;
+import cn.onetozero.easy.parse.annotations.Table;
 
 /**
  * 类描述：

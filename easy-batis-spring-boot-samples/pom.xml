@@ -36,7 +36,7 @@
             <version>8.0.31</version>
         </dependency>
         <dependency>
-            <groupId>com.xwc.open</groupId>
+            <groupId>cn.onetozero</groupId>
             <artifactId>easy-batis-spring-boot-starter</artifactId>
             <version>2.1.4.M1-SNAPSHOT</version>
         </dependency>

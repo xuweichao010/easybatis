@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.xwc.open</groupId>
+    <groupId>cn.onetozero</groupId>
     <artifactId>easy-batis-postgres</artifactId>
     <version>3.5.11.M1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
-            <groupId>com.xwc.open</groupId>
+            <groupId>cn.onetozero</groupId>
             <artifactId>easy-batis-sql</artifactId>
             <version>3.5.11.M1-SNAPSHOT</version>
             <optional>true</optional>
