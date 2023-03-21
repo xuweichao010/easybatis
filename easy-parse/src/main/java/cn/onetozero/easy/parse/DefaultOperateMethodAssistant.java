@@ -1,13 +1,12 @@
 package cn.onetozero.easy.parse;
 
-import cn.onetozero.easy.parse.annotations.Syntax;
-import cn.onetozero.easy.parse.model.parameter.*;
 import cn.onetozero.easy.parse.annotations.Ignore;
+import cn.onetozero.easy.parse.annotations.Syntax;
 import cn.onetozero.easy.parse.exceptions.CheckDatabaseModelException;
 import cn.onetozero.easy.parse.model.OperateMethodMeta;
 import cn.onetozero.easy.parse.model.ParameterAttribute;
 import cn.onetozero.easy.parse.model.TableMeta;
-import com.xwc.open.easy.parse.model.parameter.*;
+import cn.onetozero.easy.parse.model.parameter.*;
 import cn.onetozero.easy.parse.supports.EasyMapper;
 import cn.onetozero.easy.parse.utils.AnnotationUtils;
 import cn.onetozero.easy.parse.utils.ParamNameUtil;

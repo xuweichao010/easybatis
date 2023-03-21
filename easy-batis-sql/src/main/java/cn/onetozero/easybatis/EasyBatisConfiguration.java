@@ -9,7 +9,6 @@ import cn.onetozero.easy.parse.utils.StringUtils;
 import cn.onetozero.easybatis.fill.FillAttributeHandler;
 import cn.onetozero.easybatis.ibatis.EasyMapperRegister;
 import cn.onetozero.easybatis.supports.*;
-import com.xwc.open.easybatis.supports.*;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 

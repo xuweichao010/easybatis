@@ -6,30 +6,27 @@ import cn.onetozero.easy.parse.model.*;
 import cn.onetozero.easy.parse.model.parameter.*;
 import cn.onetozero.easy.parse.utils.AnnotationUtils;
 import cn.onetozero.easy.parse.utils.Reflection;
+import cn.onetozero.easybatis.EasyBatisConfiguration;
+import cn.onetozero.easybatis.MyBatisSnippetUtils;
 import cn.onetozero.easybatis.annotaions.conditions.*;
+import cn.onetozero.easybatis.annotaions.other.Count;
+import cn.onetozero.easybatis.binding.BatisColumnAttribute;
+import cn.onetozero.easybatis.exceptions.ParamCheckException;
+import cn.onetozero.easybatis.snippet.column.DefaultInsertColumn;
 import cn.onetozero.easybatis.snippet.column.InsertColumnSnippet;
+import cn.onetozero.easybatis.snippet.column.SelectColumnSnippet;
 import cn.onetozero.easybatis.snippet.conditional.*;
 import cn.onetozero.easybatis.snippet.from.*;
 import cn.onetozero.easybatis.snippet.order.DefaultOrderSnippet;
 import cn.onetozero.easybatis.snippet.order.OrderSnippet;
 import cn.onetozero.easybatis.snippet.page.DefaultPageSnippet;
 import cn.onetozero.easybatis.snippet.page.PageSnippet;
-import cn.onetozero.easybatis.snippet.where.DefaultWhereSnippet;
-import cn.onetozero.easybatis.snippet.where.WhereSnippet;
-import cn.onetozero.easybatis.EasyBatisConfiguration;
-import cn.onetozero.easybatis.MyBatisSnippetUtils;
-import com.xwc.open.easybatis.annotaions.conditions.*;
-import cn.onetozero.easybatis.annotaions.other.Count;
-import cn.onetozero.easybatis.binding.BatisColumnAttribute;
-import cn.onetozero.easybatis.exceptions.ParamCheckException;
-import cn.onetozero.easybatis.snippet.column.DefaultInsertColumn;
-import cn.onetozero.easybatis.snippet.column.SelectColumnSnippet;
-import com.xwc.open.easybatis.snippet.conditional.*;
-import com.xwc.open.easybatis.snippet.from.*;
 import cn.onetozero.easybatis.snippet.set.DefaultSetSnippet;
 import cn.onetozero.easybatis.snippet.set.SetSnippet;
 import cn.onetozero.easybatis.snippet.values.DefaultInsertValues;
 import cn.onetozero.easybatis.snippet.values.InsertValuesSnippet;
+import cn.onetozero.easybatis.snippet.where.DefaultWhereSnippet;
+import cn.onetozero.easybatis.snippet.where.WhereSnippet;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.lang.reflect.Field;
@@ -151,8 +148,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
     }
 
     private String doSelect(OperateMethodMeta operateMethodMeta) {
-        boolean multi = isMulti(operateMethodMeta, SqlCommandType.SELECT);
-        boolean methodDynamic = isMethodDynamic(operateMethodMeta, SqlCommandType.SELECT);
+        boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.SELECT);
+        boolean methodDynamic = SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.SELECT);
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof BaseParameterAttribute) {
@@ -185,8 +182,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
 
     @Override
     public String insert(OperateMethodMeta operateMethodMeta) {
-        boolean multi = isMulti(operateMethodMeta, SqlCommandType.INSERT);
-        boolean methodDynamic = isMethodDynamic(operateMethodMeta, SqlCommandType.INSERT);
+        boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.INSERT);
+        boolean methodDynamic = SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.INSERT);
         List<BatisColumnAttribute> batisColumnAttributes = null;
         EntityParameterAttribute entityParameterAttribute = null;
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
@@ -219,8 +216,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
     }
 
     public String doUpdate(OperateMethodMeta operateMethodMeta) {
-        boolean multi = isMulti(operateMethodMeta, SqlCommandType.UPDATE);
-        boolean methodDynamic = isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean methodDynamic = SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         boolean isSetFill = false;
         boolean isSetLogic = false;
@@ -295,8 +292,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
     }
 
     private String doLogicDelete(OperateMethodMeta operateMethodMeta, LogicAttribute logic) {
-        boolean multi = isMulti(operateMethodMeta, SqlCommandType.UPDATE);
-        boolean methodDynamic = isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean methodDynamic = SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof BaseParameterAttribute) {
@@ -325,8 +322,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
     }
 
     private String doDelete(OperateMethodMeta operateMethodMeta) {
-        boolean multi = isMulti(operateMethodMeta, SqlCommandType.UPDATE);
-        boolean methodDynamic = isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.UPDATE);
+        boolean methodDynamic = SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof BaseParameterAttribute) {

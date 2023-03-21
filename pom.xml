@@ -6,17 +6,69 @@
     <groupId>cn.onetozero</groupId>
     <artifactId>easybatis-parent</artifactId>
     <version>3.5.11.M1-SNAPSHOT</version>
-
+    <packaging>pom</packaging>
     <modules>
         <module>easy-parse</module>
         <module>easy-batis-sql</module>
         <module>easy-batis-mysql</module>
         <module>easy-batis-postgres</module>
     </modules>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cn.onetozero</groupId>
+                <artifactId>easy-parse</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.onetozero</groupId>
+                <artifactId>easy-batis-sql</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.onetozero</groupId>
+                <artifactId>easy-batis-mysql</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.onetozero</groupId>
+                <artifactId>easy-batis-postgres</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency> <!-- 数据库驱动  -->
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <scope>runtime</scope>
+                <version>8.0.31</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
     <repositories>
-
+        <repository>
+            <id>bst-public</id>
+            <name>bst-public</name>
+            <url>http://124.221.168.155:8081/repository/release/</url>
+        </repository>
     </repositories>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>onetozero-snapshots</id>
+            <url>http://124.221.168.155:8081/repository/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>onetozero-release</id>
+            <url>http://124.221.168.155:8081/repository/release/</url>
+        </repository>
+    </distributionManagement>
 
 
 </project>
