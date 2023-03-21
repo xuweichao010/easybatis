@@ -12,9 +12,6 @@
         <module>easy-batis-sql</module>
         <module>easy-batis-mysql</module>
         <module>easy-batis-postgres</module>
-        <module>easy-batis-spring-boot-autoconfigure</module>
-        <module>easy-batis-spring-boot-starter</module>
-        <module>easy-batis-spring-boot-samples</module>
     </modules>
 
     <repositories>
