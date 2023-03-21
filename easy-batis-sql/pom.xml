@@ -6,8 +6,6 @@
 
     <groupId>cn.onetozero</groupId>
     <artifactId>easy-batis-sql</artifactId>
-    <version>3.5.11.M1-SNAPSHOT</version>
-
     <build>
         <plugins>
             <plugin>

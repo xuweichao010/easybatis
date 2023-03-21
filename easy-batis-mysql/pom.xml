@@ -6,7 +6,6 @@
 
     <groupId>cn.onetozero</groupId>
     <artifactId>easy-batis-mysql</artifactId>
-    <version>3.5.11.M1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
