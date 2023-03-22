@@ -50,23 +50,55 @@
         </dependencies>
     </dependencyManagement>
 
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                    <parameters>true</parameters>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
     <repositories>
         <repository>
-            <id>bst-public</id>
-            <name>bst-public</name>
-            <url>http://124.221.168.155:8081/repository/release/</url>
+            <id>my-maven</id>
+            <url>http://maven.onetozero.cn/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+
         </repository>
     </repositories>
-
     <distributionManagement>
         <snapshotRepository>
             <id>onetozero-snapshots</id>
-            <url>http://124.221.168.155:8081/repository/snapshots/</url>
+            <url>http://maven.onetozero.cn/repository/snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>onetozero-release</id>
-            <url>http://124.221.168.155:8081/repository/release/</url>
+            <url>http://maven.onetozero.cn/repository/release/</url>
         </repository>
     </distributionManagement>
 
