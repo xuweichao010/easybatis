@@ -51,7 +51,17 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
                 model.addNormalAttribute(modelAttribute);
             }
         }
+        validateTableMeta(model);
         return model;
+    }
+
+    private void validateTableMeta(TableMeta tableMeta) {
+        if (tableMeta.getTableName() == null) {
+            throw new CheckDatabaseModelException(tableMeta.getSource().getName() + "未声明表名");
+        }
+        if (tableMeta.getPrimaryKey() == null) {
+            throw new CheckDatabaseModelException(tableMeta.getTableName() + " 未声明 @Id注解");
+        }
     }
 
 
