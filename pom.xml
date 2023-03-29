@@ -13,6 +13,22 @@
         <module>easy-batis-mysql</module>
         <module>easy-batis-postgres</module>
     </modules>
+    <url>https://github.com/xuweichao010/easybatis.git</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>cc</name>
+            <email>xuweichao010@163.com</email>
+            <organization>https://github.com/xuweichao010</organization>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -83,22 +99,21 @@
     <repositories>
         <repository>
             <id>my-maven</id>
-            <url>http://maven.onetozero.cn/repository/maven-public/</url>
+            <url>https://maven.onetozero.cn/repository/maven-public/</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
             </snapshots>
-
         </repository>
     </repositories>
     <distributionManagement>
         <snapshotRepository>
             <id>onetozero-snapshots</id>
-            <url>http://maven.onetozero.cn/repository/snapshots/</url>
+            <url>https://maven.onetozero.cn/repository/snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>onetozero-release</id>
-            <url>http://maven.onetozero.cn/repository/release/</url>
+            <url>https://maven.onetozero.cn/repository/release/</url>
         </repository>
     </distributionManagement>
 
