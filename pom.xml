@@ -13,6 +13,22 @@
         <module>easy-batis-mysql</module>
         <module>easy-batis-postgres</module>
     </modules>
+    <url>https://github.com/xuweichao010/easybatis.git</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>cc</name>
+            <email>xuweichao010@163.com</email>
+            <organization>https://github.com/xuweichao010</organization>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -88,7 +104,6 @@
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
             </snapshots>
-
         </repository>
     </repositories>
     <distributionManagement>
