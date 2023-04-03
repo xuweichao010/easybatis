@@ -19,7 +19,7 @@ public @interface NotLike {
     /**
      * 属性和数据表之间的列关系
      *
-     * @return
+     * @return 属性的列名
      */
     String value() default "";
 
