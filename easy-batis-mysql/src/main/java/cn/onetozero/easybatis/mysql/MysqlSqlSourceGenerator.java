@@ -30,14 +30,20 @@ public class MysqlSqlSourceGenerator extends DefaultSqlSourceGenerator {
 
     public MysqlSqlSourceGenerator(SqlPlaceholder sqlPlaceholder, BatisPlaceholder batisPlaceholder, SelectColumnSnippet selectColumnSnippet, ConditionalRegistry conditionalRegistry, EasyBatisConfiguration easyBatisConfiguration, InsertFromSnippet insertSqlFrom, InsertColumnSnippet insertColumnSnippet, InsertValuesSnippet insertValuesSnippet, SelectFromSnippet selectSqlFrom, WhereSnippet whereSnippet, OrderSnippet orderSnippet, PageSnippet pageSnippet, UpdateFromSnippet updateFromSnippet, SetSnippet setSnippet, DeleteFromSnippet deleteFromSnippet) {
         super(sqlPlaceholder, batisPlaceholder, selectColumnSnippet, conditionalRegistry, easyBatisConfiguration, insertSqlFrom, insertColumnSnippet, insertValuesSnippet, selectSqlFrom, whereSnippet, orderSnippet, pageSnippet, updateFromSnippet, setSnippet, deleteFromSnippet);
+        this.registerConditional();
     }
 
     public MysqlSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration) {
         super(easyMyBatisConfiguration);
+        this.registerConditional();
     }
 
     public MysqlSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration, SqlPlaceholder sqlPlaceholder) {
         super(easyMyBatisConfiguration, sqlPlaceholder);
+        this.registerConditional();
+    }
+
+    private void registerConditional() {
         this.getConditionalRegistry().register(NotLike.class, new NotLikeConditional(this));
         this.getConditionalRegistry().register(NotIn.class, new NotInConditional(this));
     }
