@@ -99,7 +99,7 @@
     <repositories>
         <repository>
             <id>my-maven</id>
-            <url>https://maven.onetozero.cn/repository/maven-public/</url>
+            <url>http://maven.onetozero.cn/repository/maven-public/</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -109,11 +109,11 @@
     <distributionManagement>
         <snapshotRepository>
             <id>onetozero-snapshots</id>
-            <url>https://maven.onetozero.cn/repository/snapshots/</url>
+            <url>http://maven.onetozero.cn/repository/snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>onetozero-release</id>
-            <url>https://maven.onetozero.cn/repository/release/</url>
+            <url>http://maven.onetozero.cn/repository/release/</url>
         </repository>
     </distributionManagement>
 
