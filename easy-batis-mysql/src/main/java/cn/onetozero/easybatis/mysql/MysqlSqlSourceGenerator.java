@@ -1,10 +1,10 @@
 package cn.onetozero.easybatis.mysql;
 
+import cn.onetozero.easybatis.EasyBatisConfiguration;
 import cn.onetozero.easybatis.mysql.annotaions.NotIn;
 import cn.onetozero.easybatis.mysql.annotaions.NotLike;
 import cn.onetozero.easybatis.mysql.snippet.NotInConditional;
 import cn.onetozero.easybatis.mysql.snippet.NotLikeConditional;
-import cn.onetozero.easybatis.EasyBatisConfiguration;
 import cn.onetozero.easybatis.snippet.column.InsertColumnSnippet;
 import cn.onetozero.easybatis.snippet.column.SelectColumnSnippet;
 import cn.onetozero.easybatis.snippet.from.DeleteFromSnippet;
@@ -22,7 +22,7 @@ import cn.onetozero.easybatis.supports.DefaultSqlSourceGenerator;
 import cn.onetozero.easybatis.supports.SqlPlaceholder;
 
 /**
- * 类描述：
+ * 类描述：配置MYSQL特有的注解
  * 作者：徐卫超 (cc)
  * 时间 2023/2/10 11:21
  */
