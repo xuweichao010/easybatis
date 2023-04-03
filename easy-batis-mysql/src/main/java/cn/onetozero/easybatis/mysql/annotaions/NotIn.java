@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  * 创建人：徐卫超
  * 创建时间：2019/4/24  13:01
  * 业务： 条件注解
- * 功能： 模糊匹配 column LIKE '%value%'
+ * 功能： 不包含 column NOT IN (value1,value2,value3)
  */
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
