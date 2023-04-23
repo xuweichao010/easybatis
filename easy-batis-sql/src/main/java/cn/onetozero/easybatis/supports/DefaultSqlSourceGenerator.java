@@ -189,7 +189,9 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof EntityParameterAttribute) {
                 entityParameterAttribute = (EntityParameterAttribute) parameterAttribute;
-                batisColumnAttributes = analysisEntityParameterAttribute(entityParameterAttribute, multi, methodDynamic, SqlCommandType.INSERT);
+                batisColumnAttributes = analysisEntityParameterAttribute(entityParameterAttribute,
+                        multi || parameterAttribute instanceof CollectionEntityParameterAttribute,
+                        methodDynamic, SqlCommandType.INSERT);
                 parameterAttribute.setMulti(multi);
             } else {
                 throw new ParamCheckException("INSERT 语句不支持该类型的参数：" + parameterAttribute.getParameterName());
@@ -221,9 +223,40 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         boolean isSetFill = false;
         boolean isSetLogic = false;
+        boolean isBatch = false;
+        String collectionParamName = null;
         int index = operateMethodMeta.getParameterAttributes().size();
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
-            if (parameterAttribute instanceof EntityParameterAttribute) {
+            if (parameterAttribute instanceof CollectionEntityParameterAttribute) {
+                CollectionEntityParameterAttribute collectionEntityParameterAttribute = (CollectionEntityParameterAttribute) parameterAttribute;
+                isBatch = true;
+                collectionParamName = multi ? parameterAttribute.getParameterName() : "collection";
+                // 当只有一个参数的时候 需要使用迭代元素来处理 不能使用真实的名字来处理参数
+                CollectionEntityParameterAttribute itemParameterAttribute =
+                        new CollectionEntityParameterAttribute(collectionEntityParameterAttribute.getDatabaseMeta());
+                itemParameterAttribute.setParameterName("item");
+                itemParameterAttribute.setPath(new String[]{"item"});
+                CollectionEntityParameterAttribute entityParameterAttribute = (CollectionEntityParameterAttribute) parameterAttribute;
+                List<BatisColumnAttribute> entityBatisColumnAttributes =
+                        analysisEntityParameterAttribute(itemParameterAttribute,
+                                true, methodDynamic, SqlCommandType.UPDATE);
+                parameterAttribute.setMulti(false);
+                batisColumnAttributes.addAll(entityBatisColumnAttributes);
+                // 修改数据的主键条件
+                BatisColumnAttribute condition = convertModelAttribute(itemParameterAttribute,
+                        entityParameterAttribute.getDatabaseMeta().getPrimaryKey(),
+                        0, true, false, SqlCommandType.SELECT);
+                batisColumnAttributes.add(condition);
+                // 修改数据的逻辑件条件
+                if (entityParameterAttribute.getDatabaseMeta().getLogic() != null) {
+                    BatisColumnAttribute logicCondition = convertModelAttribute(itemParameterAttribute,
+                            entityParameterAttribute.getDatabaseMeta().getLogic(), ++index
+                            , multi, false, SqlCommandType.SELECT);
+                    batisColumnAttributes.add(logicCondition);
+                    isSetLogic = true;
+                }
+                isSetFill = true;
+            } else if (parameterAttribute instanceof EntityParameterAttribute) {
                 EntityParameterAttribute entityParameterAttribute = (EntityParameterAttribute) parameterAttribute;
                 List<BatisColumnAttribute> entityBatisColumnAttributes =
                         analysisEntityParameterAttribute((EntityParameterAttribute) parameterAttribute,
@@ -246,7 +279,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
                 batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic,
                         SqlCommandType.UPDATE));
             } else if (parameterAttribute instanceof PrimaryKeyParameterAttribute) {
-                batisColumnAttributes.add(convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.UPDATE));
+                batisColumnAttributes.add(convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi,
+                        methodDynamic, SqlCommandType.UPDATE));
             } else if (parameterAttribute instanceof ObjectParameterAttribute) {
                 List<BatisColumnAttribute> objectAttributes =
                         analysisObjectAttribute((ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.UPDATE);
@@ -268,7 +302,13 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
             batisColumnAttributes.add(convertModelAttribute(logic, ++index, multi, false,
                     SqlCommandType.SELECT));
         }
-        return updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes) + whereSnippet.where(batisColumnAttributes);
+        if (isBatch) {
+            String content =
+                    updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes) + whereSnippet.where(batisColumnAttributes);
+            return MyBatisSnippetUtils.foreachObject("item", "index", collectionParamName, content, ";");
+        } else {
+            return updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes) + whereSnippet.where(batisColumnAttributes);
+        }
     }
 
 
@@ -474,13 +514,13 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         attribute.setIndex(modelAttributeIndex);
         attribute.setColumn(modelAttribute.getColumn());
         attribute.setParameterName(modelAttribute.getField());
-        if (isMultiParam || parameterAttribute instanceof CollectionEntityParameterAttribute) {
+        if (isMultiParam) {
             attribute.setPath(new String[]{parameterAttribute.getParameterName(), modelAttribute.getField()});
         } else {
             attribute.setPath(new String[]{modelAttribute.getField()});
         }
         attribute.addAnnotations(modelAttribute.getAnnotations());
-        attribute.setMulti(isMultiParam || parameterAttribute instanceof CollectionEntityParameterAttribute);
+        attribute.setMulti(isMultiParam);
         attribute.setMethodDynamic(methodDynamic);
         attribute.setSqlCommandType(sqlCommandType);
         return attribute;

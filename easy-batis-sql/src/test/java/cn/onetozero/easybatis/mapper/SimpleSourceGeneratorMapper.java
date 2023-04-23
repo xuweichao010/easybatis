@@ -20,6 +20,7 @@ import cn.onetozero.easybatis.entity.NormalUser;
 import cn.onetozero.easybatis.entity.UserObject;
 import cn.onetozero.easybatis.model.*;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -100,8 +101,7 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     List<NormalUser> orderAscDynamic(@Asc(dynamic = true) Boolean age);
 
     @SelectSql
-    List<NormalUser> orderMixture(@Asc(dynamic = true) Boolean age, @Desc boolean orgCode,
-                                  @Asc(dynamic = true) Boolean job);
+    List<NormalUser> orderMixture(@Asc(dynamic = true) Boolean age, @Desc boolean orgCode, @Asc(dynamic = true) Boolean job);
 
     @SelectSql
     List<NormalUser> page(@Limit Integer limit, @Offset Integer offset);
@@ -145,6 +145,10 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     @UpdateSql
     int update(NormalUser normalUser);
 
+    @Update("<script>  <foreach item='item' index='index' collection='collection' separator=';' > UPDATE t_user SET `org_code`=#{item.orgCode}, " +
+            "`org_name`=#{item.orgName}, `name`=#{item.name}, `data_type`=#{item.dataType}, `age`=#{item.age}, `job`=#{item.job}, `create_time`=#{item.createTime}, `create_id`=#{item.createId}, `create_name`=#{item.createName}, `update_time`=#{item.updateTime}, `update_id`=#{item.updateId}, `update_name`=#{item.updateName}, `valid`=#{item.valid}  WHERE `id` = #{item.id} </foreach> </script>")
+    int updateBatch(List<NormalUser> normalUsers);
+
     @SelectSql
     List<NormalUser> notEqual(@NotEqual Integer age);
 
@@ -184,14 +188,12 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     int updateParam(@Equal() String id, String name);
 
     @UpdateSql
-    int updateParamDynamic(@Equal() String id, @SetParam(dynamic = true) String name,
-                           @SetParam(dynamic = true, value = "age") Integer ageAlias);
+    int updateParamDynamic(@Equal() String id, @SetParam(dynamic = true) String name, @SetParam(dynamic = true, value = "age") Integer ageAlias);
 
 
     @UpdateSql
     @Dynamic
-    int dynamicUpdateParam(@Equal String id, @SetParam() String name,
-                           @SetParam(value = "age") Integer ageAlias);
+    int dynamicUpdateParam(@Equal String id, @SetParam() String name, @SetParam(value = "age") Integer ageAlias);
 
     @UpdateSql
     int updateObject(NormalUserUpdateObject object);

@@ -9,7 +9,7 @@ public class MyBatisSnippetUtils {
     static final String FOREACH_ITEM =
             " <foreach item='%s' collection='%s' open= '(' close =')' separator=','> #{%s} </foreach> ";
 
-    static final String FOREACH_OBJECT = " <foreach item='%s' index='%s' collection='%s' separator=',' >%s </foreach>";
+    static final String FOREACH_OBJECT = " <foreach item='%s' index='%s' collection='%s' separator='%s' >%s </foreach>";
 
     static final String SCRIPT = "<script> %s </script>";
 
@@ -28,7 +28,11 @@ public class MyBatisSnippetUtils {
     }
 
     public static String foreachObject(String itemName, String indexName, String collectionName, String content) {
-        return String.format(FOREACH_OBJECT, itemName, indexName, collectionName, content);
+        return String.format(FOREACH_OBJECT, itemName, indexName, collectionName, ",", content);
+    }
+
+    public static String foreachObject(String itemName, String indexName, String collectionName, String content, String separator) {
+        return String.format(FOREACH_OBJECT, itemName, indexName, collectionName, separator, content);
     }
 
     public static String ifNonNullObject(String paramName, String content) {
