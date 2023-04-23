@@ -6,7 +6,6 @@ import cn.onetozero.easy.parse.enums.IdType;
 import lombok.Data;
 
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * 类描述：
@@ -58,7 +57,7 @@ public class LogicUser extends BaseLogicEntity {
     public static LogicUser randomUser() {
         Random random = new Random();
         LogicUser logicUser = new LogicUser();
-        logicUser.setId(UUID.randomUUID().toString().replace("-", ""));
+//        logicUser.setId(UUID.randomUUID().toString().replace("-", ""));
         logicUser.orgCode = "xxxx" + random.nextInt(300);
         logicUser.orgName = "测试分组" + random.nextInt(300);
         logicUser.name = "xxx" + new Random().nextInt(10000);

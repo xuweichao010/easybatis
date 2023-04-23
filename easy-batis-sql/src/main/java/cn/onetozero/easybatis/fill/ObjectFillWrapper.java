@@ -57,4 +57,8 @@ public class ObjectFillWrapper implements FillWrapper {
             throw new EasyMybatisException("设置填充属性类型错误" + name);
         }
     }
+
+    public Object getData() {
+        return data;
+    }
 }

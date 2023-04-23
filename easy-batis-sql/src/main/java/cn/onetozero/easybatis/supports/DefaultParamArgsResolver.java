@@ -1,6 +1,7 @@
 package cn.onetozero.easybatis.supports;
 
 import cn.onetozero.easy.parse.enums.FillType;
+import cn.onetozero.easy.parse.enums.IdType;
 import cn.onetozero.easy.parse.model.*;
 import cn.onetozero.easy.parse.model.parameter.EntityParameterAttribute;
 import cn.onetozero.easybatis.EasyBatisConfiguration;
@@ -31,6 +32,7 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
     public void methodParams(Map<String, Object> methodParams, OperateMethodMeta operateMethodMeta, SqlCommandType sqlCommandType) {
         fill(methodParams, operateMethodMeta, sqlCommandType);
         logic(methodParams, operateMethodMeta, sqlCommandType);
+
     }
 
 
@@ -84,21 +86,27 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
      */
     private void fill(Map<String, Object> map, OperateMethodMeta operateMethodMeta, SqlCommandType sqlCommandType) {
         List<FillAttribute> fillAttributes = null;
+        PrimaryKeyAttribute primaryKeyAttribute = null;
+
         TableMeta tableMeta = operateMethodMeta.getDatabaseMeta();
         if (sqlCommandType == SqlCommandType.INSERT) {
+            primaryKeyAttribute = tableMeta.getPrimaryKey();
             fillAttributes = tableMeta.insertFillAttributes();
         } else if (sqlCommandType == SqlCommandType.UPDATE) {
             fillAttributes = tableMeta.updateFillAttributes();
         }
-        if (fillAttributes == null || easyBatisConfiguration.getFillAttributeHandlers().isEmpty()) {
-            return;
+        if ((fillAttributes != null && !easyBatisConfiguration.getFillAttributeHandlers().isEmpty()) || primaryKeyAttribute != null) {
+            try {
+                easyBatisConfiguration.getFillAttributeHandlers().forEach(FillAttributeHandler::fillBefore);
+                doFill(map, operateMethodMeta, fillAttributes, primaryKeyAttribute);
+            } finally {
+                easyBatisConfiguration.getFillAttributeHandlers().forEach(FillAttributeHandler::fillAfter);
+            }
         }
-        try {
-            easyBatisConfiguration.getFillAttributeHandlers().forEach(FillAttributeHandler::fillBefore);
-            doFill(map, operateMethodMeta, fillAttributes);
-        } finally {
-            easyBatisConfiguration.getFillAttributeHandlers().forEach(FillAttributeHandler::fillAfter);
-        }
+        PrimaryKeyAttribute primaryKey = tableMeta.getPrimaryKey();
+        //当ID的类型是数据库控制或者用户控制 直接不执行
+
+
     }
 
     /**
@@ -109,7 +117,7 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
      * @param fillAttributes
      */
     private void doFill(Map<String, Object> map, OperateMethodMeta operateMethodMeta,
-                        List<FillAttribute> fillAttributes) {
+                        List<FillAttribute> fillAttributes, PrimaryKeyAttribute primaryKeyAttribute) {
         // 需要区分用对象填充还是参数填充 对象填充 参数是entity对象 参数填充 就是参数列表中没有entity对象
         ParameterAttribute entityParam = operateMethodMeta.getParameterAttributes().stream()
                 .filter(parameterAttribute -> parameterAttribute instanceof EntityParameterAttribute)
@@ -119,15 +127,31 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
             if (data instanceof List) {
                 ((List<?>) data).forEach(item -> {
                     ObjectFillWrapper objectFillWrapper = new ObjectFillWrapper(operateMethodMeta.getDatabaseMeta(), item);
+                    // 填充数据
                     fillAttributes.forEach(fillAttribute -> executorFill(fillAttribute, objectFillWrapper));
+                    // 填充主键
+                    executorPrimaryKeyFill(primaryKeyAttribute, item);
                 });
             } else {
                 ObjectFillWrapper objectFillWrapper = new ObjectFillWrapper(operateMethodMeta.getDatabaseMeta(), data);
+                //填充数据
                 fillAttributes.forEach(fillAttribute -> executorFill(fillAttribute, objectFillWrapper));
+                // 填充主键
+                executorPrimaryKeyFill(primaryKeyAttribute, data);
             }
         } else {
             MapFillWrapper mapFillWrapper = new MapFillWrapper(map);
             fillAttributes.forEach(fillAttribute -> executorFill(fillAttribute, mapFillWrapper));
+        }
+    }
+
+    private void executorPrimaryKeyFill(PrimaryKeyAttribute primaryKey, Object data) {
+        if (primaryKey == null) {
+            return;
+        }
+        if (primaryKey.getIdType() != IdType.AUTO && primaryKey.getIdType() != IdType.INPUT) {
+            ObjectFillWrapper objectFillWrapper = new ObjectFillWrapper(primaryKey, data);
+            objectFillWrapper.setValue(primaryKey.getField(), primaryKey.getIdGenerateHandler().next(data));
         }
     }
 
