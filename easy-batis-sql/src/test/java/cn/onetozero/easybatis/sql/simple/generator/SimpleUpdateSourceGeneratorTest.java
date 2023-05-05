@@ -64,6 +64,16 @@ public class SimpleUpdateSourceGeneratorTest {
     }
 
     @Test
+    public void simpleUpdateBatchDynamic() {
+        Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
+        String methodName = "updateBatchDynamic";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant().getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  <foreach item='item' index='index' collection='collection' separator=';' > UPDATE t_user <set>  <if test='item.orgCode != null'> `org_code`=#{item.orgCode}, </if>  <if test='item.orgName != null'> `org_name`=#{item.orgName}, </if>  <if test='item.name != null'> `name`=#{item.name}, </if>  <if test='item.dataType != null'> `data_type`=#{item.dataType}, </if>  <if test='item.age != null'> `age`=#{item.age}, </if>  <if test='item.job != null'> `job`=#{item.job}, </if>  <if test='item.createTime != null'> `create_time`=#{item.createTime}, </if>  <if test='item.createId != null'> `create_id`=#{item.createId}, </if>  <if test='item.createName != null'> `create_name`=#{item.createName}, </if>  <if test='item.updateTime != null'> `update_time`=#{item.updateTime}, </if>  <if test='item.updateId != null'> `update_id`=#{item.updateId}, </if>  <if test='item.updateName != null'> `update_name`=#{item.updateName}, </if>  <if test='item.valid != null'> `valid`=#{item.valid}, </if> </set> WHERE `id` = #{item.id} </foreach> </script>";
+        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
+    }
+
+    @Test
     public void simpleUpdateDynamic() {
         Class<?> interfaceClass = SimpleSourceGeneratorMapper.class;
         String methodName = "updateDynamic";

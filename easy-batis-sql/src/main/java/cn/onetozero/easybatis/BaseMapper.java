@@ -62,6 +62,10 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
     @UpdateSql
     int update(E entity);
 
+
+    @UpdateSql
+    int updateBatch(Collection<E> entities);
+
     /**
      * 根据主键动态更新一条数据到数据库中
      *

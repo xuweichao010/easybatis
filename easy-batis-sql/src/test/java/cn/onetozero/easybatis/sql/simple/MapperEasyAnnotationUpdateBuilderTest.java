@@ -72,7 +72,7 @@ public class MapperEasyAnnotationUpdateBuilderTest {
     }
 
     @Test
-    public void simpleUpdateBathc() {
+    public void simpleUpdateBatch() {
         List<NormalUser> normalUserList = IntStream.range(0, 10).mapToObj(index -> {
             NormalUser updateUser = createUser();
             updateUser.setName("simpleUpdate" + index);
@@ -83,7 +83,20 @@ public class MapperEasyAnnotationUpdateBuilderTest {
             NormalUser dbUser = simpleSourceGeneratorMapper.findOne(normalUser.getId());
             Assert.assertEquals(normalUser.getName(), dbUser.getName());
         });
+    }
 
+    @Test
+    public void simpleUpdateBatchDynamic() {
+        List<NormalUser> normalUserList = IntStream.range(0, 10).mapToObj(index -> {
+            NormalUser updateUser = createUser();
+            updateUser.setName("simpleUpdate" + index);
+            return updateUser;
+        }).collect(Collectors.toList());
+        simpleSourceGeneratorMapper.updateBatchDynamic(normalUserList);
+        normalUserList.forEach(normalUser -> {
+            NormalUser dbUser = simpleSourceGeneratorMapper.findOne(normalUser.getId());
+            Assert.assertEquals(normalUser.getName(), dbUser.getName());
+        });
     }
 
     @Test

@@ -20,7 +20,6 @@ import cn.onetozero.easybatis.entity.NormalUser;
 import cn.onetozero.easybatis.entity.UserObject;
 import cn.onetozero.easybatis.model.*;
 import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -142,12 +141,6 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     @SelectSql
     List<NormalUser> queryMultiObject(NormalUseQueryDto query, PageQueryDto page);
 
-    @UpdateSql
-    int update(NormalUser normalUser);
-
-    @Update("<script>  <foreach item='item' index='index' collection='collection' separator=';' > UPDATE t_user SET `org_code`=#{item.orgCode}, " +
-            "`org_name`=#{item.orgName}, `name`=#{item.name}, `data_type`=#{item.dataType}, `age`=#{item.age}, `job`=#{item.job}, `create_time`=#{item.createTime}, `create_id`=#{item.createId}, `create_name`=#{item.createName}, `update_time`=#{item.updateTime}, `update_id`=#{item.updateId}, `update_name`=#{item.updateName}, `valid`=#{item.valid}  WHERE `id` = #{item.id} </foreach> </script>")
-    int updateBatch(List<NormalUser> normalUsers);
 
     @SelectSql
     List<NormalUser> notEqual(@NotEqual Integer age);
@@ -178,6 +171,17 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
 
     @SelectSql
     List<NormalUser> lessThanEqual(@LessThanEqual Integer age);
+
+
+    @UpdateSql
+    int update(NormalUser normalUser);
+
+    @UpdateSql
+    int updateBatch(List<NormalUser> normalUsers);
+
+    @UpdateSql
+    @Dynamic
+    int updateBatchDynamic(List<NormalUser> normalUsers);
 
 
     @UpdateSql
