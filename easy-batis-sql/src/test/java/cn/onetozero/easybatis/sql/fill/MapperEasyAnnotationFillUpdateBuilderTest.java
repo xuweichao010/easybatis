@@ -1,11 +1,11 @@
 package cn.onetozero.easybatis.sql.fill;
 
 import cn.onetozero.easy.parse.EasyConfiguration;
-import cn.onetozero.easybatis.model.NormalUserUpdateObject;
 import cn.onetozero.easybatis.EasyBatisConfiguration;
 import cn.onetozero.easybatis.entity.FillUser;
 import cn.onetozero.easybatis.mapper.FillSourceGeneratorMapper;
 import cn.onetozero.easybatis.mapper.GenericsBaseMapper;
+import cn.onetozero.easybatis.model.NormalUserUpdateObject;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSession;
@@ -19,6 +19,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 类描述：
@@ -60,7 +62,18 @@ public class MapperEasyAnnotationFillUpdateBuilderTest {
         Assert.assertNotNull(dbUser.getUpdateTime());
         Assert.assertEquals(fillUser.getUpdateName(), dbUser.getUpdateName());
         Assert.assertEquals(fillUser.getUpdateId(), dbUser.getUpdateId());
+    }
 
+    @Test
+    public void fillUpdateBatch() {
+        List<FillUser> fillUsers = Arrays.asList(createUser(),createUser());
+        fillSourceGeneratorMapper.updateBatch(fillUsers);
+        fillUsers.forEach(fillUser -> {
+            FillUser dbUser = fillSourceGeneratorMapper.findOne(fillUser.getId());
+            Assert.assertNotNull(dbUser.getUpdateTime());
+            Assert.assertEquals(fillUser.getUpdateName(), dbUser.getUpdateName());
+            Assert.assertEquals(fillUser.getUpdateId(), dbUser.getUpdateId());
+        });
 
     }
 

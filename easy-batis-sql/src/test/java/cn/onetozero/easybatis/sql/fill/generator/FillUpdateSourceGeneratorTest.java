@@ -3,10 +3,10 @@ package cn.onetozero.easybatis.sql.fill.generator;
 import cn.onetozero.easy.parse.EasyConfiguration;
 import cn.onetozero.easy.parse.model.OperateMethodMeta;
 import cn.onetozero.easy.parse.utils.Reflection;
-import cn.onetozero.easybatis.supports.DefaultSqlSourceGenerator;
-import cn.onetozero.easybatis.supports.SqlSourceGenerator;
 import cn.onetozero.easybatis.EasyBatisConfiguration;
 import cn.onetozero.easybatis.mapper.FillSourceGeneratorMapper;
+import cn.onetozero.easybatis.supports.DefaultSqlSourceGenerator;
+import cn.onetozero.easybatis.supports.SqlSourceGenerator;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -50,6 +50,17 @@ public class FillUpdateSourceGeneratorTest {
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
                 .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script>  UPDATE t_user <set> `org_code`=#{orgCode}, `org_name`=#{orgName}, `name`=#{name}, `data_type`=#{dataType}, `age`=#{age}, `job`=#{job}, `update_time`=#{updateTime}, `update_id`=#{updateId}, `update_name`=#{updateName}, </set> WHERE `id` = #{id} </script>";
+        Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
+    }
+
+    @Test
+    public void fillUpdateBatch() {
+        Class<?> interfaceClass = FillSourceGeneratorMapper.class;
+        String methodName = "updateBatch";
+        Method method = Reflection.chooseMethod(interfaceClass, methodName);
+        OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
+                .getOperateMethodMeta(interfaceClass, method);
+        String expected = "<script>  <foreach item='item' index='index' collection='collection' separator=';' > UPDATE t_user <set> `org_code`=#{item.orgCode}, `org_name`=#{item.orgName}, `name`=#{item.name}, `data_type`=#{item.dataType}, `age`=#{item.age}, `job`=#{item.job}, `update_time`=#{item.updateTime}, `update_id`=#{item.updateId}, `update_name`=#{item.updateName}, </set> WHERE `id` = #{item.id} </foreach> </script>";
         Assert.assertEquals(expected, sourceGenerator.update(operateMethodMeta));
     }
 

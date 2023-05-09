@@ -8,10 +8,11 @@ import cn.onetozero.easybatis.annotaions.UpdateSql;
 import cn.onetozero.easybatis.annotaions.conditions.Equal;
 import cn.onetozero.easybatis.annotaions.other.Dynamic;
 import cn.onetozero.easybatis.annotaions.set.SetParam;
-import cn.onetozero.easybatis.model.NormalUserUpdateObject;
 import cn.onetozero.easybatis.entity.FillUser;
+import cn.onetozero.easybatis.model.NormalUserUpdateObject;
 import org.apache.ibatis.annotations.Delete;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -40,6 +41,9 @@ public interface FillSourceGeneratorMapper extends EasyMapper<FillUser, String> 
 
     @UpdateSql
     int update(FillUser normalUser);
+
+    @UpdateSql
+    int updateBatch(Collection<FillUser> fillUsers);
 
     @UpdateSql
     @Dynamic
