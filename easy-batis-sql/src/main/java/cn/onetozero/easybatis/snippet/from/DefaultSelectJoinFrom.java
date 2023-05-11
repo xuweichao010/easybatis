@@ -24,6 +24,6 @@ public class DefaultSelectJoinFrom implements SelectFromSnippet {
             throw new EasyMybatisException("找不到 @SelectJoinSql 注解信息");
         }
         return "SELECT " + selectJoinSql.value() + " " +
-                "FROM " + selectJoinSql.from();
+            "FROM " + selectJoinSql.from();
     }
 }
