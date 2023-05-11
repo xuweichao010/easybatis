@@ -53,6 +53,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
 
     private final SelectFromSnippet selectSqlFrom;
 
+    private final SelectFromSnippet selectJoinSqlFrom;
+
     private final WhereSnippet whereSnippet;
 
     private final OrderSnippet orderSnippet;
@@ -74,6 +76,7 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
                                      InsertColumnSnippet insertColumnSnippet,
                                      InsertValuesSnippet insertValuesSnippet,
                                      SelectFromSnippet selectSqlFrom,
+                                     SelectFromSnippet selectJoinSqlFrom,
                                      WhereSnippet whereSnippet,
                                      OrderSnippet orderSnippet,
                                      PageSnippet pageSnippet,
@@ -87,6 +90,7 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         this.insertColumnSnippet = insertColumnSnippet;
         this.insertValuesSnippet = insertValuesSnippet;
         this.selectSqlFrom = selectSqlFrom;
+        this.selectJoinSqlFrom = selectJoinSqlFrom;
         this.whereSnippet = whereSnippet;
         this.orderSnippet = orderSnippet;
         this.pageSnippet = pageSnippet;
@@ -107,6 +111,7 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         this.insertColumnSnippet = new DefaultInsertColumn(this);
         this.insertValuesSnippet = new DefaultInsertValues(this);
         this.selectSqlFrom = new DefaultSelectFrom(this);
+        this.selectJoinSqlFrom = new DefaultSelectJoinFrom(this);
         this.whereSnippet = new DefaultWhereSnippet(this);
         this.orderSnippet = new DefaultOrderSnippet(this);
         this.pageSnippet = new DefaultPageSnippet(this);
@@ -146,6 +151,38 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
     public String select(OperateMethodMeta operateMethodMeta) {
         return MyBatisSnippetUtils.script(doSelect(operateMethodMeta));
     }
+
+
+    @Override
+    public String selectJoin(OperateMethodMeta operateMethodMeta) {
+        return MyBatisSnippetUtils.script(doSelectJoin(operateMethodMeta));
+    }
+
+    private String doSelectJoin(OperateMethodMeta operateMethodMeta) {
+        boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.SELECT);
+        boolean methodDynamic = SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.SELECT);
+        List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
+        for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
+            if (parameterAttribute instanceof BaseParameterAttribute) {
+                batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
+            } else if (parameterAttribute instanceof ObjectParameterAttribute) {
+                List<BatisColumnAttribute> objectAttributes =
+                        analysisObjectAttribute((ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT);
+                parameterAttribute.setMulti(multi);
+                batisColumnAttributes.addAll(objectAttributes);
+            } else {
+                throw new ParamCheckException(operateMethodMeta.getMethodName() + "查询语句不支持该类型的参数：" + parameterAttribute.getParameterName());
+            }
+        }
+        StringBuilder sql = new StringBuilder(this.selectJoinSqlFrom.from(operateMethodMeta))
+                .append(this.whereSnippet.where(batisColumnAttributes));
+        if (!operateMethodMeta.containsAnnotation(Count.class)) {
+            sql.append(this.orderSnippet.order(operateMethodMeta, batisColumnAttributes))
+                    .append(this.pageSnippet.page(batisColumnAttributes));
+        }
+        return sql.toString();
+    }
+
 
     private String doSelect(OperateMethodMeta operateMethodMeta) {
         boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.SELECT);

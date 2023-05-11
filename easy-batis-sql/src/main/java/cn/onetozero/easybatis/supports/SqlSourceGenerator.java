@@ -23,6 +23,8 @@ public interface SqlSourceGenerator {
      */
     String select(OperateMethodMeta operateMethodMeta);
 
+    String selectJoin(OperateMethodMeta operateMethodMeta);
+
     /**
      * 插入语句构建
      *
@@ -99,6 +101,7 @@ public interface SqlSourceGenerator {
         }
         return paramNum > 1;
     }
+
 
 
 }
