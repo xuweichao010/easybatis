@@ -26,9 +26,9 @@ public class InConditional implements SingleConditionalSnippet {
         SqlPlaceholder sqlPlaceholder = this.sourceGenerator.getSqlPlaceholder();
         In In = columnAttribute.findAnnotation(In.class);
         String path = columnAttribute.isMulti() || columnAttribute.getPath().length > 1 ?
-                batisPlaceholder.path(columnAttribute) : "collection";
+            batisPlaceholder.path(columnAttribute) : "collection";
         String conditionSql =
-                "AND "  +sqlPlaceholder.holder(columnAttribute.useColumn(In)) + " IN " + MyBatisSnippetUtils.foreachItem("item", path);
+            "AND "  +sqlPlaceholder.holder(columnAttribute.useColumn(In)) + " IN " + MyBatisSnippetUtils.foreachItem("item", path);
         if (columnAttribute.useDynamic(In)) {
             return MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(columnAttribute), conditionSql);
         } else {

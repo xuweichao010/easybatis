@@ -48,7 +48,7 @@ public class SelectJoinSourceGeneratorTest {
         String methodName = "joinUser";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
-                .getOperateMethodMeta(interfaceClass, method);
+            .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT t.* FROM t_user t INNER JOIN t_org o ON t.org_code = o.code  </script>";
         Assert.assertEquals(expected, sourceGenerator.selectJoin(operateMethodMeta));
     }
@@ -59,7 +59,7 @@ public class SelectJoinSourceGeneratorTest {
         String methodName = "joinUserByCode";
         Method method = Reflection.chooseMethod(interfaceClass, methodName);
         OperateMethodMeta operateMethodMeta = easyBatisConfiguration.getEasyConfiguration().getOperateMethodAssistant()
-                .getOperateMethodMeta(interfaceClass, method);
+            .getOperateMethodMeta(interfaceClass, method);
         String expected = "<script> SELECT `id`,`org_code`,`org_name`,`name`,`data_type`,`age`,`job`,`create_time`,`create_id`,`create_name`,`update_time`,`update_id`,`update_name` FROM t_user WHERE `id` = #{id} AND `valid` = #{valid} </script>";
 //        Assert.assertEquals(expected, sourceGenerator.selectJoin(operateMethodMeta));
     }

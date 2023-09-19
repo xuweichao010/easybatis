@@ -27,10 +27,10 @@ public class GreaterThanConditional implements SingleConditionalSnippet {
 
         GreaterThan equal = columnAttribute.findAnnotation(GreaterThan.class);
         String conditionSql = "AND " + columnAttribute.useAlias(equal) + sqlPlaceholder.holder(columnAttribute.useColumn(equal))
-                + " <![CDATA[>]]> " + batisPlaceholder.holder(columnAttribute);
+            + " <![CDATA[>]]> " + batisPlaceholder.holder(columnAttribute);
         if (columnAttribute.useDynamic(equal)) {
             return MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(columnAttribute),
-                    conditionSql);
+                conditionSql);
         } else {
             return conditionSql;
         }

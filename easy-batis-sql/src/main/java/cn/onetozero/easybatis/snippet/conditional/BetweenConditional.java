@@ -26,8 +26,8 @@ public class BetweenConditional implements MultiConditionalSnippet {
         SqlPlaceholder sqlPlaceholder = this.sourceGenerator.getSqlPlaceholder();
         Between between = fromAttribute.findAnnotation(Between.class);
         String conditionSql =
-                "AND " + fromAttribute.useAlias(between) + sqlPlaceholder.holder(fromAttribute.useColumn(between)) + " BETWEEN " + batisPlaceholder.holder(fromAttribute) +
-                        " AND " + batisPlaceholder.holder(toAttribute);
+            "AND " + fromAttribute.useAlias(between) + sqlPlaceholder.holder(fromAttribute.useColumn(between)) + " BETWEEN " + batisPlaceholder.holder(fromAttribute) +
+                " AND " + batisPlaceholder.holder(toAttribute);
         if (fromAttribute.isMethodDynamic() || between.dynamic()) {
             return MyBatisSnippetUtils.ifNonCondition(batisPlaceholder.path(fromAttribute), batisPlaceholder.path(toAttribute), conditionSql);
         } else {

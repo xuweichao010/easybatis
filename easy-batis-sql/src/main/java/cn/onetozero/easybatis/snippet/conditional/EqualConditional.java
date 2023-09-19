@@ -26,10 +26,10 @@ public class EqualConditional implements SingleConditionalSnippet {
         SqlPlaceholder sqlPlaceholder = this.sourceGenerator.getSqlPlaceholder();
         Equal equal = columnAttribute.findAnnotation(Equal.class);
         String conditionSql =
-                "AND " + columnAttribute.useAlias(equal) + sqlPlaceholder.holder(columnAttribute.useColumn(equal)) + " = " + batisPlaceholder.holder(columnAttribute);
+            "AND " + columnAttribute.useAlias(equal) + sqlPlaceholder.holder(columnAttribute.useColumn(equal)) + " = " + batisPlaceholder.holder(columnAttribute);
         if (columnAttribute.useDynamic(equal)) {
             return MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(columnAttribute),
-                    conditionSql);
+                conditionSql);
         } else {
             return conditionSql;
         }
