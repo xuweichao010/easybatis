@@ -27,11 +27,12 @@ public @interface SelectJoinSql {
 
 
     /**
-     * 关联条件
+     * 关联的表
      *
      * @return
      */
     String from() default "";
+
 
     /**
      * @return A database id that correspond this statement

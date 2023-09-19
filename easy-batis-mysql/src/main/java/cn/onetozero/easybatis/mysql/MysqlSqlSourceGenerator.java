@@ -28,8 +28,39 @@ import cn.onetozero.easybatis.supports.SqlPlaceholder;
  */
 public class MysqlSqlSourceGenerator extends DefaultSqlSourceGenerator {
 
-    public MysqlSqlSourceGenerator(SqlPlaceholder sqlPlaceholder, BatisPlaceholder batisPlaceholder, SelectColumnSnippet selectColumnSnippet, ConditionalRegistry conditionalRegistry, EasyBatisConfiguration easyBatisConfiguration, InsertFromSnippet insertSqlFrom, InsertColumnSnippet insertColumnSnippet, InsertValuesSnippet insertValuesSnippet, SelectFromSnippet selectSqlFrom, WhereSnippet whereSnippet, OrderSnippet orderSnippet, PageSnippet pageSnippet, UpdateFromSnippet updateFromSnippet, SetSnippet setSnippet, DeleteFromSnippet deleteFromSnippet) {
-        super(sqlPlaceholder, batisPlaceholder, selectColumnSnippet, conditionalRegistry, easyBatisConfiguration, insertSqlFrom, insertColumnSnippet, insertValuesSnippet, selectSqlFrom, whereSnippet, orderSnippet, pageSnippet, updateFromSnippet, setSnippet, deleteFromSnippet);
+    public MysqlSqlSourceGenerator(SqlPlaceholder sqlPlaceholder,
+                                   BatisPlaceholder batisPlaceholder,
+                                   SelectColumnSnippet selectColumnSnippet,
+                                   ConditionalRegistry conditionalRegistry,
+                                   EasyBatisConfiguration easyBatisConfiguration,
+                                   InsertFromSnippet insertSqlFrom,
+                                   InsertColumnSnippet insertColumnSnippet,
+                                   InsertValuesSnippet insertValuesSnippet,
+                                   SelectFromSnippet selectSqlFrom,
+                                   SelectFromSnippet selectJoinSqlFrom,
+                                   WhereSnippet whereSnippet,
+                                   OrderSnippet orderSnippet,
+                                   PageSnippet pageSnippet,
+                                   UpdateFromSnippet updateFromSnippet,
+                                   SetSnippet setSnippet,
+                                   DeleteFromSnippet deleteFromSnippet) {
+        super(sqlPlaceholder,
+                batisPlaceholder,
+                selectColumnSnippet,
+                conditionalRegistry,
+                easyBatisConfiguration,
+                insertSqlFrom,
+                insertColumnSnippet,
+                insertValuesSnippet,
+                selectSqlFrom,
+                selectJoinSqlFrom,
+                whereSnippet,
+                orderSnippet,
+                pageSnippet,
+                updateFromSnippet,
+                setSnippet,
+                deleteFromSnippet);
+
         this.registerConditional();
     }
 

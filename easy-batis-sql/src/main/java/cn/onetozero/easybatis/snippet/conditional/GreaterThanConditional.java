@@ -1,11 +1,11 @@
 package cn.onetozero.easybatis.snippet.conditional;
 
-import cn.onetozero.easybatis.supports.AbstractBatisSourceGenerator;
-import cn.onetozero.easybatis.supports.BatisPlaceholder;
-import cn.onetozero.easybatis.supports.SqlPlaceholder;
 import cn.onetozero.easybatis.MyBatisSnippetUtils;
 import cn.onetozero.easybatis.annotaions.conditions.GreaterThan;
 import cn.onetozero.easybatis.binding.BatisColumnAttribute;
+import cn.onetozero.easybatis.supports.AbstractBatisSourceGenerator;
+import cn.onetozero.easybatis.supports.BatisPlaceholder;
+import cn.onetozero.easybatis.supports.SqlPlaceholder;
 
 /**
  * 类描述：等值SQL片段
@@ -26,7 +26,7 @@ public class GreaterThanConditional implements SingleConditionalSnippet {
         SqlPlaceholder sqlPlaceholder = this.sourceGenerator.getSqlPlaceholder();
 
         GreaterThan equal = columnAttribute.findAnnotation(GreaterThan.class);
-        String conditionSql = "AND " + sqlPlaceholder.holder(columnAttribute.useColumn(equal))
+        String conditionSql = "AND " + columnAttribute.useAlias(equal) + sqlPlaceholder.holder(columnAttribute.useColumn(equal))
                 + " <![CDATA[>]]> " + batisPlaceholder.holder(columnAttribute);
         if (columnAttribute.useDynamic(equal)) {
             return MyBatisSnippetUtils.ifNonNullObject(batisPlaceholder.path(columnAttribute),

@@ -66,4 +66,13 @@ public class BatisColumnAttribute extends ParameterAttribute {
             return column;
         }
     }
+
+    public String useAlias(Annotation annotation) {
+        Object value = AnnotationUtils.getValue(annotation, AnnotationAttributeProtocol.ALIAS);
+        if (value != null && StringUtils.hasText(value.toString())) {
+            return value + ".";
+        } else {
+            return "";
+        }
+    }
 }
