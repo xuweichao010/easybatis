@@ -34,6 +34,4 @@ public class AnnotationFillAttribute implements FillAttributeHandler {
             fillWrapper.setValue("updateName", "updateName");
         }
     }
-
-
 }
