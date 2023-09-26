@@ -1,7 +1,9 @@
 package cn.onetozero.easybatis.ibatis;
 
 import cn.onetozero.easy.parse.EasyConfiguration;
+import cn.onetozero.easy.parse.enums.IdType;
 import cn.onetozero.easy.parse.model.OperateMethodMeta;
+import cn.onetozero.easy.parse.model.PrimaryKeyAttribute;
 import cn.onetozero.easy.parse.model.TableMeta;
 import cn.onetozero.easy.parse.utils.Reflection;
 import cn.onetozero.easybatis.EasyBatisConfiguration;
@@ -266,9 +268,14 @@ public class MapperEasyAnnotationBuilder {
             if (SqlCommandType.INSERT.equals(sqlCommandType) || SqlCommandType.UPDATE.equals(sqlCommandType)) {
                 // first check for SelectKey annotation - that overrides everything else
                 SelectKey selectKey = getAnnotationWrapper(method, false, SelectKey.class).map(x -> (SelectKey) x.getAnnotation()).orElse(null);
+                PrimaryKeyAttribute primaryKey = tableMeta.getPrimaryKey();
                 if (selectKey != null) {
                     keyGenerator = handleSelectKeyAnnotation(selectKey, mappedStatementId, getParameterType(method), languageDriver);
                     keyProperty = selectKey.keyProperty();
+                } else if (primaryKey.getIdType() == IdType.AUTO) {
+                    keyGenerator = Jdbc3KeyGenerator.INSTANCE;
+                    keyColumn = primaryKey.getColumn();
+                    keyProperty = primaryKey.getField();
                 } else if (options == null) {
                     keyGenerator = configuration.isUseGeneratedKeys() ? Jdbc3KeyGenerator.INSTANCE : NoKeyGenerator.INSTANCE;
                 } else {
