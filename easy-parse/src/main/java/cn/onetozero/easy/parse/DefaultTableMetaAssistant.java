@@ -181,8 +181,8 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
         }
         // 处理填充标识
         String identification = StringUtils.hasText(fillColumn.identification())
-                ? fillColumn.identification()
-                : fillAttribute.getField();
+            ? fillColumn.identification()
+            : fillAttribute.getField();
 
         fillAttribute.setIdentification(identification);
         // 填充类型处理
@@ -221,9 +221,9 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
                 modelAttribute.setColumn(column.value());
             }
             return modelAttribute
-                    .withInsertIgnore(column.insertIgnore())
-                    .withUpdateIgnore(column.updateIgnore())
-                    .withSelectIgnore(column.selectIgnore());
+                .withInsertIgnore(column.insertIgnore())
+                .withUpdateIgnore(column.updateIgnore())
+                .withSelectIgnore(column.selectIgnore());
         }
         return modelAttribute;
     }

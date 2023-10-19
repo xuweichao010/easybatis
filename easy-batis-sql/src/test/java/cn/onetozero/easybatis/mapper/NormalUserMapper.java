@@ -30,10 +30,10 @@ public interface NormalUserMapper extends EasyMapper<NormalUser, String> {
      */
     @SelectSql(databaseId = "db2")
     List<NormalUser> query(
-            @In List<String> id,
-            @Between(of = "ageTo") int age, int ageTo,
-            @LikeRight(value = "org_code") String orgCodes,
-            @Desc boolean orgCode, @Asc(dynamic = true) Boolean job);
+        @In List<String> id,
+        @Between(of = "ageTo") int age, int ageTo,
+        @LikeRight(value = "org_code") String orgCodes,
+        @Desc boolean orgCode, @Asc(dynamic = true) Boolean job);
 
     /**
      * 根据主键查询一条数据
