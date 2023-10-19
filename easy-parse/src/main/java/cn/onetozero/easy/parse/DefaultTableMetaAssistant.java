@@ -6,6 +6,7 @@ import cn.onetozero.easy.parse.enums.IdType;
 import cn.onetozero.easy.parse.exceptions.CheckDatabaseModelException;
 import cn.onetozero.easy.parse.model.*;
 import cn.onetozero.easy.parse.supports.impl.DefaultUUIDHandler;
+import cn.onetozero.easy.parse.supports.impl.SnowflakeHandler;
 import cn.onetozero.easy.parse.utils.AnnotationUtils;
 import cn.onetozero.easy.parse.utils.Reflection;
 import cn.onetozero.easy.parse.utils.StringUtils;
@@ -114,6 +115,8 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
             primaryKeyAttribute.setIdGenerateHandler(configuration.getIdGenerateHandlerFactory().getHandler(DefaultUUIDHandler.class));
         } else if (idType == IdType.HANDLER) {
             primaryKeyAttribute.setIdGenerateHandler(configuration.getIdGenerateHandlerFactory().getHandler(id.idGenerateHandler()));
+        } else if (idType == IdType.SNOWFLAKE) {
+            primaryKeyAttribute.setIdGenerateHandler(configuration.getIdGenerateHandlerFactory().getHandler(SnowflakeHandler.class));
         }
         primaryKeyAttribute.setUpdateIgnore(true);
         primaryKeyAttribute.setInsertIgnore(idType == IdType.AUTO);
