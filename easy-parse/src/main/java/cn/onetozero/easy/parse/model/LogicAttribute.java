@@ -7,23 +7,25 @@ package cn.onetozero.easy.parse.model;
  */
 public class LogicAttribute extends ModelAttribute{
 
-    private int valid;
+    private String valid;
 
-    private int invalid;
+    private String invalid;
 
-    public int getValid() {
+    private
+
+    public String getValid() {
         return valid;
     }
 
-    public void setValid(int valid) {
+    public void setValid(String valid) {
         this.valid = valid;
     }
 
-    public int getInvalid() {
+    public String getInvalid() {
         return invalid;
     }
 
-    public void setInvalid(int invalid) {
+    public void setInvalid(String invalid) {
         this.invalid = invalid;
     }
 }

@@ -1,14 +1,5 @@
 package com.xwc.easy.core;
 
-import com.xwc.easy.core.table.column.ColumnModel;
-import com.xwc.easy.core.table.column.IgnoreColumnModel;
-import com.xwc.easy.core.table.column.NotColumnModel;
-import com.xwc.easy.core.table.fill.CustomFillFieldModel;
-import com.xwc.easy.core.table.fill.FillFieldModel;
-import com.xwc.easy.core.table.key.*;
-import com.xwc.easy.core.table.logic.LogicField;
-import com.xwc.easy.core.table.name.DataBaseModelAutoTableName;
-import com.xwc.easy.core.table.name.DataBaseModelTableName;
 import cn.onetozero.easy.parse.DefaultTableMetaAssistant;
 import cn.onetozero.easy.parse.EasyConfiguration;
 import cn.onetozero.easy.parse.enums.FillType;
@@ -21,6 +12,15 @@ import cn.onetozero.easy.parse.supports.impl.DefaultUUIDHandler;
 import cn.onetozero.easy.parse.supports.impl.NoneIdGenerateHandler;
 import cn.onetozero.easy.parse.supports.impl.NoneNameConverter;
 import cn.onetozero.easy.parse.utils.Reflection;
+import com.xwc.easy.core.table.column.ColumnModel;
+import com.xwc.easy.core.table.column.IgnoreColumnModel;
+import com.xwc.easy.core.table.column.NotColumnModel;
+import com.xwc.easy.core.table.fill.CustomFillFieldModel;
+import com.xwc.easy.core.table.fill.FillFieldModel;
+import com.xwc.easy.core.table.key.*;
+import com.xwc.easy.core.table.logic.LogicField;
+import com.xwc.easy.core.table.name.DataBaseModelAutoTableName;
+import com.xwc.easy.core.table.name.DataBaseModelTableName;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -203,8 +203,8 @@ public class DefaultTableMetaAssistantTest {
                 .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         LogicAttribute logicAttribute = assistant.logicAttribute(LogicField.class, field);
         Assert.assertNotNull(logicAttribute);
-        Assert.assertEquals(100, logicAttribute.getInvalid());
-        Assert.assertEquals(101, logicAttribute.getValid());
+        Assert.assertEquals("100", logicAttribute.getInvalid());
+        Assert.assertEquals("101", logicAttribute.getValid());
         Assert.assertEquals("delete_flag", logicAttribute.getColumn());
         Assert.assertTrue(logicAttribute.isSelectIgnore());
         Assert.assertFalse(logicAttribute.isUpdateIgnore());

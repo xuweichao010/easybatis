@@ -9,7 +9,7 @@ import cn.onetozero.easy.parse.annotations.Logic;
  */
 public class LogicField {
 
-    @Logic(invalid = 100, valid = 101)
+    @Logic(invalid = "100", valid = "101")
     private String deleteFlag;
 
     public String getDeleteFlag() {
