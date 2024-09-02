@@ -94,7 +94,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(AutoPrimaryKey.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         PrimaryKeyAttribute primaryKeyAttribute = assistant.primaryKeyAttribute(AutoPrimaryKey.class, field);
         Assert.assertEquals("id", primaryKeyAttribute.getColumn());
         Assert.assertEquals("id", primaryKeyAttribute.getField());
@@ -113,7 +113,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(NotAutoPrimaryKey.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         PrimaryKeyAttribute primaryKeyAttribute = assistant.primaryKeyAttribute(NotAutoPrimaryKey.class, field);
         Assert.assertEquals(primaryKeyAttribute.getColumn(), "user_id");
         Assert.assertEquals(primaryKeyAttribute.getField(), "userId");
@@ -131,7 +131,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(GlobalPrimaryKey.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         try {
             assistant.primaryKeyAttribute(GlobalPrimaryKey.class, field);
         } catch (Exception e) {
@@ -149,7 +149,7 @@ public class DefaultTableMetaAssistantTest {
         configuration.setGlobalIdType(IdType.AUTO);
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(GlobalPrimaryKey.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         PrimaryKeyAttribute primaryKeyAttribute = assistant.primaryKeyAttribute(NotAutoPrimaryKey.class, field);
         Assert.assertEquals(IdType.AUTO, primaryKeyAttribute.getIdType());
     }
@@ -163,7 +163,7 @@ public class DefaultTableMetaAssistantTest {
         configuration.setGlobalIdType(IdType.AUTO);
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(GlobalCustomPrimaryKey.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         PrimaryKeyAttribute primaryKeyAttribute = assistant.primaryKeyAttribute(GlobalCustomPrimaryKey.class, field);
         Assert.assertEquals(IdType.INPUT, primaryKeyAttribute.getIdType());
     }
@@ -177,7 +177,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(UuidPrimaryKey.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         PrimaryKeyAttribute primaryKeyAttribute = assistant.primaryKeyAttribute(UuidPrimaryKey.class, field);
         Assert.assertTrue(primaryKeyAttribute.getIdGenerateHandler().getClass().isAssignableFrom(DefaultUUIDHandler.class));
     }
@@ -190,7 +190,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(HandlerPrimaryKey.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         PrimaryKeyAttribute primaryKeyAttribute = assistant.primaryKeyAttribute(HandlerPrimaryKey.class, field);
         Assert.assertTrue(primaryKeyAttribute.getIdGenerateHandler().getClass().isAssignableFrom(NoneIdGenerateHandler.class));
     }
@@ -203,7 +203,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(LogicField.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         LogicAttribute logicAttribute = assistant.logicAttribute(LogicField.class, field);
         Assert.assertNotNull(logicAttribute);
         Assert.assertEquals("100", logicAttribute.getInvalid());
@@ -218,7 +218,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(LogicIntField.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         LogicAttribute logicAttribute = assistant.logicAttribute(LogicIntField.class, field);
         Assert.assertNotNull(logicAttribute);
         Assert.assertEquals("100", logicAttribute.getInvalid());
@@ -235,7 +235,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(LogicIntegerField.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         LogicAttribute logicAttribute = assistant.logicAttribute(LogicIntegerField.class, field);
         Assert.assertNotNull(logicAttribute);
         Assert.assertEquals("100", logicAttribute.getInvalid());
@@ -255,7 +255,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(FillFieldModel.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         FillAttribute fillAttribute = assistant.fillAttribute(FillFieldModel.class, field);
         Assert.assertEquals("createUserId", fillAttribute.getIdentification());
         Assert.assertEquals("create_user_id", fillAttribute.getColumn());
@@ -274,7 +274,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(CustomFillFieldModel.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         FillAttribute fillAttribute = assistant.fillAttribute(CustomFillFieldModel.class, field);
         Assert.assertTrue(fillAttribute.isSelectIgnore());
         Assert.assertEquals("username", fillAttribute.getIdentification());
@@ -290,7 +290,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(NotColumnModel.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         ModelAttribute modelAttribute = assistant.modelAttribute(NotColumnModel.class, field);
         Assert.assertEquals("username", modelAttribute.getColumn());
     }
@@ -303,7 +303,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(ColumnModel.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         ModelAttribute modelAttribute = assistant.modelAttribute(ColumnModel.class, field);
         Assert.assertEquals("alias_name", modelAttribute.getColumn());
         Assert.assertTrue(modelAttribute.isInsertIgnore());
@@ -319,7 +319,7 @@ public class DefaultTableMetaAssistantTest {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(IgnoreColumnModel.class).stream()
-                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+            .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
         ModelAttribute modelAttribute = assistant.modelAttribute(IgnoreColumnModel.class, field);
         Assert.assertNull(modelAttribute);
     }

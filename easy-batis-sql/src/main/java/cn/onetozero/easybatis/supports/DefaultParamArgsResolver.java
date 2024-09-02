@@ -48,8 +48,8 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
         }
         // 需要区分用对象填充还是参数填充 对象填充 参数是entity对象 参数填充 就是参数列表中没有entity对象
         ParameterAttribute entityParam = operateMethodMeta.getParameterAttributes().stream()
-                .filter(parameterAttribute -> parameterAttribute instanceof EntityParameterAttribute)
-                .findAny().orElse(null);
+            .filter(parameterAttribute -> parameterAttribute instanceof EntityParameterAttribute)
+            .findAny().orElse(null);
         if (entityParam != null) {
             Object data = namedParamMap.get(entityParam.getParameterName());
             if (data instanceof List) {
@@ -71,7 +71,7 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
                 MapFillWrapper mapFillWrapper = new MapFillWrapper(namedParamMap);
                 // 过滤条件
                 mapFillWrapper.setValue(virtualParameterAttribute.getParameterName(),
-                        batisColumnAttribute.getVirtualValue());
+                    batisColumnAttribute.getVirtualValue());
             }
         }
     }
@@ -121,8 +121,8 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
                         List<FillAttribute> fillAttributes, PrimaryKeyAttribute primaryKeyAttribute) {
         // 需要区分用对象填充还是参数填充 对象填充 参数是entity对象 参数填充 就是参数列表中没有entity对象
         ParameterAttribute entityParam = operateMethodMeta.getParameterAttributes().stream()
-                .filter(parameterAttribute -> parameterAttribute instanceof EntityParameterAttribute)
-                .findAny().orElse(null);
+            .filter(parameterAttribute -> parameterAttribute instanceof EntityParameterAttribute)
+            .findAny().orElse(null);
         if (entityParam != null) {
             Object data = map.get(entityParam.getParameterName());
             if (data instanceof List) {
@@ -165,12 +165,12 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
     private void executorFill(FillAttribute fillAttribute, FillWrapper wrapper) {
         if (fillAttribute.getType() == FillType.INSERT || fillAttribute.getType() == FillType.INSERT_UPDATE) {
             easyBatisConfiguration.getFillAttributeHandlers()
-                    .forEach(fillAttributeHandler -> fillAttributeHandler.insertFill(fillAttribute.getIdentification(), fillAttribute.getField(),
-                            wrapper));
+                .forEach(fillAttributeHandler -> fillAttributeHandler.insertFill(fillAttribute.getIdentification(), fillAttribute.getField(),
+                    wrapper));
         }
         if (fillAttribute.getType() == FillType.UPDATE || fillAttribute.getType() == FillType.INSERT_UPDATE) {
             easyBatisConfiguration.getFillAttributeHandlers()
-                    .forEach(fillAttributeHandler -> fillAttributeHandler.updateFill(fillAttribute.getIdentification(), fillAttribute.getField(), wrapper));
+                .forEach(fillAttributeHandler -> fillAttributeHandler.updateFill(fillAttribute.getIdentification(), fillAttribute.getField(), wrapper));
         }
     }
 
