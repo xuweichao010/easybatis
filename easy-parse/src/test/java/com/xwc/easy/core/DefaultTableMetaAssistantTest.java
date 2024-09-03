@@ -9,6 +9,7 @@ import cn.onetozero.easy.parse.model.LogicAttribute;
 import cn.onetozero.easy.parse.model.ModelAttribute;
 import cn.onetozero.easy.parse.model.PrimaryKeyAttribute;
 import cn.onetozero.easy.parse.supports.impl.DefaultUUIDHandler;
+import cn.onetozero.easy.parse.supports.impl.LogicIntegerHandler;
 import cn.onetozero.easy.parse.supports.impl.NoneIdGenerateHandler;
 import cn.onetozero.easy.parse.supports.impl.NoneNameConverter;
 import cn.onetozero.easy.parse.utils.Reflection;
@@ -19,6 +20,8 @@ import com.xwc.easy.core.table.fill.CustomFillFieldModel;
 import com.xwc.easy.core.table.fill.FillFieldModel;
 import com.xwc.easy.core.table.key.*;
 import com.xwc.easy.core.table.logic.LogicField;
+import com.xwc.easy.core.table.logic.LogicIntField;
+import com.xwc.easy.core.table.logic.LogicIntegerField;
 import com.xwc.easy.core.table.name.DataBaseModelAutoTableName;
 import com.xwc.easy.core.table.name.DataBaseModelTableName;
 import org.junit.Assert;
@@ -196,7 +199,7 @@ public class DefaultTableMetaAssistantTest {
      * 测试logic是否工作正常
      */
     @Test
-    public void logic() {
+    public void logicString() {
         EasyConfiguration configuration = new EasyConfiguration();
         DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
         Field field = Reflection.getField(LogicField.class).stream()
@@ -206,6 +209,39 @@ public class DefaultTableMetaAssistantTest {
         Assert.assertEquals("100", logicAttribute.getInvalid());
         Assert.assertEquals("101", logicAttribute.getValid());
         Assert.assertEquals("delete_flag", logicAttribute.getColumn());
+        Assert.assertTrue(logicAttribute.isSelectIgnore());
+        Assert.assertFalse(logicAttribute.isUpdateIgnore());
+        Assert.assertFalse(logicAttribute.isInsertIgnore());
+    }
+    @Test
+    public void logicInt() {
+        EasyConfiguration configuration = new EasyConfiguration();
+        DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
+        Field field = Reflection.getField(LogicIntField.class).stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+        LogicAttribute logicAttribute = assistant.logicAttribute(LogicIntField.class, field);
+        Assert.assertNotNull(logicAttribute);
+        Assert.assertEquals("100", logicAttribute.getInvalid());
+        Assert.assertEquals("101", logicAttribute.getValid());
+        Assert.assertEquals("delete_flag", logicAttribute.getColumn());
+        Assert.assertEquals(LogicIntegerHandler.class,logicAttribute.getValueHandler().getClass());
+        Assert.assertTrue(logicAttribute.isSelectIgnore());
+        Assert.assertFalse(logicAttribute.isUpdateIgnore());
+        Assert.assertFalse(logicAttribute.isInsertIgnore());
+    }
+
+    @Test
+    public void logicInteger() {
+        EasyConfiguration configuration = new EasyConfiguration();
+        DefaultTableMetaAssistant assistant = new DefaultTableMetaAssistant(configuration);
+        Field field = Reflection.getField(LogicIntegerField.class).stream()
+                .findFirst().orElseThrow(() -> new RuntimeException("未找到合法的属性"));
+        LogicAttribute logicAttribute = assistant.logicAttribute(LogicIntegerField.class, field);
+        Assert.assertNotNull(logicAttribute);
+        Assert.assertEquals("100", logicAttribute.getInvalid());
+        Assert.assertEquals("101", logicAttribute.getValid());
+        Assert.assertEquals("delete_flag", logicAttribute.getColumn());
+        Assert.assertEquals(LogicIntegerHandler.class,logicAttribute.getValueHandler().getClass());
         Assert.assertTrue(logicAttribute.isSelectIgnore());
         Assert.assertFalse(logicAttribute.isUpdateIgnore());
         Assert.assertFalse(logicAttribute.isInsertIgnore());

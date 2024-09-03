@@ -1,5 +1,8 @@
 package cn.onetozero.easy.parse.model;
 
+import cn.onetozero.easy.parse.supports.ValueHandler;
+import cn.onetozero.easy.parse.supports.impl.DefaultHandler;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -41,6 +44,16 @@ public class ModelAttribute {
     private boolean insertIgnore;
 
     private List<Annotation> annotations;
+
+    private ValueHandler<?> valueHandler = new DefaultHandler();
+
+    public ValueHandler<?> getValueHandler() {
+        return valueHandler;
+    }
+
+    public void setValueHandler(ValueHandler<?> valueHandler) {
+        this.valueHandler = valueHandler;
+    }
 
     public String getField() {
         return field;

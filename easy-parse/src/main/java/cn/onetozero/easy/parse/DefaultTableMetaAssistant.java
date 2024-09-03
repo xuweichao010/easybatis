@@ -6,6 +6,7 @@ import cn.onetozero.easy.parse.enums.IdType;
 import cn.onetozero.easy.parse.exceptions.CheckDatabaseModelException;
 import cn.onetozero.easy.parse.model.*;
 import cn.onetozero.easy.parse.supports.impl.DefaultUUIDHandler;
+import cn.onetozero.easy.parse.supports.impl.LogicIntegerHandler;
 import cn.onetozero.easy.parse.supports.impl.SnowflakeHandler;
 import cn.onetozero.easy.parse.utils.AnnotationUtils;
 import cn.onetozero.easy.parse.utils.Reflection;
@@ -14,6 +15,7 @@ import cn.onetozero.easy.parse.utils.StringUtils;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -140,8 +142,12 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
             return null;
         }
         LogicAttribute logicAttribute = (LogicAttribute) this.process(new LogicAttribute(), clazz, field);
+        field.getGenericType().getTypeName();
         if (logicAttribute == null) {
             return null;
+        }
+        if (Objects.equals(field.getGenericType().getTypeName(), "int") || Objects.equals(field.getType(), Integer.class)) {
+            logicAttribute.setValueHandler(new LogicIntegerHandler());
         }
         logicAttribute.setUpdateIgnore(false);
         logicAttribute.setSelectIgnore(logic.selectIgnore());

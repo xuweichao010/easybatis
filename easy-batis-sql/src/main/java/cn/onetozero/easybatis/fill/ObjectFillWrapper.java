@@ -52,7 +52,7 @@ public class ObjectFillWrapper implements FillWrapper {
             throw new EasyMybatisException("未被定义的填充属性");
         }
         try {
-            modelAttribute.getSetter().invoke(data, value);
+            modelAttribute.getSetter().invoke(data, modelAttribute.getValueHandler().getValue(value));
         } catch (Exception e) {
             throw new EasyMybatisException("设置填充属性类型错误" + name);
         }

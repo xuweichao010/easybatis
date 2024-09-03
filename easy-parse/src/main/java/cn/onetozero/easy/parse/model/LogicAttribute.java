@@ -11,7 +11,8 @@ public class LogicAttribute extends ModelAttribute{
 
     private String invalid;
 
-    private
+
+
 
     public String getValid() {
         return valid;
@@ -28,4 +29,6 @@ public class LogicAttribute extends ModelAttribute{
     public void setInvalid(String invalid) {
         this.invalid = invalid;
     }
+
+
 }
