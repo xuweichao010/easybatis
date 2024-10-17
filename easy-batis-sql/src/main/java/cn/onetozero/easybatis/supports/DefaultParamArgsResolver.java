@@ -54,16 +54,16 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
             Object data = namedParamMap.get(entityParam.getParameterName());
             if (data instanceof List) {
                 ((List<?>) data).forEach(item -> {
-                    new ObjectFillWrapper(logic, item).setValue(logic.getField(), logic.getValid());
+                    new ObjectFillWrapper(logic, item).setValue(logic.getField(), logic.getValueHandler().getValue(logic.getValid()));
                 });
             } else {
-                new ObjectFillWrapper(logic, data).setValue(logic.getField(), logic.getValid());
+                new ObjectFillWrapper(logic, data).setValue(logic.getField(), logic.getValueHandler().getValue(logic.getValid()));
 
             }
         } else {
             MapFillWrapper mapFillWrapper = new MapFillWrapper(namedParamMap);
             // 过滤条件
-            mapFillWrapper.setValue(logic.getField(), logic.getValid());
+            mapFillWrapper.setValue(logic.getField(), logic.getValueHandler().getValue(logic.getValid()));
         }
         for (ParameterAttribute virtualParameterAttribute : operateMethodMeta.getVirtualParameterAttributes()) {
             if (virtualParameterAttribute instanceof BatisColumnAttribute) {
