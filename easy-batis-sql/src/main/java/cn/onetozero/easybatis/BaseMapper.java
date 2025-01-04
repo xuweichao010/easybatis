@@ -16,6 +16,7 @@ import java.util.List;
  * 作者：徐卫超 (cc)
  * 时间 2023/2/13 9:52
  */
+@SuppressWarnings("usages")
 public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 
     /**
@@ -33,6 +34,7 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
      * @param keys 主键数据集合
      * @return 查询的结果
      */
+    @SelectSql
     List<E> selectKeys(@In Collection<K> keys);
 
     /**
@@ -66,8 +68,8 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
     /**
      * 批量修改数据库
      *
-     * @param entities
-     * @return
+     * @param entities 根据主键修改数据
+     * @return 返回更新的记录条数
      */
     @UpdateSql
     int updateBatch(Collection<E> entities);

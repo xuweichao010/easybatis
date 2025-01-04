@@ -5,6 +5,8 @@ import cn.onetozero.easy.parse.enums.IdType;
 import cn.onetozero.easy.parse.model.*;
 import cn.onetozero.easy.parse.model.parameter.EntityParameterAttribute;
 import cn.onetozero.easybatis.EasyBatisConfiguration;
+import cn.onetozero.easybatis.annotaions.LogicOff;
+import cn.onetozero.easybatis.annotaions.page.Offset;
 import cn.onetozero.easybatis.binding.BatisColumnAttribute;
 import cn.onetozero.easybatis.fill.FillAttributeHandler;
 import cn.onetozero.easybatis.fill.FillWrapper;
@@ -43,7 +45,7 @@ public class DefaultParamArgsResolver implements ParamArgsResolver {
      */
     private void logic(Map<String, Object> namedParamMap, OperateMethodMeta operateMethodMeta, SqlCommandType sqlCommandType) {
         LogicAttribute logic = operateMethodMeta.getDatabaseMeta().getLogic();
-        if (logic == null) {
+        if (logic == null || operateMethodMeta.containsAnnotation(LogicOff.class)) {
             return;
         }
         // 需要区分用对象填充还是参数填充 对象填充 参数是entity对象 参数填充 就是参数列表中没有entity对象

@@ -2,10 +2,7 @@ package cn.onetozero.easybatis.mapper;
 
 import cn.onetozero.easy.parse.annotations.Ignore;
 import cn.onetozero.easy.parse.supports.EasyMapper;
-import cn.onetozero.easybatis.annotaions.DeleteSql;
-import cn.onetozero.easybatis.annotaions.InsertSql;
-import cn.onetozero.easybatis.annotaions.SelectSql;
-import cn.onetozero.easybatis.annotaions.UpdateSql;
+import cn.onetozero.easybatis.annotaions.*;
 import cn.onetozero.easybatis.annotaions.conditions.Equal;
 import cn.onetozero.easybatis.annotaions.other.Dynamic;
 import cn.onetozero.easybatis.model.NormalUserDeleteObject;
@@ -52,6 +49,11 @@ public interface LogicSourceGeneratorMapper extends EasyMapper<LogicUser, String
 
 
     @SelectSql
+    @LogicOff
+    NormalUser findOneLogicOff(String id);
+
+
+    @SelectSql
     NormalUser findOne2(String id, Integer age);
 
 
@@ -59,7 +61,15 @@ public interface LogicSourceGeneratorMapper extends EasyMapper<LogicUser, String
     NormalUser findOneDynamicIgnore(@Ignore String tableName, @Equal(dynamic = true) String id);
 
     @SelectSql
+    @LogicOff
+    NormalUser findOneLogicOffDynamicIgnore(@Ignore String tableName, @Equal(dynamic = true) String id);
+
+    @SelectSql
     List<NormalUser> findAll();
+
+    @SelectSql
+    @LogicOff
+    List<NormalUser> findLogicOffAll();
 
     @SelectSql
     List<NormalUser> queryObject(NormalUserPageQueryDto query);
