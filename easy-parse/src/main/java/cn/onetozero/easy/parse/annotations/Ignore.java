@@ -3,8 +3,8 @@ package cn.onetozero.easy.parse.annotations;
 import java.lang.annotation.*;
 
 /**
- * 创建人：徐卫超
- * 创建时间：2019/1/18  14:33
+ * @author  徐卫超
+ * @since  2019/1/18  14:33
  * 业务：忽略属性或者参数
  * 功能：
  */

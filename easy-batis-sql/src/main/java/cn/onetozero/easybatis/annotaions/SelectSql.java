@@ -6,8 +6,8 @@ import cn.onetozero.easy.parse.annotations.Syntax;
 import java.lang.annotation.*;
 
 /**
- * 创建人：徐卫超
- * 创建时间：2019/4/29  14:30
+ * @author  徐卫超
+ * @since  2019/4/29  14:30
  * 业务：根据方法参数构建一个查询的XML SQL 内容
  * 功能：
  */

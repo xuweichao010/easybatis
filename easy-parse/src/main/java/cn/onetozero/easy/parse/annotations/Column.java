@@ -4,8 +4,8 @@ package cn.onetozero.easy.parse.annotations;
 import java.lang.annotation.*;
 
 /**
- * 创建人：徐卫超
- * 创建时间：2019/1/18  14:33
+ * @author  徐卫超
+ * @since  2019/1/18  14:33
  * 业务：描述了实体类和数据仓库字段的关系
  * 功能：
  */

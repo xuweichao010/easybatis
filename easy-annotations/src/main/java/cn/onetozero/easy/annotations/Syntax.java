@@ -14,9 +14,7 @@ import java.lang.annotation.*;
 public @interface Syntax {
 
     /**
-     * 语法所在的位置 必须指定 当系统识别为-1的时候认为该语法错误 语法位置必须是大于>0的数字
-     *
-     * @return
+     * @return 语法所在的位置 必须指定 当系统识别为-1的时候认为该语法错误 语法位置必须是大于>0的数字
      */
     int value() default -1;
 

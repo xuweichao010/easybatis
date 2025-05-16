@@ -2,7 +2,8 @@ package cn.onetozero.easybatis.exceptions;
 
 /**
  * 类描述：
- * @author  徐卫超 (cc)
+ *
+ * @author 徐卫超 (cc)
  * @since 2022/12/2 10:49
  */
 public class ParamCheckException extends CheckException {

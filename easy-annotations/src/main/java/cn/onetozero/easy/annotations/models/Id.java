@@ -8,8 +8,8 @@ import cn.onetozero.easy.annotations.supports.NoneIdGenerateHandler;
 import java.lang.annotation.*;
 
 /**
- * 创建人：徐卫超
- * 创建时间：2019/1/18  15:13
+ * @author  徐卫超
+ * @since  2019/1/18  15:13
  * 业务：主键标识 用于描述对象的主键信息
  * 功能：
  */
