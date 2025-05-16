@@ -2,6 +2,7 @@ package cn.onetozero.easy.parse.model;
 
 import cn.onetozero.easy.parse.supports.ValueHandler;
 import cn.onetozero.easy.parse.supports.impl.DefaultHandler;
+import lombok.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -9,9 +10,15 @@ import java.util.List;
 
 /**
  * 类描述：模型属性映射
- * @author  徐卫超 (cc)
+ *
+ * @author 徐卫超 (cc)
  * @since 2022/11/24 14:19
  */
+@Getter
+@Setter
+@With
+@NoArgsConstructor
+@AllArgsConstructor
 public class ModelAttribute {
     /**
      * 属性的名字
@@ -46,76 +53,4 @@ public class ModelAttribute {
     private List<Annotation> annotations;
 
     private ValueHandler<?> valueHandler = new DefaultHandler();
-
-    public ValueHandler<?> getValueHandler() {
-        return valueHandler;
-    }
-
-    public void setValueHandler(ValueHandler<?> valueHandler) {
-        this.valueHandler = valueHandler;
-    }
-
-    public String getField() {
-        return field;
-    }
-
-    public void setField(String field) {
-        this.field = field;
-    }
-
-    public String getColumn() {
-        return column;
-    }
-
-    public void setColumn(String column) {
-        this.column = column;
-    }
-
-    public Method getGetter() {
-        return getter;
-    }
-
-    public void setGetter(Method getter) {
-        this.getter = getter;
-    }
-
-    public Method getSetter() {
-        return setter;
-    }
-
-    public void setSetter(Method setter) {
-        this.setter = setter;
-    }
-
-    public boolean isSelectIgnore() {
-        return selectIgnore;
-    }
-
-    public void setSelectIgnore(boolean selectIgnore) {
-        this.selectIgnore = selectIgnore;
-    }
-
-    public boolean isUpdateIgnore() {
-        return updateIgnore;
-    }
-
-    public void setUpdateIgnore(boolean updateIgnore) {
-        this.updateIgnore = updateIgnore;
-    }
-
-    public boolean isInsertIgnore() {
-        return insertIgnore;
-    }
-
-    public void setInsertIgnore(boolean insertIgnore) {
-        this.insertIgnore = insertIgnore;
-    }
-
-    public List<Annotation> getAnnotations() {
-        return annotations;
-    }
-
-    public void setAnnotations(List<Annotation> annotations) {
-        this.annotations = annotations;
-    }
 }

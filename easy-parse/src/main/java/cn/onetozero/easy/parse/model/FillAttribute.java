@@ -1,12 +1,19 @@
 package cn.onetozero.easy.parse.model;
 
 import cn.onetozero.easy.annotations.enums.FillType;
+import lombok.*;
 
 /**
  * 类描述：
- * @author  徐卫超 (cc)
+ *
+ * @author 徐卫超 (cc)
  * @since 2022/11/24 14:48
  */
+@Getter
+@Setter
+@With
+@NoArgsConstructor
+@AllArgsConstructor
 public class FillAttribute extends ModelAttribute {
 
     /**
@@ -24,19 +31,4 @@ public class FillAttribute extends ModelAttribute {
         return this.type == FillType.UPDATE || this.type == FillType.INSERT_UPDATE;
     }
 
-    public FillType getType() {
-        return type;
-    }
-
-    public void setType(FillType type) {
-        this.type = type;
-    }
-
-    public String getIdentification() {
-        return identification;
-    }
-
-    public void setIdentification(String identification) {
-        this.identification = identification;
-    }
 }

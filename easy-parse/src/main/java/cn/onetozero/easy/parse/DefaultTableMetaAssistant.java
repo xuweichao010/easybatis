@@ -21,13 +21,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 类描述：
- * @author  徐卫超 (cc)
+ *
+ * @author 徐卫超 (cc)
  * @since 2022/11/24 15:20
  */
 public class DefaultTableMetaAssistant implements TableMetaAssistant {
-    private EasyConfiguration configuration;
+    private final EasyConfiguration configuration;
 
-    private Map<Class<?>, TableMeta> tableMetaMap = new ConcurrentHashMap<>();
+    private final Map<Class<?>, TableMeta> tableMetaMap = new ConcurrentHashMap<>();
 
     public DefaultTableMetaAssistant(EasyConfiguration configuration) {
         this.configuration = configuration;
@@ -179,7 +180,10 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
             return null;
         }
         // 处理填充标识
-        String identification = StringUtils.hasText(fillColumn.identification()) ? fillColumn.identification() : fillAttribute.getField();
+        String identification = StringUtils.hasText(fillColumn.identification())
+                ? fillColumn.identification()
+                : fillAttribute.getField();
+
         fillAttribute.setIdentification(identification);
         // 填充类型处理
         fillAttribute.setType(fillColumn.type());
@@ -216,9 +220,10 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
             if (StringUtils.hasText(column.value())) {
                 modelAttribute.setColumn(column.value());
             }
-            modelAttribute.setInsertIgnore(column.insertIgnore());
-            modelAttribute.setUpdateIgnore(column.updateIgnore());
-            modelAttribute.setSelectIgnore(column.selectIgnore());
+            return modelAttribute
+                    .withInsertIgnore(column.insertIgnore())
+                    .withUpdateIgnore(column.updateIgnore())
+                    .withSelectIgnore(column.selectIgnore());
         }
         return modelAttribute;
     }
