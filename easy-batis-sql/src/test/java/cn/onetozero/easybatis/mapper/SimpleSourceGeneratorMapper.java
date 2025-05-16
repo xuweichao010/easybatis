@@ -25,7 +25,8 @@ import java.util.List;
 
 /**
  * 类描述：
- * @author  徐卫超 (cc)
+ *
+ * @author 徐卫超 (cc)
  * @since 2023/1/14 11:28
  */
 @SuppressWarnings("unused")
@@ -152,6 +153,10 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
 
     @SelectSql
     List<NormalUser> like(@Like String orgCode);
+
+
+    @SelectSql
+    List<NormalUser> likes(@Likes(value = {"org_code", "name"}) String match);
 
     @SelectSql
     List<NormalUser> likeLeft(@LikeLeft String orgCode);

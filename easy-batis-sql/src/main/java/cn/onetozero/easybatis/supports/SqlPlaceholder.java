@@ -8,4 +8,5 @@ package cn.onetozero.easybatis.supports;
 public interface SqlPlaceholder {
 
     String holder(String column);
+
 }

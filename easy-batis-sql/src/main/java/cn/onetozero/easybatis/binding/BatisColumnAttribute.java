@@ -4,15 +4,20 @@ import cn.onetozero.easy.parse.model.ParameterAttribute;
 import cn.onetozero.easy.parse.utils.AnnotationUtils;
 import cn.onetozero.easy.parse.utils.StringUtils;
 import cn.onetozero.easy.annotations.supports.AnnotationAttributeProtocol;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.lang.annotation.Annotation;
 
 /**
  * 类描述：描述已经处理的参数结果
- * @author  徐卫超 (cc)
+ *
+ * @author 徐卫超 (cc)
  * @since 2022/11/25 23:32
  */
+@Getter
+@Setter
 public class BatisColumnAttribute extends ParameterAttribute {
 
     /**
@@ -24,16 +29,8 @@ public class BatisColumnAttribute extends ParameterAttribute {
 
     private SqlCommandType sqlCommandType;
 
-    public String getColumn() {
-        return column;
-    }
-
     public void setColumn(String column) {
         this.column = column;
-    }
-
-    public SqlCommandType getSqlCommandType() {
-        return sqlCommandType;
     }
 
     public void setSqlCommandType(SqlCommandType sqlCommandType) {
@@ -48,10 +45,6 @@ public class BatisColumnAttribute extends ParameterAttribute {
             return value != null && (boolean) value;
         }
         return false;
-    }
-
-    public Object getVirtualValue() {
-        return virtualValue;
     }
 
     public void setVirtualValue(Object virtualValue) {

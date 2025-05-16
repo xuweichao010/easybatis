@@ -5,8 +5,8 @@ import cn.onetozero.easy.annotations.Syntax;
 import java.lang.annotation.*;
 
 /**
- * 创建人：徐卫超
- * 创建时间：2019/4/24  13:01
+ * @author 徐卫超
+ * @since 2019/4/24  13:01
  * 业务： 条件注解
  * 功能： 模糊匹配 column LIKE '%value%'
  */
@@ -17,9 +17,7 @@ import java.lang.annotation.*;
 public @interface Like {
 
     /**
-     * 属性和数据表之间的列关系
-     *
-     * @return
+     * @return 属性和数据表之间的列关系
      */
     String value() default "";
 
