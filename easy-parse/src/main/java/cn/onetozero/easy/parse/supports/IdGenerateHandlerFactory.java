@@ -1,9 +1,11 @@
 package cn.onetozero.easy.parse.supports;
 
+import cn.onetozero.easy.annotations.supports.IdGenerateHandler;
+
 /**
  * 类描述：用于创建ID生成器的工厂 他决定了 @link com.xwc.open.easy.core.supports.IdGenerateHandler 的实例化方式
- * 作者：徐卫超 (cc)
- * 时间 2022/11/25 22:05
+ * @author  徐卫超 (cc)
+ * @since 2022/11/25 22:05
  */
 public interface IdGenerateHandlerFactory {
 

@@ -20,9 +20,9 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * 类描述：单元测试
- * 作者：徐卫超 (cc)
- * 时间 2023/1/17 13:30
+ * 类描述：单元测试 主要测试排序相关的功能是否正常
+ * @author  徐卫超 (cc)
+ * @since 2023/1/17 13:30
  */
 public class MapperEasyAnnotationOrderBuilderTest {
 

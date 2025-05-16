@@ -15,6 +15,11 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>cn.onetozero</groupId>
+            <artifactId>easy-annotations</artifactId>
+            <version>3.5.11.M1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 

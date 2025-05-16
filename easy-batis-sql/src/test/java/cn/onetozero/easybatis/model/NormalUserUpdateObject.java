@@ -1,12 +1,12 @@
 package cn.onetozero.easybatis.model;
 
-import cn.onetozero.easybatis.annotaions.conditions.Equal;
+import cn.onetozero.easy.annotations.conditions.Equal;
 import lombok.Data;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/2/1 18:00
+ * @author  徐卫超 (cc)
+ * @since 2023/2/1 18:00
  */
 @Data
 public class NormalUserUpdateObject {

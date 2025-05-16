@@ -3,8 +3,8 @@ package cn.onetozero.easybatis.snippet.where;
 import cn.onetozero.easy.parse.utils.AnnotationUtils;
 import cn.onetozero.easy.parse.utils.StringUtils;
 import cn.onetozero.easybatis.MyBatisSnippetUtils;
-import cn.onetozero.easybatis.annotaions.AnnotationAttributeProtocol;
-import cn.onetozero.easybatis.annotaions.conditions.Equal;
+import cn.onetozero.easy.annotations.supports.AnnotationAttributeProtocol;
+import cn.onetozero.easy.annotations.conditions.Equal;
 import cn.onetozero.easybatis.binding.BatisColumnAttribute;
 import cn.onetozero.easybatis.exceptions.CheckException;
 import cn.onetozero.easybatis.exceptions.NotFoundException;
@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/29 15:17
+ * @author  徐卫超 (cc)
+ * @since 2023/1/29 15:17
  */
 public class DefaultWhereSnippet implements WhereSnippet {
     private final AbstractBatisSourceGenerator sourceGenerator;

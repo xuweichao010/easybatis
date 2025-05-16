@@ -1,11 +1,14 @@
 package cn.onetozero.easy.parse;
 
-import cn.onetozero.easy.parse.annotations.*;
-import cn.onetozero.easy.parse.enums.FillType;
-import cn.onetozero.easy.parse.enums.IdType;
+import cn.onetozero.easy.annotations.Syntax;
+import cn.onetozero.easy.annotations.models.*;
+import cn.onetozero.easy.annotations.enums.FillType;
+import cn.onetozero.easy.annotations.enums.IdType;
 import cn.onetozero.easy.parse.exceptions.CheckDatabaseModelException;
 import cn.onetozero.easy.parse.model.*;
 import cn.onetozero.easy.parse.supports.impl.DefaultUUIDHandler;
+import cn.onetozero.easy.parse.supports.impl.LogicIntegerHandler;
+import cn.onetozero.easy.parse.supports.impl.SnowflakeHandler;
 import cn.onetozero.easy.parse.utils.AnnotationUtils;
 import cn.onetozero.easy.parse.utils.Reflection;
 import cn.onetozero.easy.parse.utils.StringUtils;
@@ -13,12 +16,13 @@ import cn.onetozero.easy.parse.utils.StringUtils;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2022/11/24 15:20
+ * @author  徐卫超 (cc)
+ * @since 2022/11/24 15:20
  */
 public class DefaultTableMetaAssistant implements TableMetaAssistant {
     private EasyConfiguration configuration;
@@ -114,6 +118,8 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
             primaryKeyAttribute.setIdGenerateHandler(configuration.getIdGenerateHandlerFactory().getHandler(DefaultUUIDHandler.class));
         } else if (idType == IdType.HANDLER) {
             primaryKeyAttribute.setIdGenerateHandler(configuration.getIdGenerateHandlerFactory().getHandler(id.idGenerateHandler()));
+        } else if (idType == IdType.SNOWFLAKE) {
+            primaryKeyAttribute.setIdGenerateHandler(configuration.getIdGenerateHandlerFactory().getHandler(SnowflakeHandler.class));
         }
         primaryKeyAttribute.setUpdateIgnore(true);
         primaryKeyAttribute.setInsertIgnore(idType == IdType.AUTO);
@@ -137,8 +143,12 @@ public class DefaultTableMetaAssistant implements TableMetaAssistant {
             return null;
         }
         LogicAttribute logicAttribute = (LogicAttribute) this.process(new LogicAttribute(), clazz, field);
+        field.getGenericType().getTypeName();
         if (logicAttribute == null) {
             return null;
+        }
+        if (Objects.equals(field.getGenericType().getTypeName(), "int") || Objects.equals(field.getType(), Integer.class)) {
+            logicAttribute.setValueHandler(new LogicIntegerHandler());
         }
         logicAttribute.setUpdateIgnore(false);
         logicAttribute.setSelectIgnore(logic.selectIgnore());

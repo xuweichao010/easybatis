@@ -1,13 +1,13 @@
 package cn.onetozero.easybatis.model;
 
-import cn.onetozero.easybatis.annotaions.conditions.Between;
-import cn.onetozero.easybatis.annotaions.conditions.Equal;
+import cn.onetozero.easy.annotations.conditions.Between;
+import cn.onetozero.easy.annotations.conditions.Equal;
 import lombok.Data;
 
 /**
  * 类描述：用于单元测试对象查询
- * 作者：徐卫超 (cc)
- * 时间 2023/2/1 9:37
+ * @author  徐卫超 (cc)
+ * @since 2023/2/1 9:37
  */
 
 @Data

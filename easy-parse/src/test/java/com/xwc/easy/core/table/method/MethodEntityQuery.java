@@ -2,8 +2,8 @@ package com.xwc.easy.core.table.method;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2022/11/29 20:15
+ * @author  徐卫超 (cc)
+ * @since 2022/11/29 20:15
  */
 public class MethodEntityQuery {
 

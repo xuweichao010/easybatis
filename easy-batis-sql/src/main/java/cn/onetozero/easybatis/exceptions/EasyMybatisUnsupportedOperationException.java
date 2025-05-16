@@ -2,8 +2,8 @@ package cn.onetozero.easybatis.exceptions;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/12 15:19
+ * @author  徐卫超 (cc)
+ * @since 2023/1/12 15:19
  */
 public class EasyMybatisUnsupportedOperationException extends EasyMybatisException {
 

@@ -10,8 +10,8 @@ import cn.onetozero.easybatis.supports.SqlPlaceholder;
 
 /**
  * 类描述：等值SQL片段
- * 作者：徐卫超 (cc)
- * 时间 2023/1/17 13:51
+ * @author  徐卫超 (cc)
+ * @since 2023/1/17 13:51
  */
 public class NotLikeConditional implements SingleConditionalSnippet {
 

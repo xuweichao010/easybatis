@@ -1,13 +1,13 @@
 package com.xwc.easy.core.table.method;
 
-import cn.onetozero.easy.parse.annotations.Id;
-import cn.onetozero.easy.parse.annotations.Table;
-import cn.onetozero.easy.parse.enums.IdType;
+import cn.onetozero.easy.annotations.models.Id;
+import cn.onetozero.easy.annotations.models.Table;
+import cn.onetozero.easy.annotations.enums.IdType;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2022/11/27 20:57
+ * @author  徐卫超 (cc)
+ * @since 2022/11/27 20:57
  */
 @Table("t_test")
 public class MethodEntity {

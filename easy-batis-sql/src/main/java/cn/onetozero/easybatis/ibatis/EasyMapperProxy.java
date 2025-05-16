@@ -17,8 +17,8 @@ import java.util.Map;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/2/4 15:42
+ * @author  徐卫超 (cc)
+ * @since 2023/2/4 15:42
  */
 public class EasyMapperProxy<T> implements InvocationHandler, Serializable {
     private static final long serialVersionUID = -4724728412955527868L;

@@ -10,11 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/17 13:53
+ * @author  徐卫超 (cc)
+ * @since 2023/1/17 13:53
  */
 public class DefaultConditionalRegistry implements ConditionalRegistry {
-    private Map<Class<? extends Annotation>, ConditionalSnippet> conditionalMap = new ConcurrentHashMap<>();
+    private final Map<Class<? extends Annotation>, ConditionalSnippet> conditionalMap = new ConcurrentHashMap<>();
 
     @Override
     public void register(Class<? extends Annotation> annotationClass, ConditionalSnippet conditionalSnippet) {

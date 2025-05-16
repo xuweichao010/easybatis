@@ -1,7 +1,7 @@
 package cn.onetozero.easy.parse;
 
-import cn.onetozero.easy.parse.annotations.Ignore;
-import cn.onetozero.easy.parse.annotations.Syntax;
+import cn.onetozero.easy.annotations.models.Ignore;
+import cn.onetozero.easy.annotations.Syntax;
 import cn.onetozero.easy.parse.exceptions.CheckDatabaseModelException;
 import cn.onetozero.easy.parse.model.OperateMethodMeta;
 import cn.onetozero.easy.parse.model.ParameterAttribute;
@@ -21,8 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 类描述：默认的属性类型
- * 作者：徐卫超 (cc)
- * 时间 2022/11/26 21:01
+ * @author  徐卫超 (cc)
+ * @since 2022/11/26 21:01
  */
 public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
     private final EasyConfiguration configuration;
@@ -75,7 +75,8 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
      * @return 返回一个参数类型
      */
     private ParameterAttribute parseParameter(Parameter parameter, String parameterName, OperateMethodMeta methodMeta) {
-        if (parameter.getParameterizedType() instanceof TypeVariable) { // 处理泛型
+        // 处理泛型
+        if (parameter.getParameterizedType() instanceof TypeVariable) {
             if (isEntityParam(parameter.getParameterizedType(), methodMeta.getDatabaseMeta().getSource())) {
                 return parameterAttribute(new EntityParameterAttribute(methodMeta.getDatabaseMeta()), parameter, parameterName);
             } else if (isKeyParam(parameter.getParameterizedType())) {
@@ -84,7 +85,8 @@ public class DefaultOperateMethodAssistant implements OperateMethodAssistant {
             } else {
                 throw new CheckDatabaseModelException("泛型类型不匹配");
             }
-        } else if (parameter.getParameterizedType() instanceof ParameterizedType) { //处理集合 Map、Collection
+        } else if (parameter.getParameterizedType() instanceof ParameterizedType) {
+            //处理集合 Map、Collection
             ParameterizedType parameterizedType = (ParameterizedType) parameter.getParameterizedType();
             if (Collection.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())) {
                 if (isEntityParam(parameterizedType.getActualTypeArguments()[0], methodMeta.getDatabaseMeta().getSource())) {

@@ -1,23 +1,24 @@
 package cn.onetozero.easybatis.mapper;
 
-import cn.onetozero.easy.parse.annotations.Ignore;
+import cn.onetozero.easy.annotations.models.Ignore;
 import cn.onetozero.easy.parse.supports.EasyMapper;
-import cn.onetozero.easybatis.annotaions.InsertSql;
-import cn.onetozero.easybatis.annotaions.SelectSql;
-import cn.onetozero.easybatis.annotaions.UpdateSql;
-import cn.onetozero.easybatis.annotaions.conditions.Equal;
-import cn.onetozero.easybatis.annotaions.other.Dynamic;
-import cn.onetozero.easybatis.annotaions.set.SetParam;
-import cn.onetozero.easybatis.model.NormalUserUpdateObject;
+import cn.onetozero.easy.annotations.InsertSql;
+import cn.onetozero.easy.annotations.SelectSql;
+import cn.onetozero.easy.annotations.UpdateSql;
+import cn.onetozero.easy.annotations.conditions.Equal;
+import cn.onetozero.easy.annotations.other.Dynamic;
+import cn.onetozero.easy.annotations.set.SetParam;
 import cn.onetozero.easybatis.entity.FillUser;
+import cn.onetozero.easybatis.model.NormalUserUpdateObject;
 import org.apache.ibatis.annotations.Delete;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
  * 类描述：用于填充的单元测试程序
- * 作者：徐卫超 (cc)
- * 时间 2023/1/14 11:28
+ * @author  徐卫超 (cc)
+ * @since 2023/1/14 11:28
  */
 @SuppressWarnings("unused")
 public interface FillSourceGeneratorMapper extends EasyMapper<FillUser, String> {
@@ -40,6 +41,9 @@ public interface FillSourceGeneratorMapper extends EasyMapper<FillUser, String> 
 
     @UpdateSql
     int update(FillUser normalUser);
+
+    @UpdateSql
+    int updateBatch(Collection<FillUser> fillUsers);
 
     @UpdateSql
     @Dynamic

@@ -1,13 +1,13 @@
 package cn.onetozero.easybatis.mapper;
 
-import cn.onetozero.easy.parse.annotations.Ignore;
+import cn.onetozero.easy.annotations.models.Ignore;
 import cn.onetozero.easy.parse.supports.EasyMapper;
-import cn.onetozero.easybatis.annotaions.DeleteSql;
-import cn.onetozero.easybatis.annotaions.InsertSql;
-import cn.onetozero.easybatis.annotaions.SelectSql;
-import cn.onetozero.easybatis.annotaions.UpdateSql;
-import cn.onetozero.easybatis.annotaions.conditions.Equal;
-import cn.onetozero.easybatis.annotaions.other.Dynamic;
+import cn.onetozero.easy.annotations.DeleteSql;
+import cn.onetozero.easy.annotations.InsertSql;
+import cn.onetozero.easy.annotations.SelectSql;
+import cn.onetozero.easy.annotations.UpdateSql;
+import cn.onetozero.easy.annotations.conditions.Equal;
+import cn.onetozero.easy.annotations.other.Dynamic;
 import cn.onetozero.easybatis.model.NormalUserDeleteObject;
 import cn.onetozero.easybatis.model.NormalUserPageQueryDto;
 import cn.onetozero.easybatis.model.NormalUserUpdateObject;
@@ -19,8 +19,8 @@ import java.util.List;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/14 11:28
+ * @author  徐卫超 (cc)
+ * @since 2023/1/14 11:28
  */
 @SuppressWarnings("unused")
 public interface LogicSourceGeneratorMapper extends EasyMapper<LogicUser, String> {

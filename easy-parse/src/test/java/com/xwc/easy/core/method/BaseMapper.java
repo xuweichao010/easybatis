@@ -6,8 +6,8 @@ import java.util.List;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2022/11/27 20:57
+ * @author  徐卫超 (cc)
+ * @since 2022/11/27 20:57
  */
 public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 

@@ -3,15 +3,15 @@ package cn.onetozero.easybatis.binding;
 import cn.onetozero.easy.parse.model.ParameterAttribute;
 import cn.onetozero.easy.parse.utils.AnnotationUtils;
 import cn.onetozero.easy.parse.utils.StringUtils;
-import cn.onetozero.easybatis.annotaions.AnnotationAttributeProtocol;
+import cn.onetozero.easy.annotations.supports.AnnotationAttributeProtocol;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import java.lang.annotation.Annotation;
 
 /**
  * 类描述：描述已经处理的参数结果
- * 作者：徐卫超 (cc)
- * 时间 2022/11/25 23:32
+ * @author  徐卫超 (cc)
+ * @since 2022/11/25 23:32
  */
 public class BatisColumnAttribute extends ParameterAttribute {
 
@@ -64,6 +64,15 @@ public class BatisColumnAttribute extends ParameterAttribute {
             return value.toString();
         } else {
             return column;
+        }
+    }
+
+    public String useAlias(Annotation annotation) {
+        Object value = AnnotationUtils.getValue(annotation, AnnotationAttributeProtocol.ALIAS);
+        if (value != null && StringUtils.hasText(value.toString())) {
+            return value + ".";
+        } else {
+            return "";
         }
     }
 }

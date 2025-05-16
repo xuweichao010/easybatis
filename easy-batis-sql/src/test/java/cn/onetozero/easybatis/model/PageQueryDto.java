@@ -1,12 +1,12 @@
 package cn.onetozero.easybatis.model;
 
-import cn.onetozero.easybatis.annotaions.page.Limit;
-import cn.onetozero.easybatis.annotaions.page.Offset;
+import cn.onetozero.easy.annotations.page.Limit;
+import cn.onetozero.easy.annotations.page.Offset;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/2/1 13:32
+ * @author  徐卫超 (cc)
+ * @since 2023/2/1 13:32
  */
 public class PageQueryDto {
 

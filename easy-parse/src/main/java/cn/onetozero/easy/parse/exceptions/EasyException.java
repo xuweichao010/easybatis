@@ -2,8 +2,8 @@ package cn.onetozero.easy.parse.exceptions;
 
 /**
  * 类描述：easy解析中的基础异常
- * 作者：徐卫超 (cc)
- * 时间 2022/11/24 15:36
+ * @author  徐卫超 (cc)
+ * @since 2022/11/24 15:36
  */
 public class EasyException extends RuntimeException {
 

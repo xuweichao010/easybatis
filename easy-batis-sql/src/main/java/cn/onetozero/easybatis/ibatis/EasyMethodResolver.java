@@ -6,8 +6,8 @@ import java.lang.reflect.Method;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/17 9:56
+ * @author  徐卫超 (cc)
+ * @since 2023/1/17 9:56
  */
 public class EasyMethodResolver extends MethodResolver {
     private final MapperEasyAnnotationBuilder annotationBuilder;

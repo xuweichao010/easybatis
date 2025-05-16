@@ -1,21 +1,21 @@
 package cn.onetozero.easybatis.mapper;
 
-import cn.onetozero.easy.parse.annotations.Ignore;
+import cn.onetozero.easy.annotations.conditions.*;
+import cn.onetozero.easy.annotations.models.Ignore;
 import cn.onetozero.easy.parse.supports.EasyMapper;
-import cn.onetozero.easybatis.annotaions.DeleteSql;
-import cn.onetozero.easybatis.annotaions.InsertSql;
-import cn.onetozero.easybatis.annotaions.SelectSql;
-import cn.onetozero.easybatis.annotaions.UpdateSql;
-import cn.onetozero.easybatis.annotaions.conditions.*;
-import cn.onetozero.easybatis.annotaions.order.Asc;
-import cn.onetozero.easybatis.annotaions.order.Desc;
-import cn.onetozero.easybatis.annotaions.order.OrderBy;
-import cn.onetozero.easybatis.annotaions.other.Count;
-import cn.onetozero.easybatis.annotaions.other.Distinct;
-import cn.onetozero.easybatis.annotaions.other.Dynamic;
-import cn.onetozero.easybatis.annotaions.page.Limit;
-import cn.onetozero.easybatis.annotaions.page.Offset;
-import cn.onetozero.easybatis.annotaions.set.SetParam;
+import cn.onetozero.easy.annotations.DeleteSql;
+import cn.onetozero.easy.annotations.InsertSql;
+import cn.onetozero.easy.annotations.SelectSql;
+import cn.onetozero.easy.annotations.UpdateSql;
+import cn.onetozero.easy.annotations.order.Asc;
+import cn.onetozero.easy.annotations.order.Desc;
+import cn.onetozero.easy.annotations.order.OrderBy;
+import cn.onetozero.easy.annotations.other.Count;
+import cn.onetozero.easy.annotations.other.Distinct;
+import cn.onetozero.easy.annotations.other.Dynamic;
+import cn.onetozero.easy.annotations.page.Limit;
+import cn.onetozero.easy.annotations.page.Offset;
+import cn.onetozero.easy.annotations.set.SetParam;
 import cn.onetozero.easybatis.entity.NormalUser;
 import cn.onetozero.easybatis.entity.UserObject;
 import cn.onetozero.easybatis.model.*;
@@ -25,8 +25,8 @@ import java.util.List;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/14 11:28
+ * @author  徐卫超 (cc)
+ * @since 2023/1/14 11:28
  */
 @SuppressWarnings("unused")
 public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, String> {
@@ -100,8 +100,7 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     List<NormalUser> orderAscDynamic(@Asc(dynamic = true) Boolean age);
 
     @SelectSql
-    List<NormalUser> orderMixture(@Asc(dynamic = true) Boolean age, @Desc boolean orgCode,
-                                  @Asc(dynamic = true) Boolean job);
+    List<NormalUser> orderMixture(@Asc(dynamic = true) Boolean age, @Desc boolean orgCode, @Asc(dynamic = true) Boolean job);
 
     @SelectSql
     List<NormalUser> page(@Limit Integer limit, @Offset Integer offset);
@@ -142,9 +141,6 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     @SelectSql
     List<NormalUser> queryMultiObject(NormalUseQueryDto query, PageQueryDto page);
 
-    @UpdateSql
-    int update(NormalUser normalUser);
-
     @SelectSql
     List<NormalUser> notEqual(@NotEqual Integer age);
 
@@ -177,6 +173,17 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
 
 
     @UpdateSql
+    int update(NormalUser normalUser);
+
+    @UpdateSql
+    int updateBatch(List<NormalUser> normalUsers);
+
+    @UpdateSql
+    @Dynamic
+    int updateBatchDynamic(List<NormalUser> normalUsers);
+
+
+    @UpdateSql
     @Dynamic
     int updateDynamic(NormalUser normalUser);
 
@@ -184,14 +191,12 @@ public interface SimpleSourceGeneratorMapper extends EasyMapper<NormalUser, Stri
     int updateParam(@Equal() String id, String name);
 
     @UpdateSql
-    int updateParamDynamic(@Equal() String id, @SetParam(dynamic = true) String name,
-                           @SetParam(dynamic = true, value = "age") Integer ageAlias);
+    int updateParamDynamic(@Equal() String id, @SetParam(dynamic = true) String name, @SetParam(dynamic = true, value = "age") Integer ageAlias);
 
 
     @UpdateSql
     @Dynamic
-    int dynamicUpdateParam(@Equal String id, @SetParam() String name,
-                           @SetParam(value = "age") Integer ageAlias);
+    int dynamicUpdateParam(@Equal String id, String name, @SetParam(value = "age") Integer ageAlias);
 
     @UpdateSql
     int updateObject(NormalUserUpdateObject object);

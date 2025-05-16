@@ -1,16 +1,16 @@
 package cn.onetozero.easybatis.mapper;
 
-import cn.onetozero.easy.parse.annotations.Ignore;
+import cn.onetozero.easy.annotations.models.Ignore;
 import cn.onetozero.easy.parse.supports.EasyMapper;
-import cn.onetozero.easybatis.annotaions.InsertSql;
+import cn.onetozero.easy.annotations.InsertSql;
 import cn.onetozero.easybatis.entity.FillLogicUser;
 
 import java.util.List;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/14 11:28
+ * @author  徐卫超 (cc)
+ * @since 2023/1/14 11:28
  */
 @SuppressWarnings("unused")
 public interface FillAndLogicSourceGeneratorMapper extends EasyMapper<FillLogicUser, String> {

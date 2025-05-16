@@ -21,8 +21,8 @@ import java.lang.reflect.Method;
 
 /**
  * 类描述：用于测试简单的查询
- * 作者：徐卫超 (cc)
- * 时间 2023/1/16 16:01
+ * @author  徐卫超 (cc)
+ * @since 2023/1/16 16:01
  */
 public class SimpleConditionSourceGeneratorTest {
 

@@ -3,9 +3,9 @@ package cn.onetozero.easybatis.snippet.column;
 import cn.onetozero.easy.parse.model.ModelAttribute;
 import cn.onetozero.easy.parse.model.OperateMethodMeta;
 import cn.onetozero.easy.parse.utils.StringUtils;
-import cn.onetozero.easybatis.annotaions.SelectSql;
-import cn.onetozero.easybatis.annotaions.other.Count;
-import cn.onetozero.easybatis.annotaions.other.Distinct;
+import cn.onetozero.easy.annotations.SelectSql;
+import cn.onetozero.easy.annotations.other.Count;
+import cn.onetozero.easy.annotations.other.Distinct;
 import cn.onetozero.easybatis.supports.AbstractBatisSourceGenerator;
 import cn.onetozero.easybatis.supports.SqlPlaceholder;
 
@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/25 20:21
+ * @author  徐卫超 (cc)
+ * @since 2023/1/25 20:21
  */
 public class DefaultSelectColumnSnippet implements SelectColumnSnippet {
     private final AbstractBatisSourceGenerator sourceGenerator;

@@ -21,8 +21,8 @@ import java.util.Optional;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/2/4 15:49
+ * @author  徐卫超 (cc)
+ * @since 2023/2/4 15:49
  */
 public class EasyMapperMethod {
 

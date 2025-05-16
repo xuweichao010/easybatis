@@ -4,14 +4,14 @@ import cn.onetozero.easy.parse.model.FillAttribute;
 import cn.onetozero.easy.parse.model.OperateMethodMeta;
 import cn.onetozero.easy.parse.model.ParameterAttribute;
 import cn.onetozero.easy.parse.model.parameter.EntityParameterAttribute;
-import cn.onetozero.easybatis.annotaions.other.Dynamic;
+import cn.onetozero.easy.annotations.other.Dynamic;
 import cn.onetozero.easybatis.exceptions.ParamCheckException;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 /**
  * 类描述：创建一个sql语句
- * 作者：徐卫超 (cc)
- * 时间 2022/12/2 10:20
+ * @author  徐卫超 (cc)
+ * @since 2022/12/2 10:20
  */
 public interface SqlSourceGenerator {
 
@@ -22,6 +22,8 @@ public interface SqlSourceGenerator {
      * @return
      */
     String select(OperateMethodMeta operateMethodMeta);
+
+    String selectJoin(OperateMethodMeta operateMethodMeta);
 
     /**
      * 插入语句构建
@@ -99,6 +101,7 @@ public interface SqlSourceGenerator {
         }
         return paramNum > 1;
     }
+
 
 
 }

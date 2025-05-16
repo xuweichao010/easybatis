@@ -4,8 +4,8 @@ import java.util.Map;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/2/3 11:17
+ * @author  徐卫超 (cc)
+ * @since 2023/2/3 11:17
  */
 
 public class MapFillWrapper implements FillWrapper {

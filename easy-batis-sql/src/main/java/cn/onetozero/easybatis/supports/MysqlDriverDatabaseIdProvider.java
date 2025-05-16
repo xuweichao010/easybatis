@@ -2,8 +2,8 @@ package cn.onetozero.easybatis.supports;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/2/6 13:37
+ * @author  徐卫超 (cc)
+ * @since 2023/2/6 13:37
  */
 public class MysqlDriverDatabaseIdProvider extends DriverDatabaseIdProvider {
     @Override

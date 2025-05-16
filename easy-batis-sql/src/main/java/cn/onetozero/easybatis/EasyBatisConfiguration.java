@@ -16,9 +16,10 @@ import java.util.*;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2022/12/2 10:16
+ * @author  徐卫超 (cc)
+ * @since 2022/12/2 10:16
  */
+
 public class EasyBatisConfiguration extends Configuration {
 
     protected EasyConfiguration easyConfiguration = new EasyConfiguration();

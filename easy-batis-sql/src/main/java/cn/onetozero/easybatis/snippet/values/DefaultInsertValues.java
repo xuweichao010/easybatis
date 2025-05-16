@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 
 /**
  * 类描述：当用户不定义的时候 框架默认处理 Insert 语句中 VALUES 语句后面的 (val1,val2,val3) 这部分语句的片段
- * 作者：徐卫超 (cc)
- * 时间 2023/1/16 14:07
+ * @author  徐卫超 (cc)
+ * @since 2023/1/16 14:07
  */
 public class DefaultInsertValues implements InsertValuesSnippet {
     private final AbstractBatisSourceGenerator sourceGenerator;

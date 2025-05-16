@@ -1,15 +1,14 @@
 package cn.onetozero.easybatis.ibatis;
 
+import cn.onetozero.easy.annotations.*;
 import cn.onetozero.easy.parse.EasyConfiguration;
+import cn.onetozero.easy.annotations.enums.IdType;
 import cn.onetozero.easy.parse.model.OperateMethodMeta;
+import cn.onetozero.easy.parse.model.PrimaryKeyAttribute;
 import cn.onetozero.easy.parse.model.TableMeta;
 import cn.onetozero.easy.parse.utils.Reflection;
-import cn.onetozero.easybatis.annotaions.DeleteSql;
-import cn.onetozero.easybatis.annotaions.InsertSql;
-import cn.onetozero.easybatis.annotaions.SelectSql;
-import cn.onetozero.easybatis.annotaions.UpdateSql;
-import cn.onetozero.easybatis.supports.SqlSourceGenerator;
 import cn.onetozero.easybatis.EasyBatisConfiguration;
+import cn.onetozero.easybatis.supports.SqlSourceGenerator;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.binding.MapperMethod;
@@ -46,13 +45,13 @@ import java.util.stream.Stream;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/17 9:41
+ * @author  徐卫超 (cc)
+ * @since 2023/1/17 9:41
  */
 public class MapperEasyAnnotationBuilder {
 
     private static final Set<Class<? extends Annotation>> statementAnnotationTypes = Stream
-            .of(SelectSql.class, UpdateSql.class, InsertSql.class, DeleteSql.class)
+            .of(SelectSql.class, UpdateSql.class, InsertSql.class, DeleteSql.class, SelectJoinSql.class)
             .collect(Collectors.toSet());
 
     private final EasyBatisConfiguration configuration;
@@ -82,7 +81,7 @@ public class MapperEasyAnnotationBuilder {
                 if (!canHaveStatement(method)) {
                     continue;
                 }
-                if (getAnnotationWrapper(method, false, SelectSql.class).isPresent()
+                if (getAnnotationWrapper(method, false, SelectSql.class, SelectJoinSql.class).isPresent()
                         && method.getAnnotation(ResultMap.class) == null) {
                     parseResultMap(method);
                 }
@@ -269,9 +268,14 @@ public class MapperEasyAnnotationBuilder {
             if (SqlCommandType.INSERT.equals(sqlCommandType) || SqlCommandType.UPDATE.equals(sqlCommandType)) {
                 // first check for SelectKey annotation - that overrides everything else
                 SelectKey selectKey = getAnnotationWrapper(method, false, SelectKey.class).map(x -> (SelectKey) x.getAnnotation()).orElse(null);
+                PrimaryKeyAttribute primaryKey = tableMeta.getPrimaryKey();
                 if (selectKey != null) {
                     keyGenerator = handleSelectKeyAnnotation(selectKey, mappedStatementId, getParameterType(method), languageDriver);
                     keyProperty = selectKey.keyProperty();
+                } else if (primaryKey.getIdType() == IdType.AUTO) {
+                    keyGenerator = Jdbc3KeyGenerator.INSTANCE;
+                    keyColumn = primaryKey.getColumn();
+                    keyProperty = primaryKey.getField();
                 } else if (options == null) {
                     keyGenerator = configuration.isUseGeneratedKeys() ? Jdbc3KeyGenerator.INSTANCE : NoKeyGenerator.INSTANCE;
                 } else {
@@ -584,6 +588,12 @@ public class MapperEasyAnnotationBuilder {
                     this.configuration.getSqlSourceGenerator(((SelectSql) annotation).databaseId());
             String selectSql = sqlSourceGenerator.select(operateMethodMeta);
             return buildSqlSourceFromStrings(new String[]{selectSql}, parameterType, languageDriver);
+        } else if (annotation instanceof SelectJoinSql) {
+            operateMethodMeta.setDatabaseId(((SelectJoinSql) annotation).databaseId());
+            SqlSourceGenerator sqlSourceGenerator =
+                    this.configuration.getSqlSourceGenerator(((SelectJoinSql) annotation).databaseId());
+            String selectSql = sqlSourceGenerator.selectJoin(operateMethodMeta);
+            return buildSqlSourceFromStrings(new String[]{selectSql}, parameterType, languageDriver);
         } else if (annotation instanceof UpdateSql) {
             operateMethodMeta.setDatabaseId(((UpdateSql) annotation).databaseId());
             SqlSourceGenerator sqlSourceGenerator =
@@ -655,6 +665,9 @@ public class MapperEasyAnnotationBuilder {
             this.annotation = annotation;
             if (annotation instanceof SelectSql) {
                 databaseId = ((SelectSql) annotation).databaseId();
+                sqlCommandType = SqlCommandType.SELECT;
+            } else if (annotation instanceof SelectJoinSql) {
+                databaseId = ((SelectJoinSql) annotation).databaseId();
                 sqlCommandType = SqlCommandType.SELECT;
             } else if (annotation instanceof UpdateSql) {
                 databaseId = ((UpdateSql) annotation).databaseId();

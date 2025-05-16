@@ -11,21 +11,20 @@ import java.util.stream.Collectors;
 
 /**
  * 作者：徐卫超 cc
- * 时间：2020/12/14
+ * @since 2020/12/14
  * 描述：注解工具类
  */
 public class AnnotationUtils {
     public static <T extends Annotation> T findAnnotation(Field field, Class<T> annotationClass) {
         T annotation = field.getAnnotation(annotationClass);
-        if (annotation != null) return annotation;
+        if (annotation != null) {
+            return annotation;
+        }
         return findAnnotationArray(field.getAnnotations(), annotationClass);
     }
 
     @SuppressWarnings("unchecked")
     public static <T extends Annotation> T findAnnotationArray(Annotation[] annotations, Class<T> annotationClass) {
-        if (annotations.length == 0) {
-            return null;
-        }
         for (Annotation annotation : annotations) {
             if (annotation.getClass().getClassLoader() == null) {
                 continue;

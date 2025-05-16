@@ -1,6 +1,6 @@
 package cn.onetozero.easybatis.snippet.set;
 
-import cn.onetozero.easybatis.annotaions.set.SetParam;
+import cn.onetozero.easy.annotations.set.SetParam;
 import cn.onetozero.easybatis.supports.AbstractBatisSourceGenerator;
 import cn.onetozero.easybatis.supports.BatisPlaceholder;
 import cn.onetozero.easybatis.supports.SqlPlaceholder;
@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/2/1 16:30
+ * @author  徐卫超 (cc)
+ * @since 2023/2/1 16:30
  */
 public class DefaultSetSnippet implements SetSnippet {
 

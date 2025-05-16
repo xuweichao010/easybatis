@@ -2,7 +2,7 @@ package cn.onetozero.easybatis.mysql.snippet;
 
 import cn.onetozero.easybatis.supports.BatisPlaceholder;
 import cn.onetozero.easybatis.MyBatisSnippetUtils;
-import cn.onetozero.easybatis.annotaions.conditions.In;
+import cn.onetozero.easy.annotations.conditions.In;
 import cn.onetozero.easybatis.binding.BatisColumnAttribute;
 import cn.onetozero.easybatis.snippet.conditional.SingleConditionalSnippet;
 import cn.onetozero.easybatis.supports.AbstractBatisSourceGenerator;
@@ -10,8 +10,8 @@ import cn.onetozero.easybatis.supports.SqlPlaceholder;
 
 /**
  * 类描述：等值SQL片段
- * 作者：徐卫超 (cc)
- * 时间 2023/1/17 13:51
+ * @author  徐卫超 (cc)
+ * @since 2023/1/17 13:51
  */
 public class NotInConditional implements SingleConditionalSnippet {
 

@@ -2,8 +2,8 @@ package cn.onetozero.easybatis.enums;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2022/12/2 14:47
+ * @author  徐卫超 (cc)
+ * @since 2022/12/2 14:47
  */
 public enum Position {
 

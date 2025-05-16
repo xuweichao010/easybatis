@@ -1,6 +1,6 @@
 package cn.onetozero.easy.parse;
 
-import cn.onetozero.easy.parse.enums.IdType;
+import cn.onetozero.easy.annotations.enums.IdType;
 import cn.onetozero.easy.parse.supports.IdGenerateHandlerFactory;
 import cn.onetozero.easy.parse.supports.NameConverter;
 import cn.onetozero.easy.parse.supports.impl.CamelConverterUnderscore;
@@ -8,8 +8,8 @@ import cn.onetozero.easy.parse.supports.impl.DefaultIdGenerateHandlerFactory;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2022/11/24 15:22
+ * @author  徐卫超 (cc)
+ * @since 2022/11/24 15:22
  */
 public class EasyConfiguration {
 

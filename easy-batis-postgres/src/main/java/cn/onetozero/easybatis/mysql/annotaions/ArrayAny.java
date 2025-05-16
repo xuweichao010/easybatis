@@ -1,6 +1,6 @@
 package cn.onetozero.easybatis.mysql.annotaions;
 
-import cn.onetozero.easy.parse.annotations.Syntax;
+import cn.onetozero.easy.annotations.Syntax;
 
 import java.lang.annotation.*;
 

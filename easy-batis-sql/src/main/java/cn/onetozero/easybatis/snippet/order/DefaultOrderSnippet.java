@@ -4,9 +4,9 @@ import cn.onetozero.easy.parse.model.OperateMethodMeta;
 import cn.onetozero.easy.parse.utils.StringUtils;
 import cn.onetozero.easybatis.supports.BatisPlaceholder;
 import cn.onetozero.easybatis.MyBatisSnippetUtils;
-import cn.onetozero.easybatis.annotaions.order.Asc;
-import cn.onetozero.easybatis.annotaions.order.Desc;
-import cn.onetozero.easybatis.annotaions.order.OrderBy;
+import cn.onetozero.easy.annotations.order.Asc;
+import cn.onetozero.easy.annotations.order.Desc;
+import cn.onetozero.easy.annotations.order.OrderBy;
 import cn.onetozero.easybatis.binding.BatisColumnAttribute;
 import cn.onetozero.easybatis.supports.AbstractBatisSourceGenerator;
 
@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/31 11:28
+ * @author  徐卫超 (cc)
+ * @since 2023/1/31 11:28
  */
 public class DefaultOrderSnippet implements OrderSnippet {
 

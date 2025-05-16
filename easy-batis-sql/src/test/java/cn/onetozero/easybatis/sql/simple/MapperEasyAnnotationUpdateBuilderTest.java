@@ -1,11 +1,11 @@
 package cn.onetozero.easybatis.sql.simple;
 
 import cn.onetozero.easy.parse.EasyConfiguration;
-import cn.onetozero.easybatis.model.NormalUserUpdateObject;
 import cn.onetozero.easybatis.EasyBatisConfiguration;
 import cn.onetozero.easybatis.entity.NormalUser;
 import cn.onetozero.easybatis.mapper.GenericsBaseMapper;
 import cn.onetozero.easybatis.mapper.SimpleSourceGeneratorMapper;
+import cn.onetozero.easybatis.model.NormalUserUpdateObject;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.SqlSession;
@@ -19,11 +19,14 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/17 10:16
+ * @author  徐卫超 (cc)
+ * @since 2023/1/17 10:16
  */
 public class MapperEasyAnnotationUpdateBuilderTest {
 
@@ -66,6 +69,34 @@ public class MapperEasyAnnotationUpdateBuilderTest {
         simpleSourceGeneratorMapper.update(updateUser);
         NormalUser dbUser = simpleSourceGeneratorMapper.findOne(updateUser.getId());
         Assert.assertEquals(updateUser.getName(), dbUser.getName());
+    }
+
+    @Test
+    public void simpleUpdateBatch() {
+        List<NormalUser> normalUserList = IntStream.range(0, 10).mapToObj(index -> {
+            NormalUser updateUser = createUser();
+            updateUser.setName("simpleUpdate" + index);
+            return updateUser;
+        }).collect(Collectors.toList());
+        simpleSourceGeneratorMapper.updateBatch(normalUserList);
+        normalUserList.forEach(normalUser -> {
+            NormalUser dbUser = simpleSourceGeneratorMapper.findOne(normalUser.getId());
+            Assert.assertEquals(normalUser.getName(), dbUser.getName());
+        });
+    }
+
+    @Test
+    public void simpleUpdateBatchDynamic() {
+        List<NormalUser> normalUserList = IntStream.range(0, 10).mapToObj(index -> {
+            NormalUser updateUser = createUser();
+            updateUser.setName("simpleUpdate" + index);
+            return updateUser;
+        }).collect(Collectors.toList());
+        simpleSourceGeneratorMapper.updateBatchDynamic(normalUserList);
+        normalUserList.forEach(normalUser -> {
+            NormalUser dbUser = simpleSourceGeneratorMapper.findOne(normalUser.getId());
+            Assert.assertEquals(normalUser.getName(), dbUser.getName());
+        });
     }
 
     @Test

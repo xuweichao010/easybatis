@@ -8,8 +8,8 @@ import java.util.Map;
 
 /**
  * 类描述：用于存储方法中的参数的各种信息 提供给后面的构建器来使用
- * 作者：徐卫超 (cc)
- * 时间 2022/11/24 14:23
+ * @author  徐卫超 (cc)
+ * @since 2022/11/24 14:23
  */
 public abstract class ParameterAttribute {
     /**

@@ -14,8 +14,8 @@ import java.lang.reflect.Method;
 
 /**
  * 类描述：默认的属性类型
- * 作者：徐卫超 (cc)
- * 时间 2022/11/26 21:01
+ * @author  徐卫超 (cc)
+ * @since 2022/11/26 21:01
  */
 public class DefaultOperateMethodAssistantTest {
 

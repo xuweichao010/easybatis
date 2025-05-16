@@ -1,11 +1,11 @@
 package cn.onetozero.easy.parse.model;
 
-import cn.onetozero.easy.parse.enums.FillType;
+import cn.onetozero.easy.annotations.enums.FillType;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2022/11/24 14:48
+ * @author  徐卫超 (cc)
+ * @since 2022/11/24 14:48
  */
 public class FillAttribute extends ModelAttribute {
 

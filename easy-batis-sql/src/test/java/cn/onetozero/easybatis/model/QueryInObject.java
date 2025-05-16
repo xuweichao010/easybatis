@@ -1,14 +1,14 @@
 package cn.onetozero.easybatis.model;
 
-import cn.onetozero.easybatis.annotaions.conditions.In;
+import cn.onetozero.easy.annotations.conditions.In;
 import lombok.Data;
 
 import java.util.List;
 
 /**
  * 类描述：对象IN查询
- * 作者：徐卫超 (cc)
- * 时间 2023/2/4 9:53
+ * @author  徐卫超 (cc)
+ * @since 2023/2/4 9:53
  */
 @Data
 public class QueryInObject {

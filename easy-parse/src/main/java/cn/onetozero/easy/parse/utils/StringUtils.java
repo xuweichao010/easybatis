@@ -2,7 +2,7 @@ package cn.onetozero.easy.parse.utils;
 
 /**
  * 作者：徐卫超 cc
- * 时间：2020/12/14
+ * @since 2020/12/14
  * 描述：字符串工具类
  */
 public class StringUtils {

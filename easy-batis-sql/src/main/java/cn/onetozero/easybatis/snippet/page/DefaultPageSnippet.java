@@ -1,7 +1,7 @@
 package cn.onetozero.easybatis.snippet.page;
 
-import cn.onetozero.easybatis.annotaions.page.Limit;
-import cn.onetozero.easybatis.annotaions.page.Offset;
+import cn.onetozero.easy.annotations.page.Limit;
+import cn.onetozero.easy.annotations.page.Offset;
 import cn.onetozero.easybatis.supports.BatisPlaceholder;
 import cn.onetozero.easybatis.binding.BatisColumnAttribute;
 import cn.onetozero.easybatis.exceptions.CheckException;
@@ -17,8 +17,8 @@ import java.util.stream.Stream;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/31 16:14
+ * @author  徐卫超 (cc)
+ * @since 2023/1/31 16:14
  */
 public class DefaultPageSnippet implements PageSnippet {
 

@@ -2,8 +2,8 @@ package cn.onetozero.easybatis.exceptions;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2022/12/2 10:49
+ * @author  徐卫超 (cc)
+ * @since 2022/12/2 10:49
  */
 public class NotFoundException extends EasyMybatisException {
     public NotFoundException() {

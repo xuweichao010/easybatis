@@ -1,15 +1,15 @@
 package com.xwc.easy.core.table.logic;
 
-import cn.onetozero.easy.parse.annotations.Logic;
+import cn.onetozero.easy.annotations.models.Logic;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2022/11/25 22:48
+ * @author  徐卫超 (cc)
+ * @since 2022/11/25 22:48
  */
 public class LogicField {
 
-    @Logic(invalid = 100, valid = 101)
+    @Logic(invalid = "100", valid = "101")
     private String deleteFlag;
 
     public String getDeleteFlag() {

@@ -1,16 +1,16 @@
 package cn.onetozero.easybatis.mapper;
 
-import cn.onetozero.easy.parse.annotations.Ignore;
+import cn.onetozero.easy.annotations.models.Ignore;
 import cn.onetozero.easy.parse.supports.EasyMapper;
-import cn.onetozero.easybatis.annotaions.InsertSql;
-import cn.onetozero.easybatis.annotaions.SelectSql;
+import cn.onetozero.easy.annotations.InsertSql;
+import cn.onetozero.easy.annotations.SelectSql;
 
 import java.util.List;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/17 13:22
+ * @author  徐卫超 (cc)
+ * @since 2023/1/17 13:22
  */
 public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 

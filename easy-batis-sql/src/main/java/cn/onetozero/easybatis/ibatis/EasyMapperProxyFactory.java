@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/2/4 15:35
+ * @author  徐卫超 (cc)
+ * @since 2023/2/4 15:35
  */
 public class EasyMapperProxyFactory<T>  {
     private final Class<T> mapperInterface;

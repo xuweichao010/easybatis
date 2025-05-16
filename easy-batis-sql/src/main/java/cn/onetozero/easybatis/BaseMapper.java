@@ -1,20 +1,20 @@
 package cn.onetozero.easybatis;
 
 import cn.onetozero.easy.parse.supports.EasyMapper;
-import cn.onetozero.easybatis.annotaions.DeleteSql;
-import cn.onetozero.easybatis.annotaions.InsertSql;
-import cn.onetozero.easybatis.annotaions.SelectSql;
-import cn.onetozero.easybatis.annotaions.UpdateSql;
-import cn.onetozero.easybatis.annotaions.conditions.In;
-import cn.onetozero.easybatis.annotaions.other.Dynamic;
+import cn.onetozero.easy.annotations.DeleteSql;
+import cn.onetozero.easy.annotations.InsertSql;
+import cn.onetozero.easy.annotations.SelectSql;
+import cn.onetozero.easy.annotations.UpdateSql;
+import cn.onetozero.easy.annotations.conditions.In;
+import cn.onetozero.easy.annotations.other.Dynamic;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
  * 类描述：通用Mapper
- * 作者：徐卫超 (cc)
- * 时间 2023/2/13 9:52
+ * @author  徐卫超 (cc)
+ * @since 2023/2/13 9:52
  */
 public interface BaseMapper<E, K> extends EasyMapper<E, K> {
 
@@ -61,6 +61,16 @@ public interface BaseMapper<E, K> extends EasyMapper<E, K> {
      */
     @UpdateSql
     int update(E entity);
+
+
+    /**
+     * 批量修改数据库
+     *
+     * @param entities
+     * @return
+     */
+    @UpdateSql
+    int updateBatch(Collection<E> entities);
 
     /**
      * 根据主键动态更新一条数据到数据库中

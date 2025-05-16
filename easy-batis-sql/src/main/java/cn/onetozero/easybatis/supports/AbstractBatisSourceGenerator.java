@@ -2,12 +2,15 @@ package cn.onetozero.easybatis.supports;
 
 import cn.onetozero.easybatis.snippet.column.DefaultSelectColumnSnippet;
 import cn.onetozero.easybatis.snippet.column.SelectColumnSnippet;
+import lombok.Getter;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/12 15:05
+ *
+ * @author 徐卫超 (cc)
+ * @since 2023/1/12 15:05
  */
+@Getter
 public abstract class AbstractBatisSourceGenerator implements SqlSourceGenerator {
 
     private final SqlPlaceholder sqlPlaceholder;
@@ -18,7 +21,9 @@ public abstract class AbstractBatisSourceGenerator implements SqlSourceGenerator
 
     private final ConditionalRegistry conditionalRegistry;
 
-    public AbstractBatisSourceGenerator(SqlPlaceholder sqlPlaceholder, BatisPlaceholder batisPlaceholder, SelectColumnSnippet selectColumnSnippet, ConditionalRegistry conditionalRegistry) {
+    public AbstractBatisSourceGenerator(SqlPlaceholder sqlPlaceholder, BatisPlaceholder batisPlaceholder,
+                                        SelectColumnSnippet selectColumnSnippet,
+                                        ConditionalRegistry conditionalRegistry) {
         this.sqlPlaceholder = sqlPlaceholder;
         this.batisPlaceholder = batisPlaceholder;
         this.selectColumnSnippet = selectColumnSnippet;
@@ -38,23 +43,4 @@ public abstract class AbstractBatisSourceGenerator implements SqlSourceGenerator
         this.batisPlaceholder = new MybatisPlaceholder();
         this.conditionalRegistry = new DefaultConditionalRegistry();
     }
-
-    public SelectColumnSnippet getSelectColumnSnippet() {
-        return selectColumnSnippet;
-    }
-
-    public SqlPlaceholder getSqlPlaceholder() {
-        return sqlPlaceholder;
-    }
-
-    public BatisPlaceholder getBatisPlaceholder() {
-        return batisPlaceholder;
-    }
-
-
-    public ConditionalRegistry getConditionalRegistry() {
-        return conditionalRegistry;
-    }
-
-
 }

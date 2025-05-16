@@ -1,8 +1,8 @@
 package cn.onetozero.easybatis.entity;
 
-import cn.onetozero.easy.parse.annotations.Id;
-import cn.onetozero.easy.parse.annotations.Table;
-import cn.onetozero.easy.parse.enums.IdType;
+import cn.onetozero.easy.annotations.models.Id;
+import cn.onetozero.easy.annotations.models.Table;
+import cn.onetozero.easy.annotations.enums.IdType;
 import lombok.Data;
 
 import java.util.Random;
@@ -10,8 +10,8 @@ import java.util.UUID;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/12 17:43
+ * @author  徐卫超 (cc)
+ * @since 2023/1/12 17:43
  */
 @Data
 @Table("t_user")

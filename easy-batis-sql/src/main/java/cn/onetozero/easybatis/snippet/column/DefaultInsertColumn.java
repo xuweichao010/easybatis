@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/16 14:07
+ * @author  徐卫超 (cc)
+ * @since 2023/1/16 14:07
  */
 public class DefaultInsertColumn implements InsertColumnSnippet {
     private final AbstractBatisSourceGenerator sourceGenerator;

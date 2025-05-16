@@ -13,8 +13,8 @@ import java.util.*;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/2/4 16:12
+ * @author  徐卫超 (cc)
+ * @since 2023/2/4 16:12
  */
 public class EasyParamNameResolver {
 

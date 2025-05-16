@@ -1,13 +1,16 @@
 package cn.onetozero.easy.parse.model;
 
+import cn.onetozero.easy.parse.supports.ValueHandler;
+import cn.onetozero.easy.parse.supports.impl.DefaultHandler;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 
 /**
  * 类描述：模型属性映射
- * 作者：徐卫超 (cc)
- * 时间 2022/11/24 14:19
+ * @author  徐卫超 (cc)
+ * @since 2022/11/24 14:19
  */
 public class ModelAttribute {
     /**
@@ -41,6 +44,16 @@ public class ModelAttribute {
     private boolean insertIgnore;
 
     private List<Annotation> annotations;
+
+    private ValueHandler<?> valueHandler = new DefaultHandler();
+
+    public ValueHandler<?> getValueHandler() {
+        return valueHandler;
+    }
+
+    public void setValueHandler(ValueHandler<?> valueHandler) {
+        this.valueHandler = valueHandler;
+    }
 
     public String getField() {
         return field;

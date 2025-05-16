@@ -7,8 +7,8 @@ import java.lang.annotation.Annotation;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2023/1/17 13:48
+ * @author  徐卫超 (cc)
+ * @since 2023/1/17 13:48
  */
 public interface ConditionalRegistry {
 

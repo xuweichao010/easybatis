@@ -1,6 +1,6 @@
 package cn.onetozero.easy.parse.model;
 
-import cn.onetozero.easy.parse.enums.FillType;
+import cn.onetozero.easy.annotations.enums.FillType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 /**
  * 类描述：
- * 作者：徐卫超 (cc)
- * 时间 2022/11/24 14:16
+ * @author  徐卫超 (cc)
+ * @since 2022/11/24 14:16
  */
 @SuppressWarnings("unused")
 public class TableMeta {
