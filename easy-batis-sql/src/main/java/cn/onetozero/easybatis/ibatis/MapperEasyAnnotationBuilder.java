@@ -57,7 +57,7 @@ public class MapperEasyAnnotationBuilder {
     private final EasyBatisConfiguration configuration;
     private final MapperBuilderAssistant assistant;
     private final Class<?> type;
-    private TableMeta tableMeta;
+    private final TableMeta tableMeta;
     private final EasyConfiguration easyConfiguration;
 
     public MapperEasyAnnotationBuilder(EasyBatisConfiguration configuration,
