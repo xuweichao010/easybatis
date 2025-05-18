@@ -16,7 +16,8 @@ import java.util.*;
 
 /**
  * 类描述：
- * @author  徐卫超 (cc)
+ *
+ * @author 徐卫超 (cc)
  * @since 2022/12/2 10:16
  */
 
@@ -88,7 +89,8 @@ public class EasyBatisConfiguration extends Configuration {
     }
 
 
-    public void addOperateMethodMeta(String id, OperateMethodMeta operateMethodMeta) {
+    public void addOperateMethodMeta(String id,
+                                     OperateMethodMeta operateMethodMeta) {
         operateMethodMetaMaps.put(id, operateMethodMeta);
     }
 
@@ -101,7 +103,9 @@ public class EasyBatisConfiguration extends Configuration {
     }
 
 
-    public void registrySqlSourceGenerator(String databaseId, SqlSourceGenerator sourceGenerator, ParamArgsResolver paramArgsResolver) {
+    public void registrySqlSourceGenerator(String databaseId,
+                                           SqlSourceGenerator sourceGenerator,
+                                           ParamArgsResolver paramArgsResolver) {
         this.registry.registry(databaseId, sourceGenerator, paramArgsResolver);
     }
 
@@ -156,7 +160,8 @@ public class EasyBatisConfiguration extends Configuration {
         super.setDatabaseId(databaseId);
     }
 
-    public void addMappers(String packageName, Class<?> superType) {
+    public void addMappers(String packageName,
+                           Class<?> superType) {
         mapperRegistry.addMappers(packageName, superType);
     }
 
@@ -168,7 +173,8 @@ public class EasyBatisConfiguration extends Configuration {
         mapperRegistry.addMapper(type);
     }
 
-    public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
+    public <T> T getMapper(Class<T> type,
+                           SqlSession sqlSession) {
         return mapperRegistry.getMapper(type, sqlSession);
     }
 

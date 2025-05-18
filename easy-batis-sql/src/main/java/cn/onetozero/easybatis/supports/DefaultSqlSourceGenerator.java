@@ -1,11 +1,34 @@
 package cn.onetozero.easybatis.supports;
 
 import cn.onetozero.easy.annotations.Syntax;
-import cn.onetozero.easy.annotations.conditions.*;
+import cn.onetozero.easy.annotations.conditions.Between;
+import cn.onetozero.easy.annotations.conditions.Equal;
+import cn.onetozero.easy.annotations.conditions.GreaterThan;
+import cn.onetozero.easy.annotations.conditions.GreaterThanEqual;
+import cn.onetozero.easy.annotations.conditions.In;
+import cn.onetozero.easy.annotations.conditions.IsNotNull;
+import cn.onetozero.easy.annotations.conditions.IsNull;
+import cn.onetozero.easy.annotations.conditions.LessThan;
+import cn.onetozero.easy.annotations.conditions.LessThanEqual;
+import cn.onetozero.easy.annotations.conditions.Like;
+import cn.onetozero.easy.annotations.conditions.LikeLeft;
+import cn.onetozero.easy.annotations.conditions.LikeRight;
+import cn.onetozero.easy.annotations.conditions.Likes;
+import cn.onetozero.easy.annotations.conditions.NotEqual;
 import cn.onetozero.easy.annotations.models.Ignore;
 import cn.onetozero.easy.annotations.other.Count;
-import cn.onetozero.easy.parse.model.*;
-import cn.onetozero.easy.parse.model.parameter.*;
+import cn.onetozero.easy.parse.model.FillAttribute;
+import cn.onetozero.easy.parse.model.LogicAttribute;
+import cn.onetozero.easy.parse.model.ModelAttribute;
+import cn.onetozero.easy.parse.model.OperateMethodMeta;
+import cn.onetozero.easy.parse.model.ParameterAttribute;
+import cn.onetozero.easy.parse.model.TableMeta;
+import cn.onetozero.easy.parse.model.parameter.BaseParameterAttribute;
+import cn.onetozero.easy.parse.model.parameter.CollectionEntityParameterAttribute;
+import cn.onetozero.easy.parse.model.parameter.EntityParameterAttribute;
+import cn.onetozero.easy.parse.model.parameter.MapParameterAttribute;
+import cn.onetozero.easy.parse.model.parameter.ObjectParameterAttribute;
+import cn.onetozero.easy.parse.model.parameter.PrimaryKeyParameterAttribute;
 import cn.onetozero.easy.parse.utils.AnnotationUtils;
 import cn.onetozero.easy.parse.utils.Reflection;
 import cn.onetozero.easybatis.EasyBatisConfiguration;
@@ -15,8 +38,29 @@ import cn.onetozero.easybatis.exceptions.ParamCheckException;
 import cn.onetozero.easybatis.snippet.column.DefaultInsertColumn;
 import cn.onetozero.easybatis.snippet.column.InsertColumnSnippet;
 import cn.onetozero.easybatis.snippet.column.SelectColumnSnippet;
-import cn.onetozero.easybatis.snippet.conditional.*;
-import cn.onetozero.easybatis.snippet.from.*;
+import cn.onetozero.easybatis.snippet.conditional.BetweenConditional;
+import cn.onetozero.easybatis.snippet.conditional.EqualConditional;
+import cn.onetozero.easybatis.snippet.conditional.GreaterThanConditional;
+import cn.onetozero.easybatis.snippet.conditional.GreaterThanEqualConditional;
+import cn.onetozero.easybatis.snippet.conditional.InConditional;
+import cn.onetozero.easybatis.snippet.conditional.IsNotNullConditional;
+import cn.onetozero.easybatis.snippet.conditional.IsNullConditional;
+import cn.onetozero.easybatis.snippet.conditional.LessThanConditional;
+import cn.onetozero.easybatis.snippet.conditional.LessThanEqualConditional;
+import cn.onetozero.easybatis.snippet.conditional.LikeConditional;
+import cn.onetozero.easybatis.snippet.conditional.LikeLeftConditional;
+import cn.onetozero.easybatis.snippet.conditional.LikeRightConditional;
+import cn.onetozero.easybatis.snippet.conditional.LikesConditional;
+import cn.onetozero.easybatis.snippet.conditional.NotEqualsConditional;
+import cn.onetozero.easybatis.snippet.from.DefaultDeleteFromSnippet;
+import cn.onetozero.easybatis.snippet.from.DefaultInsertFrom;
+import cn.onetozero.easybatis.snippet.from.DefaultSelectFrom;
+import cn.onetozero.easybatis.snippet.from.DefaultSelectJoinFrom;
+import cn.onetozero.easybatis.snippet.from.DefaultUpdateFromSnippet;
+import cn.onetozero.easybatis.snippet.from.DeleteFromSnippet;
+import cn.onetozero.easybatis.snippet.from.InsertFromSnippet;
+import cn.onetozero.easybatis.snippet.from.SelectFromSnippet;
+import cn.onetozero.easybatis.snippet.from.UpdateFromSnippet;
 import cn.onetozero.easybatis.snippet.order.DefaultOrderSnippet;
 import cn.onetozero.easybatis.snippet.order.OrderSnippet;
 import cn.onetozero.easybatis.snippet.page.DefaultPageSnippet;
@@ -27,15 +71,14 @@ import cn.onetozero.easybatis.snippet.values.DefaultInsertValues;
 import cn.onetozero.easybatis.snippet.values.InsertValuesSnippet;
 import cn.onetozero.easybatis.snippet.where.DefaultWhereSnippet;
 import cn.onetozero.easybatis.snippet.where.WhereSnippet;
-import lombok.Getter;
-import org.apache.ibatis.mapping.SqlCommandType;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import org.apache.ibatis.mapping.SqlCommandType;
 
 /**
  * 类描述：
@@ -70,7 +113,22 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
 
     private final DeleteFromSnippet deleteFromSnippet;
 
-    public DefaultSqlSourceGenerator(SqlPlaceholder sqlPlaceholder, BatisPlaceholder batisPlaceholder, SelectColumnSnippet selectColumnSnippet, ConditionalRegistry conditionalRegistry, EasyBatisConfiguration easyBatisConfiguration, InsertFromSnippet insertSqlFrom, InsertColumnSnippet insertColumnSnippet, InsertValuesSnippet insertValuesSnippet, SelectFromSnippet selectSqlFrom, SelectFromSnippet selectJoinSqlFrom, WhereSnippet whereSnippet, OrderSnippet orderSnippet, PageSnippet pageSnippet, UpdateFromSnippet updateFromSnippet, SetSnippet setSnippet, DeleteFromSnippet deleteFromSnippet) {
+    public DefaultSqlSourceGenerator(SqlPlaceholder sqlPlaceholder,
+                                     BatisPlaceholder batisPlaceholder,
+                                     SelectColumnSnippet selectColumnSnippet,
+                                     ConditionalRegistry conditionalRegistry,
+                                     EasyBatisConfiguration easyBatisConfiguration,
+                                     InsertFromSnippet insertSqlFrom,
+                                     InsertColumnSnippet insertColumnSnippet,
+                                     InsertValuesSnippet insertValuesSnippet,
+                                     SelectFromSnippet selectSqlFrom,
+                                     SelectFromSnippet selectJoinSqlFrom,
+                                     WhereSnippet whereSnippet,
+                                     OrderSnippet orderSnippet,
+                                     PageSnippet pageSnippet,
+                                     UpdateFromSnippet updateFromSnippet,
+                                     SetSnippet setSnippet,
+                                     DeleteFromSnippet deleteFromSnippet) {
 
         super(sqlPlaceholder, batisPlaceholder, selectColumnSnippet, conditionalRegistry);
         this.easyBatisConfiguration = easyBatisConfiguration;
@@ -92,7 +150,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         this(easyMyBatisConfiguration, new DefaultSqlPlaceholder());
     }
 
-    public DefaultSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration, SqlPlaceholder sqlPlaceholder) {
+    public DefaultSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration,
+                                     SqlPlaceholder sqlPlaceholder) {
         super(sqlPlaceholder);
         this.easyBatisConfiguration = easyMyBatisConfiguration;
         this.insertSqlFrom = new DefaultInsertFrom();
@@ -153,18 +212,23 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof BaseParameterAttribute) {
-                batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
+                batisColumnAttributes.add(
+                    convertParameterAttribute(parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
             } else if (parameterAttribute instanceof ObjectParameterAttribute) {
-                List<BatisColumnAttribute> objectAttributes = analysisObjectAttribute((ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT);
+                List<BatisColumnAttribute> objectAttributes = analysisObjectAttribute(
+                    (ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT);
                 parameterAttribute.setMulti(multi);
                 batisColumnAttributes.addAll(objectAttributes);
             } else {
-                throw new ParamCheckException(operateMethodMeta.getMethodName() + "查询语句不支持该类型的参数：" + parameterAttribute.getParameterName());
+                throw new ParamCheckException(operateMethodMeta.getMethodName() + "查询语句不支持该类型的参数："
+                    + parameterAttribute.getParameterName());
             }
         }
-        StringBuilder sql = new StringBuilder(this.selectJoinSqlFrom.from(operateMethodMeta)).append(this.whereSnippet.where(batisColumnAttributes));
+        StringBuilder sql = new StringBuilder(this.selectJoinSqlFrom.from(operateMethodMeta)).append(
+            this.whereSnippet.where(batisColumnAttributes));
         if (!operateMethodMeta.containsAnnotation(Count.class)) {
-            sql.append(this.orderSnippet.order(operateMethodMeta, batisColumnAttributes)).append(this.pageSnippet.page(batisColumnAttributes));
+            sql.append(this.orderSnippet.order(operateMethodMeta, batisColumnAttributes))
+                .append(this.pageSnippet.page(batisColumnAttributes));
         }
         return sql.toString();
     }
@@ -176,15 +240,20 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof BaseParameterAttribute) {
-                batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
+                batisColumnAttributes.add(
+                    convertParameterAttribute(parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
             } else if (parameterAttribute instanceof PrimaryKeyParameterAttribute) {
-                batisColumnAttributes.add(convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
+                batisColumnAttributes.add(
+                    convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi,
+                        methodDynamic, SqlCommandType.SELECT));
             } else if (parameterAttribute instanceof ObjectParameterAttribute) {
-                List<BatisColumnAttribute> objectAttributes = analysisObjectAttribute((ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT);
+                List<BatisColumnAttribute> objectAttributes = analysisObjectAttribute(
+                    (ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT);
                 parameterAttribute.setMulti(multi);
                 batisColumnAttributes.addAll(objectAttributes);
             } else {
-                throw new ParamCheckException(operateMethodMeta.getMethodName() + "查询语句不支持该类型的参数：" + parameterAttribute.getParameterName());
+                throw new ParamCheckException(operateMethodMeta.getMethodName() + "查询语句不支持该类型的参数："
+                    + parameterAttribute.getParameterName());
             }
         }
         int index = operateMethodMeta.getParameterAttributes().size();
@@ -192,9 +261,11 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         if (logic != null) {
             batisColumnAttributes.add(convertModelAttribute(logic, ++index, multi, false, SqlCommandType.SELECT));
         }
-        StringBuilder sql = new StringBuilder(this.selectSqlFrom.from(operateMethodMeta)).append(this.whereSnippet.where(batisColumnAttributes));
+        StringBuilder sql = new StringBuilder(this.selectSqlFrom.from(operateMethodMeta)).append(
+            this.whereSnippet.where(batisColumnAttributes));
         if (!operateMethodMeta.containsAnnotation(Count.class)) {
-            sql.append(this.orderSnippet.order(operateMethodMeta, batisColumnAttributes)).append(this.pageSnippet.page(batisColumnAttributes));
+            sql.append(this.orderSnippet.order(operateMethodMeta, batisColumnAttributes))
+                .append(this.pageSnippet.page(batisColumnAttributes));
         }
         return sql.toString();
     }
@@ -208,7 +279,9 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof EntityParameterAttribute) {
                 entityParameterAttribute = (EntityParameterAttribute) parameterAttribute;
-                batisColumnAttributes = analysisEntityParameterAttribute(entityParameterAttribute, multi || parameterAttribute instanceof CollectionEntityParameterAttribute, methodDynamic, SqlCommandType.INSERT);
+                batisColumnAttributes = analysisEntityParameterAttribute(entityParameterAttribute,
+                    multi || parameterAttribute instanceof CollectionEntityParameterAttribute, methodDynamic,
+                    SqlCommandType.INSERT);
                 parameterAttribute.setMulti(multi);
             } else {
                 throw new ParamCheckException("INSERT 语句不支持该类型的参数：" + parameterAttribute.getParameterName());
@@ -218,11 +291,15 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
             throw new ParamCheckException("INSERT 语句没有写入数据的类型");
         }
 
-        return MyBatisSnippetUtils.script(doInsert(operateMethodMeta.getDatabaseMeta(), batisColumnAttributes, entityParameterAttribute));
+        return MyBatisSnippetUtils.script(
+            doInsert(operateMethodMeta.getDatabaseMeta(), batisColumnAttributes, entityParameterAttribute));
     }
 
-    private String doInsert(TableMeta tableMeta, List<BatisColumnAttribute> batisColumnAttributes, EntityParameterAttribute entityParameterAttribute) {
-        return insertSqlFrom.from(tableMeta) + insertColumnSnippet.columns(batisColumnAttributes) + " VALUES" + insertValuesSnippet.values(entityParameterAttribute, batisColumnAttributes);
+    private String doInsert(TableMeta tableMeta,
+                            List<BatisColumnAttribute> batisColumnAttributes,
+                            EntityParameterAttribute entityParameterAttribute) {
+        return insertSqlFrom.from(tableMeta) + insertColumnSnippet.columns(batisColumnAttributes) + " VALUES"
+            + insertValuesSnippet.values(entityParameterAttribute, batisColumnAttributes);
     }
 
     @Override
@@ -244,40 +321,54 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
                 isBatch = true;
                 collectionParamName = multi ? parameterAttribute.getParameterName() : "collection";
                 // 当只有一个参数的时候 需要使用迭代元素来处理 不能使用真实的名字来处理参数
-                CollectionEntityParameterAttribute itemParameterAttribute = new CollectionEntityParameterAttribute(collectionEntityParameterAttribute.getDatabaseMeta());
+                CollectionEntityParameterAttribute itemParameterAttribute = new CollectionEntityParameterAttribute(
+                    collectionEntityParameterAttribute.getDatabaseMeta());
                 itemParameterAttribute.setParameterName("item");
                 itemParameterAttribute.setPath(new String[]{"item"});
-                List<BatisColumnAttribute> entityBatisColumnAttributes = analysisEntityParameterAttribute(itemParameterAttribute, true, methodDynamic, SqlCommandType.UPDATE);
+                List<BatisColumnAttribute> entityBatisColumnAttributes = analysisEntityParameterAttribute(
+                    itemParameterAttribute, true, methodDynamic, SqlCommandType.UPDATE);
                 parameterAttribute.setMulti(false);
                 batisColumnAttributes.addAll(entityBatisColumnAttributes);
                 // 修改数据的主键条件
-                BatisColumnAttribute condition = convertModelAttribute(itemParameterAttribute, collectionEntityParameterAttribute.getDatabaseMeta().getPrimaryKey(), 0, true, false, SqlCommandType.SELECT);
+                BatisColumnAttribute condition = convertModelAttribute(itemParameterAttribute,
+                    collectionEntityParameterAttribute.getDatabaseMeta().getPrimaryKey(), 0, true, false,
+                    SqlCommandType.SELECT);
                 batisColumnAttributes.add(condition);
                 // 修改数据的逻辑件条件
                 if (collectionEntityParameterAttribute.getDatabaseMeta().getLogic() != null) {
-                    BatisColumnAttribute logicCondition = convertModelAttribute(itemParameterAttribute, collectionEntityParameterAttribute.getDatabaseMeta().getLogic(), ++index, multi, false, SqlCommandType.SELECT);
+                    BatisColumnAttribute logicCondition = convertModelAttribute(itemParameterAttribute,
+                        collectionEntityParameterAttribute.getDatabaseMeta().getLogic(), ++index, multi, false,
+                        SqlCommandType.SELECT);
                     batisColumnAttributes.add(logicCondition);
                     isSetLogic = true;
                 }
                 isSetFill = true;
             } else if (parameterAttribute instanceof EntityParameterAttribute entityParameterAttribute) {
-                List<BatisColumnAttribute> entityBatisColumnAttributes = analysisEntityParameterAttribute((EntityParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.UPDATE);
+                List<BatisColumnAttribute> entityBatisColumnAttributes = analysisEntityParameterAttribute(
+                    (EntityParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.UPDATE);
                 parameterAttribute.setMulti(multi);
                 batisColumnAttributes.addAll(entityBatisColumnAttributes);
-                BatisColumnAttribute condition = convertModelAttribute(entityParameterAttribute, entityParameterAttribute.getDatabaseMeta().getPrimaryKey(), 0, multi, false, SqlCommandType.SELECT);
+                BatisColumnAttribute condition = convertModelAttribute(entityParameterAttribute,
+                    entityParameterAttribute.getDatabaseMeta().getPrimaryKey(), 0, multi, false, SqlCommandType.SELECT);
                 batisColumnAttributes.add(condition);
                 if (entityParameterAttribute.getDatabaseMeta().getLogic() != null) {
-                    BatisColumnAttribute logicCondition = convertModelAttribute(entityParameterAttribute, entityParameterAttribute.getDatabaseMeta().getLogic(), ++index, multi, false, SqlCommandType.SELECT);
+                    BatisColumnAttribute logicCondition = convertModelAttribute(entityParameterAttribute,
+                        entityParameterAttribute.getDatabaseMeta().getLogic(), ++index, multi, false,
+                        SqlCommandType.SELECT);
                     batisColumnAttributes.add(logicCondition);
                     isSetLogic = true;
                 }
                 isSetFill = true;
             } else if (parameterAttribute instanceof BaseParameterAttribute) {
-                batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic, SqlCommandType.UPDATE));
+                batisColumnAttributes.add(
+                    convertParameterAttribute(parameterAttribute, multi, methodDynamic, SqlCommandType.UPDATE));
             } else if (parameterAttribute instanceof PrimaryKeyParameterAttribute) {
-                batisColumnAttributes.add(convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.UPDATE));
+                batisColumnAttributes.add(
+                    convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi,
+                        methodDynamic, SqlCommandType.UPDATE));
             } else if (parameterAttribute instanceof ObjectParameterAttribute) {
-                List<BatisColumnAttribute> objectAttributes = analysisObjectAttribute((ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.UPDATE);
+                List<BatisColumnAttribute> objectAttributes = analysisObjectAttribute(
+                    (ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.UPDATE);
                 parameterAttribute.setMulti(multi);
                 batisColumnAttributes.addAll(objectAttributes);
             } else {
@@ -287,7 +378,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         if (!isSetFill) {
             List<FillAttribute> fillAttributes = operateMethodMeta.getDatabaseMeta().updateFillAttributes();
             for (FillAttribute fillAttribute : fillAttributes) {
-                batisColumnAttributes.add(convertModelAttribute(fillAttribute, ++index, multi, false, SqlCommandType.UPDATE));
+                batisColumnAttributes.add(
+                    convertModelAttribute(fillAttribute, ++index, multi, false, SqlCommandType.UPDATE));
             }
         }
         LogicAttribute logic = operateMethodMeta.getDatabaseMeta().getLogic();
@@ -295,10 +387,13 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
             batisColumnAttributes.add(convertModelAttribute(logic, ++index, multi, false, SqlCommandType.SELECT));
         }
         if (isBatch) {
-            String content = updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes) + whereSnippet.where(batisColumnAttributes);
+            String content =
+                updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes) + whereSnippet.where(
+                    batisColumnAttributes);
             return MyBatisSnippetUtils.foreachObject("item", "index", collectionParamName, content, ";");
         } else {
-            return updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes) + whereSnippet.where(batisColumnAttributes);
+            return updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes)
+                + whereSnippet.where(batisColumnAttributes);
         }
     }
 
@@ -311,24 +406,30 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         } else {
             // 当对象实体中有逻辑删除标志位的时候 del语句会构建为Update语句
             // del语句中没有update语句中的Set片段  所以要应用虚拟来参数来把这个参数加入到方法中
-            BatisColumnAttribute batisColumnAttribute = convertVirtualModelAttribute(logic.getColumn(), logic.getField() + "0", logic.getInvalid(), 1, false, false, SqlCommandType.UPDATE);
+            BatisColumnAttribute batisColumnAttribute = convertVirtualModelAttribute(logic.getColumn(),
+                logic.getField() + "0", logic.getInvalid(), 1, false, false, SqlCommandType.UPDATE);
             operateMethodMeta.addVirtualParameterAttribute(batisColumnAttribute);
             return MyBatisSnippetUtils.script(doLogicDelete(operateMethodMeta, logic));
         }
 
     }
 
-    private String doLogicDelete(OperateMethodMeta operateMethodMeta, LogicAttribute logic) {
+    private String doLogicDelete(OperateMethodMeta operateMethodMeta,
+                                 LogicAttribute logic) {
         boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.UPDATE);
         boolean methodDynamic = SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.UPDATE);
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof BaseParameterAttribute) {
-                batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
+                batisColumnAttributes.add(
+                    convertParameterAttribute(parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
             } else if (parameterAttribute instanceof PrimaryKeyParameterAttribute) {
-                batisColumnAttributes.add(convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
+                batisColumnAttributes.add(
+                    convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi,
+                        methodDynamic, SqlCommandType.SELECT));
             } else if (parameterAttribute instanceof ObjectParameterAttribute) {
-                List<BatisColumnAttribute> objectAttributes = analysisObjectAttribute((ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT);
+                List<BatisColumnAttribute> objectAttributes = analysisObjectAttribute(
+                    (ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT);
                 parameterAttribute.setMulti(multi);
                 batisColumnAttributes.addAll(objectAttributes);
             } else {
@@ -342,7 +443,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
                 batisColumnAttributes.add((BatisColumnAttribute) virtualParameterAttribute);
             }
         }
-        return updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes) + whereSnippet.where(batisColumnAttributes);
+        return updateFromSnippet.from(operateMethodMeta) + setSnippet.set(batisColumnAttributes) + whereSnippet.where(
+            batisColumnAttributes);
     }
 
     private String doDelete(OperateMethodMeta operateMethodMeta) {
@@ -351,11 +453,15 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         List<BatisColumnAttribute> batisColumnAttributes = new ArrayList<>();
         for (ParameterAttribute parameterAttribute : operateMethodMeta.getParameterAttributes()) {
             if (parameterAttribute instanceof BaseParameterAttribute) {
-                batisColumnAttributes.add(convertParameterAttribute(parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
+                batisColumnAttributes.add(
+                    convertParameterAttribute(parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
             } else if (parameterAttribute instanceof PrimaryKeyParameterAttribute) {
-                batisColumnAttributes.add(convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT));
+                batisColumnAttributes.add(
+                    convertPrimaryKeyParameterAttribute((PrimaryKeyParameterAttribute) parameterAttribute, multi,
+                        methodDynamic, SqlCommandType.SELECT));
             } else if (parameterAttribute instanceof ObjectParameterAttribute) {
-                List<BatisColumnAttribute> objectAttributes = analysisObjectAttribute((ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT);
+                List<BatisColumnAttribute> objectAttributes = analysisObjectAttribute(
+                    (ObjectParameterAttribute) parameterAttribute, multi, methodDynamic, SqlCommandType.SELECT);
                 parameterAttribute.setMulti(multi);
                 batisColumnAttributes.addAll(objectAttributes);
             } else {
@@ -374,11 +480,15 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
      * @param methodDynamic      方法是否具有动态属性
      * @return 分析的结果
      */
-    private List<BatisColumnAttribute> analysisObjectAttribute(ObjectParameterAttribute parameterAttribute, boolean multi, boolean methodDynamic, SqlCommandType sqlCommandType) {
+    private List<BatisColumnAttribute> analysisObjectAttribute(ObjectParameterAttribute parameterAttribute,
+                                                               boolean multi,
+                                                               boolean methodDynamic,
+                                                               SqlCommandType sqlCommandType) {
         List<Field> fields = Reflection.getField(parameterAttribute.getObjectClass());
         ArrayList<BatisColumnAttribute> attributes = new ArrayList<>();
         for (int i = 0; i < fields.size(); i++) {
-            BatisColumnAttribute attribute = convertObjectAttribute(parameterAttribute, fields.get(i), parameterAttribute.getIndex() * 1000 + i, multi, methodDynamic, sqlCommandType);
+            BatisColumnAttribute attribute = convertObjectAttribute(parameterAttribute, fields.get(i),
+                parameterAttribute.getIndex() * 1000 + i, multi, methodDynamic, sqlCommandType);
             if (attribute != null) {
                 attributes.add(attribute);
             }
@@ -396,33 +506,43 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
      * @param sqlCommandType     操作类型
      * @return 返回分析的结果
      */
-    public List<BatisColumnAttribute> analysisEntityParameterAttribute(EntityParameterAttribute parameterAttribute, boolean isMultiParam, boolean dynamic, SqlCommandType sqlCommandType) {
+    public List<BatisColumnAttribute> analysisEntityParameterAttribute(EntityParameterAttribute parameterAttribute,
+                                                                       boolean isMultiParam,
+                                                                       boolean dynamic,
+                                                                       SqlCommandType sqlCommandType) {
         TableMeta tableMeta = parameterAttribute.getDatabaseMeta();
         List<BatisColumnAttribute> list = new ArrayList<>();
         int paramIndex = parameterAttribute.getIndex() * 1000;
         // 主键只有在插入的时候可以被放入到SQL中
         if (!isModelAttributeIgnore(tableMeta.getPrimaryKey(), sqlCommandType)) {
-            list.add(convertModelAttribute(parameterAttribute, tableMeta.getPrimaryKey(), paramIndex, isMultiParam, dynamic, sqlCommandType));
+            list.add(
+                convertModelAttribute(parameterAttribute, tableMeta.getPrimaryKey(), paramIndex, isMultiParam, dynamic,
+                    sqlCommandType));
         }
         List<ModelAttribute> normalAttr = tableMeta.getNormalAttr();
         for (int i = 0; i < normalAttr.size(); i++) {
             ModelAttribute modelAttribute = normalAttr.get(i);
             if (!this.isModelAttributeIgnore(modelAttribute, sqlCommandType)) {
-                list.add(convertModelAttribute(parameterAttribute, modelAttribute, paramIndex + 200 + i, isMultiParam, dynamic, sqlCommandType));
+                list.add(convertModelAttribute(parameterAttribute, modelAttribute, paramIndex + 200 + i, isMultiParam,
+                    dynamic, sqlCommandType));
             }
         }
         List<FillAttribute> fillAttr = tableMeta.getFills();
         for (int i = 0; i < fillAttr.size(); i++) {
             ModelAttribute modelAttribute = fillAttr.get(i);
             if (!this.isModelAttributeIgnore(modelAttribute, sqlCommandType)) {
-                list.add(convertModelAttribute(parameterAttribute, modelAttribute, paramIndex + 300 + i, isMultiParam, false, sqlCommandType));
+                list.add(
+                    convertModelAttribute(parameterAttribute, modelAttribute, paramIndex + 300 + i, isMultiParam, false,
+                        sqlCommandType));
             }
         }
         LogicAttribute logic = tableMeta.getLogic();
         if (logic != null && !isModelAttributeIgnore(logic, sqlCommandType)) {
-            list.add(convertModelAttribute(parameterAttribute, logic, paramIndex + 400, isMultiParam, dynamic, sqlCommandType));
+            list.add(convertModelAttribute(parameterAttribute, logic, paramIndex + 400, isMultiParam, dynamic,
+                sqlCommandType));
         }
-        return list.stream().sorted(Comparator.comparingInt(BatisColumnAttribute::getIndex)).collect(Collectors.toList());
+        return list.stream().sorted(Comparator.comparingInt(BatisColumnAttribute::getIndex))
+            .collect(Collectors.toList());
     }
 
     /**
@@ -432,7 +552,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
      * @param sqlCommandType sql操作类型
      * @return 是否需要忽略
      */
-    public boolean isModelAttributeIgnore(ModelAttribute modelAttribute, SqlCommandType sqlCommandType) {
+    public boolean isModelAttributeIgnore(ModelAttribute modelAttribute,
+                                          SqlCommandType sqlCommandType) {
         if (sqlCommandType == SqlCommandType.INSERT && modelAttribute.isInsertIgnore()) {
             return true;
         } else if (sqlCommandType == SqlCommandType.SELECT && modelAttribute.isSelectIgnore()) {
@@ -443,7 +564,13 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         return false;
     }
 
-    private BatisColumnAttribute convertVirtualModelAttribute(String column, String paramName, Object virtualValue, int index, boolean isMultiParam, boolean methodDynamic, SqlCommandType sqlCommandType) {
+    private BatisColumnAttribute convertVirtualModelAttribute(String column,
+                                                              String paramName,
+                                                              Object virtualValue,
+                                                              int index,
+                                                              boolean isMultiParam,
+                                                              boolean methodDynamic,
+                                                              SqlCommandType sqlCommandType) {
         BatisColumnAttribute attribute = new BatisColumnAttribute();
         attribute.setIndex(index * 1000);
         attribute.setColumn(column);
@@ -456,7 +583,11 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         return attribute;
     }
 
-    private BatisColumnAttribute convertModelAttribute(ModelAttribute modelAttribute, int index, boolean isMultiParam, boolean methodDynamic, SqlCommandType sqlCommandType) {
+    private BatisColumnAttribute convertModelAttribute(ModelAttribute modelAttribute,
+                                                       int index,
+                                                       boolean isMultiParam,
+                                                       boolean methodDynamic,
+                                                       SqlCommandType sqlCommandType) {
         BatisColumnAttribute attribute = new BatisColumnAttribute();
         attribute.setIndex(index * 1000);
         attribute.setColumn(modelAttribute.getColumn());
@@ -469,7 +600,12 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         return attribute;
     }
 
-    private BatisColumnAttribute convertModelAttribute(ParameterAttribute parameterAttribute, ModelAttribute modelAttribute, int modelAttributeIndex, boolean isMultiParam, boolean methodDynamic, SqlCommandType sqlCommandType) {
+    private BatisColumnAttribute convertModelAttribute(ParameterAttribute parameterAttribute,
+                                                       ModelAttribute modelAttribute,
+                                                       int modelAttributeIndex,
+                                                       boolean isMultiParam,
+                                                       boolean methodDynamic,
+                                                       SqlCommandType sqlCommandType) {
         BatisColumnAttribute attribute = new BatisColumnAttribute();
         attribute.setIndex(modelAttributeIndex);
         attribute.setColumn(modelAttribute.getColumn());
@@ -487,10 +623,14 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
     }
 
 
-    private BatisColumnAttribute convertParameterAttribute(ParameterAttribute parameterAttribute, boolean isMultiParam, boolean methodDynamic, SqlCommandType sqlCommandType) {
+    private BatisColumnAttribute convertParameterAttribute(ParameterAttribute parameterAttribute,
+                                                           boolean isMultiParam,
+                                                           boolean methodDynamic,
+                                                           SqlCommandType sqlCommandType) {
         BatisColumnAttribute attribute = new BatisColumnAttribute();
         attribute.setIndex(parameterAttribute.getIndex() * 1000);
-        attribute.setColumn(easyBatisConfiguration.getEasyConfiguration().getColumnNameConverter().convert(parameterAttribute.getParameterName()));
+        attribute.setColumn(easyBatisConfiguration.getEasyConfiguration().getColumnNameConverter()
+            .convert(parameterAttribute.getParameterName()));
         attribute.setParameterName(parameterAttribute.getParameterName());
         attribute.setPath(new String[]{parameterAttribute.getParameterName()});
         attribute.addAnnotations(parameterAttribute.annotations());
@@ -500,13 +640,19 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         return attribute;
     }
 
-    private BatisColumnAttribute convertObjectAttribute(ObjectParameterAttribute objectParameterAttribute, Field field, int index, boolean isMultiParam, boolean methodDynamic, SqlCommandType sqlCommandType) {
+    private BatisColumnAttribute convertObjectAttribute(ObjectParameterAttribute objectParameterAttribute,
+                                                        Field field,
+                                                        int index,
+                                                        boolean isMultiParam,
+                                                        boolean methodDynamic,
+                                                        SqlCommandType sqlCommandType) {
         if (field.getAnnotation(Ignore.class) != null) {
             return null;
         }
         BatisColumnAttribute attribute = new BatisColumnAttribute();
         attribute.setIndex(index);
-        attribute.setColumn(easyBatisConfiguration.getEasyConfiguration().getColumnNameConverter().convert(field.getName()));
+        attribute.setColumn(
+            easyBatisConfiguration.getEasyConfiguration().getColumnNameConverter().convert(field.getName()));
         attribute.setParameterName(field.getName());
         attribute.setPath(new String[]{objectParameterAttribute.getParameterName(), field.getName()});
         attribute.addAnnotations(AnnotationUtils.registerAnnotation(field.getAnnotations(), Syntax.class));
@@ -516,14 +662,19 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         return attribute;
     }
 
-    private BatisColumnAttribute convertPrimaryKeyParameterAttribute(PrimaryKeyParameterAttribute parameterAttribute, boolean multi, boolean methodDynamic, SqlCommandType sqlCommandType) {
-        BatisColumnAttribute attribute = convertParameterAttribute(parameterAttribute, multi, methodDynamic, sqlCommandType);
+    private BatisColumnAttribute convertPrimaryKeyParameterAttribute(PrimaryKeyParameterAttribute parameterAttribute,
+                                                                     boolean multi,
+                                                                     boolean methodDynamic,
+                                                                     SqlCommandType sqlCommandType) {
+        BatisColumnAttribute attribute = convertParameterAttribute(parameterAttribute, multi, methodDynamic,
+            sqlCommandType);
         attribute.setColumn(parameterAttribute.getPrimaryKey().getColumn());
         return attribute;
     }
 
     private boolean hasMapParameterAttribute(Set<ParameterAttribute> parameterAttributes) {
-        return null != parameterAttributes.stream().filter(parameterAttribute -> parameterAttribute instanceof MapParameterAttribute).findAny().orElse(null);
+        return null != parameterAttributes.stream()
+            .filter(parameterAttribute -> parameterAttribute instanceof MapParameterAttribute).findAny().orElse(null);
     }
 
 

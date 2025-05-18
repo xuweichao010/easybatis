@@ -23,7 +23,8 @@ import cn.onetozero.easybatis.supports.SqlPlaceholder;
 
 /**
  * 类描述：配置MYSQL特有的注解
- * @author  徐卫超 (cc)
+ *
+ * @author 徐卫超 (cc)
  * @since 2023/2/10 11:21
  */
 public class MysqlSqlSourceGenerator extends DefaultSqlSourceGenerator {
@@ -44,22 +45,9 @@ public class MysqlSqlSourceGenerator extends DefaultSqlSourceGenerator {
                                    UpdateFromSnippet updateFromSnippet,
                                    SetSnippet setSnippet,
                                    DeleteFromSnippet deleteFromSnippet) {
-        super(sqlPlaceholder,
-                batisPlaceholder,
-                selectColumnSnippet,
-                conditionalRegistry,
-                easyBatisConfiguration,
-                insertSqlFrom,
-                insertColumnSnippet,
-                insertValuesSnippet,
-                selectSqlFrom,
-                selectJoinSqlFrom,
-                whereSnippet,
-                orderSnippet,
-                pageSnippet,
-                updateFromSnippet,
-                setSnippet,
-                deleteFromSnippet);
+        super(sqlPlaceholder, batisPlaceholder, selectColumnSnippet, conditionalRegistry, easyBatisConfiguration,
+            insertSqlFrom, insertColumnSnippet, insertValuesSnippet, selectSqlFrom, selectJoinSqlFrom, whereSnippet,
+            orderSnippet, pageSnippet, updateFromSnippet, setSnippet, deleteFromSnippet);
 
         this.registerConditional();
     }
@@ -69,7 +57,8 @@ public class MysqlSqlSourceGenerator extends DefaultSqlSourceGenerator {
         this.registerConditional();
     }
 
-    public MysqlSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration, SqlPlaceholder sqlPlaceholder) {
+    public MysqlSqlSourceGenerator(EasyBatisConfiguration easyMyBatisConfiguration,
+                                   SqlPlaceholder sqlPlaceholder) {
         super(easyMyBatisConfiguration, sqlPlaceholder);
         this.registerConditional();
     }
