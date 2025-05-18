@@ -233,7 +233,6 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         return sql.toString();
     }
 
-
     private String doSelect(OperateMethodMeta operateMethodMeta) {
         boolean multi = SqlSourceGenerator.isMulti(operateMethodMeta, SqlCommandType.SELECT);
         boolean methodDynamic = SqlSourceGenerator.isMethodDynamic(operateMethodMeta, SqlCommandType.SELECT);

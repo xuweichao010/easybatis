@@ -21,7 +21,8 @@ public abstract class AbstractBatisSourceGenerator implements SqlSourceGenerator
 
     private final ConditionalRegistry conditionalRegistry;
 
-    public AbstractBatisSourceGenerator(SqlPlaceholder sqlPlaceholder, BatisPlaceholder batisPlaceholder,
+    public AbstractBatisSourceGenerator(SqlPlaceholder sqlPlaceholder,
+                                        BatisPlaceholder batisPlaceholder,
                                         SelectColumnSnippet selectColumnSnippet,
                                         ConditionalRegistry conditionalRegistry) {
         this.sqlPlaceholder = sqlPlaceholder;
