@@ -29,7 +29,7 @@ public class MyBatisTest {
         try {
             MyBatisMapper mapper = sqlSessionFactory.getConfiguration().getMapper(MyBatisMapper.class, sqlSession);
             List<NormalUser> normalUsers = mapper.listByUser();
-            Assert.assertTrue(normalUsers.size() > 0);
+            Assert.assertFalse(normalUsers.isEmpty());
         } finally {
             sqlSession.close();
         }
