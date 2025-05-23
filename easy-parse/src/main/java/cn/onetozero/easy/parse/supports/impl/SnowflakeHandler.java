@@ -25,8 +25,8 @@ public class SnowflakeHandler implements IdGenerateHandler {
      */
     private final long workerIdBits = 5L;
     private final long datacenterIdBits = 5L;
-    private final long maxWorkerId = -1L ^ (-1L << workerIdBits);
-    private final long maxDatacenterId = -1L ^ (-1L << datacenterIdBits);
+    private final long maxWorkerId = ~(-1L << workerIdBits);
+    private final long maxDatacenterId = ~(-1L << datacenterIdBits);
     /**
      * 毫秒内自增位
      */

@@ -11,7 +11,7 @@ public class CamelConverterUnderscore implements NameConverter {
     @Override
     public String convert(String name) {
         StringBuilder result = new StringBuilder();
-        if (name != null && name.length() > 0) {
+        if (name != null && !name.isEmpty()) {
             result.append(name.substring(0, 1).toLowerCase());
             for (int i = 1; i < name.length(); i++) {
                 char ch = name.charAt(i);
