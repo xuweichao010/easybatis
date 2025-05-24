@@ -36,6 +36,7 @@
         <dependency>
             <groupId>cn.onetozero</groupId>
             <artifactId>easy-parse</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency> <!-- 数据库驱动  -->
             <groupId>mysql</groupId>
