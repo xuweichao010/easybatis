@@ -1,5 +1,6 @@
 package cn.onetozero.easybatis.supports;
 
+import cn.onetozero.easy.annotations.OffLogic;
 import cn.onetozero.easy.annotations.Syntax;
 import cn.onetozero.easy.annotations.conditions.Between;
 import cn.onetozero.easy.annotations.conditions.Equal;
@@ -257,7 +258,7 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
         }
         int index = operateMethodMeta.getParameterAttributes().size();
         LogicAttribute logic = operateMethodMeta.getDatabaseMeta().getLogic();
-        if (logic != null) {
+        if (logic != null && !operateMethodMeta.containsAnnotation(OffLogic.class)) {
             batisColumnAttributes.add(convertModelAttribute(logic, ++index, multi, false, SqlCommandType.SELECT));
         }
         StringBuilder sql = new StringBuilder(this.selectSqlFrom.from(operateMethodMeta)).append(
@@ -350,7 +351,8 @@ public class DefaultSqlSourceGenerator extends AbstractBatisSourceGenerator {
                 BatisColumnAttribute condition = convertModelAttribute(entityParameterAttribute,
                     entityParameterAttribute.getDatabaseMeta().getPrimaryKey(), 0, multi, false, SqlCommandType.SELECT);
                 batisColumnAttributes.add(condition);
-                if (entityParameterAttribute.getDatabaseMeta().getLogic() != null) {
+                if (entityParameterAttribute.getDatabaseMeta().getLogic() != null
+                    && !operateMethodMeta.containsAnnotation(OffLogic.class)) {
                     BatisColumnAttribute logicCondition = convertModelAttribute(entityParameterAttribute,
                         entityParameterAttribute.getDatabaseMeta().getLogic(), ++index, multi, false,
                         SqlCommandType.SELECT);

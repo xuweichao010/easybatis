@@ -359,7 +359,9 @@ public class MapperEasyAnnotationBuilder {
         for (Class<?> currentParameterType : parameterTypes) {
             if (!RowBounds.class.isAssignableFrom(currentParameterType) && !ResultHandler.class.isAssignableFrom(
                 currentParameterType)) {
-                if (parameterType == null && tableMeta.getLogic() == null) {
+                if (parameterType == null
+                    && tableMeta.getLogic() == null
+                    && method.getAnnotation(OffLogic.class) != null) {
                     parameterType = currentParameterType;
                 } else {
                     // issue #135
